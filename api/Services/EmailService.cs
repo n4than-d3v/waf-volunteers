@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Api.Configuration;
 using Api.Constants;

@@ -139,13 +139,8 @@ app.UseHttpsRedirection();
 var api = app.MapGroup("/api");
 var apiAccount = api.MapGroup("/account");
 
-apiAccount.MapGet("/users", (IMediator mediator) => mediator.Send(new GetAccounts()))
-    .AddNote("Admin views all users' account info")
-    .RequireAuthorization(adminPolicy);
-
-apiAccount.MapPost("/users", (IMediator mediator, CreateAccount request) => mediator.Send(request))
-    .AddNote("Admin creates an account")
-    .RequireAuthorization(adminPolicy);
+apiAccount.MapPost("/login", (IMediator mediator, Login request) => mediator.Send(request))
+    .AddNote("Unauthenticated user sends their username and password to login");
 
 apiAccount.MapPost("/password/reset", (IMediator mediator, RequestPasswordReset request) => mediator.Send(request))
     .AddNote("Unauthenticated user requests email to be sent to them for resetting their password");
@@ -153,8 +148,13 @@ apiAccount.MapPost("/password/reset", (IMediator mediator, RequestPasswordReset 
 apiAccount.MapPut("/password/reset", (IMediator mediator, ResetPassword request) => mediator.Send(request))
     .AddNote("Unauthenticated user uses emailed token to reset their password");
 
-apiAccount.MapPost("/login", (IMediator mediator, Login request) => mediator.Send(request))
-    .AddNote("Unauthenticated user sends their username and password to login");
+apiAccount.MapGet("/users", (IMediator mediator) => mediator.Send(new GetAccounts()))
+    .AddNote("Admin views all users' account info")
+    .RequireAuthorization(adminPolicy);
+
+apiAccount.MapPost("/users", (IMediator mediator, CreateAccount request) => mediator.Send(request))
+    .AddNote("Admin creates an account")
+    .RequireAuthorization(adminPolicy);
 
 apiAccount.MapGet("/users/me", (IMediator mediator) => mediator.Send(new GetAccountInfo()))
     .AddNote("Authenticated user accesses their account info")

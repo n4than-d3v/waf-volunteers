@@ -3,7 +3,7 @@ using Api.Database.Entities;
 using Api.Services;
 using MediatR;
 
-namespace Api.Handlers.Accounts;
+namespace Api.Handlers.Accounts.Info;
 
 public class GetAccountInfo : IRequest<IResult>
 {
@@ -25,7 +25,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
 
     public async Task<IResult> Handle(GetAccountInfo request, CancellationToken cancellationToken)
     {
-        var user = await _repository.Get<Account>(request.Id ?? _userContext.Id);
+        var user = await _repository.Get<Account>(request.Id ?? _userContext.Id, tracking: false);
         if (user == null) return Results.BadRequest();
 
         var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);

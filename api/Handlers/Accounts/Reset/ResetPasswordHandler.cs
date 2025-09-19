@@ -3,9 +3,8 @@ using Api.Database.Entities;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph.Models;
 
-namespace Api.Handlers.Accounts;
+namespace Api.Handlers.Accounts.Reset;
 
 public class ResetPassword : IRequest<IResult>
 {

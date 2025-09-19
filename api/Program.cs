@@ -2,6 +2,9 @@ using Api.Configuration;
 using Api.Constants;
 using Api.Database;
 using Api.Handlers.Accounts;
+using Api.Handlers.Accounts.Admin;
+using Api.Handlers.Accounts.Info;
+using Api.Handlers.Accounts.Reset;
 using Api.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,9 +85,11 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.EnableAnnotations();
+
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Wildlife Aid API",
+        Title = "Wildlife Aid Foundation - Volunteer API",
         Version = "v1"
     });
 
@@ -133,13 +138,60 @@ app.UseHttpsRedirection();
 
 var api = app.MapGroup("/api");
 var apiAccount = api.MapGroup("/account");
-apiAccount.MapPost("/", (IMediator mediator, CreateAccount request) => mediator.Send(request));
-apiAccount.MapPost("/request-password-reset", (IMediator mediator, RequestPasswordReset request) => mediator.Send(request));
-apiAccount.MapPost("/reset-password", (IMediator mediator, ResetPassword request) => mediator.Send(request));
-apiAccount.MapPost("/login", (IMediator mediator, Login request) => mediator.Send(request));
-apiAccount.MapGet("/", (IMediator mediator) => mediator.Send(new GetAccountInfo())).RequireAuthorization(signedInPolicy);
-apiAccount.MapGet("/{id}", (IMediator mediator, int id) => mediator.Send(new GetAccountInfo { Id = id })).RequireAuthorization(adminPolicy);
+
+apiAccount.MapGet("/users", (IMediator mediator) => mediator.Send(new GetAccounts()))
+    .AddNote("Admin views all users' account info")
+    .RequireAuthorization(adminPolicy);
+
+apiAccount.MapPost("/users", (IMediator mediator, CreateAccount request) => mediator.Send(request))
+    .AddNote("Admin creates an account")
+    .RequireAuthorization(adminPolicy);
+
+apiAccount.MapPost("/password/reset", (IMediator mediator, RequestPasswordReset request) => mediator.Send(request))
+    .AddNote("Unauthenticated user requests email to be sent to them for resetting their password");
+
+apiAccount.MapPut("/password/reset", (IMediator mediator, ResetPassword request) => mediator.Send(request))
+    .AddNote("Unauthenticated user uses emailed token to reset their password");
+
+apiAccount.MapPost("/login", (IMediator mediator, Login request) => mediator.Send(request))
+    .AddNote("Unauthenticated user sends their username and password to login");
+
+apiAccount.MapGet("/users/me", (IMediator mediator) => mediator.Send(new GetAccountInfo()))
+    .AddNote("Authenticated user accesses their account info")
+    .RequireAuthorization(signedInPolicy);
+
+apiAccount.MapPut("/users/me", (IMediator mediator, UpdateAccountInfo request) => mediator.Send(request))
+    .AddNote("Authenticated user updates their account info")
+    .RequireAuthorization(signedInPolicy);
+
+apiAccount.MapPost("/users/me/subscribe", (IMediator mediator, Subscribe request) => mediator.Send(request))
+    .AddNote("Authenticated user subscribes to push notifications")
+    .RequireAuthorization(signedInPolicy);
+
+apiAccount.MapGet("/users/{id:int}", (IMediator mediator, int id) => mediator.Send(new GetAccountInfo { Id = id }))
+    .AddNote("Admin accesses account info of another user")
+    .RequireAuthorization(adminPolicy);
+
+apiAccount.MapPut("/users/{id:int}", (IMediator mediator, int id, UpdateAccountInfo request) => mediator.Send(request.WithId(id)))
+    .AddNote("Admin updates the account info of another user")
+    .RequireAuthorization(adminPolicy);
+
 var apiRota = api.MapGroup("/rota");
 apiRota.RequireAuthorization(rotaPolicy);
 
 app.Run();
+
+public static class OpenApiExtensions
+{
+    public static RouteHandlerBuilder AddNote(this RouteHandlerBuilder builder, string name)
+    {
+        builder.WithName(name);
+        builder.WithOpenApi(op =>
+        {
+            op.Summary = name;
+            return op;
+        });
+
+        return builder;
+    }
+}

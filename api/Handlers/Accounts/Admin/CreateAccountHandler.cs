@@ -1,10 +1,10 @@
 ﻿using Api.Database;
 using Api.Database.Entities;
+using Api.Handlers.Accounts.Reset;
 using Api.Services;
 using MediatR;
-using System.Security.Cryptography;
 
-namespace Api.Handlers.Accounts;
+namespace Api.Handlers.Accounts.Admin;
 
 public class CreateAccount : IRequest<IResult>
 {
@@ -15,7 +15,7 @@ public class CreateAccount : IRequest<IResult>
     public string Email { get; set; }
     public string Phone { get; set; }
     public string AddressLineOne { get; set; }
-    public string? AddressLineTwo { get; set; }
+    public string AddressLineTwo { get; set; }
     public string AddressCity { get; set; }
     public string AddressCounty { get; set; }
     public string AddressPostcode { get; set; }

@@ -3,7 +3,7 @@ using Api.Database.Entities;
 using Api.Services;
 using MediatR;
 
-namespace Api.Handlers.Accounts;
+namespace Api.Handlers.Accounts.Reset;
 
 public class RequestPasswordReset : IRequest<IResult>
 {

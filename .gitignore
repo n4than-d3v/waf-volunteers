@@ -1,0 +1,8 @@
+api/.vs
+api/bin
+api/obj
+api/appsettings.Development.json
+
+portal/.angular
+portal/.vscode
+portal/node_modules

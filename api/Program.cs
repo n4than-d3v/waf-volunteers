@@ -25,6 +25,7 @@ builder.Services.AddTransient<IDatabaseRepository, DatabaseRepository>();
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<IEncryptionService, EncryptionService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<IStringGenerator, StringGenerator>();
 
 builder.Services.AddMediatR(options =>
 {
@@ -56,6 +57,7 @@ app.UseHttpsRedirection();
 var api = app.MapGroup("/api");
 var apiAccount = api.MapGroup("/account");
 apiAccount.MapPost("/", (IMediator mediator, CreateAccount request) => mediator.Send(request));
-apiAccount.MapPost("/reset-password", (IMediator mediator, RequestPasswordResetHandler request) => mediator.Send(request));
+apiAccount.MapPost("/request-password-reset", (IMediator mediator, RequestPasswordReset request) => mediator.Send(request));
+apiAccount.MapPost("/reset-password", (IMediator mediator, ResetPassword request) => mediator.Send(request));
 
 app.Run();

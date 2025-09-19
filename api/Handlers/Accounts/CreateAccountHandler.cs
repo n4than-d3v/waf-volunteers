@@ -67,7 +67,4 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
 
         return Results.Created();
     }
-
-    private string GenerateRecoveryCode()
-        => RandomNumberGenerator.GetInt32(11_111_111, 99_999_999).ToString("D8");
 }

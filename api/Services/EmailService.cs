@@ -1,98 +1,114 @@
-﻿namespace Api.Services;
-
-using System;
+﻿using System;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using MimeKit;
-using Microsoft.Identity.Client;
 using Microsoft.Extensions.Options;
+using Microsoft.Graph;
 using Api.Configuration;
 using Api.Constants;
+using Microsoft.Graph.Models;
+using Microsoft.Graph.Users.Item.SendMail;
+using Azure.Identity;
 
-public interface IEmailService
+namespace Api.Services
 {
-    Task SendEmailAsync(Email email);
-}
-
-public class EmailService : IEmailService
-{
-    private const string Scope = "https://outlook.office365.com/.default";
-    private const string Authority = "https://login.microsoftonline.com";
-
-    private const string SmtpServer = "smtp.office365.com";
-    private const int SmtpPort = 587;
-
-    private readonly SmtpSettings _settings;
-
-    public EmailService(IOptions<SmtpSettings> settings)
+    public interface IEmailService
     {
-        _settings = settings.Value;
+        Task SendEmailAsync(Email email);
     }
 
-    private async Task<string> GetAccessTokenAsync()
+    public class EmailService : IEmailService
     {
-        var app = ConfidentialClientApplicationBuilder
-            .Create(_settings.Client.Id)
-            .WithClientSecret(_settings.Client.Secret)
-            .WithAuthority(new Uri($"{Authority}/{_settings.TenantId}"))
-            .Build();
+        private const string Scope = "https://graph.microsoft.com/.default";
+        private readonly SmtpSettings _settings;
 
-        var authResult = await app.AcquireTokenForClient([Scope]).ExecuteAsync();
-        return authResult.AccessToken;
-    }
-
-    public async Task SendEmailAsync(Email email)
-    {
-        var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(_settings.Sender.Name, _settings.Sender.Email));
-        message.To.Add(new MailboxAddress(email.FullName, email.Address));
-        message.Subject = email.Subject;
-
-        message.Body = new TextPart("html")
+        public EmailService(IOptions<SmtpSettings> settings)
         {
-            Text = email.Body
-        };
+            _settings = settings.Value;
+        }
 
-        var accessToken = await GetAccessTokenAsync();
+        public async Task SendEmailAsync(Email email)
+        {
+            var credential = new ClientSecretCredential(
+                tenantId: _settings.TenantId,
+                clientId: _settings.Client.Id,
+                clientSecret: _settings.Client.Secret
+            );
 
-        using var smtp = new SmtpClient();
-        await smtp.ConnectAsync(SmtpServer, SmtpPort, SecureSocketOptions.StartTls);
+            var client = new GraphServiceClient(credential, [Scope]);
 
-        var oauth2 = new SaslMechanismOAuth2(_settings.Sender.Email, accessToken);
-        await smtp.AuthenticateAsync(oauth2);
-
-        await smtp.SendAsync(message);
-        await smtp.DisconnectAsync(true);
+            await client.Users[_settings.Sender.Email]
+                .SendMail
+                .PostAsync(new SendMailPostRequestBody
+                {
+                    Message = new Message
+                    {
+                        Subject = email.Subject,
+                        Body = new ItemBody
+                        {
+                            ContentType = BodyType.Html,
+                            Content = email.Body
+                        },
+                        ToRecipients =
+                        [
+                            new Recipient
+                            {
+                                EmailAddress = new EmailAddress
+                                {
+                                    Address = email.Address,
+                                    Name = email.FullName
+                                }
+                            }
+                        ],
+                        From = new Recipient
+                        {
+                            EmailAddress = new EmailAddress
+                            {
+                                Address = _settings.Sender.Email,
+                                Name = _settings.Sender.Name
+                            }
+                        }
+                    },
+                    SaveToSentItems = true
+                });
+        }
     }
-}
 
-public class Email
-{
-    public string FullName => $"{FirstName} {LastName}";
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-    public string Address { get; private set; }
-
-    public string Subject { get; private set; }
-    public string Body { get; private set; }
-
-    private Email(string firstName, string lastName, string address, string subject, string body)
+    public class Email
     {
-        FirstName = firstName;
-        LastName = lastName;
-        Address = address;
-        Subject = subject;
-        Body = body;
-    }
+        public string FullName => $"{FirstName} {LastName}";
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public string Address { get; private set; }
+        public string Subject { get; private set; }
+        public string Body { get; private set; }
 
-    public static Email ResetPassword(string firstName, string lastName, string email, string token)
-        => new(firstName, lastName, email, "WAF - Reset password",
-$""""
-<h1>Reset password</h1>
+        private Email(string firstName, string lastName, string address, string subject, string body)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Address = address;
+            Subject = subject;
+            Body = body;
+        }
+
+        public static Email ResetPassword(string firstName, string lastName, string email, string token) =>
+            new(firstName, lastName, email, "WAF - Reset password",
+$"""
 <p>Hi {firstName},</p>
+<br />
 <p>We have received a request to reset your password.</p>
-<p>Please <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here</a> to reset.</p>
+<p>Please <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here</a> to reset your password.</p>
+<p>This link will expire in 2 hours.</p>
 <p>If this was not you, contact the office.</p>
-"""");
+""");
+
+        public static Email ResetPasswordSuccess(string firstName, string lastName, string email) =>
+            new(firstName, lastName, email, "WAF - Reset password success",
+$"""
+<p>Hi {firstName},</p>
+<br />
+<p>Thank you for verifying your email address, your password has been successfully reset.</p>
+<p>If this was not you, please urgently contact the office.</p>
+""");
+    }
 }

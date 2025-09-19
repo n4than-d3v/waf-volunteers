@@ -16,11 +16,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<SecuritySettings>(
     builder.Configuration.GetSection("Security")
 );
+builder.Services.Configure<SmtpSettings>(
+    builder.Configuration.GetSection("Smtp")
+);
 
 builder.Services.AddTransient<IDatabaseRepository, DatabaseRepository>();
 
 builder.Services.AddTransient<IHashService, HashService>();
 builder.Services.AddTransient<IEncryptionService, EncryptionService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.Services.AddMediatR(options =>
 {
@@ -52,5 +56,6 @@ app.UseHttpsRedirection();
 var api = app.MapGroup("/api");
 var apiAccount = api.MapGroup("/account");
 apiAccount.MapPost("/", (IMediator mediator, CreateAccount request) => mediator.Send(request));
+apiAccount.MapPost("/reset-password", (IMediator mediator, RequestPasswordResetHandler request) => mediator.Send(request));
 
 app.Run();

@@ -10,6 +10,7 @@ public class Account : Entity
 
     public string Username { get; private set; }
     public string Password { get; private set; }
+    public AccountStatus Status { get; private set; }
 
     #endregion
 
@@ -39,10 +40,11 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, string firstName, string lastName, string email, string phone, string addressLineOne, string? addressLineTwo, string addressCity, string? addressCounty, string addressPostcode, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
+        Status = status;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
@@ -84,4 +86,10 @@ public class Account : Entity
     }
 
     #endregion
+}
+
+public enum AccountStatus
+{
+    Active,
+    Inactive
 }

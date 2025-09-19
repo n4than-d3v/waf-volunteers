@@ -2,45 +2,54 @@
 using Api.Database.Entities;
 using Api.Services;
 using MediatR;
+using System.Security.Cryptography;
 
 namespace Api.Handlers.Accounts;
 
 public class CreateAccount : IRequest<IResult>
 {
     public string Username { get; set; }
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
+
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
     public string Email { get; set; }
-    public string? Phone { get; set; }
-    public string? AddressLineOne { get; set; }
+    public string Phone { get; set; }
+    public string AddressLineOne { get; set; }
     public string? AddressLineTwo { get; set; }
-    public string? AddressCity { get; set; }
-    public string? AddressCounty { get; set; }
-    public string? AddressPostcode { get; set; }
+    public string AddressCity { get; set; }
+    public string AddressCounty { get; set; }
+    public string AddressPostcode { get; set; }
 }
 
 public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
 {
     private readonly IDatabaseRepository _repository;
-
     private readonly IEncryptionService _encryptionService;
+    private readonly IMediator _mediator;
 
-    public CreateAccountHandler(IDatabaseRepository repository, IEncryptionService encryptionService)
+    public CreateAccountHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IMediator mediator)
     {
         _repository = repository;
         _encryptionService = encryptionService;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(CreateAccount request, CancellationToken cancellationToken)
     {
+        var username = request.Username.ToLowerInvariant();
+
+        var existingUser = await _repository.Get<Account>(x => x.Username == username);
+        if (existingUser != null) return Results.BadRequest("User already exists with that username");
+
         var salt = _encryptionService.GenerateSalt();
 
         var account = new Account(
-            username: request.Username,
-            password: "UNSET",
+            username,
+            password: "-",
+            AccountStatus.Active,
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Email, salt),
+            _encryptionService.Encrypt(request.Email ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Phone ?? string.Empty, salt),
             _encryptionService.Encrypt(request.AddressLineOne ?? string.Empty, salt),
             _encryptionService.Encrypt(request.AddressLineTwo ?? string.Empty, salt),
@@ -54,6 +63,11 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
         _repository.Create(account);
         await _repository.SaveChangesAsync();
 
+        await _mediator.Send(new RequestPasswordReset { Username = username }, cancellationToken);
+
         return Results.Created();
     }
+
+    private string GenerateRecoveryCode()
+        => RandomNumberGenerator.GetInt32(11_111_111, 99_999_999).ToString("D8");
 }

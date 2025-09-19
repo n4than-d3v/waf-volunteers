@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Api.Database;
 
+[PrimaryKey(nameof(Id))]
 public abstract class Entity
 {
     /// <summary>

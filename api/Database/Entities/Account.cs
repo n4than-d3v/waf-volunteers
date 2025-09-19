@@ -86,6 +86,11 @@ public class Account : Entity
         PushSubscription = pushSubscription;
     }
 
+    public void UpdateRoles(AccountRoles roles)
+    {
+        Roles = roles;
+    }
+
     #endregion
 }
 

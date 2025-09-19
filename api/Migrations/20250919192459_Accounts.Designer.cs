@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20250919181026_Accounts")]
+    [Migration("20250919192459_Accounts")]
     partial class Accounts
     {
         /// <inheritdoc />
@@ -74,6 +74,9 @@ namespace Api.Migrations
                     b.Property<string>("PushSubscription")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Roles")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Salt")
                         .IsRequired()

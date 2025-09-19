@@ -37,12 +37,16 @@ public class ResetPasswordHandler : IRequestHandler<ResetPassword, IResult>
             if (request.Token == token)
             {
                 // Ensure link is still active (not expired)
-                if (resetPasswordRequest.Expires > DateTime.UtcNow) return Results.BadRequest();
+                if (DateTime.UtcNow > resetPasswordRequest.Expires) return Results.BadRequest();
+
+                // Remove request
+                _repository.Delete(resetPasswordRequest);
 
                 // Save new password
                 var password = _hashService.Hash(request.Password);
                 var account = resetPasswordRequest.Account;
                 account.ResetPassword(password);
+
                 await _repository.SaveChangesAsync();
 
                 var firstName = _encryptionService.Decrypt(account.FirstName, account.Salt);

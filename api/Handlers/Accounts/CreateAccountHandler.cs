@@ -38,7 +38,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
     {
         var username = request.Username.ToLowerInvariant();
 
-        var existingUser = await _repository.Get<Account>(x => x.Username == username);
+        var existingUser = await _repository.Get<Account>(x => x.Username == username, tracking: false);
         if (existingUser != null) return Results.BadRequest("User already exists with that username");
 
         var salt = _encryptionService.GenerateSalt();
@@ -47,6 +47,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             username,
             password: "-",
             AccountStatus.Active,
+            AccountRoles.None,
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Email ?? string.Empty, salt),

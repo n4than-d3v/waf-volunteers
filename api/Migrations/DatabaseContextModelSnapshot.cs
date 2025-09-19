@@ -35,6 +35,7 @@ namespace Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AddressCounty")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AddressLineOne")
@@ -42,6 +43,7 @@ namespace Api.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("AddressLineTwo")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("AddressPostcode")
@@ -71,6 +73,9 @@ namespace Api.Migrations
                     b.Property<string>("PushSubscription")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Roles")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Salt")
                         .IsRequired()

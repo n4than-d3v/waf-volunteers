@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --theme-primary: #1e544e;
+  --theme-primary-darker: #0f403b;
+  --theme-primary-lighter: #316862;
+  --theme-color-1: #331e53;
+  --theme-color-2: #531e23;
+  --theme-color-3: #534e1e;
+  --theme-color-4: #3d531e;
+  --theme-color-5: #1e3d53;
+  --theme-color-6: #2c7871;
+
+  --text-color--dark: #1d1d1d;
+  --text-color--light: rgb(89, 155, 144);
+}
+
+html,
+body,
+* {
+  margin: 0px;
+  padding: 0px;
+  font-family: "Poppins", Sans-serif;
+  box-sizing: inherit;
+  color: var(--text-color--dark);
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  font: 1.2em sans-serif;
+}
+
+input {
+  display: block;
+  width: 100%;
+  color: var(--text-color--dark);
+  padding: 0.5rem 0.75rem;
+  font-size: 1.2rem;
+  border: none;
+  outline: none;
+  background-color: #ebebeb;
+  border-bottom: solid 1px var(--text-color--dark);
+}

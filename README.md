@@ -10,13 +10,14 @@ The back-end uses a PostgreSQL database, and requires SMTP credentials to send e
 
 - [x] Project scaffolding
 - [x] **Database** Accounts
-- [ ] **Database** Reset password requests
+- [x] **Database** Reset password requests
 - [x] **Database** Push notification subscriptions
-- [x] **Endpoint** Create user account
-- [ ] **Endpoint** Request password reset
-- [ ] **Endpoint** Reset password
-- [ ] **Endpoint** Update account details
-- [ ] **Endpoint** Subscribe to push notifications
+- [x] **Endpoint** (Admin) Create user account
+- [x] **Endpoint** Request password reset
+- [x] **Endpoint** Reset password
+- [x] **Endpoint** Update account details
+- [x] **Endpoint** (Admin) Update user roles
+- [x] **Endpoint** Subscribe to push notifications
 - [ ] **Endpoint** Send push notification
 - [ ] **Portal** Login page
 - [ ] **Portal** Reset password

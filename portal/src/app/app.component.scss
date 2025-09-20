@@ -1,0 +1,25 @@
+header {
+  background-color: var(--theme-primary);
+  padding: 0.75rem 1rem;
+}
+
+main {
+  padding: 0.5rem 1rem;
+}
+
+footer {
+  background-color: var(--theme-primary);
+  text-align: center;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.75rem;
+
+  p {
+    color: var(--text-color--light);
+  }
+}
+
+.wrapper {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}

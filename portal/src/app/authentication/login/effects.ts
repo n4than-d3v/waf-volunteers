@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { login } from './actions';
+import { checkIfAlreadyLoggedIn, login } from './actions';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -35,9 +35,46 @@ export class LoginEffects {
       this.actions$.pipe(
         ofType(loginSuccess),
         map(() => {
-          this.router.navigateByUrl('/dashboard');
+          // TODO: Navigate to appropriate dashboard based on user role
+          this.router.navigateByUrl('/volunteer/dashboard');
         })
       ),
     { dispatch: false }
+  );
+
+  isJwtExpired = (token: string) => {
+    if (!token) return true;
+
+    const payloadBase64 = token.split('.')[1];
+    if (!payloadBase64) return true;
+
+    try {
+      const payloadJson = atob(payloadBase64);
+      const payload = JSON.parse(payloadJson);
+
+      const exp = payload.exp;
+      if (typeof exp !== 'number') return true;
+
+      const currentTime = Math.floor(Date.now() / 1000);
+      const expired = currentTime >= exp;
+
+      console.log({ payloadJson, payload, exp, currentTime, expired });
+      return expired;
+    } catch (e) {
+      return true;
+    }
+  };
+
+  checkIfAlreadyLoggedIn$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(checkIfAlreadyLoggedIn),
+      switchMap(() => {
+        const token = localStorage.getItem('token');
+        if (!this.isJwtExpired(token || '')) {
+          return of(loginSuccess({ token: token! }));
+        }
+        return of();
+      })
+    )
   );
 }

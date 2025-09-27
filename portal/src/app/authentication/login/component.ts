@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectLoginError, selectLoginLoading } from './selectors';
-import { login } from './actions';
+import { checkIfAlreadyLoggedIn, login } from './actions';
 import {
   FormControl,
   FormGroup,
@@ -19,7 +19,7 @@ import { AsyncPipe } from '@angular/common';
   styleUrls: ['./component.scss'],
   imports: [AsyncPipe, RouterLink, ReactiveFormsModule, SpinnerComponent],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
 
@@ -37,6 +37,10 @@ export class LoginComponent {
   constructor(private store: Store) {
     this.loading$ = this.store.select(selectLoginLoading);
     this.error$ = this.store.select(selectLoginError);
+  }
+
+  ngOnInit() {
+    this.store.dispatch(checkIfAlreadyLoggedIn());
   }
 
   submit() {

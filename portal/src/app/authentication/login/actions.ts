@@ -1,5 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 
+export const checkIfAlreadyLoggedIn = createAction(
+  '[Authentication] Check if already logged in'
+);
 export const login = createAction(
   '[Authentication] Login',
   props<{ username: string; password: string }>()

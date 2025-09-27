@@ -1,0 +1,21 @@
+<h1>Volunteer portal</h1>
+
+<div class="wrapper">
+  <div class="header">
+    <img src="favicon-96x96.png" alt="Logo" />
+  </div>
+  <div class="field">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" />
+  </div>
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" />
+  </div>
+  <div class="buttons">
+    <button class="button button--primary">Login</button>
+    <a [routerLink]="'/forgot-password'" class="button button--secondary">
+      Forgot password
+    </a>
+  </div>
+</div>

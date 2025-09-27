@@ -75,3 +75,29 @@ input {
   background-color: var(--theme-color-1);
   color: var(--text-color--light);
 }
+
+.error {
+  border-left: solid 5px #531e23;
+  background-color: #d7a8ad;
+  color: #531e23;
+  padding: 1rem;
+  margin-bottom: 2rem;
+
+  ul {
+    margin-top: 0.25rem;
+    list-style: none;
+
+    li {
+      font-size: 0.75em;
+      color: #531e23;
+    }
+  }
+}
+
+.success {
+  border-left: solid 5px #2c7871;
+  background-color: #b8e0dc;
+  color: #1c5e57;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}

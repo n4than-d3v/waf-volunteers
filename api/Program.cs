@@ -64,6 +64,18 @@ builder.Services
 
 builder.Services.AddTransient<IDatabaseRepository, DatabaseRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
+        });
+}); 
+
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddTransient<IHashService, HashService>();
@@ -135,6 +147,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAngularApp");
 
 var api = app.MapGroup("/api");
 var apiAccount = api.MapGroup("/account");

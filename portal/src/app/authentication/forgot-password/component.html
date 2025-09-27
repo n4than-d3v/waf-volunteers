@@ -3,15 +3,30 @@
 <div class="wrapper">
   <div class="header">
     <img src="favicon-96x96.png" alt="Logo" />
+    <h2>Forgot password</h2>
   </div>
-  <h2>Forgot password</h2>
-  <div class="field">
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" />
-  </div>
+  @if (loading$ | async) {
+  <spinner></spinner>
+  } @if (error$ | async) {
+  <div class="error">Invalid details</div>
+  }@if (complete$ | async) {
+  <div class="success">Reset email sent</div>
+  }
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        formControlName="username"
+      />
+    </div>
+  </form>
   <div class="buttons">
-    <button class="button button--secondary" (click)="forgotPassword()">
+    <button class="button button--secondary" (click)="submit()">
       Forgot password
     </button>
+    <a [routerLink]="'/login'">Return to login</a>
   </div>
 </div>

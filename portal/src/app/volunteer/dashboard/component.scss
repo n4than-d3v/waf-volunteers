@@ -11,6 +11,7 @@
     gap: 1rem;
     flex-basis: 30%;
     text-align: center;
+    text-decoration: none;
     border: solid 2px black;
     padding: 1rem;
     background-color: var(--bg);
@@ -22,6 +23,7 @@
     p {
       font-weight: bold;
       color: white;
+      font-size: 1.75rem;
     }
   }
 }

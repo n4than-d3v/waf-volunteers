@@ -5,6 +5,9 @@ import {
   getCurrentProfile,
   getCurrentProfileError,
   getCurrentProfileSuccess,
+  updateCurrentProfile,
+  updateCurrentProfileError,
+  updateCurrentProfileSuccess,
   updateSubscription,
 } from './actions';
 import { catchError, map, of, switchMap } from 'rxjs';
@@ -22,6 +25,18 @@ export class ProfileEffects {
         this.http.get<Profile>('account/users/me').pipe(
           map((profile) => getCurrentProfileSuccess({ profile })),
           catchError(() => of(getCurrentProfileError()))
+        )
+      )
+    )
+  );
+
+  updateCurrentProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateCurrentProfile),
+      switchMap((action) =>
+        this.http.put('account/users/me', action.profile).pipe(
+          map(() => updateCurrentProfileSuccess()),
+          catchError(() => of(updateCurrentProfileError()))
         )
       )
     )

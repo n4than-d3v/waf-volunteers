@@ -4,6 +4,7 @@ import { ForgotPasswordComponent } from './authentication/forgot-password/compon
 import { ResetPasswordComponent } from './authentication/reset-password/component';
 import { VolunteerDashboardComponent } from './volunteer/dashboard/component';
 import { VolunteerRotaComponent } from './volunteer/rota/component';
+import { VolunteerProfileComponent } from './volunteer/profile/component';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,10 @@ export const routes: Routes = [
       {
         path: 'rota',
         component: VolunteerRotaComponent,
+      },
+      {
+        path: 'profile',
+        component: VolunteerProfileComponent,
       },
     ],
   },

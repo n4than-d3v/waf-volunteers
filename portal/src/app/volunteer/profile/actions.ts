@@ -25,3 +25,6 @@ export const updateSubscription = createAction(
   '[Volunteer] Update Subscription',
   props<{ subscription: PushSubscription }>()
 );
+export const cancelUpdateCurrentProfile = createAction(
+  '[Volunteer] Cancel Update Current Profile'
+);

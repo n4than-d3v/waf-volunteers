@@ -17,7 +17,7 @@ export interface Profile {
     county: string;
     postcode: string;
   };
-  subscribed: boolean;
+  subscribed?: boolean;
 }
 
 export const initialProfileState: ProfileState = {

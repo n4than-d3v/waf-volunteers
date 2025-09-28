@@ -9,5 +9,5 @@ The back-end uses a PostgreSQL database, and requires SMTP credentials to send e
 ## Features
 
 - [ ] **Portal** Account details page
-- [ ] **Portal** Service worker push notification subscription
-- [ ] **Endpoint** Send push notification
+- [x] **Portal** Service worker push notification subscription
+- [x] **Endpoint** Send push notification

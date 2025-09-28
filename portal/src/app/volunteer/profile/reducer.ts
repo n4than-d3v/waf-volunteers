@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialProfileState, ProfileState } from './state';
 import {
+  cancelUpdateCurrentProfile,
   getCurrentProfile,
   getCurrentProfileError,
   getCurrentProfileSuccess,
@@ -32,6 +33,7 @@ export const profileReducer = createReducer<ProfileState>(
   on(updateCurrentProfile, (state) => ({
     ...state,
     loading: true,
+    updated: false,
     error: false,
   })),
   on(updateCurrentProfileSuccess, (state) => ({
@@ -44,5 +46,12 @@ export const profileReducer = createReducer<ProfileState>(
     ...state,
     loading: false,
     error: true,
+    updated: false,
+  })),
+  on(cancelUpdateCurrentProfile, (state) => ({
+    ...state,
+    loading: false,
+    error: false,
+    updated: false,
   }))
 );

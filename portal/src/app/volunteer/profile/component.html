@@ -1,1 +1,64 @@
 <h1>Profile</h1>
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (updated$ | async) {
+<div class="success">Profile updated</div>
+}
+<form [formGroup]="form">
+  <div class="field">
+    <label for="firstName">First name</label>
+    <input
+      type="text"
+      id="firstName"
+      name="firstName"
+      formControlName="firstName"
+    />
+  </div>
+  <div class="field">
+    <label for="lastName">Last name</label>
+    <input
+      type="text"
+      id="lastName"
+      name="lastName"
+      formControlName="lastName"
+    />
+  </div>
+  <h2>Contact details</h2>
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" formControlName="email" />
+  </div>
+  <div class="field">
+    <label for="phone">Phone</label>
+    <input type="text" id="phone" name="phone" formControlName="phone" />
+  </div>
+  <h2>Address details</h2>
+  <div class="field">
+    <label for="lineOne">Line one</label>
+    <input type="text" id="lineOne" name="lineOne" formControlName="lineOne" />
+  </div>
+  <div class="field">
+    <label for="lineTwo">Line two</label>
+    <input type="text" id="lineTwo" name="lineTwo" formControlName="lineTwo" />
+  </div>
+  <div class="field">
+    <label for="city">City</label>
+    <input type="text" id="city" name="city" formControlName="city" />
+  </div>
+  <div class="field">
+    <label for="county">County</label>
+    <input type="text" id="county" name="county" formControlName="county" />
+  </div>
+  <div class="field">
+    <label for="postcode">Postcode</label>
+    <input
+      type="text"
+      id="postcode"
+      name="postcode"
+      formControlName="postcode"
+    />
+  </div>
+  <button class="button button--primary" (click)="save()">Save</button>
+</form>

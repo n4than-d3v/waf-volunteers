@@ -18,6 +18,8 @@ import { forgotPasswordReducer } from './authentication/forgot-password/reducer'
 import { ForgotPasswordEffects } from './authentication/forgot-password/effects';
 import { resetPasswordReducer } from './authentication/reset-password/reducer';
 import { ResetPasswordEffects } from './authentication/reset-password/effects';
+import { profileReducer } from './volunteer/profile/reducer';
+import { ProfileEffects } from './volunteer/profile/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,8 +28,14 @@ export const appConfig: ApplicationConfig = {
       login: loginReducer,
       forgotPassword: forgotPasswordReducer,
       resetPassword: resetPasswordReducer,
+      profile: profileReducer,
     }),
-    provideEffects([LoginEffects, ForgotPasswordEffects, ResetPasswordEffects]),
+    provideEffects([
+      LoginEffects,
+      ForgotPasswordEffects,
+      ResetPasswordEffects,
+      ProfileEffects,
+    ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideServiceWorker('ngsw-worker.js', {

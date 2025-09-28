@@ -2,6 +2,7 @@
 using Api.Database.Entities;
 using Api.Services;
 using MediatR;
+using Microsoft.Graph.Models;
 
 namespace Api.Handlers.Accounts.Info;
 
@@ -37,6 +38,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
         var city = _encryptionService.Decrypt(user.AddressCity, user.Salt);
         var county = _encryptionService.Decrypt(user.AddressCounty, user.Salt);
         var postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt);
+        var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
 
         return Results.Ok(new
         {
@@ -51,7 +53,8 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
                 city,
                 county,
                 postcode
-            }
+            },
+            subscribed = !string.IsNullOrWhiteSpace(subscription)
         });
     }
 }

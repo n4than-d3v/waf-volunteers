@@ -8,19 +8,6 @@ The back-end uses a PostgreSQL database, and requires SMTP credentials to send e
 
 ## Features
 
-- [x] Project scaffolding
-- [x] **Database** Accounts
-- [x] **Database** Reset password requests
-- [x] **Database** Push notification subscriptions
-- [x] **Endpoint** (Admin) Create user account
-- [x] **Endpoint** Request password reset
-- [x] **Endpoint** Reset password
-- [x] **Endpoint** Update account details
-- [x] **Endpoint** (Admin) Update user roles
-- [x] **Endpoint** Subscribe to push notifications
-- [ ] **Endpoint** Send push notification
-- [ ] **Portal** Login page
-- [ ] **Portal** Reset password
-- [ ] **Portal** Landing page
 - [ ] **Portal** Account details page
 - [ ] **Portal** Service worker push notification subscription
+- [ ] **Endpoint** Send push notification

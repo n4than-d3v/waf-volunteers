@@ -41,6 +41,7 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
             var city = _encryptionService.Decrypt(user.AddressCity, user.Salt);
             var county = _encryptionService.Decrypt(user.AddressCounty, user.Salt);
             var postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt);
+            var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
 
             userDetails.Add(new
             {
@@ -55,7 +56,8 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
                     city,
                     county,
                     postcode
-                }
+                },
+                subscribed = !string.IsNullOrWhiteSpace(subscription)
             });
         }
 

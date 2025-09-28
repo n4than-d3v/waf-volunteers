@@ -6,3 +6,4 @@ api/appsettings.Development.json
 portal/.angular
 portal/.vscode
 portal/node_modules
+portal/dist

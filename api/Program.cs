@@ -73,6 +73,10 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod()
                   .AllowAnyHeader()
                   .AllowCredentials();
+            policy.WithOrigins("http://172.31.48.1:8080")
+                  .AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .AllowCredentials();
         });
 }); 
 

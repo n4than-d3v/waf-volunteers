@@ -30,6 +30,9 @@ builder.Services.Configure<SmtpSettings>(
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt")
 );
+builder.Services.Configure<PushSettings>(
+    builder.Configuration.GetSection("Push")
+);
 
 var jwtSettings = builder.Configuration
     .GetSection("Jwt")
@@ -73,10 +76,6 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod()
                   .AllowAnyHeader()
                   .AllowCredentials();
-            policy.WithOrigins("http://172.31.48.1:8080")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
         });
 }); 
 
@@ -87,6 +86,7 @@ builder.Services.AddTransient<IEncryptionService, EncryptionService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IStringGenerator, StringGenerator>();
 builder.Services.AddTransient<IUserContext, UserContext>();
+builder.Services.AddTransient<IPushService, PushService>();
 
 builder.Services.AddMediatR(options =>
 {

@@ -30,16 +30,21 @@ export class ProfileEffects {
   updateSubscription$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateSubscription),
-      switchMap((action) =>
-        this.http
+      switchMap((action) => {
+        const json = action.subscription.toJSON();
+        const subscription = {
+          endpoint: json.endpoint,
+          ...json.keys,
+        };
+        return this.http
           .post('account/users/me/subscribe', {
-            subscription: action.subscription,
+            subscription: JSON.stringify(subscription),
           })
           .pipe(
             map(() => getCurrentProfile()),
             catchError(() => of(getCurrentProfileError()))
-          )
-      )
+          );
+      })
     )
   );
 }

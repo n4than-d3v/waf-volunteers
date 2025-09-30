@@ -1,0 +1,38 @@
+<h1>Users</h1>
+
+<button class="button button--primary">Create new user</button>
+
+@if (users$ | async; as users) {
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Address</th>
+      <th>Roles</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users; track user.id){
+    <tr>
+      <td>{{ user.firstName }} {{ user.lastName }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.phone }}</td>
+      <td>
+        <admin-users-address [address]="user.address" />
+      </td>
+      <td>
+        <admin-users-role [roles]="user.roles" />
+      </td>
+      <td>
+        <admin-users-status [status]="user.status" />
+      </td>
+      <td></td>
+    </tr>
+    }
+  </tbody>
+</table>
+}

@@ -14,6 +14,7 @@ import { SpinnerComponent } from '../../shared/spinner/component';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
+  selector: 'login',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],

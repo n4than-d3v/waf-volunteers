@@ -1,5 +1,5 @@
 ﻿using Api.Constants;
-using Api.Database.Entities;
+using Api.Database.Entities.Account;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -29,7 +29,7 @@ public class UserContext : IUserContext
 
     public string LastName => _user.FindFirstValue(AccountConstants.Claims.LastName) ?? "Unknown";
 
-    public string Email => _user.FindFirstValue(AccountConstants.Claims.Email) ?? "Unknown";
+    public string Email => _user.FindFirstValue(ClaimTypes.Email) ?? "Unknown";
 
     public AccountRoles Roles => _user.GetRoles();
 }
@@ -38,7 +38,7 @@ public static class ClaimsPrincipalExtensions
 {
     public static AccountRoles GetRoles(this ClaimsPrincipal claimsPrincipal)
     {
-        return (AccountRoles)int.Parse(claimsPrincipal.FindFirstValue(AccountConstants.Claims.Roles) ?? "0");
+        return (AccountRoles)int.Parse(claimsPrincipal.FindFirstValue(ClaimTypes.Role) ?? "0");
     }
 
     public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Admin);

@@ -1,4 +1,4 @@
-﻿using Api.Database.Entities;
+﻿using Api.Database.Entities.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Database;

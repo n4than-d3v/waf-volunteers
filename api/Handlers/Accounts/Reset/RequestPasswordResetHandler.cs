@@ -1,5 +1,6 @@
 ﻿using Api.Database;
 using Api.Database.Entities;
+using Api.Database.Entities.Account;
 using Api.Services;
 using MediatR;
 

@@ -198,6 +198,10 @@ apiAccount.MapPut("/user/{id:int}/roles", (IMediator mediator, int id, UpdateRol
     .AddNote("Admin updates a user's roles")
     .RequireAuthorization(adminPolicy);
 
+apiAccount.MapPut("/user/{id:int}/status", (IMediator mediator, int id, UpdateStatus request) => mediator.Send(request.WithId(id)))
+    .AddNote("Admin updates a user's status")
+    .RequireAuthorization(adminPolicy);
+
 var apiRota = api.MapGroup("/rota");
 apiRota.RequireAuthorization(rotaPolicy);
 

@@ -5,6 +5,7 @@ import { getCurrentProfile } from '../profile/actions';
 import { SubscribeBannerComponent } from './subscribe-banner/component';
 
 @Component({
+  selector: 'volunteer-dashboard',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],

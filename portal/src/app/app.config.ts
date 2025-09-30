@@ -20,21 +20,35 @@ import { resetPasswordReducer } from './authentication/reset-password/reducer';
 import { ResetPasswordEffects } from './authentication/reset-password/effects';
 import { profileReducer } from './volunteer/profile/reducer';
 import { ProfileEffects } from './volunteer/profile/effects';
+import { TokenProvider } from './shared/token.provider';
+import { profilesReducer } from './admin/users/reducer';
+import { ProfilesEffects } from './admin/users/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    TokenProvider,
     provideHttpClient(withInterceptors([baseUrlInterceptor, tokenInterceptor])),
     provideStore<AppState>({
       login: loginReducer,
       forgotPassword: forgotPasswordReducer,
       resetPassword: resetPasswordReducer,
+
+      // Volunteer
       profile: profileReducer,
+
+      // Admin
+      profiles: profilesReducer,
     }),
     provideEffects([
       LoginEffects,
       ForgotPasswordEffects,
       ResetPasswordEffects,
+
+      // Volunteer
       ProfileEffects,
+
+      // Admin
+      ProfilesEffects,
     ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

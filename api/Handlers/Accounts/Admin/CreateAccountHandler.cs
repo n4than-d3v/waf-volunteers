@@ -1,5 +1,5 @@
 ﻿using Api.Database;
-using Api.Database.Entities;
+using Api.Database.Entities.Account;
 using Api.Handlers.Accounts.Reset;
 using Api.Services;
 using MediatR;

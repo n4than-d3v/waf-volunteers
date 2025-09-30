@@ -18,6 +18,7 @@ import { AsyncPipe } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
 
 @Component({
+  selector: 'volunteer-profile',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],

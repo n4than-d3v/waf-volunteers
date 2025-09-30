@@ -6,12 +6,14 @@ import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { loginSuccess, loginFailure } from './actions';
 import { Router } from '@angular/router';
+import { TokenProvider } from '../../shared/token.provider';
 
 @Injectable()
 export class LoginEffects {
   actions$ = inject(Actions);
   http = inject(HttpClient);
   router = inject(Router);
+  tokenProvider = inject(TokenProvider);
 
   login$ = createEffect(() =>
     this.actions$.pipe(
@@ -34,44 +36,24 @@ export class LoginEffects {
     () =>
       this.actions$.pipe(
         ofType(loginSuccess),
-        map(() => {
-          // TODO: Navigate to appropriate dashboard based on user role
-          this.router.navigateByUrl('/volunteer/dashboard');
+        map((action) => {
+          this.tokenProvider.setToken(action.token);
+          if (this.tokenProvider.isAdmin()) {
+            this.router.navigateByUrl('/admin/dashboard');
+          } else {
+            this.router.navigateByUrl('/volunteer/dashboard');
+          }
         })
       ),
     { dispatch: false }
   );
 
-  isJwtExpired = (token: string) => {
-    if (!token) return true;
-
-    const payloadBase64 = token.split('.')[1];
-    if (!payloadBase64) return true;
-
-    try {
-      const payloadJson = atob(payloadBase64);
-      const payload = JSON.parse(payloadJson);
-
-      const exp = payload.exp;
-      if (typeof exp !== 'number') return true;
-
-      const currentTime = Math.floor(Date.now() / 1000);
-      const expired = currentTime >= exp;
-
-      console.log({ payloadJson, payload, exp, currentTime, expired });
-      return expired;
-    } catch (e) {
-      return true;
-    }
-  };
-
   checkIfAlreadyLoggedIn$ = createEffect(() =>
     this.actions$.pipe(
       ofType(checkIfAlreadyLoggedIn),
       switchMap(() => {
-        const token = localStorage.getItem('token');
-        if (!this.isJwtExpired(token || '')) {
-          return of(loginSuccess({ token: token! }));
+        if (this.tokenProvider.isTokenStillAlive()) {
+          return of(loginSuccess({ token: this.tokenProvider.getToken()! }));
         }
         return of();
       })

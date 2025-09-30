@@ -18,6 +18,7 @@ import {
 import { SpinnerComponent } from '../../shared/spinner/component';
 
 @Component({
+  selector: 'reset-password',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],

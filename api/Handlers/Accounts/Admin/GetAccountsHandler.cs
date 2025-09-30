@@ -1,8 +1,7 @@
-﻿using Api.Database.Entities;
-using Api.Database;
-using Api.Handlers.Accounts.Info;
+﻿using Api.Database;
 using Api.Services;
 using MediatR;
+using Api.Database.Entities.Account;
 
 namespace Api.Handlers.Accounts.Admin;
 
@@ -15,13 +14,11 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
 
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
-    private readonly IUserContext _userContext;
 
-    public GetAccountsHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IUserContext userContext)
+    public GetAccountsHandler(IDatabaseRepository repository, IEncryptionService encryptionService)
     {
         _repository = repository;
         _encryptionService = encryptionService;
-        _userContext = userContext;
     }
 
     public async Task<IResult> Handle(GetAccounts request, CancellationToken cancellationToken)
@@ -57,7 +54,9 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
                     county,
                     postcode
                 },
-                subscribed = !string.IsNullOrWhiteSpace(subscription)
+                subscribed = !string.IsNullOrWhiteSpace(subscription),
+                roles = (int)user.Roles,
+                status = (int)user.Status
             });
         }
 

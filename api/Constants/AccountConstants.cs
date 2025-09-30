@@ -6,11 +6,11 @@ public static class AccountConstants
 {
     public static class Claims
     {
-        public const string Id = "Id";
-        public const string Email = "Email";
-        public const string FirstName = "FirstName";
-        public const string LastName = "LastName";
-        public const string Roles = "Roles";
+        public const string Id = "id";
+        public const string Email = "email";
+        public const string FirstName = "firstName";
+        public const string LastName = "lastName";
+        public const string Roles = "roles";
     }
 
     public static class Roles

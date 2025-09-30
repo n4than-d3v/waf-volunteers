@@ -6,7 +6,6 @@ export const loginReducer = createReducer<LoginState>(
   initialLoginState,
   on(login, (state) => ({ ...state, loading: true, error: false })),
   on(loginSuccess, (state, { token }) => {
-    localStorage.setItem('token', token);
     return { ...state, token, loading: false };
   }),
   on(loginFailure, (state, _) => ({ ...state, loading: false, error: true }))

@@ -5,6 +5,9 @@ import { ResetPasswordComponent } from './authentication/reset-password/componen
 import { VolunteerDashboardComponent } from './volunteer/dashboard/component';
 import { VolunteerRotaComponent } from './volunteer/rota/component';
 import { VolunteerProfileComponent } from './volunteer/profile/component';
+import { isAdmin, isAuthenticated } from './authentication/guards';
+import { AdminDashboardComponent } from './admin/dashboard/component';
+import { AdminUsersComponent } from './admin/users/component';
 
 export const routes: Routes = [
   {
@@ -26,6 +29,7 @@ export const routes: Routes = [
   },
   {
     path: 'volunteer',
+    canActivate: [isAuthenticated],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
@@ -40,6 +44,15 @@ export const routes: Routes = [
         path: 'profile',
         component: VolunteerProfileComponent,
       },
+    ],
+  },
+  {
+    path: 'admin',
+    canActivate: [isAuthenticated, isAdmin],
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'users', component: AdminUsersComponent },
     ],
   },
 ];

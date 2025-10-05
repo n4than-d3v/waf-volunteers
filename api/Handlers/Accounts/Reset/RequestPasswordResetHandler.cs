@@ -52,7 +52,7 @@ public class RequestPasswordResetHandler : IRequestHandler<RequestPasswordReset,
         });
         await _repository.SaveChangesAsync();
 
-        await _emailService.SendEmailAsync(Email.ResetPassword(firstName, lastName, email, token));
+        await _emailService.SendEmailAsync(Email.ResetPassword(firstName, lastName, username, email, token));
 
         return Results.NoContent();
     }

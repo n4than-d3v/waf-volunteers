@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 
 export enum Roles {
-  None = 1,
-  Shift_AnimalHusbandry = 2,
-  Shift_Reception = 4,
-  Shift_TeamLeader = 8,
+  Volunteer = 1,
+  Reception = 2,
+  TeamLeader = 4,
+  Vet = 8,
   Admin = 16,
+}
+
+export enum Status {
+  Active = 0,
+  Inactive = 1,
 }
 
 export interface Session {

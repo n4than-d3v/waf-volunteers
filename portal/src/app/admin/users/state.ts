@@ -3,10 +3,12 @@ export interface ProfilesState {
   profiles: Profile[] | null;
   error: boolean;
   updated: boolean;
+  created: boolean;
 }
 
 export interface Profile {
   id: number;
+  username: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -28,4 +30,5 @@ export const initialProfilesState: ProfilesState = {
   profiles: null,
   error: false,
   updated: false,
+  created: false,
 };

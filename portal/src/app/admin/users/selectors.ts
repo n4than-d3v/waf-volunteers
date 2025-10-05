@@ -23,3 +23,8 @@ export const selectProfileUpdateSuccess = createSelector(
   selectProfilesState,
   (state) => state.updated
 );
+
+export const selectProfileCreateSuccess = createSelector(
+  selectProfilesState,
+  (state) => state.created
+);

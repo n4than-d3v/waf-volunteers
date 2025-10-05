@@ -53,7 +53,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPassword, IResult>
                 var email = _encryptionService.Decrypt(account.Email, account.Salt);
 
                 // Send email confirmation of change
-                await _emailService.SendEmailAsync(Email.ResetPasswordSuccess(firstName, lastName, email));
+                await _emailService.SendEmailAsync(Email.ResetPasswordSuccess(firstName, lastName, account.Username, email));
 
                 return Results.NoContent();
             }

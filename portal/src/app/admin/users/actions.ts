@@ -9,7 +9,14 @@ export const getUsersSuccess = createAction(
 export const getUsersError = createAction('[Users] Get users error');
 export const updateUser = createAction(
   '[Users] Update user',
-  props<{ update: '' | 'roles' | 'status'; user: Profile }>()
+  props<{ user: Profile }>()
 );
 export const updateUserSuccess = createAction('[Users] Update user success');
 export const updateUserError = createAction('[Users] Update user error');
+
+export const createUser = createAction(
+  '[Users] Create user',
+  props<{ user: Profile }>()
+);
+export const createUserSuccess = createAction('[Users] Create user success');
+export const createUserError = createAction('[Users] Create user error');

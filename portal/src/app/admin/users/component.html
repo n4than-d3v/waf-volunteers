@@ -1,15 +1,19 @@
 <h1>Users</h1>
 
-<button class="button button--primary">Create new user</button>
+<a [routerLink]="'./create'" class="button button--primary">Create new user</a>
 
-@if (users$ | async; as users) {
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (users$ | async; as users) {
 <table>
   <thead>
     <tr>
       <th>Name</th>
       <th>Email</th>
       <th>Phone</th>
-      <th>Address</th>
+      <th>Notifications</th>
       <th>Roles</th>
       <th>Status</th>
       <th></th>
@@ -21,16 +25,27 @@
       <td>{{ user.firstName }} {{ user.lastName }}</td>
       <td>{{ user.email }}</td>
       <td>{{ user.phone }}</td>
+      <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
+      <!--
       <td>
         <admin-users-address [address]="user.address" />
       </td>
+      -->
       <td>
         <admin-users-role [roles]="user.roles" />
       </td>
       <td>
         <admin-users-status [status]="user.status" />
       </td>
-      <td></td>
+      <td>
+        Update:
+
+        <a [routerLink]="'./' + user.id + '/update-info'">Details</a>
+        |
+        <a [routerLink]="'./' + user.id + '/update-regular-shifts'"
+          >Regular shifts</a
+        >
+      </td>
     </tr>
     }
   </tbody>

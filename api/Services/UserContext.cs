@@ -42,8 +42,5 @@ public static class ClaimsPrincipalExtensions
     }
 
     public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Admin);
-    public static bool CanSignUp(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.CanSignUpAnimalHusbandry() || claimsPrincipal.CanSignUpReception() || claimsPrincipal.CanSignUpTeamLeader();
-    public static bool CanSignUpAnimalHusbandry(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Shift_AnimalHusbandry);
-    public static bool CanSignUpReception(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Shift_Reception);
-    public static bool CanSignUpTeamLeader(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Shift_TeamLeader);
+    public static bool CanSignUp(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Volunteer);
 }

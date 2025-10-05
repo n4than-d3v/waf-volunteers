@@ -13,10 +13,10 @@ export class AdminUsersRoleComponent implements OnInit {
 
   ngOnInit() {
     const list = [];
-    if (this.roles & Roles.None) list.push('None');
-    if (this.roles & Roles.Shift_AnimalHusbandry) list.push('Animal husbandry');
-    if (this.roles & Roles.Shift_Reception) list.push('Reception');
-    if (this.roles & Roles.Shift_TeamLeader) list.push('Team leader');
+    if (this.roles & Roles.Volunteer) list.push('Volunteer');
+    if (this.roles & Roles.Reception) list.push('Reception');
+    if (this.roles & Roles.TeamLeader) list.push('Team leader');
+    if (this.roles & Roles.Vet) list.push('Vet');
     if (this.roles & Roles.Admin) list.push('Admin');
     this.rolesFormatted = list.join(', ');
   }

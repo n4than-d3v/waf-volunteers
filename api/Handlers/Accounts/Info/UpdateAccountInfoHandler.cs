@@ -31,13 +31,13 @@ public class UpdateAccountInfo : IRequest<IResult>
     }
 }
 
-public class UpdateAccountInfoHandler : IRequestHandler<UpdateAccountInfo, IResult>
+public class UpdateAccountHandler : IRequestHandler<UpdateAccountInfo, IResult>
 {
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
     private readonly IUserContext _userContext;
 
-    public UpdateAccountInfoHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IUserContext userContext)
+    public UpdateAccountHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IUserContext userContext)
     {
         _repository = repository;
         _encryptionService = encryptionService;

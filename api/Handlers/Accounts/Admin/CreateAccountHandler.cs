@@ -14,11 +14,18 @@ public class CreateAccount : IRequest<IResult>
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
-    public string AddressLineOne { get; set; }
-    public string AddressLineTwo { get; set; }
-    public string AddressCity { get; set; }
-    public string AddressCounty { get; set; }
-    public string AddressPostcode { get; set; }
+    public CreateAccountAddress Address { get; set; }
+
+    public class CreateAccountAddress
+    {
+        public string LineOne { get; set; }
+        public string LineTwo { get; set; }
+        public string City { get; set; }
+        public string County { get; set; }
+        public string Postcode { get; set; }
+    }
+
+    public AccountRoles Roles { get; set; }
 }
 
 public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
@@ -47,16 +54,16 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             username,
             password: "-",
             AccountStatus.Active,
-            AccountRoles.None,
+            request.Roles,
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Email ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Phone ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.AddressLineOne ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.AddressLineTwo ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.AddressCity ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.AddressCounty ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.AddressPostcode ?? string.Empty, salt),
+            _encryptionService.Encrypt(request.Address.LineOne ?? string.Empty, salt),
+            _encryptionService.Encrypt(request.Address.LineTwo ?? string.Empty, salt),
+            _encryptionService.Encrypt(request.Address.City ?? string.Empty, salt),
+            _encryptionService.Encrypt(request.Address.County ?? string.Empty, salt),
+            _encryptionService.Encrypt(request.Address.Postcode ?? string.Empty, salt),
             _encryptionService.Encrypt(string.Empty, salt),
             salt
         );

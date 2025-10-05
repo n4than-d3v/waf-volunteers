@@ -1,5 +1,4 @@
 using Api.Configuration;
-using Api.Constants;
 using Api.Database;
 using Api.Handlers.Accounts;
 using Api.Handlers.Accounts.Admin;
@@ -190,16 +189,8 @@ apiAccount.MapGet("/users/{id:int}", (IMediator mediator, int id) => mediator.Se
     .AddNote("Admin accesses account info of another user")
     .RequireAuthorization(adminPolicy);
 
-apiAccount.MapPut("/users/{id:int}", (IMediator mediator, int id, UpdateAccountInfo request) => mediator.Send(request.WithId(id)))
+apiAccount.MapPut("/users/{id:int}", (IMediator mediator, int id, UpdateAccount request) => mediator.Send(request.WithId(id)))
     .AddNote("Admin updates the account info of another user")
-    .RequireAuthorization(adminPolicy);
-
-apiAccount.MapPut("/user/{id:int}/roles", (IMediator mediator, int id, UpdateRoles request) => mediator.Send(request.WithId(id)))
-    .AddNote("Admin updates a user's roles")
-    .RequireAuthorization(adminPolicy);
-
-apiAccount.MapPut("/user/{id:int}/status", (IMediator mediator, int id, UpdateStatus request) => mediator.Send(request.WithId(id)))
-    .AddNote("Admin updates a user's status")
     .RequireAuthorization(adminPolicy);
 
 var apiRota = api.MapGroup("/rota");

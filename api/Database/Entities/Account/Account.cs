@@ -108,9 +108,9 @@ public enum AccountStatus
 [Flags]
 public enum AccountRoles
 {
-    None = 1,
-    Shift_AnimalHusbandry = 2,
-    Shift_Reception = 4,
-    Shift_TeamLeader = 8,
+    Volunteer = 1,
+    Reception = 2,
+    TeamLeader = 4,
+    Vet = 8,
     Admin = 16
 }

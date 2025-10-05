@@ -42,6 +42,8 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
 
             userDetails.Add(new
             {
+                id = user.Id,
+                username = user.Username,
                 firstName,
                 lastName,
                 email,

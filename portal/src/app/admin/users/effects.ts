@@ -2,6 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
+  createUser,
+  createUserError,
+  createUserSuccess,
   getUsers,
   getUsersError,
   getUsersSuccess,
@@ -34,11 +37,23 @@ export class ProfilesEffects {
       ofType(updateUser),
       switchMap((action) => {
         return this.http
-          .put(`account/users/${action.user.id}/${action.update}`, action.user)
+          .put(`account/users/${action.user.id}`, action.user)
           .pipe(
             map(() => updateUserSuccess()),
             catchError(() => of(updateUserError()))
           );
+      })
+    )
+  );
+
+  createUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createUser),
+      switchMap((action) => {
+        return this.http.post(`account/users`, action.user).pipe(
+          map(() => createUserSuccess()),
+          catchError(() => of(createUserError()))
+        );
       })
     )
   );

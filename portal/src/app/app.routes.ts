@@ -8,6 +8,8 @@ import { VolunteerProfileComponent } from './volunteer/profile/component';
 import { isAdmin, isAuthenticated } from './authentication/guards';
 import { AdminDashboardComponent } from './admin/dashboard/component';
 import { AdminUsersComponent } from './admin/users/component';
+import { AdminUsersUpdateInfoComponent } from './admin/users/update-info/component';
+import { AdminUsersCreateComponent } from './admin/users/create/component';
 
 export const routes: Routes = [
   {
@@ -52,7 +54,20 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'users', component: AdminUsersComponent },
+      {
+        path: 'users',
+        children: [
+          { path: '', pathMatch: 'full', component: AdminUsersComponent },
+          {
+            path: ':userId/update-info',
+            component: AdminUsersUpdateInfoComponent,
+          },
+          {
+            path: 'create',
+            component: AdminUsersCreateComponent,
+          },
+        ],
+      },
     ],
   },
 ];

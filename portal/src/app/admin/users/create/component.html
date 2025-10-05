@@ -1,0 +1,128 @@
+<h1>User</h1>
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (created$ | async) {
+<div class="success">User created</div>
+}
+<form [formGroup]="form">
+  <h2>Login details</h2>
+  <div class="field">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      formControlName="username"
+    />
+  </div>
+  <br />
+  <p>
+    Username does not need to be their email address.<br />
+    They will receive a password reset email that includes this username.
+  </p>
+  <h2>Basic details</h2>
+  <div class="field">
+    <label for="firstName">First name</label>
+    <input
+      type="text"
+      id="firstName"
+      name="firstName"
+      formControlName="firstName"
+    />
+  </div>
+  <div class="field">
+    <label for="lastName">Last name</label>
+    <input
+      type="text"
+      id="lastName"
+      name="lastName"
+      formControlName="lastName"
+    />
+  </div>
+  <h2>Contact details</h2>
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" formControlName="email" />
+  </div>
+  <div class="field">
+    <label for="phone">Phone</label>
+    <input type="text" id="phone" name="phone" formControlName="phone" />
+  </div>
+  <h2>Address details</h2>
+  <div class="field">
+    <label for="lineOne">Line one</label>
+    <input type="text" id="lineOne" name="lineOne" formControlName="lineOne" />
+  </div>
+  <div class="field">
+    <label for="lineTwo">Line two</label>
+    <input type="text" id="lineTwo" name="lineTwo" formControlName="lineTwo" />
+  </div>
+  <div class="field">
+    <label for="city">City</label>
+    <input type="text" id="city" name="city" formControlName="city" />
+  </div>
+  <div class="field">
+    <label for="county">County</label>
+    <input type="text" id="county" name="county" formControlName="county" />
+  </div>
+  <div class="field">
+    <label for="postcode">Postcode</label>
+    <input
+      type="text"
+      id="postcode"
+      name="postcode"
+      formControlName="postcode"
+    />
+  </div>
+  <h2>Status</h2>
+  <p>Status will be defaulted to "Active"</p>
+  <h2>Access</h2>
+  <div class="field">
+    <label for="role-volunteer">Volunteer</label>
+    <input
+      type="checkbox"
+      id="role-volunteer"
+      name="role-volunteer"
+      formControlName="roleVolunteer"
+    />
+  </div>
+  <div class="field">
+    <label for="role-reception">Reception</label>
+    <input
+      type="checkbox"
+      id="role-reception"
+      name="role-reception"
+      formControlName="roleReception"
+    />
+  </div>
+  <div class="field">
+    <label for="role-teamleader">Team leader</label>
+    <input
+      type="checkbox"
+      id="role-teamleader"
+      name="role-teamleader"
+      formControlName="roleTeamLeader"
+    />
+  </div>
+  <div class="field">
+    <label for="role-vet">Vet</label>
+    <input
+      type="checkbox"
+      id="role-vet"
+      name="role-vet"
+      formControlName="roleVet"
+    />
+  </div>
+  <div class="field">
+    <label for="role-admin">Admin</label>
+    <input
+      type="checkbox"
+      id="role-admin"
+      name="role-admin"
+      formControlName="roleAdmin"
+    />
+  </div>
+  <button class="button button--primary" (click)="save()">Save</button>
+</form>

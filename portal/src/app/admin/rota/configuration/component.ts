@@ -2,7 +2,14 @@ import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
-import { Job, MissingReason, Requirement, Time, Wrapper } from '../state';
+import {
+  daysOfWeek,
+  Job,
+  MissingReason,
+  Requirement,
+  Time,
+  Wrapper,
+} from '../state';
 import { Store } from '@ngrx/store';
 import {
   selectJobs,
@@ -29,15 +36,7 @@ import {
   imports: [FormsModule],
 })
 export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
-  daysOfWeek = [
-    { name: 'Monday', value: 1 },
-    { name: 'Tuesday', value: 2 },
-    { name: 'Wednesday', value: 3 },
-    { name: 'Thursday', value: 4 },
-    { name: 'Friday', value: 5 },
-    { name: 'Saturday', value: 6 },
-    { name: 'Sunday', value: 0 },
-  ];
+  daysOfWeek = daysOfWeek;
 
   jobs: Job[] = [];
   newJobName = '';

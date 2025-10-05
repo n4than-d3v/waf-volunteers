@@ -2,12 +2,21 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
+  addRegularShift,
+  addRegularShiftError,
+  addRegularShiftSuccess,
+  deleteRegularShift,
+  deleteRegularShiftError,
+  deleteRegularShiftSuccess,
   getJobs,
   getJobsError,
   getJobsSuccess,
   getMissingReasons,
   getMissingReasonsError,
   getMissingReasonsSuccess,
+  getRegularShifts,
+  getRegularShiftsError,
+  getRegularShiftsSuccess,
   getRequirements,
   getRequirementsError,
   getRequirementsSuccess,
@@ -28,7 +37,7 @@ import {
   updateTimesSuccess,
 } from './actions';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { Job, MissingReason, Requirement, Time } from './state';
+import { Job, MissingReason, RegularShift, Requirement, Time } from './state';
 
 @Injectable()
 export class RotaManagementEffects {
@@ -162,6 +171,67 @@ export class RotaManagementEffects {
     this.actions$.pipe(
       ofType(updateRequirementsSuccess),
       switchMap(() => of(getRequirements()))
+    )
+  );
+
+  getRegularShifts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRegularShifts),
+      switchMap((action) =>
+        this.http
+          .get<RegularShift[]>(`rota/users/${action.userId}/regular-shifts`)
+          .pipe(
+            map((regularShifts) => getRegularShiftsSuccess({ regularShifts })),
+            catchError(() => of(getRegularShiftsError()))
+          )
+      )
+    )
+  );
+
+  addRegularShift$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addRegularShift),
+      switchMap((action) =>
+        this.http
+          .post(
+            `rota/users/${action.userId}/regular-shifts`,
+            action.regularShift
+          )
+          .pipe(
+            map(() => addRegularShiftSuccess({ userId: action.userId })),
+            catchError(() => of(addRegularShiftError()))
+          )
+      )
+    )
+  );
+
+  addRegularShiftSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addRegularShiftSuccess),
+      switchMap((action) => of(getRegularShifts({ userId: action.userId })))
+    )
+  );
+
+  deleteRegularShift$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteRegularShift),
+      switchMap((action) =>
+        this.http
+          .delete(
+            `rota/users/${action.userId}/regular-shift/${action.regularShiftId}`
+          )
+          .pipe(
+            map(() => deleteRegularShiftSuccess({ userId: action.userId })),
+            catchError(() => of(deleteRegularShiftError()))
+          )
+      )
+    )
+  );
+
+  deleteRegularShiftSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteRegularShiftSuccess),
+      switchMap((action) => of(getRegularShifts({ userId: action.userId })))
     )
   );
 }

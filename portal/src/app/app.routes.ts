@@ -12,6 +12,7 @@ import { AdminUsersUpdateInfoComponent } from './admin/users/update-info/compone
 import { AdminUsersCreateComponent } from './admin/users/create/component';
 import { AdminRotaComponent } from './admin/rota/component';
 import { AdminRotaConfigurationComponent } from './admin/rota/configuration/component';
+import { AdminUsersUpdateRegularShiftsComponent } from './admin/rota/regular-shifts/component';
 
 export const routes: Routes = [
   {
@@ -61,8 +62,14 @@ export const routes: Routes = [
         children: [
           { path: '', pathMatch: 'full', component: AdminUsersComponent },
           {
-            path: ':userId/update-info',
-            component: AdminUsersUpdateInfoComponent,
+            path: ':userId',
+            children: [
+              { path: 'update-info', component: AdminUsersUpdateInfoComponent },
+              {
+                path: 'update-regular-shifts',
+                component: AdminUsersUpdateRegularShiftsComponent,
+              },
+            ],
           },
           {
             path: 'create',

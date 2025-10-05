@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Job, MissingReason, Requirement, Time } from './state';
+import { Job, MissingReason, RegularShift, Requirement, Time } from './state';
 
 export const getJobs = createAction('[Rota] Get Jobs');
 export const getJobsSuccess = createAction(
@@ -61,4 +61,38 @@ export const updateRequirementsSuccess = createAction(
 );
 export const updateRequirementsError = createAction(
   '[Rota] Update Requirements: Error'
+);
+
+export const getRegularShifts = createAction(
+  '[Rota] Get Regular Shifts',
+  props<{ userId: number }>()
+);
+export const getRegularShiftsSuccess = createAction(
+  '[Rota] Get Regular Shifts: Success',
+  props<{ regularShifts: RegularShift[] }>()
+);
+export const getRegularShiftsError = createAction(
+  '[Rota] Get Regular Shifts: Error'
+);
+export const addRegularShift = createAction(
+  '[Rota] Add Regula Shifts',
+  props<{ userId: number; regularShift: RegularShift }>()
+);
+export const addRegularShiftSuccess = createAction(
+  '[Rota] Add Regular Shift: Success',
+  props<{ userId: number }>()
+);
+export const addRegularShiftError = createAction(
+  '[Rota] Add Regular Shift: Error'
+);
+export const deleteRegularShift = createAction(
+  '[Rota] Delete Regular Shift',
+  props<{ userId: number; regularShiftId: number }>()
+);
+export const deleteRegularShiftSuccess = createAction(
+  '[Rota] Delete Regular Shift: Success',
+  props<{ userId: number }>()
+);
+export const deleteRegularShiftError = createAction(
+  '[Rota] Delete Regular Shift: Error'
 );

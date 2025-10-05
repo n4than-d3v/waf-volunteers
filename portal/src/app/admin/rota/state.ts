@@ -3,6 +3,8 @@ export interface RotaManagementState {
   times: Wrapper<Time>;
   missingReasons: Wrapper<MissingReason>;
   requirements: Wrapper<Requirement>;
+
+  regularShifts: Wrapper<RegularShift>;
 }
 
 export interface Wrapper<T> {
@@ -51,9 +53,31 @@ export interface Requirement {
   jobId?: number;
 }
 
+export interface RegularShift {
+  id: number;
+  day: DayOfWeek;
+  time: Time;
+  job: Job;
+
+  // Used for commands
+  timeId?: number;
+  jobId?: number;
+}
+
+export const daysOfWeek = [
+  { name: 'Monday', value: 1 },
+  { name: 'Tuesday', value: 2 },
+  { name: 'Wednesday', value: 3 },
+  { name: 'Thursday', value: 4 },
+  { name: 'Friday', value: 5 },
+  { name: 'Saturday', value: 6 },
+  { name: 'Sunday', value: 0 },
+];
+
 export const initialRotaManagementState: RotaManagementState = {
   jobs: { loading: false, error: false, data: [], updated: false },
   times: { loading: false, error: false, data: [], updated: false },
   missingReasons: { loading: false, error: false, data: [], updated: false },
   requirements: { loading: false, error: false, data: [], updated: false },
+  regularShifts: { loading: false, error: false, data: [], updated: false },
 };

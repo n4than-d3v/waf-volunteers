@@ -7,6 +7,9 @@ import {
   getMissingReasons,
   getMissingReasonsError,
   getMissingReasonsSuccess,
+  getRegularShifts,
+  getRegularShiftsError,
+  getRegularShiftsSuccess,
   getRequirements,
   getRequirementsError,
   getRequirementsSuccess,
@@ -148,5 +151,23 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
   on(updateRequirementsError, (state) => ({
     ...state,
     requirements: { ...state.requirements, loading: false, error: true },
+  })),
+  // Regular shifts
+  on(getRegularShifts, (state) => ({
+    ...state,
+    regularShifts: { ...state.regularShifts, loading: true, error: false },
+  })),
+  on(getRegularShiftsSuccess, (state, { regularShifts }) => ({
+    ...state,
+    regularShifts: {
+      ...state.regularShifts,
+      data: regularShifts,
+      loading: false,
+      error: false,
+    },
+  })),
+  on(getRegularShiftsError, (state) => ({
+    ...state,
+    regularShifts: { ...state.regularShifts, loading: false, error: true },
   }))
 );

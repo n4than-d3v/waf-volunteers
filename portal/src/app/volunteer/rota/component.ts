@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'volunteer-rota',
@@ -6,4 +6,8 @@ import { Component } from '@angular/core';
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
 })
-export class VolunteerRotaComponent {}
+export class VolunteerRotaComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit() {}
+}

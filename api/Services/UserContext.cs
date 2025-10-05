@@ -42,5 +42,4 @@ public static class ClaimsPrincipalExtensions
     }
 
     public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Admin);
-    public static bool CanSignUp(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Volunteer);
 }

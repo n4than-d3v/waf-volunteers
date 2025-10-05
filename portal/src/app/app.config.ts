@@ -23,6 +23,8 @@ import { ProfileEffects } from './volunteer/profile/effects';
 import { TokenProvider } from './shared/token.provider';
 import { profilesReducer } from './admin/users/reducer';
 import { ProfilesEffects } from './admin/users/effects';
+import { rotaManagementReducer } from './admin/rota/reducer';
+import { RotaManagementEffects } from './admin/rota/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,6 +40,7 @@ export const appConfig: ApplicationConfig = {
 
       // Admin
       profiles: profilesReducer,
+      rotaManagement: rotaManagementReducer,
     }),
     provideEffects([
       LoginEffects,
@@ -49,6 +52,7 @@ export const appConfig: ApplicationConfig = {
 
       // Admin
       ProfilesEffects,
+      RotaManagementEffects,
     ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

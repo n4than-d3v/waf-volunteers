@@ -4,6 +4,11 @@ using Api.Handlers.Accounts;
 using Api.Handlers.Accounts.Admin;
 using Api.Handlers.Accounts.Info;
 using Api.Handlers.Accounts.Reset;
+using Api.Handlers.Rota.Misc.Jobs;
+using Api.Handlers.Rota.Misc.MissingReasons;
+using Api.Handlers.Rota.Misc.Requirements;
+using Api.Handlers.Rota.Misc.Times;
+using Api.Handlers.Rota.RegularShifts;
 using Api.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -55,13 +60,11 @@ builder.Services
     });
 
 const string signedInPolicy = "SignedIn";
-const string rotaPolicy = "Rota";
 const string adminPolicy = "Admin";
 
 builder.Services
     .AddAuthorizationBuilder()
     .AddPolicy(signedInPolicy, policy => policy.RequireAuthenticatedUser())
-    .AddPolicy(rotaPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.CanSignUp()))
     .AddPolicy(adminPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsAdmin()));
 
 builder.Services.AddTransient<IDatabaseRepository, DatabaseRepository>();
@@ -76,7 +79,7 @@ builder.Services.AddCors(options =>
                   .AllowAnyHeader()
                   .AllowCredentials();
         });
-}); 
+});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -194,7 +197,54 @@ apiAccount.MapPut("/users/{id:int}", (IMediator mediator, int id, UpdateAccount 
     .RequireAuthorization(adminPolicy);
 
 var apiRota = api.MapGroup("/rota");
-apiRota.RequireAuthorization(rotaPolicy);
+
+apiRota.MapGet("/jobs", (IMediator mediator) => mediator.Send(new GetJobs()))
+    .AddNote("Authenticated user views list of jobs")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapPut("/jobs", (IMediator mediator, UpdateJobs request) => mediator.Send(request))
+    .AddNote("Admin updates list of jobs")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/missing-reasons", (IMediator mediator) => mediator.Send(new GetMissingReasons()))
+    .AddNote("Authenticated user views list of missing reasons")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapPut("/missing-reasons", (IMediator mediator, UpdateMissingReasons request) => mediator.Send(request))
+    .AddNote("Admin updates list of missing reasons")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/times", (IMediator mediator) => mediator.Send(new GetTimes()))
+    .AddNote("Authenticated user views list of times")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapPut("/times", (IMediator mediator, UpdateTimes request) => mediator.Send(request))
+    .AddNote("Admin updates list of times")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/requirements", (IMediator mediator) => mediator.Send(new GetRequirements()))
+    .AddNote("Admin views list of shift requirements")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapPut("/requirements", (IMediator mediator, UpdateRequirements request) => mediator.Send(request))
+    .AddNote("Admin updates list of requirements")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/users/me/regular-shifts", (IMediator mediator) => mediator.Send(new GetRegularShifts()))
+    .AddNote("Authenticated user views their regular shifts")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapGet("/users/{id:int}/regular-shifts", (IMediator mediator, int id) => mediator.Send(new GetRegularShifts { UserId = id }))
+    .AddNote("Admin views regular shifts of user")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapPost("/users/{id:int}/regular-shifts", (IMediator mediator, int id, AddRegularShift request) => mediator.Send(request.WithId(id)))
+    .AddNote("Admin adds regular shift for user")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapDelete("/users/{id:int}/regular-shift/{shiftId:int}", (IMediator mediator, int id, int shiftId) => mediator.Send(new DeleteRegularShift { UserId = id, ShiftId = shiftId }))
+    .AddNote("Admin removes regular shift for user")
+    .RequireAuthorization(adminPolicy);
 
 app.Run();
 

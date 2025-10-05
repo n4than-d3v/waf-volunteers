@@ -10,6 +10,8 @@ import { AdminDashboardComponent } from './admin/dashboard/component';
 import { AdminUsersComponent } from './admin/users/component';
 import { AdminUsersUpdateInfoComponent } from './admin/users/update-info/component';
 import { AdminUsersCreateComponent } from './admin/users/create/component';
+import { AdminRotaComponent } from './admin/rota/component';
+import { AdminRotaConfigurationComponent } from './admin/rota/configuration/component';
 
 export const routes: Routes = [
   {
@@ -66,6 +68,13 @@ export const routes: Routes = [
             path: 'create',
             component: AdminUsersCreateComponent,
           },
+        ],
+      },
+      {
+        path: 'rota',
+        children: [
+          { path: '', pathMatch: 'full', component: AdminRotaComponent },
+          { path: 'configuration', component: AdminRotaConfigurationComponent },
         ],
       },
     ],

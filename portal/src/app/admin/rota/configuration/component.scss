@@ -1,0 +1,25 @@
+.sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+section {
+  flex: 1;
+  min-width: max-content;
+  padding: 1rem;
+  border: solid 2px var(--text-color--dark);
+  border-radius: 1rem;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  margin-bottom: 0.75rem;
+}
+
+.button--primary {
+  margin-top: 1rem;
+}

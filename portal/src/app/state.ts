@@ -1,3 +1,4 @@
+import { RotaManagementState } from './admin/rota/state';
 import { ProfilesState } from './admin/users/state';
 import { ForgotPasswordState } from './authentication/forgot-password/state';
 import { LoginState } from './authentication/login/state';
@@ -12,4 +13,5 @@ export interface AppState {
 
   // Admin
   profiles: ProfilesState;
+  rotaManagement: RotaManagementState;
 }

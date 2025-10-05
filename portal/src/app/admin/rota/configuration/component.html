@@ -1,0 +1,211 @@
+<h1>Rota Configuration</h1>
+
+<div class="sections">
+  <section>
+    <h2>Jobs</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (job of jobs; track job.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="job.name" />
+          </td>
+          <td>
+            <button class="button button--secondary" (click)="removeJob(job)">
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newJobName" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="button button--primary" (click)="saveChanges('jobs')">
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Missing reasons</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (missingReason of missingReasons; track missingReason.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="missingReason.name" />
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeMissingReason(missingReason)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newMissingReasonName" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('missingReasons')"
+    >
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Shifts</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Start</th>
+          <th>End</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (time of times; track time.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="time.name" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="time.start" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="time.end" />
+          </td>
+          <td>
+            <button class="button button--secondary" (click)="removeTime(time)">
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newTimeName" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="newTimeStart" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="newTimeEnd" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="button button--primary" (click)="saveChanges('times')">
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Shift requirements</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Shift</th>
+          <th>Job</th>
+          <th>Minimum</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (requirement of requirements; track requirement.id) {
+        <tr>
+          <td>
+            <select [(ngModel)]="requirement.day">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="requirement.timeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="requirement.jobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <input type="number" min="0" [(ngModel)]="requirement.minimum" />
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeRequirement(requirement)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <select [(ngModel)]="newRequirementDay">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newRequirementTimeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newRequirementJobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <input type="number" min="0" [(ngModel)]="newRequirementMinimum" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('requirements')"
+    >
+      Save changes
+    </button>
+  </section>
+</div>

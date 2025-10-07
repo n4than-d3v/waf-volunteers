@@ -38,6 +38,8 @@ export class SubscribeBannerComponent implements OnInit {
     this.swPush
       .requestSubscription({ serverPublicKey: this.VAPID_PUBLIC_KEY })
       .then((subscription) => {
+        console.log('[Push] New subscription');
+        console.log(subscription.toJSON());
         this.store.dispatch(updateSubscription({ subscription }));
       });
   }

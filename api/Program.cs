@@ -9,6 +9,7 @@ using Api.Handlers.Rota.Misc.Jobs;
 using Api.Handlers.Rota.Misc.MissingReasons;
 using Api.Handlers.Rota.Misc.Requirements;
 using Api.Handlers.Rota.Misc.Times;
+using Api.Handlers.Rota.Notify;
 using Api.Handlers.Rota.RegularShifts;
 using Api.Handlers.Rota.Shifts;
 using Api.Services;
@@ -275,6 +276,13 @@ apiRota.MapPost("/user/{id:int}/shifts/confirm", (IMediator mediator, int id, Co
 apiRota.MapPost("/user/{id:int}/shifts/deny", (IMediator mediator, int id, DenyShift request) => mediator.Send(request.WithId(id)))
     .AddNote("Admin denies a shift for user")
     .RequireAuthorization(adminPolicy);
+
+var apiNotify = api.MapGroup("/notify");
+apiNotify.MapPost("/not-confirmed-next-shift", (IMediator mediator) => mediator.Send(new NotConfirmedNextShift()))
+    .AddNote("Send notification if not confirmed next shift");
+
+apiNotify.MapPost("/urgent-shifts", (IMediator mediator) => mediator.Send(new UrgentShifts()))
+    .AddNote("Send notification for urgent shifts");
 
 app.Run();
 

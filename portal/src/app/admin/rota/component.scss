@@ -24,6 +24,7 @@ a {
   .day {
     flex: 1;
 
+    background-color: #e5e5e5;
     border: solid 5px var(--theme-primary);
     border-right: none;
 
@@ -38,9 +39,8 @@ a {
     .shifts {
       .shift {
         padding: 0.5rem 0.75rem;
-        background-color: #e5e5e5;
 
-        border-bottom: solid 2px var(--theme-primary);
+        border-bottom: solid 0px var(--theme-primary);
 
         h4 {
           font-weight: normal;
@@ -61,8 +61,8 @@ a {
             }
 
             &.job__enough {
-              --border: var(--theme-color-4);
-              --background: var(--theme-color-4);
+              --border: var(--theme-color-5);
+              --background: var(--theme-color-5);
             }
 
             .error {
@@ -127,6 +127,10 @@ a {
                       background-color: var(--theme-color-2);
                     }
                   }
+                }
+
+                .reason {
+                  padding-left: 1.75rem;
                 }
 
                 .actions {

@@ -13,23 +13,23 @@ The back-end uses a PostgreSQL database, and requires SMTP credentials to send e
 
 ### Setup
 
-[ ] Setup VPS
-[ ] DNS A Record volunteers.wildlifeaid.org.uk
-[ ] Setup notifications@wildlifeaid.org.uk
-[ ] Create Azure client ID + secret
-[ ] Configure production env vars
-[ ] Setup CRON jobs for push notifications
+- [ ] Setup VPS
+- [ ] DNS A Record volunteers.wildlifeaid.org.uk
+- [ ] Setup notifications@wildlifeaid.org.uk
+- [ ] Create Azure client ID + secret
+- [ ] Configure production env vars
+- [ ] Setup CRON jobs for push notifications
 
 ### Uptake
 
-[ ] Demo to volunteers
-[ ] Paper-based installation instructions
-[ ] Feedback from volunteers
+- [ ] Demo to volunteers
+- [ ] Paper-based installation instructions
+- [ ] Feedback from volunteers
 
 ## Future enhancements to discuss
 
-[ ] Patient management
-[ ] Shift tasks
-[ ] Digitalised guidance documentation
-[ ] Bridging software between third party systems (?)
-[ ] ... additional pain points (?)
+- [ ] Patient management
+- [ ] Shift tasks
+- [ ] Digitalised guidance documentation
+- [ ] Bridging software between third party systems (?)
+- [ ] ... additional pain points (?)

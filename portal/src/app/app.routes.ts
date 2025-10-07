@@ -62,6 +62,10 @@ export const routes: Routes = [
         children: [
           { path: '', pathMatch: 'full', component: AdminUsersComponent },
           {
+            path: 'create',
+            component: AdminUsersCreateComponent,
+          },
+          {
             path: ':userId',
             children: [
               { path: 'update-info', component: AdminUsersUpdateInfoComponent },
@@ -70,10 +74,6 @@ export const routes: Routes = [
                 component: AdminUsersUpdateRegularShiftsComponent,
               },
             ],
-          },
-          {
-            path: 'create',
-            component: AdminUsersCreateComponent,
           },
         ],
       },

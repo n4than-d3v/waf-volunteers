@@ -142,7 +142,7 @@ public class ViewRotaHandler : IRequestHandler<ViewRota, IResult>
                 public Job Job { get; set; }
                 public List<DayShiftJobVolunteer> Volunteers { get; set; }
                 public int Required { get; set; }
-                public bool Enough => Required <= Volunteers.Count;
+                public bool Enough => Required <= Volunteers.Count(x => x.Confirmed ?? false);
 
                 public class DayShiftJobVolunteer
                 {

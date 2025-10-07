@@ -11,8 +11,7 @@ public class DatabaseContext : DbContext
     public DbSet<ResetPasswordRequest> ResetPasswordRequests { get; set; }
 
     // Rota management
-    public DbSet<Shift> Shifts { get; set; }
-    public DbSet<ShiftParticipant> ShiftMembers { get; set; }
+    public DbSet<Attendance> Attendance { get; set; }
     public DbSet<TimeRange> TimeRanges { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<MissingReason> MissingReasons { get; set; }

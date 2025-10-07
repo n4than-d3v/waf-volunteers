@@ -9,6 +9,7 @@ using Api.Handlers.Rota.Misc.MissingReasons;
 using Api.Handlers.Rota.Misc.Requirements;
 using Api.Handlers.Rota.Misc.Times;
 using Api.Handlers.Rota.RegularShifts;
+using Api.Handlers.Rota.Shifts;
 using Api.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -244,6 +245,30 @@ apiRota.MapPost("/users/{id:int}/regular-shifts", (IMediator mediator, int id, A
 
 apiRota.MapDelete("/users/{id:int}/regular-shift/{shiftId:int}", (IMediator mediator, int id, int shiftId) => mediator.Send(new DeleteRegularShift { UserId = id, ShiftId = shiftId }))
     .AddNote("Admin removes regular shift for user")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/shifts", (IMediator mediator) => mediator.Send(new GetUserRota()))
+    .AddNote("Authenticated user views their rota")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapPost("/shifts/confirm", (IMediator mediator, ConfirmShift request) => mediator.Send(request))
+    .AddNote("Authenticated user confirms a shift")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapPost("/shifts/deny", (IMediator mediator, DenyShift request) => mediator.Send(request))
+    .AddNote("Authenticated user denies a shift")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapGet("/user/{id:int}/shifts", (IMediator mediator, int id) => mediator.Send(new GetUserRota { UserId = id }))
+    .AddNote("Admin views rota for user")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapPost("/user/{id:int}/shifts/confirm", (IMediator mediator, int id, ConfirmShift request) => mediator.Send(request.WithId(id)))
+    .AddNote("Admin confirms a shift for user")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapPost("/user/{id:int}/shifts/deny", (IMediator mediator, int id, DenyShift request) => mediator.Send(request.WithId(id)))
+    .AddNote("Admin denies a shift for user")
     .RequireAuthorization(adminPolicy);
 
 app.Run();

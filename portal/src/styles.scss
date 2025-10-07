@@ -95,6 +95,11 @@ select {
   color: var(--text-color--light);
 }
 
+.button--warning {
+  background-color: #531e23;
+  color: white;
+}
+
 .error {
   border-left: solid 5px #531e23;
   background-color: #d7a8ad;

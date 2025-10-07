@@ -1,10 +1,31 @@
-import { createAction } from '@ngrx/store';
+import { createAction, props } from '@ngrx/store';
+import { Rota } from './state';
 
-export const getRegularShifts = createAction('[Rota] Get Regular Shifts');
-export const getRegularShiftsSuccess = createAction(
-  '[Rota] Get Regular Shifts: Success',
-  (shifts: any[]) => ({ shifts })
+export const getRota = createAction('[Rota] Get Rota');
+export const getRotaSuccess = createAction(
+  '[Rota] Get Rota: Success',
+  props<{ rota: Rota }>()
 );
-export const getRegularShiftsError = createAction(
-  '[Rota] Get Regular Shifts: Error'
+export const getRotaError = createAction('[Rota] Get Rota: Error');
+
+export const confirmShift = createAction(
+  '[Rota] Confirm Shift',
+  props<{ date: string; timeId: number; jobId: number }>()
 );
+export const confirmShiftSuccess = createAction(
+  '[Rota] Confirm Shift: Success'
+);
+export const confirmShiftError = createAction('[Rota] Confirm Shift: Error');
+
+export const denyShift = createAction(
+  '[Rota] Deny Shift',
+  props<{
+    date: string;
+    timeId: number;
+    jobId: number;
+    missingReasonId: number;
+    customMissingReason?: string;
+  }>()
+);
+export const denyShiftSuccess = createAction('[Rota] Deny Shift: Success');
+export const denyShiftError = createAction('[Rota] Deny Shift: Error');

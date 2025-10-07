@@ -1,23 +1,183 @@
 <h1>Rota</h1>
 
-<div class="regular-shifts">
-  <h2>Regular shift(s)</h2>
-  <ul>
-    <li>Thursday Evening (18:00 - 22:00)</li>
-  </ul>
-</div>
-
+@if (loading$ | async) {
+<spinner></spinner>
+<p class="loading">Loading rota...</p>
+} @else if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (confirming$ | async) {
+<spinner></spinner>
+<p class="loading">Confirming shift...</p>
+} @else if (denying$ | async) {
+<spinner></spinner>
+<p class="loading">Rejecting shift...</p>
+} @if (rota$ | async; as rota) {
 <div class="next-shift">
   <h2>Next shift</h2>
-  <p>Thursday Evening - 9th October</p>
+  @if (rota.nextShift) {
+  <p>
+    {{ rota.nextShift.date | date: 'EEEE' }} {{ rota.nextShift.time.name }},
+    <br />
+    {{ rota.nextShift.date | day }} {{ rota.nextShift.date | date: 'MMMM y' }}
+  </p>
+  }@else {
+  <p>You have not yet confirmed when your next shift will be</p>
+  }
 </div>
-
+@if (rota.urgentShifts.length > 0) {
+<div class="urgent-shifts">
+  <h2>Shifts in need</h2>
+  @for (shift of rota.urgentShifts; track shift.date) {
+  <div
+    class="shift"
+    [class.shift--confirmed]="shift.confirmed"
+    [class.shift--rejected]="shift.confirmed === false"
+  >
+    <div class="shift-label">
+      {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
+    </div>
+    <div class="shift-content">
+      <p class="shift-date">
+        {{ shift.date | date: 'EEEE' }} {{ shift.time.name }}
+      </p>
+      <p class="shift-type">{{ shift.job.name }}</p>
+    </div>
+    <div class="shift-footer">
+      @if (shift.confirmed === null) {
+      <p>
+        Please help if you can!<br />
+        There's {{ shift.coming }} coming and we need {{ shift.required -
+        shift.coming }} more.
+      </p>
+      <div class="buttons">
+        <button class="button button--primary" (click)="confirm(shift)">
+          I can help
+        </button>
+      </div>
+      } @else if (needToChange === shift) {
+      <p>We really need your support.</p>
+      <div class="buttons">
+        <button
+          class="button button--warning"
+          (click)="askingWhyDenying = shift"
+        >
+          Sorry, I can't help
+        </button>
+      </div>
+      } @else if (shift.confirmed) {
+      <div class="decision-container">
+        <div class="decision confirmed">
+          <img src="images/rota/tick.svg" alt="Confirmed" class="icon" />
+          <p>Coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @if (askingWhyDenying === shift) {
+      <div class="why-denying">
+        <label for="missingReason">Reason</label>
+        <select id="missingReason" [(ngModel)]="missingReasonId">
+          @for (missingReason of rota.missingReasons; track missingReason.id){
+          <option [value]="missingReason.id">{{ missingReason.name }}</option>
+          }
+        </select>
+        <label for="customMissingReason">Other info</label>
+        <input
+          id="customMissingReason"
+          type="text"
+          [(ngModel)]="customMissingReason"
+        />
+        <button class="button button--warning" (click)="deny()">Confirm</button>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+}
 <div class="upcoming-shifts">
-  <h2>Upcoming shifts</h2>
-  <ul>
-    <li>
-      <p>Thursday Evening - 9th October</p>
-    </li>
-    <li>Thursday Evening - 16th October</li>
-  </ul>
+  <h2>Regular shifts</h2>
+  @for (shift of rota.rota; track shift.date) {
+  <div
+    class="shift"
+    [class.shift--confirmed]="shift.confirmed"
+    [class.shift--rejected]="shift.confirmed === false"
+  >
+    <div class="shift-label">
+      {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
+    </div>
+    <div class="shift-content">
+      <p class="shift-date">
+        {{ shift.date | date: 'EEEE' }} {{ shift.time.name }}
+      </p>
+      <p class="shift-type">{{ shift.job.name }}</p>
+    </div>
+    <div class="shift-footer">
+      @if (shift.confirmed === null || needToChange === shift) {
+      <p>Will you be coming in?</p>
+      <div class="buttons">
+        <button class="button button--primary" (click)="confirm(shift)">
+          Yes
+        </button>
+        <button
+          class="button button--warning"
+          (click)="askingWhyDenying = shift"
+        >
+          No
+        </button>
+      </div>
+      } @else if (shift.confirmed) {
+      <div class="decision-container">
+        <div class="decision confirmed">
+          <img src="images/rota/tick.svg" alt="Confirmed" class="icon" />
+          <p>Coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @else {
+      <div class="decision-container">
+        <div class="decision rejected">
+          <img src="images/rota/cross.svg" alt="Confirmed" class="icon" />
+          <p>Not coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @if (askingWhyDenying === shift) {
+      <div class="why-denying">
+        <label for="missingReason">Reason</label>
+        <select id="missingReason" [(ngModel)]="missingReasonId">
+          @for (missingReason of rota.missingReasons; track missingReason.id){
+          <option [value]="missingReason.id">{{ missingReason.name }}</option>
+          }
+        </select>
+        <label for="customMissingReason">Other info</label>
+        <input
+          id="customMissingReason"
+          type="text"
+          [(ngModel)]="customMissingReason"
+        />
+        <button class="button button--warning" (click)="deny()">Confirm</button>
+      </div>
+      }
+    </div>
+  </div>
+  }
+  <div class="regular-shifts">
+    <p>Your regular shifts are:</p>
+    <ul>
+      @for (shift of rota.regularShifts; track shift.id) {
+      <li>
+        <admin-rota-regular-shift-day [day]="shift.day" />
+        {{ shift.time.name }}s ({{ shift.job.name }})
+      </li>
+      }
+    </ul>
+    <p>If you need to change this, contact the office.</p>
+  </div>
 </div>
+}

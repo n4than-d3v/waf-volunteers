@@ -25,6 +25,8 @@ import { profilesReducer } from './admin/users/reducer';
 import { ProfilesEffects } from './admin/users/effects';
 import { rotaManagementReducer } from './admin/rota/reducer';
 import { RotaManagementEffects } from './admin/rota/effects';
+import { RotaEffects } from './volunteer/rota/effects';
+import { rotaReducer } from './volunteer/rota/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -37,6 +39,7 @@ export const appConfig: ApplicationConfig = {
 
       // Volunteer
       profile: profileReducer,
+      rota: rotaReducer,
 
       // Admin
       profiles: profilesReducer,
@@ -49,6 +52,7 @@ export const appConfig: ApplicationConfig = {
 
       // Volunteer
       ProfileEffects,
+      RotaEffects,
 
       // Admin
       ProfilesEffects,

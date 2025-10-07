@@ -201,7 +201,7 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DayOfWeek")
+                    b.Property<int>("Day")
                         .HasColumnType("integer");
 
                     b.Property<int>("JobId")

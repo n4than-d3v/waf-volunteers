@@ -1,47 +1,55 @@
+import { Job, MissingReason, RegularShift, Time } from '../../admin/rota/state';
+
 export interface RotaState {
   loading: boolean;
   error: boolean;
+  rota: Rota;
+
+  confirming: boolean;
+  confirmed: boolean;
+
+  denying: boolean;
+  denied: boolean;
+}
+
+export interface Rota {
   regularShifts: RegularShift[];
+  nextShift: Shift | null;
+  rota: Shift[];
   missingReasons: MissingReason[];
+  urgentShifts: UrgentShift[];
 }
 
-export enum DayOfWeek {
-  Sunday = 0,
-  Monday = 1,
-  Tuesday = 2,
-  Wednesday = 3,
-  Thursday = 4,
-  Friday = 5,
-  Saturday = 6,
-}
-
-export interface RegularShift {
-  id: number;
-  day: DayOfWeek;
+export interface Shift {
+  date: string;
   time: Time;
   job: Job;
+  confirmed: boolean | null;
+  missingReason?: MissingReason;
+  customMissingReason?: string;
 }
 
-export interface Job {
-  id: number;
-  name: string;
-}
-
-export interface MissingReason {
-  id: number;
-  name: string;
-}
-
-export interface Time {
-  id: number;
-  name: string;
-  start: string;
-  end: string;
+export interface UrgentShift {
+  date: string;
+  time: Time;
+  job: Job;
+  confirmed: boolean | null;
+  coming: number;
+  required: number;
 }
 
 export const initialRotaState: RotaState = {
   loading: false,
   error: false,
-  regularShifts: [],
-  missingReasons: [],
+  rota: {
+    regularShifts: [],
+    nextShift: null,
+    rota: [],
+    missingReasons: [],
+    urgentShifts: [],
+  },
+  confirming: false,
+  confirmed: false,
+  denying: false,
+  denied: false,
 };

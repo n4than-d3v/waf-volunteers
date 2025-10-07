@@ -8,8 +8,8 @@ The back-end uses a PostgreSQL database, and requires SMTP credentials to send e
 
 ## Todo list
 
-[ ] Demo to Alice
-[ ] Business continuity plan
+- [ ] Demo to Alice
+- [ ] Business continuity plan
 
 ### Setup
 

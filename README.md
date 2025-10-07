@@ -6,8 +6,30 @@ It consists of two projects, an Angular progressive web app for the front-end, a
 
 The back-end uses a PostgreSQL database, and requires SMTP credentials to send email notifications.
 
-## Features
+## Todo list
 
-- [ ] **Portal** Account details page
-- [x] **Portal** Service worker push notification subscription
-- [x] **Endpoint** Send push notification
+[ ] Demo to Alice
+[ ] Business continuity plan
+
+### Setup
+
+[ ] Setup VPS
+[ ] DNS A Record volunteers.wildlifeaid.org.uk
+[ ] Setup notifications@wildlifeaid.org.uk
+[ ] Create Azure client ID + secret
+[ ] Configure production env vars
+[ ] Setup CRON jobs for push notifications
+
+### Uptake
+
+[ ] Demo to volunteers
+[ ] Paper-based installation instructions
+[ ] Feedback from volunteers
+
+## Future enhancements to discuss
+
+[ ] Patient management
+[ ] Shift tasks
+[ ] Digitalised guidance documentation
+[ ] Bridging software between third party systems (?)
+[ ] ... additional pain points (?)

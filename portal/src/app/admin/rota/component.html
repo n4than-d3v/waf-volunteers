@@ -4,4 +4,132 @@
   Update configuration
 </a>
 
-<p>This is gonna be a full-page view of the rota</p>
+<div class="header">
+  <h2>Filter</h2>
+  <p>
+    Viewing rota from <strong>{{ start }}</strong> to
+    <strong>{{ end }}</strong>
+  </p>
+  <div class="buttons">
+    <button class="button button--secondary" (click)="previousWeek()">
+      Previous week
+    </button>
+    <button class="button button--secondary" (click)="nextWeek()">
+      Next week
+    </button>
+  </div>
+</div>
+
+@if (rota$ | async; as rota) { @if (rota.loading) {
+<spinner></spinner>
+} @else if (rota.error) {
+<div class="error">Error occurred</div>
+}@else if (rota.data) {
+<div class="days">
+  @for (day of rota.data; track day.date) {
+  <div class="day">
+    <h3>
+      {{day.date|date:'EEEE' }} {{ day.date | day }} {{ day.date | date: 'MMMM
+      y'}}
+    </h3>
+    <div class="shifts">
+      @for (shift of day.shifts; track shift.time.id) {
+      <div class="shift">
+        <h4>{{ shift.time.name }}</h4>
+        <div class="jobs">
+          @for (job of shift.jobs; track job.job.id) {
+          <div
+            class="job"
+            [class.job__enough]="job.enough"
+            [class.job__not-enough]="!job.enough"
+          >
+            <h5>{{ job.job.name }}</h5>
+            @if (!job.enough) {
+            <p class="error">
+              There are not enough volunteers to satisfy the requirements of
+              this shift
+            </p>
+            }
+            <div class="volunteers">
+              @for (volunteer of job.volunteers; track volunteer.id) {
+              <div class="volunteer">
+                <div class="details">
+                  @if (volunteer.isRegularShift) {
+                  <abbr
+                    class="regularity regularity--regular"
+                    title="Regular shift"
+                  >
+                    R
+                  </abbr>
+                  } @else {
+                  <abbr
+                    class="regularity regularity--irregular"
+                    title="Urgent shift"
+                  >
+                    U
+                  </abbr>
+                  }
+                  <abbr class="name" title="{{ volunteer.fullName }}">
+                    {{ volunteer.name }}
+                  </abbr>
+                  @if (volunteer.confirmed === null) {
+                  <p
+                    class="confirmation confirmation--unconfirmed"
+                    (click)="updatingShift = updatingShift === volunteer ? null: volunteer"
+                  >
+                    -
+                  </p>
+                  } @else if (volunteer.confirmed) {
+                  <p
+                    class="confirmation confirmation--confirmed"
+                    (click)="updatingShift = updatingShift === volunteer ? null: volunteer"
+                  >
+                    Yes
+                  </p>
+                  } @else {
+                  <p
+                    class="confirmation confirmation--rejected"
+                    (click)="updatingShift = updatingShift === volunteer ? null: volunteer"
+                  >
+                    No
+                  </p>
+                  }
+                </div>
+                @if (updatingShift === volunteer) {
+                <div class="actions">
+                  <button
+                    class="button button--primary"
+                    (click)="setComing(day, shift, job, volunteer)"
+                  >
+                    Coming
+                  </button>
+                  <button
+                    class="button button--warning"
+                    (click)="setNotComing(day, shift, job, volunteer)"
+                  >
+                    Not coming
+                  </button>
+                </div>
+                } @if (volunteer.missingReason || volunteer.customMissingReason)
+                {
+                <div class="reason">
+                  @if (volunteer.missingReason) {
+                  <p>{{ volunteer.missingReason.name }}</p>
+                  } @if (volunteer.customMissingReason) {
+                  <p>{{ volunteer.customMissingReason }}</p>
+                  }
+                </div>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+} }

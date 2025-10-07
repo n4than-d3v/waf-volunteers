@@ -4,6 +4,7 @@ using Api.Handlers.Accounts;
 using Api.Handlers.Accounts.Admin;
 using Api.Handlers.Accounts.Info;
 using Api.Handlers.Accounts.Reset;
+using Api.Handlers.Rota;
 using Api.Handlers.Rota.Misc.Jobs;
 using Api.Handlers.Rota.Misc.MissingReasons;
 using Api.Handlers.Rota.Misc.Requirements;
@@ -258,6 +259,10 @@ apiRota.MapPost("/shifts/confirm", (IMediator mediator, ConfirmShift request) =>
 apiRota.MapPost("/shifts/deny", (IMediator mediator, DenyShift request) => mediator.Send(request))
     .AddNote("Authenticated user denies a shift")
     .RequireAuthorization(signedInPolicy);
+
+apiRota.MapGet("/shifts/{start:datetime}/{end:datetime}", (IMediator mediator, DateOnly start, DateOnly end) => mediator.Send(new ViewRota { Start = start, End = end }))
+    .AddNote("Admin views the rota")
+    .RequireAuthorization(adminPolicy);
 
 apiRota.MapGet("/user/{id:int}/shifts", (IMediator mediator, int id) => mediator.Send(new GetUserRota { UserId = id }))
     .AddNote("Admin views rota for user")

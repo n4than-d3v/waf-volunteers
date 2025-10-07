@@ -4,6 +4,8 @@ using Api.Database.Entities.Rota;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using WebPush;
 
 namespace Api.Handlers.Rota.Shifts;
 
@@ -27,11 +29,15 @@ public class DenyShift : IRequest<IResult>
 public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IEncryptionService _encryptionService;
+    private readonly IPushService _pushService;
     private readonly IUserContext _context;
 
-    public DenyShiftHandler(IDatabaseRepository repository, IUserContext context)
+    public DenyShiftHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService, IUserContext context)
     {
         _repository = repository;
+        _encryptionService = encryptionService;
+        _pushService = pushService;
         _context = context;
     }
 
@@ -68,6 +74,18 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
         }
 
         await _repository.SaveChangesAsync();
+
+        var subscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
+        if (!string.IsNullOrWhiteSpace(subscription))
+        {
+            var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
+            await _pushService.Send(push, new PushNotification
+            {
+                Title = "Shift cancellation",
+                Body = $"You've cancelled your shift for {request.Date:dddd} {time.Name} on {request.Date:dd MMMM yyyy}",
+                Image = "images/notifications/header.png"
+            });
+        }
 
         return Results.NoContent();
     }

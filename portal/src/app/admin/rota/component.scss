@@ -1,0 +1,159 @@
+h1,
+a {
+  margin-bottom: 1rem;
+}
+
+.header {
+  margin: 1.5rem 0rem;
+  border-left: solid 5px var(--theme-primary);
+  background-color: rgb(228, 228, 228);
+  max-width: max-content;
+  padding: 1rem;
+
+  .buttons {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+.days {
+  display: flex;
+  gap: 0rem;
+
+  .day {
+    flex: 1;
+
+    border: solid 5px var(--theme-primary);
+    border-right: none;
+
+    h3 {
+      font-weight: normal;
+      text-align: center;
+      background-color: var(--theme-primary);
+      color: white;
+      border-bottom: solid 5px var(--theme-primary);
+    }
+
+    .shifts {
+      .shift {
+        padding: 0.5rem 0.75rem;
+        background-color: #e5e5e5;
+
+        border-bottom: solid 2px var(--theme-primary);
+
+        h4 {
+          font-weight: normal;
+          margin-bottom: 0.5rem;
+        }
+
+        .jobs {
+          .job {
+            --border: rgb(61, 61, 61);
+            --background: white;
+
+            border: solid 3px var(--border);
+            margin-bottom: 0.5rem;
+
+            &.job__not-enough {
+              --border: var(--theme-color-2);
+              --background: var(--theme-color-2);
+            }
+
+            &.job__enough {
+              --border: var(--theme-color-4);
+              --background: var(--theme-color-4);
+            }
+
+            .error {
+              padding: 0.25rem 0.5rem;
+              font-size: 0.65em;
+              margin: 0rem;
+            }
+
+            h5 {
+              font-weight: normal;
+              color: white;
+              border-bottom: solid 3px var(--border);
+              background-color: var(--background);
+              padding: 0.25rem 0.5rem;
+            }
+
+            .volunteers {
+              .volunteer {
+                border-bottom: solid 1px var(--border);
+
+                .details {
+                  display: flex;
+                  align-items: stretch;
+                  justify-content: space-between;
+
+                  .regularity {
+                    max-width: max-content;
+                    padding: 0.25rem;
+                    flex-basis: 10%;
+
+                    &.regularity--regular {
+                      border-right: solid 2px var(--theme-color-5);
+                    }
+
+                    &.regularity--irregular {
+                      border-right: solid 2px var(--theme-color-1);
+                    }
+                  }
+
+                  .name {
+                    padding: 0.25rem 0.5rem;
+                    flex-basis: 65%;
+                  }
+
+                  .confirmation {
+                    width: 2.25rem;
+                    text-align: center;
+                    padding-top: 0.25rem;
+                    color: white;
+                    flex-basis: 25%;
+                    cursor: pointer;
+
+                    &.confirmation--confirmed {
+                      background-color: var(--theme-color-4);
+                    }
+
+                    &.confirmation--unconfirmed {
+                      background-color: var(--theme-color-3);
+                    }
+
+                    &.confirmation--rejected {
+                      background-color: var(--theme-color-2);
+                    }
+                  }
+                }
+
+                .actions {
+                  display: flex;
+
+                  button {
+                    flex: 1;
+                    gap: 1rem;
+                    padding: 0.25rem;
+                    font-size: 0.75rem;
+                  }
+                }
+
+                p,
+                abbr {
+                  font-size: 0.75em;
+                  text-decoration: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .day:last-child {
+    border-right: solid 5px var(--theme-primary);
+  }
+}

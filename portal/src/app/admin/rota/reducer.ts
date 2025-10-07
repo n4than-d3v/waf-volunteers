@@ -1,6 +1,15 @@
 import { createReducer, on } from '@ngrx/store';
 import { initialRotaManagementState, RotaManagementState } from './state';
 import {
+  confirmShift,
+  confirmShiftError,
+  confirmShiftSuccess,
+  denyShift,
+  denyShiftError,
+  denyShiftSuccess,
+  getAdminRota,
+  getAdminRotaError,
+  getAdminRotaSuccess,
   getJobs,
   getJobsError,
   getJobsSuccess,
@@ -169,5 +178,41 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
   on(getRegularShiftsError, (state) => ({
     ...state,
     regularShifts: { ...state.regularShifts, loading: false, error: true },
+  })),
+  on(getAdminRota, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: true, error: false },
+  })),
+  on(getAdminRotaSuccess, (state, { rota }) => ({
+    ...state,
+    rota: { ...state.rota, loading: false, data: rota, error: false },
+  })),
+  on(getAdminRotaError, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: false, error: true },
+  })),
+  on(confirmShift, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: true, error: false },
+  })),
+  on(confirmShiftSuccess, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: false, error: false },
+  })),
+  on(confirmShiftError, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: false, error: true },
+  })),
+  on(denyShift, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: true, error: false },
+  })),
+  on(denyShiftSuccess, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: false, error: false },
+  })),
+  on(denyShiftError, (state) => ({
+    ...state,
+    rota: { ...state.rota, loading: false, error: true },
   }))
 );

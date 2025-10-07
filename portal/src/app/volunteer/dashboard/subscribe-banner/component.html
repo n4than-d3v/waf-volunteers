@@ -1,4 +1,5 @@
-@if (profile$ | async) { @if (!(subscribed$ | async)) {
+@if (profile$ | async) { @if (!((subscribed$ | async) && isPermissionGranted()))
+{
 <div class="overlay"></div>
 <div class="popup">
   <h2>Enable notifications</h2>

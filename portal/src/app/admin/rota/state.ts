@@ -5,6 +5,8 @@ export interface RotaManagementState {
   requirements: Wrapper<Requirement>;
 
   regularShifts: Wrapper<RegularShift>;
+
+  rota: Wrapper<AdminRota>;
 }
 
 export interface Wrapper<T> {
@@ -74,10 +76,38 @@ export const daysOfWeek = [
   { name: 'Sunday', value: 0 },
 ];
 
+export interface AdminRota {
+  date: string;
+  shifts: AdminRotaShift[];
+}
+
+export interface AdminRotaShift {
+  time: Time;
+  jobs: AdminRotaShiftJob[];
+}
+
+export interface AdminRotaShiftJob {
+  job: Job;
+  volunteers: AdminRotaShiftJobVolunteer[];
+  required: number;
+  enough: boolean;
+}
+
+export interface AdminRotaShiftJobVolunteer {
+  id: number;
+  name: string;
+  fullName: string;
+  isRegularShift: boolean;
+  confirmed?: boolean;
+  missingReason?: MissingReason;
+  customMissingReason?: string;
+}
+
 export const initialRotaManagementState: RotaManagementState = {
   jobs: { loading: false, error: false, data: [], updated: false },
   times: { loading: false, error: false, data: [], updated: false },
   missingReasons: { loading: false, error: false, data: [], updated: false },
   requirements: { loading: false, error: false, data: [], updated: false },
   regularShifts: { loading: false, error: false, data: [], updated: false },
+  rota: { loading: false, error: false, data: [], updated: false },
 };

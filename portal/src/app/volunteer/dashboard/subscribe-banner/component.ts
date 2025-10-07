@@ -21,6 +21,10 @@ export class SubscribeBannerComponent implements OnInit {
   profile$: Observable<Profile | null>;
   subscribed$: Observable<boolean>;
 
+  isPermissionGranted() {
+    return Notification.permission === 'granted';
+  }
+
   constructor(private store: Store, private swPush: SwPush) {
     this.profile$ = this.store.select(selectCurrentProfile);
     this.subscribed$ = this.store.select(selectSubcribed);
@@ -34,7 +38,6 @@ export class SubscribeBannerComponent implements OnInit {
     this.swPush
       .requestSubscription({ serverPublicKey: this.VAPID_PUBLIC_KEY })
       .then((subscription) => {
-        console.log(subscription.toJSON());
         this.store.dispatch(updateSubscription({ subscription }));
       });
   }

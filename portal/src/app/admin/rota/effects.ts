@@ -5,9 +5,18 @@ import {
   addRegularShift,
   addRegularShiftError,
   addRegularShiftSuccess,
+  confirmShift,
+  confirmShiftError,
+  confirmShiftSuccess,
   deleteRegularShift,
   deleteRegularShiftError,
   deleteRegularShiftSuccess,
+  denyShift,
+  denyShiftError,
+  denyShiftSuccess,
+  getAdminRota,
+  getAdminRotaError,
+  getAdminRotaSuccess,
   getJobs,
   getJobsError,
   getJobsSuccess,
@@ -37,7 +46,14 @@ import {
   updateTimesSuccess,
 } from './actions';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { Job, MissingReason, RegularShift, Requirement, Time } from './state';
+import {
+  AdminRota,
+  Job,
+  MissingReason,
+  RegularShift,
+  Requirement,
+  Time,
+} from './state';
 
 @Injectable()
 export class RotaManagementEffects {
@@ -232,6 +248,81 @@ export class RotaManagementEffects {
     this.actions$.pipe(
       ofType(deleteRegularShiftSuccess),
       switchMap((action) => of(getRegularShifts({ userId: action.userId })))
+    )
+  );
+
+  getAdminRota$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getAdminRota),
+      switchMap((action) =>
+        this.http
+          .get<AdminRota[]>(`rota/shifts/${action.start}/${action.end}`)
+          .pipe(
+            map((rota) => getAdminRotaSuccess({ rota })),
+            catchError(() => of(getAdminRotaError()))
+          )
+      )
+    )
+  );
+
+  confirmShift$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(confirmShift),
+      switchMap((action) =>
+        this.http
+          .post(`rota/user/${action.userId}/shifts/confirm`, action)
+          .pipe(
+            map(() =>
+              confirmShiftSuccess({ start: action.start, end: action.end })
+            ),
+            catchError(() => of(confirmShiftError()))
+          )
+      )
+    )
+  );
+
+  confirmShiftSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(confirmShiftSuccess),
+      switchMap((action) =>
+        of(
+          getAdminRota({
+            start: action.start,
+            end: action.end,
+          })
+        )
+      )
+    )
+  );
+
+  denyShift$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(denyShift),
+      switchMap((action) =>
+        this.http.post(`rota/user/${action.userId}/shifts/deny`, action).pipe(
+          map(() =>
+            denyShiftSuccess({
+              start: action.start,
+              end: action.end,
+            })
+          ),
+          catchError(() => of(denyShiftError()))
+        )
+      )
+    )
+  );
+
+  denyShiftSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(denyShiftSuccess),
+      switchMap((action) =>
+        of(
+          getAdminRota({
+            start: action.start,
+            end: action.end,
+          })
+        )
+      )
     )
   );
 }

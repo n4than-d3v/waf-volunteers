@@ -27,6 +27,7 @@ export interface Shift {
   confirmed: boolean | null;
   missingReason?: MissingReason;
   customMissingReason?: string;
+  others: string[];
 }
 
 export interface UrgentShift {
@@ -36,6 +37,7 @@ export interface UrgentShift {
   confirmed: boolean | null;
   coming: number;
   required: number;
+  others: string[];
 }
 
 export const initialRotaState: RotaState = {

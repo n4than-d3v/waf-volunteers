@@ -133,6 +133,7 @@ public class RotaService : IRotaService
     {
         var days = await GetRotaAsync(now, now.AddDays(Math.Max(_settings.RegularShiftsDaysInAdvance, _settings.UrgentShiftsDaysInAdvance)));
 
+        bool IsOtherComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => (volunteer.Confirmed == true) && (IsVolunteer(volunteer) == false);
         bool IsVolunteer(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => volunteer.Id == userId;
         bool IsVolunteerComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => IsVolunteer(volunteer) && volunteer.Confirmed == true;
         bool IsVolunteerRegularShift(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => IsVolunteer(volunteer) && volunteer.IsRegularShift;
@@ -143,7 +144,8 @@ public class RotaService : IRotaService
             Job = job.Job,
             Confirmed = volunteer.Confirmed,
             MissingReason = volunteer.MissingReason,
-            CustomMissingReason = volunteer.CustomMissingReason
+            CustomMissingReason = volunteer.CustomMissingReason,
+            Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray()
         };
         UserRota.UrgentShift GetUrgentShift(Day day, Day.DayShift shift, Day.DayShift.DayShiftJob job) => new()
         {
@@ -152,7 +154,8 @@ public class RotaService : IRotaService
             Job = job.Job,
             Required = job.Required,
             Coming = job.Volunteers.Count(v => v.Confirmed == true),
-            Confirmed = job.Volunteers.FirstOrDefault(IsVolunteer)?.Confirmed
+            Confirmed = job.Volunteers.FirstOrDefault(IsVolunteer)?.Confirmed,
+            Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray()
         };
 
         var missingReasons = await _repository.GetAll<MissingReason>(x => true, tracking: false);
@@ -260,22 +263,23 @@ public class UserRota
         public TimeRange Time { get; set; }
     }
 
-    public class UrgentShift
+    public abstract class ShiftBase
     {
         public DateOnly Date { get; set; }
         public TimeRange Time { get; set; }
         public Job Job { get; set; }
         public bool? Confirmed { get; set; }
+        public IReadOnlyList<string> Others { get; set; }
+    }
+
+    public class UrgentShift : ShiftBase
+    {
         public int Coming { get; set; }
         public int Required { get; set; }
     }
 
-    public class Shift
+    public class Shift : ShiftBase
     {
-        public DateOnly Date { get; set; }
-        public TimeRange Time { get; set; }
-        public Job Job { get; set; }
-        public bool? Confirmed { get; set; }
         public MissingReason? MissingReason { get; set; }
         public string? CustomMissingReason { get; set; }
     }

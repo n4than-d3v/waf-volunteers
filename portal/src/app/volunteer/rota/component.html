@@ -93,6 +93,14 @@
         />
         <button class="button button--warning" (click)="deny()">Confirm</button>
       </div>
+      } @else {
+      <div class="people-coming">
+        <strong>Who's coming?</strong>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.others.length ? ',' : '' }}
+          {{ shift.others.join(', ') }}
+        </p>
+      </div>
       }
     </div>
   </div>
@@ -165,6 +173,14 @@
           [(ngModel)]="customMissingReason"
         />
         <button class="button button--warning" (click)="deny()">Confirm</button>
+      </div>
+      } @else {
+      <div class="people-coming">
+        <strong>Who's coming?</strong>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.others.length ? ',' : '' }}
+          {{ shift.others.join(', ') }}
+        </p>
       </div>
       }
     </div>

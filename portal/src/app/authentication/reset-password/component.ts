@@ -55,6 +55,8 @@ export class ResetPasswordComponent {
   }
 
   submit() {
+    this.passwordNotSecure = false;
+    this.passwordNotMatch = false;
     if (this.form.invalid) {
       this.passwordNotSecure = true;
     } else if (

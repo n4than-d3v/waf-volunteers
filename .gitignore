@@ -3,6 +3,11 @@ api/bin
 api/obj
 api/appsettings.Development.json
 
+tests/.vs
+tests/bin
+tests/obj
+tests/appSettings.Developmenet.json
+
 portal/.angular
 portal/.vscode
 portal/node_modules

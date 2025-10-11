@@ -27,13 +27,14 @@ import {
   updateRequirements,
   updateTimes,
 } from '../actions';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'admin-rota-configuration',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
 })
 export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   daysOfWeek = daysOfWeek;

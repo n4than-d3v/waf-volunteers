@@ -16,13 +16,14 @@ import {
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'volunteer-profile',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent],
+  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent, RouterLink],
 })
 export class VolunteerProfileComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean>;

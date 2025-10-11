@@ -16,8 +16,8 @@ import { SpinnerComponent } from '../../shared/spinner/component';
 import { confirmShift, denyShift, getRota } from './actions';
 import { AdminRotaRegularShiftDayComponent } from '../../admin/rota/regular-shifts/day.component';
 import { DayPipe } from './day.pipe';
-import { MissingReason } from '../../admin/rota/state';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'volunteer-rota',
@@ -31,6 +31,7 @@ import { FormsModule } from '@angular/forms';
     DatePipe,
     DayPipe,
     FormsModule,
+    RouterLink,
   ],
 })
 export class VolunteerRotaComponent implements OnInit {

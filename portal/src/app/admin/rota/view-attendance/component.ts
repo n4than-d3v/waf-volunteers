@@ -8,13 +8,14 @@ import moment from 'moment';
 import { AsyncPipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'admin-rota-view-attendance',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, SpinnerComponent, FormsModule],
+  imports: [AsyncPipe, SpinnerComponent, FormsModule, RouterLink],
 })
 export class AdminRotaViewAttendanceComponent implements OnInit {
   reports$: Observable<Wrapper<Report>>;

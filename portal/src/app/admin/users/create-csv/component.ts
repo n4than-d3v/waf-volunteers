@@ -10,6 +10,7 @@ import {
   selectProfilesLoading,
 } from '../selectors';
 import { Subscription } from 'rxjs';
+import { RouterLink } from '@angular/router';
 
 type CreateAction = {
   user: Profile;
@@ -20,7 +21,7 @@ type CreateAction = {
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
 })
 export class AdminUsersCreateCsvComponent implements OnDestroy {
   index = 0;

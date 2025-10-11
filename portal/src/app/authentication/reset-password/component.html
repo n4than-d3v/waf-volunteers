@@ -18,6 +18,8 @@
       <li>At least one number (0-9)</li>
     </ul>
   </div>
+  } @if (passwordNotMatch) {
+  <div class="error">Password must match</div>
   } @if (complete$ | async) {
   <div class="success">Password reset</div>
   <div class="buttons">
@@ -32,6 +34,17 @@
         id="password"
         name="password"
         formControlName="password"
+        autocomplete="off"
+      />
+    </div>
+    <div class="field">
+      <label for="confirmPassword">Confirm password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        name="confirmPassword"
+        formControlName="confirmPassword"
+        autocomplete="off"
       />
     </div>
     <div class="buttons">

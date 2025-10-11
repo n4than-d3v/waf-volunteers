@@ -1,8 +1,13 @@
 <div class="wrapper">
   <header>
-    <a [routerLink]="'./'">
+    <a class="logo" [routerLink]="'./'">
       <img src="images/header.svg" alt="Wildlife Aid Foundation" />
     </a>
+    <div class="sign-out">
+      <a [routerLink]="'./'" (click)="signOut()">
+        <img src="images/sign-out.svg" alt="Sign out" />
+      </a>
+    </div>
   </header>
   <main>
     <router-outlet />

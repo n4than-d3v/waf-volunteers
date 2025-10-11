@@ -32,6 +32,7 @@ export class ResetPasswordComponent {
   error$: Observable<boolean>;
 
   passwordNotSecure = false;
+  passwordNotMatch = false;
 
   form = new FormGroup({
     password: new FormControl('', {
@@ -41,6 +42,7 @@ export class ResetPasswordComponent {
         Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/),
       ],
     }),
+    confirmPassword: new FormControl(''),
   });
 
   constructor(private store: Store, route: ActivatedRoute) {
@@ -55,8 +57,14 @@ export class ResetPasswordComponent {
   submit() {
     if (this.form.invalid) {
       this.passwordNotSecure = true;
+    } else if (
+      this.form.controls.password.value !=
+      this.form.controls.confirmPassword.value
+    ) {
+      this.passwordNotMatch = true;
     } else {
       this.passwordNotSecure = false;
+      this.passwordNotMatch = false;
       this.store.dispatch(
         resetPassword({
           token: this.token,

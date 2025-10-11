@@ -11,13 +11,14 @@ import {
 } from '../selectors';
 import { Roles, Status } from '../../../shared/token.provider';
 import { createUser } from '../actions';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'admin-users-create',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent],
+  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent, RouterLink],
 })
 export class AdminUsersCreateComponent {
   loading$: Observable<boolean>;

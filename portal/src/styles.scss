@@ -154,3 +154,21 @@ th {
   background-color: var(--theme-primary);
   color: white;
 }
+
+.back-link {
+  display: block;
+  text-decoration: none;
+  background-color: #c5e1df;
+  border: solid 1px #0f403b;
+  border-radius: 0.5rem;
+  padding: 0rem 0.5rem 0rem 0.25rem;
+  margin-bottom: 1rem;
+  max-width: max-content;
+  color: #0f403b;
+
+  &::before {
+    content: "<";
+    padding-right: 0.25rem;
+    color: #0f403b;
+  }
+}

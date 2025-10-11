@@ -7,7 +7,7 @@ import {
   getRegularShifts,
   getTimes,
 } from '../actions';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { daysOfWeek, Job, RegularShift, Time, Wrapper } from '../state';
 import { selectJobs, selectRegularShifts, selectTimes } from '../selectors';
@@ -26,6 +26,7 @@ import { AdminRotaRegularShiftDayComponent } from './day.component';
     SpinnerComponent,
     FormsModule,
     AdminRotaRegularShiftDayComponent,
+    RouterLink,
   ],
 })
 export class AdminUsersUpdateRegularShiftsComponent implements OnInit {

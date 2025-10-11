@@ -12,14 +12,14 @@ import {
 } from '../selectors';
 import { Roles, Status } from '../../../shared/token.provider';
 import { getUsers, updateUser } from '../actions';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'admin-users-update-info',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent],
+  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent, RouterLink],
 })
 export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
   userId: number = 0;

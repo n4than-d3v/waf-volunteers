@@ -13,6 +13,8 @@ import { AdminUsersCreateComponent } from './admin/users/create/component';
 import { AdminRotaComponent } from './admin/rota/component';
 import { AdminRotaConfigurationComponent } from './admin/rota/configuration/component';
 import { AdminUsersUpdateRegularShiftsComponent } from './admin/rota/regular-shifts/component';
+import { AdminRotaViewAttendanceComponent } from './admin/rota/view-attendance/component';
+import { AdminUsersCreateCsvComponent } from './admin/users/create-csv/component';
 
 export const routes: Routes = [
   {
@@ -65,6 +67,7 @@ export const routes: Routes = [
             path: 'create',
             component: AdminUsersCreateComponent,
           },
+          { path: 'create-bulk', component: AdminUsersCreateCsvComponent },
           {
             path: ':userId',
             children: [
@@ -82,6 +85,7 @@ export const routes: Routes = [
         children: [
           { path: '', pathMatch: 'full', component: AdminRotaComponent },
           { path: 'configuration', component: AdminRotaConfigurationComponent },
+          { path: 'attendance', component: AdminRotaViewAttendanceComponent },
         ],
       },
     ],

@@ -14,6 +14,8 @@ public class Account : Entity
 
     #endregion
 
+    public DateOnly CreationDate { get; private set; }
+
     #region Encrypted properties
 
     #region Personal details
@@ -40,12 +42,13 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateOnly creationDate, string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
         Status = status;
         Roles = roles;
+        CreationDate = creationDate;
         FirstName = firstName;
         LastName = lastName;
         Email = email;

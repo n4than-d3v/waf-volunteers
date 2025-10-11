@@ -35,7 +35,7 @@ export class AdminUsersCreateComponent {
     city: new FormControl(''),
     county: new FormControl(''),
     postcode: new FormControl(''),
-    roleVolunteer: new FormControl(false),
+    roleVolunteer: new FormControl(true),
     roleReception: new FormControl(false),
     roleTeamLeader: new FormControl(false),
     roleVet: new FormControl(false),

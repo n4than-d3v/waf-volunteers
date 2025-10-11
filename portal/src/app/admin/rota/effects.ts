@@ -26,6 +26,9 @@ import {
   getRegularShifts,
   getRegularShiftsError,
   getRegularShiftsSuccess,
+  getReports,
+  getReportsError,
+  getReportsSuccess,
   getRequirements,
   getRequirementsError,
   getRequirementsSuccess,
@@ -53,6 +56,7 @@ import {
   RegularShift,
   Requirement,
   Time,
+  Report,
 } from './state';
 
 @Injectable()
@@ -322,6 +326,20 @@ export class RotaManagementEffects {
             end: action.end,
           })
         )
+      )
+    )
+  );
+
+  getReports$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getReports),
+      switchMap((action) =>
+        this.http
+          .get<Report[]>(`rota/reports/${action.start}/${action.end}`)
+          .pipe(
+            map((reports) => getReportsSuccess({ reports })),
+            catchError(() => of(getReportsError()))
+          )
       )
     )
   );

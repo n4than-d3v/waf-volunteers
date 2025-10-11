@@ -40,7 +40,7 @@ public class EncryptionService : IEncryptionService
         using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
         using (var streamWriter = new StreamWriter(cryptoStream))
         {
-            streamWriter.Write(value);
+            streamWriter.Write((value ?? string.Empty).Trim());
         }
         var encrypted = memoryStream.ToArray();
         return Convert.ToBase64String(encrypted);

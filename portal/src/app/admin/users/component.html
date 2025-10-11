@@ -1,6 +1,13 @@
 <h1>Users</h1>
 
-<a [routerLink]="'./create'" class="button button--primary">Create new user</a>
+<div class="buttons">
+  <a [routerLink]="'./create'" class="button button--primary"
+    >Create new user</a
+  >
+  <a [routerLink]="'./create-bulk'" class="button button--secondary"
+    >Create users (bulk)</a
+  >
+</div>
 
 @if (loading$ | async) {
 <spinner></spinner>

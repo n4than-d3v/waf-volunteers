@@ -6,6 +6,7 @@ import {
   RegularShift,
   Requirement,
   Time,
+  Report,
 } from './state';
 
 export const getJobs = createAction('[Rota] Get Jobs');
@@ -157,3 +158,16 @@ export const denyShiftSuccess = createAction(
   }>()
 );
 export const denyShiftError = createAction('[Rota] Admin Deny Shift: Error');
+
+export const getReports = createAction(
+  '[Rota] Get Reports',
+  props<{
+    start: string;
+    end: string;
+  }>()
+);
+export const getReportsSuccess = createAction(
+  '[Rota] Get Reports: Success',
+  props<{ reports: Report[] }>()
+);
+export const getReportsError = createAction('[Rota] Get Reports: Error');

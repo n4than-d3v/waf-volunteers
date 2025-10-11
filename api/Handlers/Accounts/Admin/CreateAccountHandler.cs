@@ -55,6 +55,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             password: "-",
             AccountStatus.Active,
             request.Roles,
+            DateOnly.FromDateTime(DateTime.UtcNow),
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Email ?? string.Empty, salt),

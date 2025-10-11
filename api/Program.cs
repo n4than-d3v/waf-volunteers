@@ -281,6 +281,10 @@ apiRota.MapPost("/user/{id:int}/shifts/deny", (IMediator mediator, int id, DenyS
     .AddNote("Admin denies a shift for user")
     .RequireAuthorization(adminPolicy);
 
+apiRota.MapGet("/reports/{start:datetime}/{end:datetime}", (IMediator mediator, DateOnly start, DateOnly end) => mediator.Send(new ViewAttendance { Start = start, End = end }))
+    .AddNote("Admin views the attendance report")
+    .RequireAuthorization(adminPolicy);
+
 var apiNotify = api.MapGroup("/notify");
 apiNotify.MapPost("/not-confirmed-next-shift", (IMediator mediator) => mediator.Send(new NotConfirmedNextShift()))
     .AddNote("Send notification if not confirmed next shift");

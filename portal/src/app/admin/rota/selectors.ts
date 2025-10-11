@@ -33,3 +33,8 @@ export const selectAdminRota = createSelector(
   selectRotaManagementState,
   (state) => state.rota
 );
+
+export const selectAdminReports = createSelector(
+  selectRotaManagementState,
+  (state) => state.reports
+);

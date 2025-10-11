@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Profile } from './state';
+import { DayOfWeek } from '../rota/state';
 
 export const getUsers = createAction('[Users] Get users');
 export const getUsersSuccess = createAction(

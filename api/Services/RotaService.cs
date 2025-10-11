@@ -11,6 +11,7 @@ public interface IRotaService
 {
     Task<IReadOnlyList<Day>> GetRotaAsync(DateOnly start, DateOnly end);
     Task<UserRota> GetVolunteerRotaAsync(DateOnly now, int userId);
+    Task<IReadOnlyList<Report>> GetReportAsync(DateOnly start, DateOnly end);
 }
 
 public class RotaService : IRotaService
@@ -25,6 +26,27 @@ public class RotaService : IRotaService
         _repository = repository;
         _encryptionService = encryptionService;
         _settings = settings.Value;
+    }
+
+    public async Task<IReadOnlyList<Report>> GetReportAsync(DateOnly start, DateOnly end)
+    {
+        var days = await GetRotaAsync(start, end);
+
+        return [.. days
+            .SelectMany(d => d.Shifts)
+            .SelectMany(s => s.Jobs)
+            .SelectMany(j => j.Volunteers)
+            .GroupBy(v => new { v.Id, v.FullName })
+            .Select(g => new Report
+            {
+                Id = g.Key.Id,
+                FullName = g.Key.FullName,
+                RegularUnresponded = g.Count(v => v.IsRegularShift && (v.Confirmed == null)),
+                RegularYes = g.Count(v => v.IsRegularShift && (v.Confirmed == true)),
+                RegularNo = g.Count(v => v.IsRegularShift && (v.Confirmed == false)),
+                UrgentYes = g.Count(v => (v.IsRegularShift == false) && (v.Confirmed == true))
+            })
+            .OrderBy(r => r.FullName)];
     }
 
     public async Task<IReadOnlyList<Day>> GetRotaAsync(DateOnly start, DateOnly end)
@@ -177,6 +199,16 @@ public class RotaService : IRotaService
 }
 
 #region Admin
+
+public class Report
+{
+    public int Id { get; set; }
+    public string FullName { get; set; }
+    public int RegularUnresponded { get; set; }
+    public int RegularYes { get; set; }
+    public int RegularNo { get; set; }
+    public int UrgentYes { get; set; }
+}
 
 public class Day
 {

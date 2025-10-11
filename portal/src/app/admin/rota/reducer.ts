@@ -19,6 +19,9 @@ import {
   getRegularShifts,
   getRegularShiftsError,
   getRegularShiftsSuccess,
+  getReports,
+  getReportsError,
+  getReportsSuccess,
   getRequirements,
   getRequirementsError,
   getRequirementsSuccess,
@@ -214,5 +217,17 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
   on(denyShiftError, (state) => ({
     ...state,
     rota: { ...state.rota, loading: false, error: true },
+  })),
+  on(getReports, (state) => ({
+    ...state,
+    reports: { ...state.reports, loading: true, error: false },
+  })),
+  on(getReportsSuccess, (state, { reports }) => ({
+    ...state,
+    reports: { ...state.reports, loading: false, data: reports, error: false },
+  })),
+  on(getReportsError, (state) => ({
+    ...state,
+    reports: { ...state.reports, loading: false, error: true },
   }))
 );

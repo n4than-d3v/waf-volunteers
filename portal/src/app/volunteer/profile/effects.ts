@@ -48,7 +48,7 @@ export class ProfileEffects {
       switchMap((action) => {
         const json = action.subscription.toJSON();
         const subscription = {
-          endpoint: json.endpoint,
+          ...json,
           ...json.keys,
         };
         return this.http

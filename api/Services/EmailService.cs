@@ -106,7 +106,7 @@ $"""
     public static Email ResetPasswordSuccess(string firstName, string lastName, string username, string email) =>
         new(firstName, lastName, email, "WAF - Reset password success", Format.Replace(ContentPlaceholder,
 $"""
-<p>Hi {firstName},</p>
+<p>Hi {firstName} {lastName},</p>
 <br />
 <p>Thank you for verifying your email address, your password has been successfully reset.</p>
 <p>As a reminder, your username for logging in is: "<strong>{username}</strong>".</p>

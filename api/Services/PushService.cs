@@ -17,7 +17,7 @@ public class PushNotification
 
 public interface IPushService
 {
-    Task Send(PushSubscription subscription, PushNotification message);
+    Task<bool> Send(PushSubscription subscription, PushNotification message);
 }
 
 public class PushService : IPushService
@@ -29,7 +29,7 @@ public class PushService : IPushService
         _settings = settings.Value;
     }
 
-    public async Task Send(PushSubscription subscription, PushNotification message)
+    public async Task<bool> Send(PushSubscription subscription, PushNotification message)
     {
         var vapidDetails = new VapidDetails($"mailto:{_settings.Email}", _settings.PublicKey, _settings.PrivateKey);
 
@@ -40,10 +40,11 @@ public class PushService : IPushService
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             }), vapidDetails);
+            return true;
         }
-        catch (WebPushException exception)
+        catch
         {
-            Console.WriteLine("Http STATUS code" + exception.StatusCode);
+            return false;
         }
     }
 }

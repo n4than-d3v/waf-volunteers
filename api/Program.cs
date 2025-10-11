@@ -40,6 +40,9 @@ builder.Services.Configure<JwtSettings>(
 builder.Services.Configure<PushSettings>(
     builder.Configuration.GetSection("Push")
 );
+builder.Services.Configure<RotaSettings>(
+    builder.Configuration.GetSection("Rota")
+);
 
 var jwtSettings = builder.Configuration
     .GetSection("Jwt")
@@ -92,6 +95,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<IStringGenerator, StringGenerator>();
 builder.Services.AddTransient<IUserContext, UserContext>();
 builder.Services.AddTransient<IPushService, PushService>();
+builder.Services.AddTransient<IRotaService, RotaService>();
 
 builder.Services.AddMediatR(options =>
 {
@@ -147,41 +151,6 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     await context.Database.MigrateAsync();
-
-    if (!await context.Requirements.AnyAsync())
-    {
-        var daysOfTheWeek = new List<DayOfWeek>()
-        {
-            DayOfWeek.Monday,
-            DayOfWeek.Tuesday,
-            DayOfWeek.Wednesday,
-            DayOfWeek.Thursday,
-            DayOfWeek.Friday,
-            DayOfWeek.Saturday,
-            DayOfWeek.Sunday
-        };
-
-        var times = await context.TimeRanges.ToArrayAsync();
-        var jobs = await context.Jobs.ToArrayAsync();
-
-        foreach (var dayOfWeek in daysOfTheWeek)
-        {
-            foreach (var time in times)
-            {
-                foreach (var job in jobs)
-                {
-                    context.Requirements.Add(new Api.Database.Entities.Rota.Requirement
-                    {
-                        Day = dayOfWeek,
-                        Time = time,
-                        Job = job,
-                        Minimum = 0
-                    });
-                }
-            }
-        }
-        await context.SaveChangesAsync();
-    }
 }
 
 if (app.Environment.IsDevelopment())

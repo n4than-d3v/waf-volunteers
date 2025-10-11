@@ -5,10 +5,13 @@ using Api.Database.Entities.Account;
 using Api.Services;
 using MediatR;
 using Microsoft.Extensions.Options;
+using Microsoft.Graph.Models;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using WebPush;
 
 namespace Api.Handlers.Accounts;
 
@@ -22,13 +25,15 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 {
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
+    private readonly IPushService _pushService;
     private readonly IHashService _hashService;
     private readonly JwtSettings _settings;
 
-    public LoginHandler(IOptions<JwtSettings> settings, IDatabaseRepository repository, IEncryptionService encryptionService, IHashService hashService)
+    public LoginHandler(IOptions<JwtSettings> settings, IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService, IHashService hashService)
     {
         _repository = repository;
         _encryptionService = encryptionService;
+        _pushService = pushService;
         _hashService = hashService;
         _settings = settings.Value;
     }
@@ -36,7 +41,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
     public async Task<IResult> Handle(Login request, CancellationToken cancellationToken)
     {
         var username = request.Username.ToLowerInvariant();
-        var user = await _repository.Get<Account>(x => x.Username == username, tracking: false);
+        var user = await _repository.Get<Account>(x => x.Username == username);
         if (user == null) return Results.BadRequest();
 
         var password = _hashService.Hash(request.Password);
@@ -47,7 +52,27 @@ public class LoginHandler : IRequestHandler<Login, IResult>
         var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
         var email = _encryptionService.Decrypt(user.Email, user.Salt);
 
-        var token = GenerateToken(user.Id, firstName, lastName, email, (int) user.Roles);
+        var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
+
+        if (!string.IsNullOrWhiteSpace(subscription))
+        {
+            var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
+            var pushSubscriptionStillValid = await _pushService.Send(push, new PushNotification
+            {
+                Title = "Welcome back",
+                Image = "images/notifications/header.png"
+            });
+
+            // Invalidate push subscription if it fails, requiring users to re-subscribe
+            if (!pushSubscriptionStillValid)
+            {
+                subscription = _encryptionService.Encrypt(string.Empty, user.Salt);
+                user.Subscribe(subscription);
+                await _repository.SaveChangesAsync();
+            }
+        }
+
+        var token = GenerateToken(user.Id, firstName, lastName, email, (int)user.Roles);
 
         return Results.Ok(new { token });
     }

@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from '@angular/router';
 import { TokenProvider } from './shared/token.provider';
 
 @Component({
@@ -11,7 +16,7 @@ import { TokenProvider } from './shared/token.provider';
 export class AppComponent {
   year: number = new Date().getFullYear();
 
-  constructor(private tokenProvider: TokenProvider) {}
+  constructor(private tokenProvider: TokenProvider, public router: Router) {}
 
   signOut() {
     this.tokenProvider.setToken('');

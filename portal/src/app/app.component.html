@@ -3,11 +3,13 @@
     <a class="logo" [routerLink]="'./'">
       <img src="images/header.svg" alt="Wildlife Aid Foundation" />
     </a>
+    @if (!router.url.includes('/login')){
     <div class="sign-out">
       <a [routerLink]="'./'" (click)="signOut()">
         <img src="images/sign-out.svg" alt="Sign out" />
       </a>
     </div>
+    }
   </header>
   <main>
     <router-outlet />

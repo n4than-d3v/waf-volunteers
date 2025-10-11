@@ -93,7 +93,7 @@
         />
         <button class="button button--warning" (click)="deny()">Confirm</button>
       </div>
-      } @else {
+      } @else if (shift.confirmed || shift.others.length) {
       <div class="people-coming">
         <strong>Who's coming?</strong>
         <p>
@@ -174,7 +174,7 @@
         />
         <button class="button button--warning" (click)="deny()">Confirm</button>
       </div>
-      } @else {
+      } @else if (shift.confirmed || shift.others.length) {
       <div class="people-coming">
         <strong>Who's coming?</strong>
         <p>

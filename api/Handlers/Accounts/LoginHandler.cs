@@ -52,26 +52,6 @@ public class LoginHandler : IRequestHandler<Login, IResult>
         var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
         var email = _encryptionService.Decrypt(user.Email, user.Salt);
 
-        var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
-
-        if (!string.IsNullOrWhiteSpace(subscription))
-        {
-            var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
-            var pushSubscriptionStillValid = await _pushService.Send(push, new PushNotification
-            {
-                Title = "Welcome back",
-                Image = "images/notifications/header.png"
-            });
-
-            // Invalidate push subscription if it fails, requiring users to re-subscribe
-            if (!pushSubscriptionStillValid)
-            {
-                subscription = _encryptionService.Encrypt(string.Empty, user.Salt);
-                user.Subscribe(subscription);
-                await _repository.SaveChangesAsync();
-            }
-        }
-
         var token = GenerateToken(user.Id, firstName, lastName, email, (int)user.Roles);
 
         return Results.Ok(new { token });

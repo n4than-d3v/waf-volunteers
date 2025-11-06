@@ -36,7 +36,7 @@ public class PushService : IPushService
         var webPushClient = new WebPushClient();
         try
         {
-            await webPushClient.SendNotificationAsync(subscription, JsonConvert.SerializeObject(message, new JsonSerializerSettings
+            await webPushClient.SendNotificationAsync(subscription, JsonConvert.SerializeObject(new { notification = message }, new JsonSerializerSettings
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             }), vapidDetails);

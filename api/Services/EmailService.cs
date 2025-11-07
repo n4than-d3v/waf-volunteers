@@ -97,10 +97,14 @@ $"""
 <p>Hi {firstName} {lastName},</p>
 <br />
 <p>Your Wildlife Aid volunteer account has been created.</p>
+<p>Please follow the installation instructions provided here:<br />
+<a href="{HostConstants.BaseUrl}/install">{HostConstants.BaseUrl}/install</a>
+</p>
+<br />
+<p>Once you have installed the application, please return to this email and click the link below.</p>
+<p><a href="{HostConstants.BaseUrl}/reset-password?token={token}">Click here</a> to set your password.</p>
 <p>Your username for logging in is: "<strong>{username}</strong>".</p>
-<p>Please <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here</a> to set your password.</p>
-<p>This link will expire in 24 hours.</p>
-<p>If you're unable to set your password within this timeframe, <a href="{HostConstants.BaseUrl}/forgot-password">click here</a> to request a password reset.</p>
+<p>Note that this link will expire in 24 hours; If you're unable to set your password within this timeframe, <a href="{HostConstants.BaseUrl}/forgot-password">click here</a> to request a password reset.</p>
 """));
 
     public static Email ResetPassword(string firstName, string lastName, string username, string email, string token) =>

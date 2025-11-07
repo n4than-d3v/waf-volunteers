@@ -146,6 +146,10 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.newTimeName = '';
       this.newTimeStart = '';
       this.newTimeEnd = '';
+      for (const time of this.times) {
+        if (time.start.split(':').length == 2) time.start += ':00';
+        if (time.end.split(':').length == 2) time.end += ':00';
+      }
       this.store.dispatch(
         updateTimes({
           times: this.times,

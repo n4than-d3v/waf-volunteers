@@ -5,13 +5,10 @@ using Api.Database.Entities.Account;
 using Api.Services;
 using MediatR;
 using Microsoft.Extensions.Options;
-using Microsoft.Graph.Models;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WebPush;
 
 namespace Api.Handlers.Accounts;
 
@@ -25,15 +22,13 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 {
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
-    private readonly IPushService _pushService;
     private readonly IHashService _hashService;
     private readonly JwtSettings _settings;
 
-    public LoginHandler(IOptions<JwtSettings> settings, IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService, IHashService hashService)
+    public LoginHandler(IOptions<JwtSettings> settings, IDatabaseRepository repository, IEncryptionService encryptionService, IHashService hashService)
     {
         _repository = repository;
         _encryptionService = encryptionService;
-        _pushService = pushService;
         _hashService = hashService;
         _settings = settings.Value;
     }

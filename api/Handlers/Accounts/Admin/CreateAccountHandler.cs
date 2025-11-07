@@ -72,7 +72,11 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
         _repository.Create(account);
         await _repository.SaveChangesAsync();
 
-        await _mediator.Send(new RequestPasswordReset { Username = username }, cancellationToken);
+        await _mediator.Send(new RequestPasswordReset
+        {
+            Username = username,
+            IsAccountNewlyCreated = true
+        }, cancellationToken);
 
         return Results.Created();
     }

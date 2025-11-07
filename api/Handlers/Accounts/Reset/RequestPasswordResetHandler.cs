@@ -1,5 +1,4 @@
 ﻿using Api.Database;
-using Api.Database.Entities;
 using Api.Database.Entities.Account;
 using Api.Services;
 using MediatR;
@@ -9,12 +8,14 @@ namespace Api.Handlers.Accounts.Reset;
 public class RequestPasswordReset : IRequest<IResult>
 {
     public string Username { get; set; }
+    internal bool IsAccountNewlyCreated { get; set; }
 }
 
 public class RequestPasswordResetHandler : IRequestHandler<RequestPasswordReset, IResult>
 {
     private const int TokenLength = 256;
     private const int TokenLifetimeSeconds = 60 * 60 * 2; // 2 hours
+    private const int TokenLifetimeSecondsWhenNewlyCreated = 60 * 60 * 24; // 24 hours
 
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
@@ -43,16 +44,20 @@ public class RequestPasswordResetHandler : IRequestHandler<RequestPasswordReset,
 
         var salt = _encryptionService.GenerateSalt();
 
+        int lifetimeSeconds = request.IsAccountNewlyCreated ? TokenLifetimeSecondsWhenNewlyCreated : TokenLifetimeSeconds;
+
         _repository.Create(new ResetPasswordRequest
         {
             Account = user,
             Token = _encryptionService.Encrypt(token, salt),
             Salt = salt,
-            Expires = DateTime.UtcNow.AddSeconds(TokenLifetimeSeconds)
+            Expires = DateTime.UtcNow.AddSeconds(lifetimeSeconds)
         });
         await _repository.SaveChangesAsync();
 
-        await _emailService.SendEmailAsync(Email.ResetPassword(firstName, lastName, username, email, token));
+        await _emailService.SendEmailAsync(request.IsAccountNewlyCreated
+            ? Email.AccountCreated(firstName, lastName, username, email, token)
+            : Email.ResetPassword(firstName, lastName, username, email, token));
 
         return Results.NoContent();
     }

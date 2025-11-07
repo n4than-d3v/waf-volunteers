@@ -96,7 +96,7 @@ public class Email
 $"""
 <p>Hi {firstName} {lastName},</p>
 <br />
-<p>Your account on the Wildlife Aid application has been created.</p>
+<p>Your Wildlife Aid volunteer account has been created.</p>
 <p>Your username for logging in is: "<strong>{username}</strong>".</p>
 <p>Please <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here</a> to set your password.</p>
 <p>This link will expire in 24 hours.</p>
@@ -110,7 +110,6 @@ $"""
 <br />
 <p>We have received a request to reset your password.</p>
 <p>Please <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here</a> to reset your password.</p>
-<p>As a reminder, your username for logging in is: "<strong>{username}</strong>".</p>
 <p>This link will expire in 2 hours.</p>
 <p>If this was not you, contact the office.</p>
 """));

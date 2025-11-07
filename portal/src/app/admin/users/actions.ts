@@ -19,5 +19,8 @@ export const createUser = createAction(
   '[Users] Create user',
   props<{ user: Profile }>()
 );
-export const createUserSuccess = createAction('[Users] Create user success');
+export const createUserSuccess = createAction(
+  '[Users] Create user success',
+  props<{ id: string }>()
+);
 export const createUserError = createAction('[Users] Create user error');

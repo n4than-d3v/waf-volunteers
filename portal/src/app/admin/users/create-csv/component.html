@@ -9,11 +9,16 @@
   This is the expected format:
   <i>
     username, firstName, lastName, email, phone, lineOne, lineTwo, city, county,
-    postcode
+    postcode, regularShifts
   </i>
 </p>
 <p>
   The first 4 fields are mandatory: <i>username, firstName, lastName, email</i>
+</p>
+<p>
+  Regular shifts are structured as follows:
+  <i>day/time/job|day/time/job_...</i> e.g.
+  <i>Thursday/Evening/Animal Husbandry|Monday|Morning|Team Leader</i>
 </p>
 <p>Users will be assigned the 'Volunteer' role automatically.</p>
 <textarea [(ngModel)]="csv"></textarea>

@@ -3,7 +3,7 @@ export interface ProfilesState {
   profiles: Profile[] | null;
   error: boolean;
   updated: boolean;
-  created: boolean;
+  created: string | null;
 }
 
 export interface Profile {
@@ -30,5 +30,5 @@ export const initialProfilesState: ProfilesState = {
   profiles: null,
   error: false,
   updated: false,
-  created: false,
+  created: null,
 };

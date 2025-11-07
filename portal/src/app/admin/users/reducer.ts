@@ -53,19 +53,19 @@ export const profilesReducer = createReducer<ProfilesState>(
   on(createUser, (state) => ({
     ...state,
     loading: true,
-    created: false,
+    created: null,
     error: false,
   })),
-  on(createUserSuccess, (state) => ({
+  on(createUserSuccess, (state, action) => ({
     ...state,
     loading: false,
-    created: true,
+    created: action.id,
     error: false,
   })),
   on(createUserError, (state) => ({
     ...state,
     loading: false,
-    created: false,
+    created: null,
     error: true,
   }))
 );

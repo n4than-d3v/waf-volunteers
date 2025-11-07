@@ -78,6 +78,6 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             IsAccountNewlyCreated = true
         }, cancellationToken);
 
-        return Results.Created();
+        return Results.Created(string.Empty, new { id = account.Id });
     }
 }

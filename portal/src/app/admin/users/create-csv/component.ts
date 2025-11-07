@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Action, Store } from '@ngrx/store';
 import { createUser } from '../actions';
@@ -11,6 +11,9 @@ import {
 } from '../selectors';
 import { Subscription } from 'rxjs';
 import { RouterLink } from '@angular/router';
+import { selectJobs, selectTimes } from '../../rota/selectors';
+import { daysOfWeek, Job, Time } from '../../rota/state';
+import { addRegularShift, getJobs, getTimes } from '../../rota/actions';
 
 type CreateAction = {
   user: Profile;
@@ -23,7 +26,7 @@ type CreateAction = {
   styleUrls: ['./component.scss'],
   imports: [FormsModule, RouterLink],
 })
-export class AdminUsersCreateCsvComponent implements OnDestroy {
+export class AdminUsersCreateCsvComponent implements OnInit, OnDestroy {
   index = 0;
   actions: CreateAction[] = [];
   current: CreateAction | null = null;
@@ -37,21 +40,40 @@ export class AdminUsersCreateCsvComponent implements OnDestroy {
 
   subscriptions: Subscription[];
 
+  regularShifts: [string, string][] = [];
+  times: Time[] = [];
+  jobs: Job[] = [];
+
   constructor(private store: Store) {
     this.subscriptions = [
+      this.store
+        .select(selectJobs)
+        .subscribe((jobs) => (this.jobs = structuredClone(jobs.data))),
+      this.store
+        .select(selectTimes)
+        .subscribe((times) => (this.times = structuredClone(times.data))),
       this.store.select(selectProfilesError).subscribe((error) => {
         if (!error) return;
         if (!this.current) return;
         this.error.push(this.current);
         this.next();
       }),
-      this.store.select(selectProfileCreateSuccess).subscribe((success) => {
-        if (!success) return;
+      this.store.select(selectProfileCreateSuccess).subscribe((accountId) => {
+        if (!accountId) return;
         if (!this.current) return;
+        this.tryCreateRegularShifts(
+          this.current.user.username,
+          Number(accountId)
+        );
         this.success.push(this.current);
         this.next();
       }),
     ];
+  }
+
+  ngOnInit() {
+    this.store.dispatch(getJobs());
+    this.store.dispatch(getTimes());
   }
 
   continue() {
@@ -59,6 +81,7 @@ export class AdminUsersCreateCsvComponent implements OnDestroy {
       const split = user.split(',');
       const getIndex = (index: number) =>
         split.length > index ? split[index] : '';
+      this.regularShifts.push([getIndex(0), getIndex(10)]);
       return createUser({
         user: {
           id: -1,
@@ -91,6 +114,34 @@ export class AdminUsersCreateCsvComponent implements OnDestroy {
     this.saving = true;
     this.index = -1;
     this.next();
+  }
+
+  private tryCreateRegularShifts(username: string, userId: number) {
+    const user = this.regularShifts.find((x) => x[0] === username);
+    if (!user) return;
+    if (!user[1]) return;
+    const regularShifts = user[1].split('|');
+    for (const regularShift of regularShifts) {
+      const split = regularShift.split('/');
+      const day = daysOfWeek.find((x) => x.name === split[0])?.value || -1;
+      const timeId = this.times.find((x) => x.name === split[1])?.id || -1;
+      const jobId = this.jobs.find((x) => x.name === split[2])?.id || -1;
+      this.store.dispatch(
+        addRegularShift({
+          userId,
+          regularShift: {
+            day,
+            jobId,
+            timeId,
+
+            // Unused properties
+            job: { id: 0, name: '' },
+            time: { id: 0, name: '', start: '', end: '' },
+            id: -1,
+          },
+        })
+      );
+    }
   }
 
   private next() {

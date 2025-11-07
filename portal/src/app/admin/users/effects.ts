@@ -50,10 +50,12 @@ export class ProfilesEffects {
     this.actions$.pipe(
       ofType(createUser),
       switchMap((action) => {
-        return this.http.post(`account/users`, action.user).pipe(
-          map(() => createUserSuccess()),
-          catchError(() => of(createUserError()))
-        );
+        return this.http
+          .post<{ id: string }>(`account/users`, action.user)
+          .pipe(
+            map((response) => createUserSuccess(response)),
+            catchError(() => of(createUserError()))
+          );
       })
     )
   );

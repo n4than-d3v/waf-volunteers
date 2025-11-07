@@ -32,6 +32,7 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
             var account = new ResponseAccount
             {
                 Id = user.Id,
+                Username = user.Username,
                 FirstName = _encryptionService.Decrypt(user.FirstName, user.Salt),
                 LastName = _encryptionService.Decrypt(user.LastName, user.Salt),
                 Email = _encryptionService.Decrypt(user.Email, user.Salt),

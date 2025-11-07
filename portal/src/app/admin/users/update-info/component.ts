@@ -31,6 +31,7 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
   subscription: Subscription | null = null;
 
   form = new FormGroup({
+    username: new FormControl(''),
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     email: new FormControl(''),
@@ -62,6 +63,7 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
         const profile = profiles.find((p) => p.id === this.userId);
         if (!profile) return;
         this.form.patchValue({
+          username: profile.username,
           firstName: profile.firstName,
           lastName: profile.lastName,
           email: profile.email,

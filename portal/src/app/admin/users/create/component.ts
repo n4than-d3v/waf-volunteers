@@ -22,7 +22,7 @@ import { RouterLink } from '@angular/router';
 })
 export class AdminUsersCreateComponent {
   loading$: Observable<boolean>;
-  created$: Observable<boolean>;
+  created$: Observable<string | null>;
   error$: Observable<boolean>;
 
   form = new FormGroup({

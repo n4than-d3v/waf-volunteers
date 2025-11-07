@@ -15,6 +15,7 @@ import { AdminRotaConfigurationComponent } from './admin/rota/configuration/comp
 import { AdminUsersUpdateRegularShiftsComponent } from './admin/rota/regular-shifts/component';
 import { AdminRotaViewAttendanceComponent } from './admin/rota/view-attendance/component';
 import { AdminUsersCreateCsvComponent } from './admin/users/create-csv/component';
+import { InstallationComponent } from './installation/component';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,10 @@ export const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent,
+  },
+  {
+    path: 'install',
+    component: InstallationComponent,
   },
   {
     path: 'volunteer',

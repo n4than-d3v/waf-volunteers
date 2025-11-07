@@ -8,18 +8,7 @@
 } @if (updated$ | async) {
 <div class="success">User updated</div>
 }
-
 <form [formGroup]="form">
-  <div class="field">
-    <label for="username">Username</label>
-    <input
-      type="text"
-      id="username"
-      name="username"
-      formControlName="username"
-      [readonly]="true"
-    />
-  </div>
   <div class="field">
     <label for="firstName">First name</label>
     <input

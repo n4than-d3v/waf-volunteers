@@ -20,8 +20,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Email</th>
-      <th>Phone</th>
+      <th>Login</th>
       <th>Notifications</th>
       <th>Roles</th>
       <th>Status</th>
@@ -32,8 +31,7 @@
     @for (user of users; track user.id){
     <tr>
       <td>{{ user.firstName }} {{ user.lastName }}</td>
-      <td>{{ user.email }}</td>
-      <td>{{ user.phone }}</td>
+      <td>{{ user.username }}</td>
       <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
       <!--
       <td>
@@ -47,8 +45,6 @@
         <admin-users-status [status]="user.status" />
       </td>
       <td>
-        Update:
-
         <a [routerLink]="'./' + user.id + '/update-info'">Details</a>
         |
         <a [routerLink]="'./' + user.id + '/update-regular-shifts'"

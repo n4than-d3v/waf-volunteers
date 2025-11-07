@@ -19,8 +19,8 @@
 <table>
   <thead>
     <tr>
-      <th>Name</th>
       <th>Login</th>
+      <th>Name</th>
       <th>Notifications</th>
       <th>Roles</th>
       <th>Status</th>
@@ -30,8 +30,8 @@
   <tbody>
     @for (user of users; track user.id){
     <tr>
-      <td>{{ user.firstName }} {{ user.lastName }}</td>
       <td>{{ user.username }}</td>
+      <td>{{ user.firstName }} {{ user.lastName }}</td>
       <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
       <!--
       <td>

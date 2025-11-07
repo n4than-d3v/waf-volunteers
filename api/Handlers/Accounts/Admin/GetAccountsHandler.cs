@@ -25,43 +25,58 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
     {
         var users = await _repository.GetAll<Account>(x => true, tracking: false);
 
-        var userDetails = new List<dynamic>();
+        var accounts = new List<ResponseAccount>();
 
         foreach (var user in users)
         {
-            var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
-            var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
-            var email = _encryptionService.Decrypt(user.Email, user.Salt);
-            var phone = _encryptionService.Decrypt(user.Phone, user.Salt);
-            var lineOne = _encryptionService.Decrypt(user.AddressLineOne, user.Salt);
-            var lineTwo = _encryptionService.Decrypt(user.AddressLineTwo, user.Salt);
-            var city = _encryptionService.Decrypt(user.AddressCity, user.Salt);
-            var county = _encryptionService.Decrypt(user.AddressCounty, user.Salt);
-            var postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt);
-            var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
-
-            userDetails.Add(new
+            var account = new ResponseAccount
             {
-                id = user.Id,
-                username = user.Username,
-                firstName,
-                lastName,
-                email,
-                phone,
-                address = new
+                Id = user.Id,
+                FirstName = _encryptionService.Decrypt(user.FirstName, user.Salt),
+                LastName = _encryptionService.Decrypt(user.LastName, user.Salt),
+                Email = _encryptionService.Decrypt(user.Email, user.Salt),
+                Phone = _encryptionService.Decrypt(user.Phone, user.Salt),
+                Subscribed = !string.IsNullOrWhiteSpace(_encryptionService.Decrypt(user.PushSubscription, user.Salt)),
+                Roles = (int)user.Roles,
+                Status = (int)user.Status,
+                Address = new()
                 {
-                    lineOne,
-                    lineTwo,
-                    city,
-                    county,
-                    postcode
-                },
-                subscribed = !string.IsNullOrWhiteSpace(subscription),
-                roles = (int)user.Roles,
-                status = (int)user.Status
-            });
+                    LineOne = _encryptionService.Decrypt(user.AddressLineOne, user.Salt),
+                    LineTwo = _encryptionService.Decrypt(user.AddressLineTwo, user.Salt),
+                    City = _encryptionService.Decrypt(user.AddressCity, user.Salt),
+                    County = _encryptionService.Decrypt(user.AddressCounty, user.Salt),
+                    Postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt)
+                }
+            };
+            accounts.Add(account);
         }
 
-        return Results.Ok(userDetails);
+        return Results.Ok(accounts
+            .OrderBy(x => x.FirstName)
+            .ThenBy(x => x.LastName)
+        );
+    }
+
+    public class ResponseAccount
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public ResponseAccountAddress Address { get; set; }
+        public bool Subscribed { get; set; }
+        public int Roles { get; set; }
+        public int Status { get; set; }
+
+        public class ResponseAccountAddress
+        {
+            public string LineOne { get; set; }
+            public string LineTwo { get; set; }
+            public string City { get; set; }
+            public string County { get; set; }
+            public string Postcode { get; set; }
+        }
     }
 }

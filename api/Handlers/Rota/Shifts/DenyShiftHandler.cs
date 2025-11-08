@@ -109,8 +109,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                     await _pushService.Send(push, new PushNotification
                     {
                         Title = "Urgent! Last-minute cancellation",
-                        Body = message,
-                        Image = "images/notifications/header.png"
+                        Body = message
                     });
                 }
             }
@@ -123,8 +122,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
             await _pushService.Send(push, new PushNotification
             {
                 Title = "Shift cancellation",
-                Body = $"You have cancelled your shift for {request.Date.DayOfWeek} {time.Name} on {request.Date:dd MMMM yyyy}",
-                Image = "images/notifications/header.png"
+                Body = $"You have cancelled your shift for {request.Date.DayOfWeek} {time.Name} on {request.Date:dd MMMM yyyy}"
             });
         }
 

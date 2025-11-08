@@ -51,8 +51,7 @@ public class SubscribeHandler : IRequestHandler<Subscribe, IResult>
         await _pushService.Send(subscription!, new PushNotification
         {
             Title = "Notifications enabled",
-            Body = "Thank you for enabling notifications",
-            Image = "images/notifications/header.png"
+            Body = "Thank you for enabling notifications"
         });
 
         return Results.NoContent();

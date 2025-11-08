@@ -67,8 +67,7 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
                 await _pushService.Send(push, new PushNotification
                 {
                     Title = "Urgent shifts",
-                    Body = $"We need your help on {string.Join(" and ", notify)}. Please can you spare a few hours to attend an urgent shift?",
-                    Image = "images/notifications/header.png"
+                    Body = $"We need your help on {string.Join(" and ", notify)}. Please can you spare a few hours to attend an urgent shift?"
                 });
             }
         }

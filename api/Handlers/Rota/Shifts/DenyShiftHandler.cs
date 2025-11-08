@@ -1,10 +1,12 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Account;
 using Api.Database.Entities.Rota;
+using Api.Migrations;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Pkcs;
 using WebPush;
 
 namespace Api.Handlers.Rota.Shifts;
@@ -31,13 +33,16 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
     private readonly IPushService _pushService;
+    private readonly IRotaService _rotaService;
     private readonly IUserContext _context;
 
-    public DenyShiftHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService, IUserContext context)
+
+    public DenyShiftHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService, IRotaService rotaService, IUserContext context)
     {
         _repository = repository;
         _encryptionService = encryptionService;
         _pushService = pushService;
+        _rotaService = rotaService;
         _context = context;
     }
 
@@ -75,6 +80,42 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
 
         await _repository.SaveChangesAsync();
 
+        // If someone is opting out of a shift occurring on the same day, or for tomorrow and it's after 9 am
+        // (meaning the "urgent shifts" notification would've already been sent)
+        var isCancellingSameDay = request.Date == DateOnly.FromDateTime(DateTime.Now);
+        var isCancellingTomorrow = request.Date == DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+        var isCurrentlyAfter9am = DateTime.Now.Hour >= 9;
+        if (isCancellingSameDay || (isCancellingTomorrow && isCurrentlyAfter9am))
+        {
+            // Check to see if the shift has now been identified as "urgent"
+            var volunteerRota = await _rotaService.GetVolunteerRotaAsync(request.Date, userId);
+            var urgentShift = volunteerRota.UrgentShifts.FirstOrDefault(x => x.Date == request.Date && x.Time.Id == request.TimeId && x.Job.Id == request.JobId);
+            if (urgentShift != null)
+            {
+                var accounts = await _repository.GetAll<Account>(x => true, tracking: false);
+                var accountSubscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
+                if (!string.IsNullOrWhiteSpace(accountSubscription))
+                {
+                    var push = JsonConvert.DeserializeObject<PushSubscription>(accountSubscription);
+                    // Build the notification message to sound more urgent than the regular notification
+                    string message = $"There has been a last-minute cancellation for {(isCancellingSameDay ? "today" : "tomorrow")}'s {urgentShift.Time.Name} shift! ";
+                    if (urgentShift.Coming == 0) message += $"No-one is scheduled to come in! ";
+                    else if (urgentShift.Coming == 1) message += "There is only 1 person coming in! ";
+                    else message += $"There are only {urgentShift.Coming} people coming in! ";
+                    int required = urgentShift.Required - urgentShift.Coming;
+                    message += "Please help, ";
+                    if (required == 1) message += "we just need one more person to come in!";
+                    else message += $"we just need {required} more people to come in!";
+                    await _pushService.Send(push, new PushNotification
+                    {
+                        Title = "Urgent! Last-minute cancellation",
+                        Body = message,
+                        Image = "images/notifications/header.png"
+                    });
+                }
+            }
+        }
+
         var subscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
         if (!string.IsNullOrWhiteSpace(subscription))
         {
@@ -82,7 +123,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
             await _pushService.Send(push, new PushNotification
             {
                 Title = "Shift cancellation",
-                Body = $"You've cancelled your shift for {request.Date:dddd} {time.Name} on {request.Date:dd MMMM yyyy}",
+                Body = $"You have cancelled your shift for {request.Date.DayOfWeek} {time.Name} on {request.Date:dd MMMM yyyy}",
                 Image = "images/notifications/header.png"
             });
         }

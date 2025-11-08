@@ -98,7 +98,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                 {
                     var push = JsonConvert.DeserializeObject<PushSubscription>(accountSubscription);
                     // Build the notification message to sound more urgent than the regular notification
-                    string message = $"There has been a last-minute cancellation for {(isCancellingSameDay ? "today" : "tomorrow")}'s {urgentShift.Time.Name} shift! ";
+                    string message = $"There has been a last-minute cancellation for {(isCancellingSameDay ? "today" : "tomorrow")}'s {urgentShift.Time.Name.ToLower()} shift! ";
                     if (urgentShift.Coming == 0) message += $"No-one is scheduled to come in! ";
                     else if (urgentShift.Coming == 1) message += "There is only 1 person coming in! ";
                     else message += $"There are only {urgentShift.Coming} people coming in! ";
@@ -122,7 +122,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
             await _pushService.Send(push, new PushNotification
             {
                 Title = "Shift cancellation",
-                Body = $"You have cancelled your shift for {request.Date.DayOfWeek} {time.Name} on {request.Date:dd MMMM yyyy}"
+                Body = $"You have cancelled your shift for {request.Date.DayOfWeek} {time.Name.ToLower()} on {request.Date:dd MMMM yyyy}"
             });
         }
 

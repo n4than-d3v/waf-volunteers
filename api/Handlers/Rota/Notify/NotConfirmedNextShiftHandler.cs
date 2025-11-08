@@ -55,7 +55,7 @@ public class NotConfirmedNextShiftHandler : IRequestHandler<NotConfirmedNextShif
             var maxDate = now.AddDays(_rotaSettings.NotifyUnconfirmedRegularShiftsDaysInAdvance);
             var notify = rota.Rota
                 .Where(x => x.Date <= maxDate && x.Confirmed == null)
-                .Select(x => $"{x.Date.DayOfWeek} {x.Time.Name}")
+                .Select(x => $"{x.Date.DayOfWeek} {x.Time.Name.ToLower()}")
                 .ToList();
 
             if (!notify.Any()) continue;

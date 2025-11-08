@@ -55,7 +55,7 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
             var maxDate = now.AddDays(_rotaSettings.NotifyUnconfirmedUrgentShiftsDaysInAdvance);
             var notify = rota.UrgentShifts
                 .Where(x => x.Date <= maxDate && x.Confirmed != true)
-                .Select(x => $"{x.Date.DayOfWeek} {x.Time.Name}")
+                .Select(x => $"{x.Date.DayOfWeek} {x.Time.Name.ToLower()}")
                 .ToList();
 
             if (!notify.Any()) continue;

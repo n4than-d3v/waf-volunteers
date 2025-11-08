@@ -195,7 +195,7 @@ public class RotaService : IRotaService
             Rota = regularShifts,
             UrgentShifts = urgentShifts,
             RegularShifts = userRegularShifts.Select(x => new UserRota.RegularShift { Day = x.Day, Job = x.Job, Time = x.Time, }).ToList(),
-            MissingReasons = missingReasons,
+            MissingReasons = [.. missingReasons.OrderBy(x => x.Id)],
             NextShift = nextShift
         };
     }

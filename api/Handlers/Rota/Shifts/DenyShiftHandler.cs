@@ -92,7 +92,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
             var urgentShift = volunteerRota.UrgentShifts.FirstOrDefault(x => x.Date == request.Date && x.Time.Id == request.TimeId && x.Job.Id == request.JobId);
             if (urgentShift != null)
             {
-                var accounts = await _repository.GetAll<Account>(x => true, tracking: false);
+                var accounts = await _repository.GetAll<Account>(x => x.Id != userId, tracking: false);
                 var accountSubscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
                 if (!string.IsNullOrWhiteSpace(accountSubscription))
                 {

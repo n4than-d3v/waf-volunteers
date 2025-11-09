@@ -95,7 +95,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                 var recipients = await _repository.GetAll<Account>(x => x.Id != userId, tracking: false);
                 foreach (var recipient in recipients)
                 {
-                    var recipientSubscription = _encryptionService.Decrypt(recipient.PushSubscription, account.Salt);
+                    var recipientSubscription = _encryptionService.Decrypt(recipient.PushSubscription, recipient.Salt);
                     if (!string.IsNullOrWhiteSpace(recipientSubscription))
                     {
                         var push = JsonConvert.DeserializeObject<PushSubscription>(recipientSubscription);

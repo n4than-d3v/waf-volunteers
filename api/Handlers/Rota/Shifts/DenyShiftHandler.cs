@@ -92,25 +92,28 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
             var urgentShift = volunteerRota.UrgentShifts.FirstOrDefault(x => x.Date == request.Date && x.Time.Id == request.TimeId && x.Job.Id == request.JobId);
             if (urgentShift != null)
             {
-                var accounts = await _repository.GetAll<Account>(x => x.Id != userId, tracking: false);
-                var accountSubscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
-                if (!string.IsNullOrWhiteSpace(accountSubscription))
+                var recipients = await _repository.GetAll<Account>(x => x.Id != userId, tracking: false);
+                foreach (var recipient in recipients)
                 {
-                    var push = JsonConvert.DeserializeObject<PushSubscription>(accountSubscription);
-                    // Build the notification message to sound more urgent than the regular notification
-                    string message = $"There has been a last-minute cancellation for {(isCancellingSameDay ? "today" : "tomorrow")}'s {urgentShift.Time.Name.ToLower()} shift! ";
-                    if (urgentShift.Coming == 0) message += $"No-one is scheduled to come in! ";
-                    else if (urgentShift.Coming == 1) message += "There is only 1 person coming in! ";
-                    else message += $"There are only {urgentShift.Coming} people coming in! ";
-                    int required = urgentShift.Required - urgentShift.Coming;
-                    message += "Please help, ";
-                    if (required == 1) message += "we just need one more person to come in!";
-                    else message += $"we just need {required} more people to come in!";
-                    await _pushService.Send(push, new PushNotification
+                    var recipientSubscription = _encryptionService.Decrypt(recipient.PushSubscription, account.Salt);
+                    if (!string.IsNullOrWhiteSpace(recipientSubscription))
                     {
-                        Title = "Urgent! Last-minute cancellation",
-                        Body = message
-                    });
+                        var push = JsonConvert.DeserializeObject<PushSubscription>(recipientSubscription);
+                        // Build the notification message to sound more urgent than the regular notification
+                        string message = $"There has been a last-minute cancellation for {(isCancellingSameDay ? "today" : "tomorrow")}'s {urgentShift.Time.Name.ToLower()} shift! ";
+                        if (urgentShift.Coming == 0) message += $"No-one is scheduled to come in! ";
+                        else if (urgentShift.Coming == 1) message += "There is only 1 person coming in! ";
+                        else message += $"There are only {urgentShift.Coming} people coming in! ";
+                        int required = urgentShift.Required - urgentShift.Coming;
+                        message += "Please help, ";
+                        if (required == 1) message += "we just need one more person to come in!";
+                        else message += $"we just need {required} more people to come in!";
+                        await _pushService.Send(push, new PushNotification
+                        {
+                            Title = "Urgent! Last-minute cancellation",
+                            Body = message
+                        });
+                    }
                 }
             }
         }

@@ -34,6 +34,7 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
   daysOfWeek = daysOfWeek;
 
   newRegularShiftDay = -1;
+  newRegularShiftWeek: number | null = null;
   newRegularShiftTimeId = -1;
   newRegularShiftJobId = -1;
 
@@ -59,6 +60,7 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
         userId: this.userId,
         regularShift: {
           day: Number(this.newRegularShiftDay),
+          week: this.newRegularShiftWeek,
           timeId: Number(this.newRegularShiftTimeId),
           jobId: Number(this.newRegularShiftJobId),
 
@@ -70,6 +72,7 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
       })
     );
     this.newRegularShiftDay = -1;
+    this.newRegularShiftWeek = null;
     this.newRegularShiftTimeId = -1;
     this.newRegularShiftJobId = -1;
   }

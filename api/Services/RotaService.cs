@@ -2,6 +2,7 @@
 using Api.Database;
 using Api.Database.Entities.Account;
 using Api.Database.Entities.Rota;
+using Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -94,7 +95,7 @@ public class RotaService : IRotaService
         Day.DayShift.DayShiftJob GetDayShiftJob(DateOnly date, TimeRange time, Job job)
         {
             var requirement = requirements.FirstOrDefault(x => x.Day == date.DayOfWeek && x.Time.Id == time.Id && x.Job.Id == job.Id);
-            var regulars = regularShifts.Where(x => x.Day == date.DayOfWeek && x.Time.Id == time.Id && x.Job.Id == job.Id);
+            var regulars = regularShifts.Where(x => date.IsOn(x.Day, x.Week) && x.Time.Id == time.Id && x.Job.Id == job.Id);
             var shiftAttendances = attendances.Where(x => x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id);
 
             var volunteers = regulars.Select(x => GetDayShiftJobVolunteer(x.Account, true)).ToList();

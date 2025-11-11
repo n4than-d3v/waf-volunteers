@@ -21,7 +21,11 @@
     <tr>
       <td>
         <admin-rota-regular-shift-day [day]="shift.day" />
+        @if (shift.week) {
+        <span> (Week {{ shift.week }})</span>
+        }
       </td>
+      <td>{{ shift.time.name }}</td>
       <td>{{ shift.time.name }}</td>
       <td>{{ shift.job.name }}</td>
       <td>
@@ -41,6 +45,12 @@
           <option [value]="day.value">{{ day.name }}</option>
           }
         </select>
+        @if (newRegularShiftDay == 0 || newRegularShiftDay == 6) {
+        <select [(ngModel)]="newRegularShiftWeek">
+          <option [value]="1">Week 1</option>
+          <option [value]="2">Week 2</option>
+        </select>
+        }
       </td>
       <td>
         @if (times$ | async; as times) {

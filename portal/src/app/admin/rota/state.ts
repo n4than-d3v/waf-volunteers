@@ -60,6 +60,7 @@ export interface Requirement {
 export interface RegularShift {
   id: number;
   day: DayOfWeek;
+  week: number | null;
   time: Time;
   job: Job;
 

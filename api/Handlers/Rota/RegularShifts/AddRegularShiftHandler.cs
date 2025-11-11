@@ -9,6 +9,7 @@ public class AddRegularShift : IRequest<IResult>
 {
     public int UserId { get; private set; }
     public DayOfWeek Day { get; set; }
+    public int? Week { get; set; }
     public int TimeId { get; set; }
     public int JobId { get; set; }
 
@@ -40,6 +41,7 @@ public class AddRegularShiftHandler : IRequestHandler<AddRegularShift, IResult>
 
             Account = account,
             Day = request.Day,
+            Week = request.Week,
             Job = job,
             Time = time
         });

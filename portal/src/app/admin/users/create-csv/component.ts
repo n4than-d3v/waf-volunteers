@@ -131,6 +131,7 @@ export class AdminUsersCreateCsvComponent implements OnInit, OnDestroy {
           userId,
           regularShift: {
             day,
+            week: split.length == 4 ? Number(split[3]) : null,
             jobId,
             timeId,
 

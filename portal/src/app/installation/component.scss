@@ -12,6 +12,13 @@
   }
 }
 
+@media screen and (min-width: 800px) {
+  .pics img {
+    min-width: 30rem;
+    max-width: 30rem;
+  }
+}
+
 h1 {
   margin-bottom: 1rem;
 }

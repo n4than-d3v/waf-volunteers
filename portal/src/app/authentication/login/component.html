@@ -9,7 +9,21 @@
   <spinner></spinner>
   } @if (error$ | async) {
   <div class="error">Login failed</div>
-  }
+  } @if (!isPwa) {
+  <div class="error center">
+    <p>
+      We detected the application has not been installed correctly. Please
+      follow the instructions by clicking the button below.
+    </p>
+  </div>
+  <div class="buttons">
+    <a [routerLink]="'/install'" class="button button--primary"> Install </a>
+  </div>
+  <br />
+  <p>
+    <i> If you believe this to be an error, please contact the office.</i>
+  </p>
+  } @else {
   <form [formGroup]="form">
     <div class="field">
       <label for="username">Username</label>
@@ -38,4 +52,5 @@
       </a>
     </div>
   </form>
+  }
 </div>

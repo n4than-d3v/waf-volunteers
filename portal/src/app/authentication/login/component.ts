@@ -21,6 +21,8 @@ import { AsyncPipe } from '@angular/common';
   imports: [AsyncPipe, RouterLink, ReactiveFormsModule, SpinnerComponent],
 })
 export class LoginComponent implements OnInit {
+  isPwa: boolean = false;
+
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
 
@@ -41,7 +43,12 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.checkIfRunningPwa();
     this.store.dispatch(checkIfAlreadyLoggedIn());
+  }
+
+  private checkIfRunningPwa() {
+    this.isPwa = window.matchMedia('(display-mode: standalone)').matches;
   }
 
   submit() {

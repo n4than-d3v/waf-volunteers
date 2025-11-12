@@ -97,14 +97,27 @@ $"""
 <p>Hi {firstName} {lastName},</p>
 <br />
 <p>Your Wildlife Aid volunteer account has been created.</p>
-<p>Please follow the installation instructions provided here:<br />
-<a href="{HostConstants.BaseUrl}/install">{HostConstants.BaseUrl}/install</a>
-</p>
+<p>Please carefully follow the instructions below to get started:</p>
 <br />
-<p>Once you have installed the application, please return to this email and click the link below.</p>
-<p><a href="{HostConstants.BaseUrl}/reset-password?token={token}">Click here</a> to set your password.</p>
-<p>Your username for logging in is: "<strong>{username}</strong>".</p>
-<p>Note that this link will expire in 24 hours; If you're unable to set your password within this timeframe, <a href="{HostConstants.BaseUrl}/forgot-password">click here</a> to request a password reset.</p>
+<p><strong>Step 1 - Installation</strong></p>
+<p>Open this email on the device you wish to install the application on.</p>
+<p>We recommend you use your mobile phone.</p>
+<p>If you do not have a mobile phone, a tablet will also work.</p>
+<p>If you do not have a mobile phone or a tablet, you can use your computer or laptop.</p>
+<p>Simply <a href="{HostConstants.BaseUrl}/install">click here to install</a> and follow the instructions.</p>
+<br />
+<p><strong>Step 2 - Set password</strong></p>
+<p>After you have installed the application, please return to this email.</p>
+<p>Next, <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here to set your password</a>.</p>
+<p>You will be asked to set the password that you will use to log into your account.</p>
+<p>Note that the above link will expire in 24 hours, and if you're unable to set your password within this timeframe, <a href="{HostConstants.BaseUrl}/forgot-password">click here to request a password reset</a>.</p>
+<br />
+<p><strong>Step 3 - Log in</strong></p>
+<p>Finally, you can log into your new volunteer account.</p>
+<p>Your username is: "<strong>{username}</strong>".</p>
+<p>Simply <a href="{HostConstants.BaseUrl}/install">click here to login</a> by providing your username and password.</p>
+<br /><br />
+<p>If you experience any difficulties, please contact the office for support.</p>
 """));
 
     public static Email ResetPassword(string firstName, string lastName, string username, string email, string token) =>

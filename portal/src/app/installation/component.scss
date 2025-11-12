@@ -1,4 +1,5 @@
 .pics {
+  margin-top: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -9,4 +10,8 @@
     min-width: 18rem;
     max-width: 18rem;
   }
+}
+
+h1 {
+  margin-bottom: 1rem;
 }

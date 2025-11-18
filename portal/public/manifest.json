@@ -23,7 +23,7 @@
       "src": "icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "/web-app-manifest-192x192.png",

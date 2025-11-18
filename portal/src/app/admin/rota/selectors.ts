@@ -24,6 +24,16 @@ export const selectRequirements = createSelector(
   (state) => state.requirements
 );
 
+export const selectAssignableShifts = createSelector(
+  selectRotaManagementState,
+  (state) => state.assignableShifts
+);
+
+export const selectAssignableAreas = createSelector(
+  selectRotaManagementState,
+  (state) => state.assignableAreas
+);
+
 export const selectRegularShifts = createSelector(
   selectRotaManagementState,
   (state) => state.regularShifts

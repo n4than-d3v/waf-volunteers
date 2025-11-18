@@ -3,6 +3,8 @@ export interface RotaManagementState {
   times: Wrapper<Time>;
   missingReasons: Wrapper<MissingReason>;
   requirements: Wrapper<Requirement>;
+  assignableShifts: Wrapper<AssignableShift>;
+  assignableAreas: Wrapper<AssignableArea>;
 
   regularShifts: Wrapper<RegularShift>;
 
@@ -57,6 +59,22 @@ export interface Requirement {
   jobId?: number;
 }
 
+export interface AssignableArea {
+  id?: number;
+  name: string;
+}
+
+export interface AssignableShift {
+  id?: number;
+  day: DayOfWeek;
+  time: Time;
+  job: Job;
+
+  // Used for commands
+  timeId?: number;
+  jobId?: number;
+}
+
 export interface RegularShift {
   id: number;
   day: DayOfWeek;
@@ -103,6 +121,7 @@ export interface AdminRotaShiftJob {
   volunteers: AdminRotaShiftJobVolunteer[];
   required: number;
   enough: boolean;
+  isAssignable: boolean;
 }
 
 export interface AdminRotaShiftJobVolunteer {
@@ -113,6 +132,8 @@ export interface AdminRotaShiftJobVolunteer {
   confirmed?: boolean;
   missingReason?: MissingReason;
   customMissingReason?: string;
+  attendanceId?: number;
+  areaId?: number;
 }
 
 export const initialRotaManagementState: RotaManagementState = {
@@ -120,6 +141,8 @@ export const initialRotaManagementState: RotaManagementState = {
   times: { loading: false, error: false, data: [], updated: false },
   missingReasons: { loading: false, error: false, data: [], updated: false },
   requirements: { loading: false, error: false, data: [], updated: false },
+  assignableShifts: { loading: false, error: false, data: [], updated: false },
+  assignableAreas: { loading: false, error: false, data: [], updated: false },
   regularShifts: { loading: false, error: false, data: [], updated: false },
   rota: { loading: false, error: false, data: [], updated: false },
   reports: { loading: false, error: false, data: [], updated: false },

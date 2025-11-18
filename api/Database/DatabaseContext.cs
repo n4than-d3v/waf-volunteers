@@ -18,5 +18,10 @@ public class DatabaseContext : DbContext
     public DbSet<RegularShift> RegularShifts { get; set; }
     public DbSet<Requirement> Requirements { get; set; }
 
+    // Assignments on shift
+    public DbSet<AssignableArea> AssignableAreas { get; set; }
+    public DbSet<AssignableShift> AssignableShifts { get; set; }
+    public DbSet<Assignment> Assignments { get; set; }
+
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 }

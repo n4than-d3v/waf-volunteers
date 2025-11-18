@@ -1,29 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { confirmShift, denyShift, getAdminRota } from './actions';
+import {
+  assignArea,
+  confirmShift,
+  denyShift,
+  getAdminRota,
+  getAssignableAreas,
+} from './actions';
 import moment, { Moment } from 'moment';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {
   AdminRota,
   AdminRotaShift,
   AdminRotaShiftJob,
   AdminRotaShiftJobVolunteer,
+  AssignableArea,
   Wrapper,
 } from './state';
-import { selectAdminRota } from './selectors';
+import { selectAdminRota, selectAssignableAreas } from './selectors';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { DayPipe } from '../../volunteer/rota/day.pipe';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'admin-rota',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, DatePipe, DayPipe, RouterLink, SpinnerComponent],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    DayPipe,
+    RouterLink,
+    SpinnerComponent,
+    FormsModule,
+  ],
 })
-export class AdminRotaComponent implements OnInit {
+export class AdminRotaComponent implements OnInit, OnDestroy {
   private _start: Moment = moment();
   private _end: Moment = moment();
 
@@ -31,11 +46,32 @@ export class AdminRotaComponent implements OnInit {
   end: string = '';
 
   rota$: Observable<Wrapper<AdminRota>>;
+  assignableAreas$: Observable<Wrapper<AssignableArea>>;
 
   updatingShift: AdminRotaShiftJobVolunteer | null = null;
+  updatingAssignableArea: { [attendanceId: number]: string } = {};
+
+  subscription: Subscription;
 
   constructor(private store: Store) {
     this.rota$ = this.store.select(selectAdminRota);
+    this.assignableAreas$ = this.store.select(selectAssignableAreas);
+    this.subscription = this.rota$.subscribe((rota) => {
+      if (!rota.data) return;
+      for (const day of rota.data) {
+        for (const shift of day.shifts) {
+          for (const job of shift.jobs) {
+            for (const volunteer of job.volunteers) {
+              if (volunteer.attendanceId) {
+                this.updatingAssignableArea[
+                  volunteer.attendanceId!
+                ] = `${volunteer.areaId}`;
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
   nextWeek() {
@@ -97,9 +133,23 @@ export class AdminRotaComponent implements OnInit {
     );
   }
 
+  assignArea(attendanceId: number) {
+    this.store.dispatch(
+      assignArea({
+        attendanceId: attendanceId,
+        assignableAreaId: Number(this.updatingAssignableArea[attendanceId]),
+      })
+    );
+  }
+
   ngOnInit() {
     this._start = moment().startOf('isoWeek');
     this._end = moment(this._start).add(6, 'days');
     this.update();
+    this.store.dispatch(getAssignableAreas());
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }

@@ -58,14 +58,20 @@ public class RotaService : IRotaService
         var times = await _repository.GetAll<TimeRange>(x => true, tracking: false);
         var jobs = await _repository.GetAll<Job>(x => true, tracking: false);
         var requirements = await _repository.GetAll<Requirement>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
+        var assignableShifts = await _repository.GetAll<AssignableShift>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
+        var assignments = await _repository.GetAll<Assignment>(x => start <= x.Attendance.Date && x.Attendance.Date <= end, tracking: false, action: x => x.Include(y => y.Attendance).Include(y => y.Area));
 
         var days = new List<Day>();
 
         void UpdateDayShiftJobVolunteer(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer, Attendance confirmation)
         {
+            volunteer.AttendanceId = confirmation.Id;
             volunteer.Confirmed = confirmation.Confirmed;
             volunteer.MissingReason = confirmation.MissingReason;
             volunteer.CustomMissingReason = confirmation.CustomMissingReason;
+
+            var assignment = assignments.FirstOrDefault(x => x.Attendance.Id == confirmation.Id);
+            volunteer.AreaId = assignment?.Area?.Id;
         }
 
         bool TryUpdateRegularDayShiftJobVolunteer(IReadOnlyList<Day.DayShift.DayShiftJob.DayShiftJobVolunteer> volunteers, Attendance confirmation)
@@ -97,6 +103,7 @@ public class RotaService : IRotaService
             var requirement = requirements.FirstOrDefault(x => x.Day == date.DayOfWeek && x.Time.Id == time.Id && x.Job.Id == job.Id);
             var regulars = regularShifts.Where(x => date.IsOn(x.Day, x.Week) && x.Time.Id == time.Id && x.Job.Id == job.Id);
             var shiftAttendances = attendances.Where(x => x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id);
+            var isAssignable = assignableShifts.Any(x => date.IsOn(x.Day) && x.Time.Id == time.Id && x.Job.Id == job.Id);
 
             var volunteers = regulars.Select(x => GetDayShiftJobVolunteer(x.Account, true)).ToList();
 
@@ -109,7 +116,13 @@ public class RotaService : IRotaService
                 volunteers.Add(volunteer);
             }
 
-            return new Day.DayShift.DayShiftJob { Job = job, Volunteers = volunteers, Required = requirement?.Minimum ?? 0 };
+            return new Day.DayShift.DayShiftJob
+            {
+                Job = job,
+                Volunteers = volunteers,
+                Required = requirement?.Minimum ?? 0,
+                IsAssignable = isAssignable
+            };
         }
 
         Day.DayShift GetDayShift(DateOnly date, TimeRange time) => new()
@@ -133,6 +146,7 @@ public class RotaService : IRotaService
     public async Task<UserRota> GetVolunteerRotaAsync(DateOnly now, int userId)
     {
         var days = await GetRotaAsync(now, now.AddDays(Math.Max(_settings.RegularShiftsDaysInAdvance, _settings.UrgentShiftsDaysInAdvance)));
+        var assignableAreas = await _repository.GetAll<AssignableArea>(x => true, tracking: false);
 
         bool IsOtherComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => (volunteer.Confirmed == true) && (IsVolunteer(volunteer) == false);
         bool IsVolunteer(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => volunteer.Id == userId;
@@ -146,18 +160,24 @@ public class RotaService : IRotaService
             Confirmed = volunteer.Confirmed,
             MissingReason = volunteer.MissingReason,
             CustomMissingReason = volunteer.CustomMissingReason,
-            Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray()
+            Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray(),
+            Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer.AreaId)
         };
-        UserRota.UrgentShift GetUrgentShift(Day day, Day.DayShift shift, Day.DayShift.DayShiftJob job) => new()
+        UserRota.UrgentShift GetUrgentShift(Day day, Day.DayShift shift, Day.DayShift.DayShiftJob job)
         {
-            Date = day.Date,
-            Time = shift.Time,
-            Job = job.Job,
-            Required = job.Required,
-            Coming = job.Volunteers.Count(v => v.Confirmed == true),
-            Confirmed = job.Volunteers.FirstOrDefault(IsVolunteer)?.Confirmed,
-            Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray()
-        };
+            var volunteer = job.Volunteers.FirstOrDefault(IsVolunteer);
+            return new()
+            {
+                Date = day.Date,
+                Time = shift.Time,
+                Job = job.Job,
+                Required = job.Required,
+                Coming = job.Volunteers.Count(v => v.Confirmed == true),
+                Confirmed = volunteer?.Confirmed,
+                Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray(),
+                Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer?.AreaId)
+            };
+        }
 
         var missingReasons = await _repository.GetAll<MissingReason>(x => true, tracking: false);
         var userRegularShifts = await _repository.GetAll<RegularShift>(
@@ -230,6 +250,7 @@ public class Day
             public IReadOnlyList<DayShiftJobVolunteer> Volunteers { get; set; }
             public int Required { get; set; }
             public bool Enough => Required <= Volunteers.Count(x => x.Confirmed ?? false);
+            public bool IsAssignable { get; set; }
 
             public class DayShiftJobVolunteer
             {
@@ -237,9 +258,11 @@ public class Day
                 public string Name { get; set; }
                 public string FullName { get; set; }
                 public bool IsRegularShift { get; set; }
+                public int? AttendanceId { get; set; }
                 public bool? Confirmed { get; set; }
                 public MissingReason? MissingReason { get; set; }
                 public string? CustomMissingReason { get; set; }
+                public int? AreaId { get; set; }
             }
         }
     }
@@ -271,6 +294,7 @@ public class UserRota
         public Job Job { get; set; }
         public bool? Confirmed { get; set; }
         public IReadOnlyList<string> Others { get; set; }
+        public AssignableArea? Area { get; set; }
     }
 
     public class UrgentShift : ShiftBase

@@ -5,6 +5,9 @@ using Api.Handlers.Accounts.Admin;
 using Api.Handlers.Accounts.Info;
 using Api.Handlers.Accounts.Reset;
 using Api.Handlers.Rota;
+using Api.Handlers.Rota.Misc.Assignments;
+using Api.Handlers.Rota.Misc.Assignments.Areas;
+using Api.Handlers.Rota.Misc.Assignments.Shifts;
 using Api.Handlers.Rota.Misc.Jobs;
 using Api.Handlers.Rota.Misc.MissingReasons;
 using Api.Handlers.Rota.Misc.Requirements;
@@ -235,6 +238,26 @@ apiRota.MapGet("/requirements", (IMediator mediator) => mediator.Send(new GetReq
 
 apiRota.MapPut("/requirements", (IMediator mediator, UpdateRequirements request) => mediator.Send(request))
     .AddNote("Admin updates list of requirements")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/assignable-areas", (IMediator mediator) => mediator.Send(new GetAssignableAreas()))
+    .AddNote("Authenticated user views list of assignable areas")
+    .RequireAuthorization(signedInPolicy);
+
+apiRota.MapPut("/assignable-areas", (IMediator mediator, UpdateAssignableAreas request) => mediator.Send(request))
+    .AddNote("Admin updates list of assignable areas")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapGet("/assignable-shifts", (IMediator mediator) => mediator.Send(new GetAssignableShifts()))
+    .AddNote("Admin views list of assignable shifts")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapPut("/assignable-shifts", (IMediator mediator, UpdateAssignableShifts request) => mediator.Send(request))
+    .AddNote("Admin updates list of assignable shifts")
+    .RequireAuthorization(adminPolicy);
+
+apiRota.MapPut("/assign-area", (IMediator mediator, AssignArea request) => mediator.Send(request))
+    .AddNote("Admin assigns an area for an attendance")
     .RequireAuthorization(adminPolicy);
 
 apiRota.MapGet("/users/me/regular-shifts", (IMediator mediator) => mediator.Send(new GetRegularShifts()))

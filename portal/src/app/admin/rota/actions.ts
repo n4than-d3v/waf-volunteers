@@ -7,6 +7,8 @@ import {
   Requirement,
   Time,
   Report,
+  AssignableShift,
+  AssignableArea,
 } from './state';
 
 export const getJobs = createAction('[Rota] Get Jobs');
@@ -36,6 +38,22 @@ export const getRequirementsSuccess = createAction(
 );
 export const getRequirementsError = createAction(
   '[Rota] Get Requirements: Error'
+);
+export const getAssignableShifts = createAction('[Rota] Get Assignable Shifts');
+export const getAssignableShiftsSuccess = createAction(
+  '[Rota] Get Assignable Shifts: Success',
+  props<{ assignableShifts: AssignableShift[] }>()
+);
+export const getAssignableShiftsError = createAction(
+  '[Rota] Get Assignable Shifts: Error'
+);
+export const getAssignableAreas = createAction('[Rota] Get Assignable Areas');
+export const getAssignableAreasSuccess = createAction(
+  '[Rota] Get Assignable Areas: Success',
+  props<{ assignableAreas: AssignableArea[] }>()
+);
+export const getAssignableAreasError = createAction(
+  '[Rota] Get Assignable Areas: Error'
 );
 
 export const updateJobs = createAction(
@@ -70,6 +88,32 @@ export const updateRequirementsSuccess = createAction(
 export const updateRequirementsError = createAction(
   '[Rota] Update Requirements: Error'
 );
+export const updateAssignableShifts = createAction(
+  '[Rota] Update Assignable Shifts',
+  props<{ assignableShifts: AssignableShift[] }>()
+);
+export const updateAssignableShiftsSuccess = createAction(
+  '[Rota] Update Assignable Shifts: Success'
+);
+export const updateAssignableShiftsError = createAction(
+  '[Rota] Update Assignable Shifts: Error'
+);
+export const updateAssignableAreas = createAction(
+  '[Rota] Update Assignable Areas',
+  props<{ assignableAreas: AssignableArea[] }>()
+);
+export const updateAssignableAreasSuccess = createAction(
+  '[Rota] Update Assignable Areas: Success'
+);
+export const updateAssignableAreasError = createAction(
+  '[Rota] Update Assignable Areas: Error'
+);
+export const assignArea = createAction(
+  '[Rota] Assign Area',
+  props<{ attendanceId: number; assignableAreaId: number }>()
+);
+export const assignAreaSuccess = createAction('[Rota] Assign Area: Success');
+export const assignAreaError = createAction('[Rota] Assign Area: Error');
 
 export const getRegularShifts = createAction(
   '[Rota] Get Regular Shifts',

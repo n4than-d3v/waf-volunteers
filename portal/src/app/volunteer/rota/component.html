@@ -103,6 +103,11 @@
           {{ shift.others.join(', ') }}
         </p>
       </div>
+      } @if (shift.area) {
+      <div class="shift-assign">
+        <strong>Where am I assigned?</strong>
+        <p>{{ shift.area.name }}</p>
+      </div>
       }
     </div>
   </div>
@@ -183,6 +188,11 @@
           {{ shift.confirmed ? 'You' : '' }}{{ shift.others.length ? ',' : '' }}
           {{ shift.others.join(', ') }}
         </p>
+      </div>
+      } @if (shift.area) {
+      <div class="shift-assign">
+        <strong>Where am I assigned?</strong>
+        <p>{{ shift.area.name }}</p>
       </div>
       }
     </div>

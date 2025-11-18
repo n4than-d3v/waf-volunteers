@@ -5,6 +5,9 @@ import {
   addRegularShift,
   addRegularShiftError,
   addRegularShiftSuccess,
+  assignArea,
+  assignAreaError,
+  assignAreaSuccess,
   confirmShift,
   confirmShiftError,
   confirmShiftSuccess,
@@ -17,6 +20,12 @@ import {
   getAdminRota,
   getAdminRotaError,
   getAdminRotaSuccess,
+  getAssignableAreas,
+  getAssignableAreasError,
+  getAssignableAreasSuccess,
+  getAssignableShifts,
+  getAssignableShiftsError,
+  getAssignableShiftsSuccess,
   getJobs,
   getJobsError,
   getJobsSuccess,
@@ -35,6 +44,12 @@ import {
   getTimes,
   getTimesError,
   getTimesSuccess,
+  updateAssignableAreas,
+  updateAssignableAreasError,
+  updateAssignableAreasSuccess,
+  updateAssignableShifts,
+  updateAssignableShiftsError,
+  updateAssignableShiftsSuccess,
   updateJobs,
   updateJobsError,
   updateJobsSuccess,
@@ -57,6 +72,8 @@ import {
   Requirement,
   Time,
   Report,
+  AssignableShift,
+  AssignableArea,
 } from './state';
 
 @Injectable()
@@ -191,6 +208,92 @@ export class RotaManagementEffects {
     this.actions$.pipe(
       ofType(updateRequirementsSuccess),
       switchMap(() => of(getRequirements()))
+    )
+  );
+
+  getAssignableShifts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getAssignableShifts),
+      switchMap(() =>
+        this.http.get<AssignableShift[]>('rota/assignable-shifts').pipe(
+          map((assignableShifts) =>
+            getAssignableShiftsSuccess({ assignableShifts })
+          ),
+          catchError(() => of(getAssignableShiftsError()))
+        )
+      )
+    )
+  );
+
+  updateAssignableShifts$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateAssignableShifts),
+      switchMap((action) =>
+        this.http
+          .put('rota/assignable-shifts', {
+            assignableShifts: action.assignableShifts,
+          })
+          .pipe(
+            map(() => updateAssignableShiftsSuccess()),
+            catchError(() => of(updateAssignableShiftsError()))
+          )
+      )
+    )
+  );
+
+  updateAssignableShiftsSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateAssignableShiftsSuccess),
+      switchMap(() => of(getAssignableShifts()))
+    )
+  );
+
+  getAssignableAreas$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getAssignableAreas),
+      switchMap(() =>
+        this.http.get<AssignableArea[]>('rota/assignable-areas').pipe(
+          map((assignableAreas) =>
+            getAssignableAreasSuccess({ assignableAreas })
+          ),
+          catchError(() => of(getAssignableAreasError()))
+        )
+      )
+    )
+  );
+
+  updateAssignableAreas$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateAssignableAreas),
+      switchMap((action) =>
+        this.http
+          .put('rota/assignable-areas', {
+            assignableAreas: action.assignableAreas,
+          })
+          .pipe(
+            map(() => updateAssignableAreasSuccess()),
+            catchError(() => of(updateAssignableAreasError()))
+          )
+      )
+    )
+  );
+
+  updateAssignableAreasSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateAssignableAreasSuccess),
+      switchMap(() => of(getAssignableAreas()))
+    )
+  );
+
+  assignArea$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(assignArea),
+      switchMap((action) =>
+        this.http.put('rota/assign-area', action).pipe(
+          map(() => assignAreaSuccess()),
+          catchError(() => of(assignAreaError()))
+        )
+      )
     )
   );
 

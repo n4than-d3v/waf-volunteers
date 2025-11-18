@@ -28,6 +28,7 @@ export interface Shift {
   missingReason?: MissingReason;
   customMissingReason?: string;
   others: string[];
+  area?: AssignableArea;
 }
 
 export interface UrgentShift {
@@ -38,6 +39,12 @@ export interface UrgentShift {
   coming: number;
   required: number;
   others: string[];
+  area?: AssignableArea;
+}
+
+export interface AssignableArea {
+  id: number;
+  name: string;
 }
 
 export const initialRotaState: RotaState = {

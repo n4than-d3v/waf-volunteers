@@ -77,7 +77,7 @@ public class ConfirmShiftHandler : IRequestHandler<ConfirmShift, IResult>
             await _pushService.Send(push, new PushNotification
             {
                 Title = "Shift confirmation",
-                Body = $"Thank you! You've signed up for {request.Date.DayOfWeek} {time.Name.ToLower()} on {request.Date:dd MMMM yyyy}"
+                Body = $"Thank you! You have signed up for {request.Date.DayOfWeek} {time.Name.ToLower()} on {request.Date:dd MMMM yyyy}"
             });
         }
 

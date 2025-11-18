@@ -130,6 +130,36 @@
               </div>
               }
             </div>
+            @if (job.isAssignable) { @if (assignableAreas$ | async; as
+            assignableAreas) {
+            <div class="assignments">
+              <h4>Assignments</h4>
+              @for (volunteer of job.volunteers; track volunteer.id) { @if
+              (volunteer.confirmed) {
+              <div class="assignment">
+                <div
+                  class="assignment__volunteer"
+                  title="{{ volunteer.fullName }}"
+                >
+                  {{ volunteer.name }}
+                </div>
+                <div class="assignment__area">
+                  <select
+                    [(ngModel)]="updatingAssignableArea[volunteer.attendanceId!]"
+                    (ngModelChange)="assignArea(volunteer.attendanceId!)"
+                  >
+                    @for (assignableArea of assignableAreas.data; track
+                    assignableArea.id) {
+                    <option [value]="assignableArea.id">
+                      {{ assignableArea.name }}
+                    </option>
+                    }
+                  </select>
+                </div>
+              </div>
+              } }
+            </div>
+            } }
           </div>
           }
         </div>

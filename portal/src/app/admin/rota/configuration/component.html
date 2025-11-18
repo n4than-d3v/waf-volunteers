@@ -126,6 +126,124 @@
     </button>
   </section>
   <section>
+    <h2>Area assignments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (assignableArea of assignableAreas; track assignableArea.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="assignableArea.name" />
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeAssignableArea(assignableArea)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newAssignableAreaName" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('assignableAreas')"
+    >
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Shifts allowing area assignments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Shift</th>
+          <th>Job</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (assignableShift of assignableShifts; track assignableShift.id) {
+        <tr>
+          <td>
+            <select [(ngModel)]="assignableShift.day">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="assignableShift.timeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="assignableShift.jobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeAssignableShift(assignableShift)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <select [(ngModel)]="newAssignableShiftDay">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newAssignableShiftTimeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newAssignableShiftJobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('assignableShifts')"
+    >
+      Save changes
+    </button>
+  </section>
+  <section>
     <h2>Shift requirements</h2>
     <table>
       <thead>

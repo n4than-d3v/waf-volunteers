@@ -3,6 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
 import {
+  AssignableArea,
+  AssignableShift,
   daysOfWeek,
   Job,
   MissingReason,
@@ -12,16 +14,22 @@ import {
 } from '../state';
 import { Store } from '@ngrx/store';
 import {
+  selectAssignableAreas,
+  selectAssignableShifts,
   selectJobs,
   selectMissingReasons,
   selectRequirements,
   selectTimes,
 } from '../selectors';
 import {
+  getAssignableAreas,
+  getAssignableShifts,
   getJobs,
   getMissingReasons,
   getRequirements,
   getTimes,
+  updateAssignableAreas,
+  updateAssignableShifts,
   updateJobs,
   updateMissingReasons,
   updateRequirements,
@@ -56,6 +64,14 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   newRequirementJobId = -1;
   newRequirementMinimum = 0;
 
+  assignableShifts: AssignableShift[] = [];
+  newAssignableShiftDay = -1;
+  newAssignableShiftTimeId = -1;
+  newAssignableShiftJobId = -1;
+
+  assignableAreas: AssignableArea[] = [];
+  newAssignableAreaName = '';
+
   subscriptions: Subscription[];
 
   constructor(private store: Store) {
@@ -82,6 +98,22 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
             })),
           ])
       ),
+      this.store.select(selectAssignableShifts).subscribe(
+        (assignableShifts) =>
+          (this.assignableShifts = [
+            ...assignableShifts.data.map((r) => ({
+              ...r,
+              timeId: r.time.id,
+              jobId: r.job.id,
+            })),
+          ])
+      ),
+      this.store
+        .select(selectAssignableAreas)
+        .subscribe(
+          (assignableAreas) =>
+            (this.assignableAreas = structuredClone(assignableAreas.data))
+        ),
     ];
   }
 
@@ -90,6 +122,8 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
     this.store.dispatch(getMissingReasons());
     this.store.dispatch(getTimes());
     this.store.dispatch(getRequirements());
+    this.store.dispatch(getAssignableShifts());
+    this.store.dispatch(getAssignableAreas());
   }
 
   ngOnDestroy() {
@@ -114,7 +148,27 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
     this.requirements = this.requirements.filter((r) => r !== requirement);
   }
 
-  saveChanges(type: 'jobs' | 'missingReasons' | 'times' | 'requirements') {
+  removeAssignableShift(assignableShift: AssignableShift) {
+    this.assignableShifts = this.assignableShifts.filter(
+      (a) => a !== assignableShift
+    );
+  }
+
+  removeAssignableArea(assignableArea: AssignableArea) {
+    this.assignableAreas = this.assignableAreas.filter(
+      (a) => a !== assignableArea
+    );
+  }
+
+  saveChanges(
+    type:
+      | 'jobs'
+      | 'missingReasons'
+      | 'times'
+      | 'requirements'
+      | 'assignableAreas'
+      | 'assignableShifts'
+  ) {
     if (type === 'jobs') {
       if (this.newJobName) {
         this.jobs.push({ name: this.newJobName });
@@ -182,6 +236,43 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateRequirements({
           requirements: this.requirements,
+        })
+      );
+    } else if (type === 'assignableShifts') {
+      if (
+        this.newAssignableShiftDay >= 0 &&
+        this.newAssignableShiftTimeId > 0 &&
+        this.newAssignableShiftJobId > 0
+      ) {
+        this.assignableShifts.push({
+          day: this.newAssignableShiftDay,
+          timeId: this.newAssignableShiftTimeId,
+          jobId: this.newAssignableShiftJobId,
+          time: this.times.find((t) => t.id === this.newAssignableShiftTimeId)!,
+          job: this.jobs.find((j) => j.id === this.newAssignableShiftJobId)!,
+        });
+      }
+      this.newAssignableShiftDay = -1;
+      this.newAssignableShiftTimeId = -1;
+      this.newAssignableShiftJobId = -1;
+      this.assignableShifts.forEach((r) => {
+        r.timeId = Number(r.timeId);
+        r.jobId = Number(r.jobId);
+        r.day = Number(r.day);
+      });
+      this.store.dispatch(
+        updateAssignableShifts({
+          assignableShifts: this.assignableShifts,
+        })
+      );
+    } else if (type === 'assignableAreas') {
+      if (this.newAssignableAreaName) {
+        this.assignableAreas.push({ name: this.newAssignableAreaName });
+      }
+      this.newAssignableAreaName = '';
+      this.store.dispatch(
+        updateAssignableAreas({
+          assignableAreas: this.assignableAreas,
         })
       );
     }

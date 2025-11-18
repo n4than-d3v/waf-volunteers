@@ -10,6 +10,12 @@ import {
   getAdminRota,
   getAdminRotaError,
   getAdminRotaSuccess,
+  getAssignableAreas,
+  getAssignableAreasError,
+  getAssignableAreasSuccess,
+  getAssignableShifts,
+  getAssignableShiftsError,
+  getAssignableShiftsSuccess,
   getJobs,
   getJobsError,
   getJobsSuccess,
@@ -28,6 +34,12 @@ import {
   getTimes,
   getTimesError,
   getTimesSuccess,
+  updateAssignableAreas,
+  updateAssignableAreasError,
+  updateAssignableAreasSuccess,
+  updateAssignableShifts,
+  updateAssignableShiftsError,
+  updateAssignableShiftsSuccess,
   updateJobs,
   updateJobsError,
   updateJobsSuccess,
@@ -163,6 +175,92 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
   on(updateRequirementsError, (state) => ({
     ...state,
     requirements: { ...state.requirements, loading: false, error: true },
+  })),
+  // Assignable shifts
+  on(getAssignableShifts, (state) => ({
+    ...state,
+    assignableShifts: {
+      ...state.assignableShifts,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getAssignableShiftsSuccess, (state, { assignableShifts }) => ({
+    ...state,
+    assignableShifts: {
+      ...state.assignableShifts,
+      data: assignableShifts,
+      loading: false,
+      error: false,
+    },
+  })),
+  on(getAssignableShiftsError, (state) => ({
+    ...state,
+    assignableShifts: {
+      ...state.assignableShifts,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(updateAssignableShifts, (state) => ({
+    ...state,
+    assignableShifts: {
+      ...state.assignableShifts,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(updateAssignableShiftsSuccess, (state) => ({
+    ...state,
+    assignableShifts: {
+      ...state.assignableShifts,
+      loading: false,
+      error: false,
+      updated: true,
+    },
+  })),
+  on(updateAssignableShiftsError, (state) => ({
+    ...state,
+    assignableShifts: {
+      ...state.assignableShifts,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Assignable areas
+  on(getAssignableAreas, (state) => ({
+    ...state,
+    assignableAreas: { ...state.assignableAreas, loading: true, error: false },
+  })),
+  on(getAssignableAreasSuccess, (state, { assignableAreas }) => ({
+    ...state,
+    assignableAreas: {
+      ...state.assignableAreas,
+      data: assignableAreas,
+      loading: false,
+      error: false,
+    },
+  })),
+  on(getAssignableAreasError, (state) => ({
+    ...state,
+    assignableAreas: { ...state.assignableAreas, loading: false, error: true },
+  })),
+  on(updateAssignableAreas, (state) => ({
+    ...state,
+    assignableAreas: { ...state.assignableAreas, loading: true, error: false },
+  })),
+  on(updateAssignableAreasSuccess, (state) => ({
+    ...state,
+    assignableAreas: {
+      ...state.assignableAreas,
+      loading: false,
+      error: false,
+      updated: true,
+    },
+  })),
+  on(updateAssignableAreasError, (state) => ({
+    ...state,
+    assignableAreas: { ...state.assignableAreas, loading: false, error: true },
   })),
   // Regular shifts
   on(getRegularShifts, (state) => ({

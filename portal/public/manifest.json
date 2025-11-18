@@ -1,9 +1,10 @@
 {
+  "id": "wildlife-aid-foundation",
   "name": "Wildlife Aid Foundation",
   "short_name": "WAF",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "scope": "/",
+  "start_url": "/",
   "screenshots": [
     {
       "src": "images/manifest/desktop.png",
@@ -20,20 +21,21 @@
   "icons": [
     {
       "src": "icons/icon.svg",
-      "type": "image/svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "icons/icon-72x72.png",

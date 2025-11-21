@@ -39,6 +39,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
         var county = _encryptionService.Decrypt(user.AddressCounty, user.Salt);
         var postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt);
         var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
+        var cars = user.Cars.Select(car => _encryptionService.Decrypt(car, user.Salt)).ToArray();
 
         return Results.Ok(new
         {
@@ -54,6 +55,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
                 county,
                 postcode
             },
+            cars,
             subscribed = !string.IsNullOrWhiteSpace(subscription)
         });
     }

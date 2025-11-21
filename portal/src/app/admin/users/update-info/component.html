@@ -62,6 +62,19 @@
       formControlName="postcode"
     />
   </div>
+  <h2>Cars</h2>
+  <div formArrayName="cars">
+    <div
+      class="car-field"
+      *ngFor="let car of form.controls.cars.controls; let i=index"
+    >
+      <input type="text" [formControlName]="i" />
+    </div>
+    <button class="button button--secondary add-car" (click)="addCar()">
+      Add {{ (form.controls.cars.length === 0 ? 'a' : 'another' )}} car
+    </button>
+  </div>
+  <br />
   <h2>Status</h2>
   <div class="field">
     <label for="status-active">Active</label>
@@ -127,6 +140,15 @@
       id="role-admin"
       name="role-admin"
       formControlName="roleAdmin"
+    />
+  </div>
+  <div class="field">
+    <label for="role-clocking">Clocking</label>
+    <input
+      type="checkbox"
+      id="role-clocking"
+      name="role-clocking"
+      formControlName="roleClocking"
     />
   </div>
   <button class="button button--primary" (click)="save()">Save</button>

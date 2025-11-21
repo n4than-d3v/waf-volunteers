@@ -14,6 +14,7 @@ public class UpdateAccountInfo : IRequest<IResult>
     public string Email { get; set; }
     public string Phone { get; set; }
     public UpdateAccountInfoAddress Address { get; set; }
+    public string[] Cars { get; set; }
 
     public class UpdateAccountInfoAddress
     {
@@ -58,8 +59,9 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountInfo, IResult>
         var city = _encryptionService.Encrypt(request.Address.City, user.Salt);
         var county = _encryptionService.Encrypt(request.Address.County, user.Salt);
         var postcode = _encryptionService.Encrypt(request.Address.Postcode, user.Salt);
+        var cars = (request.Cars ?? []).Select(car => _encryptionService.Encrypt(car, user.Salt)).ToArray();
 
-        user.UpdatePersonalDetails(firstName, lastName, email, phone, lineOne, lineTwo, city, county, postcode);
+        user.UpdatePersonalDetails(firstName, lastName, email, phone, lineOne, lineTwo, city, county, postcode, cars);
 
         await _repository.SaveChangesAsync();
 

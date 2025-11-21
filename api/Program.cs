@@ -70,11 +70,13 @@ builder.Services
 
 const string signedInPolicy = "SignedIn";
 const string adminPolicy = "Admin";
+const string clockingPolicy = "Clocking";
 
 builder.Services
     .AddAuthorizationBuilder()
     .AddPolicy(signedInPolicy, policy => policy.RequireAuthenticatedUser())
-    .AddPolicy(adminPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsAdmin()));
+    .AddPolicy(adminPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsAdmin()))
+    .AddPolicy(clockingPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsClocking()));
 
 builder.Services.AddTransient<IDatabaseRepository, DatabaseRepository>();
 
@@ -314,6 +316,19 @@ apiNotify.MapPost("/not-confirmed-next-shift", (IMediator mediator) => mediator.
 
 apiNotify.MapPost("/urgent-shifts", (IMediator mediator) => mediator.Send(new UrgentShifts()))
     .AddNote("Send notification for urgent shifts");
+
+var apiClocking = api.MapGroup("/clocking");
+apiClocking.MapPost("/in", (IMediator mediator, ClockIn request) => mediator.Send(request))
+    .AddNote("Clock volunteer in")
+    .RequireAuthorization(clockingPolicy);
+
+apiClocking.MapPost("/out", (IMediator mediator, ClockOut request) => mediator.Send(request))
+    .AddNote("Clock volunteer out")
+    .RequireAuthorization(clockingPolicy);
+
+apiClocking.MapGet("/view", (IMediator mediator) => mediator.Send(new GetClockingRota()))
+    .AddNote("View clocking rota")
+    .RequireAuthorization(clockingPolicy);
 
 app.Run();
 

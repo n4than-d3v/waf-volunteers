@@ -12,6 +12,7 @@ public class DatabaseContext : DbContext
 
     // Rota management
     public DbSet<Attendance> Attendance { get; set; }
+    public DbSet<AttendanceClocking> AttendanceClockings { get; set; }
     public DbSet<TimeRange> TimeRanges { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<MissingReason> MissingReasons { get; set; }

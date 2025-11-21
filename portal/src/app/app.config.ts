@@ -27,6 +27,8 @@ import { rotaManagementReducer } from './admin/rota/reducer';
 import { RotaManagementEffects } from './admin/rota/effects';
 import { RotaEffects } from './volunteer/rota/effects';
 import { rotaReducer } from './volunteer/rota/reducer';
+import { ClockingEffects } from './clocking/effects';
+import { clockingReducer } from './clocking/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -44,6 +46,9 @@ export const appConfig: ApplicationConfig = {
       // Admin
       profiles: profilesReducer,
       rotaManagement: rotaManagementReducer,
+
+      // Clocking
+      clocking: clockingReducer,
     }),
     provideEffects([
       LoginEffects,
@@ -57,6 +62,9 @@ export const appConfig: ApplicationConfig = {
       // Admin
       ProfilesEffects,
       RotaManagementEffects,
+
+      // Clocking
+      ClockingEffects,
     ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

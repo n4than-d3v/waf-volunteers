@@ -40,6 +40,8 @@ export class LoginEffects {
           this.tokenProvider.setToken(action.token);
           if (this.tokenProvider.isAdmin()) {
             this.router.navigateByUrl('/admin/dashboard');
+          } else if (this.tokenProvider.isClocking()) {
+            this.router.navigateByUrl('/clocking/dashboard');
           } else {
             this.router.navigateByUrl('/volunteer/dashboard');
           }

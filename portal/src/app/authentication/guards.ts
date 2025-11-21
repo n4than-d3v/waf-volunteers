@@ -11,3 +11,8 @@ export const isAdmin: CanActivateFn = () => {
   const tokenProvider = inject(TokenProvider);
   return tokenProvider.isAdmin();
 };
+
+export const isClocking: CanActivateFn = () => {
+  const tokenProvider = inject(TokenProvider);
+  return tokenProvider.isClocking();
+};

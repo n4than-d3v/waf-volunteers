@@ -1,8 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
   selectProfiles,
@@ -19,7 +24,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent, RouterLink],
+  imports: [
+    AsyncPipe,
+    ReactiveFormsModule,
+    SpinnerComponent,
+    RouterLink,
+    CommonModule,
+  ],
 })
 export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
   userId: number = 0;
@@ -41,12 +52,14 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
     city: new FormControl(''),
     county: new FormControl(''),
     postcode: new FormControl(''),
+    cars: new FormArray<FormControl<string | null>>([]),
     status: new FormControl(-1),
     roleVolunteer: new FormControl(false),
     roleReception: new FormControl(false),
     roleTeamLeader: new FormControl(false),
     roleVet: new FormControl(false),
     roleAdmin: new FormControl(false),
+    roleClocking: new FormControl(false),
   });
 
   constructor(private store: Store, route: ActivatedRoute) {
@@ -62,6 +75,10 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
         if (!profiles) return;
         const profile = profiles.find((p) => p.id === this.userId);
         if (!profile) return;
+        this.form.controls.cars.clear();
+        profile.cars.forEach((car) => {
+          this.form.controls.cars.push(new FormControl(car));
+        });
         this.form.patchValue({
           username: profile.username,
           firstName: profile.firstName,
@@ -73,14 +90,20 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
           city: profile.address.city,
           county: profile.address.county,
           postcode: profile.address.postcode,
+          cars: profile.cars,
           status: profile.status,
           roleVolunteer: !!(profile.roles & Roles.Volunteer),
           roleReception: !!(profile.roles & Roles.Reception),
           roleTeamLeader: !!(profile.roles & Roles.TeamLeader),
           roleVet: !!(profile.roles & Roles.Vet),
           roleAdmin: !!(profile.roles & Roles.Admin),
+          roleClocking: !!(profile.roles & Roles.Clocking),
         });
       });
+  }
+
+  addCar() {
+    this.form.controls.cars.push(new FormControl(''));
   }
 
   save() {
@@ -102,13 +125,17 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
             county: this.form.controls.county.value || '',
             postcode: this.form.controls.postcode.value || '',
           },
+          cars: (
+            this.form.controls.cars.controls.map((c) => c.value || '') || []
+          ).filter((x) => !!x),
           status: this.form.controls.status.value!,
           roles:
             (this.form.controls.roleVolunteer.value ? Roles.Volunteer : 0) |
             (this.form.controls.roleReception.value ? Roles.Reception : 0) |
             (this.form.controls.roleTeamLeader.value ? Roles.TeamLeader : 0) |
             (this.form.controls.roleVet.value ? Roles.Vet : 0) |
-            (this.form.controls.roleAdmin.value ? Roles.Admin : 0),
+            (this.form.controls.roleAdmin.value ? Roles.Admin : 0) |
+            (this.form.controls.roleClocking.value ? Roles.Clocking : 0),
         },
       })
     );

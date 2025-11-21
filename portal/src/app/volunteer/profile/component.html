@@ -62,5 +62,22 @@
       formControlName="postcode"
     />
   </div>
+  <h2>Cars</h2>
+  <p>
+    We need to know this for fire safety, to know who is at the hospital during
+    an emergency.
+  </p>
+  <div formArrayName="cars">
+    <div
+      class="car-field"
+      *ngFor="let car of form.controls.cars.controls; let i=index"
+    >
+      <input type="text" [formControlName]="i" />
+    </div>
+    <button class="button button--secondary add-car" (click)="addCar()">
+      Add {{ (form.controls.cars.length === 0 ? 'a' : 'another' )}} car
+    </button>
+  </div>
+  <br />
   <button class="button button--primary" (click)="save()">Save</button>
 </form>

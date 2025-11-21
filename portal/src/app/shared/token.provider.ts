@@ -6,6 +6,7 @@ export enum Roles {
   TeamLeader = 4,
   Vet = 8,
   Admin = 16,
+  Clocking = 32,
 }
 
 export enum Status {
@@ -66,5 +67,12 @@ export class TokenProvider {
     if (!session) return false;
 
     return !!(Number(session.roles) & Roles.Admin);
+  }
+
+  public isClocking() {
+    const session = this.getSession();
+    if (!session) return false;
+
+    return !!(Number(session.roles) & Roles.Clocking);
   }
 }

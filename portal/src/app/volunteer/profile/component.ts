@@ -13,8 +13,13 @@ import {
   getCurrentProfile,
   updateCurrentProfile,
 } from './actions';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { RouterLink } from '@angular/router';
 
@@ -23,7 +28,13 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent, RouterLink],
+  imports: [
+    AsyncPipe,
+    ReactiveFormsModule,
+    SpinnerComponent,
+    RouterLink,
+    CommonModule,
+  ],
 })
 export class VolunteerProfileComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean>;
@@ -42,6 +53,7 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
     city: new FormControl(''),
     county: new FormControl(''),
     postcode: new FormControl(''),
+    cars: new FormArray<FormControl<string | null>>([]),
   });
 
   constructor(private store: Store) {
@@ -52,6 +64,10 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
       .select(selectCurrentProfile)
       .subscribe((profile) => {
         if (!profile) return;
+        this.form.controls.cars.clear();
+        profile.cars.forEach((car) => {
+          this.form.controls.cars.push(new FormControl(car));
+        });
         this.form.patchValue({
           firstName: profile.firstName,
           lastName: profile.lastName,
@@ -62,8 +78,13 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
           city: profile.address.city,
           county: profile.address.county,
           postcode: profile.address.postcode,
+          cars: profile.cars,
         });
       });
+  }
+
+  addCar() {
+    this.form.controls.cars.push(new FormControl(''));
   }
 
   save() {
@@ -82,6 +103,9 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
             county: this.form.controls.county.value || '',
             postcode: this.form.controls.postcode.value || '',
           },
+          cars: (
+            this.form.controls.cars.controls.map((c) => c.value || '') || []
+          ).filter((x) => !!x),
         },
       })
     );

@@ -3,6 +3,7 @@ using System;
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20251120150051_Cars")]
+    partial class Cars
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,33 +243,6 @@ namespace Api.Migrations
                     b.ToTable("Attendance");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Rota.AttendanceClocking", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AttendanceId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Car")
-                        .HasColumnType("text");
-
-                    b.Property<TimeOnly>("In")
-                        .HasColumnType("time without time zone");
-
-                    b.Property<TimeOnly?>("Out")
-                        .HasColumnType("time without time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttendanceId");
-
-                    b.ToTable("AttendanceClockings");
-                });
-
             modelBuilder.Entity("Api.Database.Entities.Rota.Job", b =>
                 {
                     b.Property<int>("Id")
@@ -467,17 +443,6 @@ namespace Api.Migrations
                     b.Navigation("MissingReason");
 
                     b.Navigation("Time");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Rota.AttendanceClocking", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Rota.Attendance", "Attendance")
-                        .WithMany()
-                        .HasForeignKey("AttendanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Attendance");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Rota.RegularShift", b =>

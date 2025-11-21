@@ -9,7 +9,7 @@
   This is the expected format:
   <i>
     username, firstName, lastName, email, phone, lineOne, lineTwo, city, county,
-    postcode, regularShifts
+    postcode, regularShifts, cars
   </i>
 </p>
 <p>
@@ -20,6 +20,10 @@
   <i>day/time/job|day/time/job/week...</i> e.g.
   <i>Thursday/Evening/Animal Husbandry|Saturday/Morning/Team Leader/1</i>
   You only need to provide the "week" if necessary (e.g. weekends)
+</p>
+<p>
+  Cars are the registration numbers, separated by a | character, e.g.
+  <i>AB12 34CD|EF56 GH78</i>
 </p>
 <p>Users will be assigned the 'Volunteer' role automatically.</p>
 <textarea [(ngModel)]="csv"></textarea>

@@ -20,6 +20,7 @@ export interface Profile {
     county: string;
     postcode: string;
   };
+  cars: string[];
   subscribed?: boolean;
   roles: number;
   status: number;

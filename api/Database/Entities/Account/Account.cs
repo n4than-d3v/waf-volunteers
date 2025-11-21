@@ -29,6 +29,7 @@ public class Account : Entity
     public string AddressCity { get; private set; }
     public string AddressCounty { get; private set; }
     public string AddressPostcode { get; private set; }
+    public string[] Cars { get; private set; }
 
     #endregion
 
@@ -42,7 +43,7 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateOnly creationDate, string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateOnly creationDate, string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string[] cars, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
@@ -58,6 +59,7 @@ public class Account : Entity
         AddressCity = addressCity;
         AddressCounty = addressCounty;
         AddressPostcode = addressPostcode;
+        Cars = cars;
         PushSubscription = pushSubscription;
         Salt = salt;
     }
@@ -71,7 +73,7 @@ public class Account : Entity
         Password = password;
     }
 
-    public void UpdatePersonalDetails(string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode)
+    public void UpdatePersonalDetails(string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string[] cars)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -82,6 +84,7 @@ public class Account : Entity
         AddressCity = addressCity;
         AddressCounty = addressCounty;
         AddressPostcode = addressPostcode;
+        Cars = cars;
     }
 
     public void Subscribe(string pushSubscription)
@@ -115,5 +118,6 @@ public enum AccountRoles
     Reception = 2,
     TeamLeader = 4,
     Vet = 8,
-    Admin = 16
+    Admin = 16,
+    Clocking = 32
 }

@@ -36,8 +36,8 @@
   @for (day of rota.data; track day.date) {
   <div class="day">
     <h3>
-      {{day.date|date:'EEEE' }} {{ day.date | day }} {{ day.date | date: 'MMMM
-      y'}}
+      {{ day.date | date:'EEEE' }} {{ day.date | day }} {{ day.date | date:
+      'MMMM y'}}
     </h3>
     <div class="shifts">
       @for (shift of day.shifts; track shift.time.id) {

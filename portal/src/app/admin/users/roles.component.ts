@@ -18,6 +18,7 @@ export class AdminUsersRoleComponent implements OnInit {
     if (this.roles & Roles.TeamLeader) list.push('Team leader');
     if (this.roles & Roles.Vet) list.push('Vet');
     if (this.roles & Roles.Admin) list.push('Admin');
+    if (this.roles & Roles.Clocking) list.push('Clocking');
     this.rolesFormatted = list.join(', ');
   }
 }

@@ -1,8 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe } from '@angular/common';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
   selectProfileCreateSuccess,
@@ -18,7 +23,13 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, ReactiveFormsModule, SpinnerComponent, RouterLink],
+  imports: [
+    AsyncPipe,
+    ReactiveFormsModule,
+    SpinnerComponent,
+    RouterLink,
+    CommonModule,
+  ],
 })
 export class AdminUsersCreateComponent {
   loading$: Observable<boolean>;
@@ -36,17 +47,23 @@ export class AdminUsersCreateComponent {
     city: new FormControl(''),
     county: new FormControl(''),
     postcode: new FormControl(''),
+    cars: new FormArray<FormControl<string | null>>([]),
     roleVolunteer: new FormControl(true),
     roleReception: new FormControl(false),
     roleTeamLeader: new FormControl(false),
     roleVet: new FormControl(false),
     roleAdmin: new FormControl(false),
+    roleClocking: new FormControl(false),
   });
 
   constructor(private store: Store) {
     this.loading$ = this.store.select(selectProfilesLoading);
     this.created$ = this.store.select(selectProfileCreateSuccess);
     this.error$ = this.store.select(selectProfilesError);
+  }
+
+  addCar() {
+    this.form.controls.cars.push(new FormControl(''));
   }
 
   save() {
@@ -68,13 +85,17 @@ export class AdminUsersCreateComponent {
             county: this.form.controls.county.value || '',
             postcode: this.form.controls.postcode.value || '',
           },
+          cars: (
+            this.form.controls.cars.controls.map((c) => c.value || '') || []
+          ).filter((x) => !!x),
           status: Status.Active,
           roles:
             (this.form.controls.roleVolunteer.value ? Roles.Volunteer : 0) |
             (this.form.controls.roleReception.value ? Roles.Reception : 0) |
             (this.form.controls.roleTeamLeader.value ? Roles.TeamLeader : 0) |
             (this.form.controls.roleVet.value ? Roles.Vet : 0) |
-            (this.form.controls.roleAdmin.value ? Roles.Admin : 0),
+            (this.form.controls.roleAdmin.value ? Roles.Admin : 0) |
+            (this.form.controls.roleClocking.value ? Roles.Clocking : 0),
         },
       })
     );

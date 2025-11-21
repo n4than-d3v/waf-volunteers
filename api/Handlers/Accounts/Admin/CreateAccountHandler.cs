@@ -15,6 +15,7 @@ public class CreateAccount : IRequest<IResult>
     public string Email { get; set; }
     public string Phone { get; set; }
     public CreateAccountAddress Address { get; set; }
+    public string[] Cars { get; set; }
 
     public class CreateAccountAddress
     {
@@ -65,8 +66,9 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             _encryptionService.Encrypt(request.Address.City ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Address.County ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Address.Postcode ?? string.Empty, salt),
+            (request.Cars ?? []).Select(car => _encryptionService.Encrypt(car, salt)).ToArray(),
             _encryptionService.Encrypt(string.Empty, salt),
-            salt
+        salt
         );
 
         _repository.Create(account);

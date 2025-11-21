@@ -13,6 +13,7 @@ public class UpdateAccount : IRequest<IResult>
     public string Email { get; set; }
     public string Phone { get; set; }
     public UpdateAccountAddress Address { get; set; }
+    public string[] Cars { get; set; }
     public AccountRoles Roles { get; set; }
     public AccountStatus Status { get; set; }
 
@@ -58,7 +59,8 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, IResult>
                 City = request.Address.City,
                 County = request.Address.County,
                 Postcode = request.Address.Postcode,
-            }
+            },
+            Cars = request.Cars
         }.WithId(request.Id), cancellationToken);
 
         var user = await _repository.Get<Account>(request.Id);

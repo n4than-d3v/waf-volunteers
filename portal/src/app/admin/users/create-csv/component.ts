@@ -97,6 +97,9 @@ export class AdminUsersCreateCsvComponent implements OnInit, OnDestroy {
             county: getIndex(8),
             postcode: getIndex(9),
           },
+          cars: getIndex(11)
+            .split('|')
+            .filter((x) => !!x),
           status: Status.Active,
           roles: Roles.Volunteer,
         },

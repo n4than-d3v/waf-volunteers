@@ -5,7 +5,7 @@ import { ResetPasswordComponent } from './authentication/reset-password/componen
 import { VolunteerDashboardComponent } from './volunteer/dashboard/component';
 import { VolunteerRotaComponent } from './volunteer/rota/component';
 import { VolunteerProfileComponent } from './volunteer/profile/component';
-import { isAdmin, isAuthenticated } from './authentication/guards';
+import { isAdmin, isAuthenticated, isClocking } from './authentication/guards';
 import { AdminDashboardComponent } from './admin/dashboard/component';
 import { AdminUsersComponent } from './admin/users/component';
 import { AdminUsersUpdateInfoComponent } from './admin/users/update-info/component';
@@ -16,6 +16,7 @@ import { AdminUsersUpdateRegularShiftsComponent } from './admin/rota/regular-shi
 import { AdminRotaViewAttendanceComponent } from './admin/rota/view-attendance/component';
 import { AdminUsersCreateCsvComponent } from './admin/users/create-csv/component';
 import { InstallationComponent } from './installation/component';
+import { ClockingComponent } from './clocking/component';
 
 export const routes: Routes = [
   {
@@ -56,6 +57,14 @@ export const routes: Routes = [
         path: 'profile',
         component: VolunteerProfileComponent,
       },
+    ],
+  },
+  {
+    path: 'clocking',
+    canActivate: [isAuthenticated, isClocking],
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: ClockingComponent },
     ],
   },
   {

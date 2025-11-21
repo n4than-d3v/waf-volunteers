@@ -42,6 +42,13 @@ export class ProfileEffects {
     )
   );
 
+  updateCurrentProfileSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateCurrentProfileSuccess),
+      switchMap((action) => of(getCurrentProfile()))
+    )
+  );
+
   updateSubscription$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateSubscription),

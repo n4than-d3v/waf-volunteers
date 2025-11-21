@@ -47,7 +47,8 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
                     City = _encryptionService.Decrypt(user.AddressCity, user.Salt),
                     County = _encryptionService.Decrypt(user.AddressCounty, user.Salt),
                     Postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt)
-                }
+                },
+                Cars = user.Cars.Select(car => _encryptionService.Decrypt(car, user.Salt)).ToArray()
             };
             accounts.Add(account);
         }
@@ -70,6 +71,7 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
         public bool Subscribed { get; set; }
         public int Roles { get; set; }
         public int Status { get; set; }
+        public string[] Cars { get; set; }
 
         public class ResponseAccountAddress
         {

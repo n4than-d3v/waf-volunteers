@@ -164,6 +164,9 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
 
             if (job == null) continue;
 
+            // Do not manage regular shifts for existing accounts
+            if (!newlyCreatedAccountUsernames.Contains(account.Username)) continue;
+
             var availability = activeVolunteer.entity.volunteer_availability;
             List<RegularShift> checkedRegularShifts = [];
             foreach (var shift in availability)

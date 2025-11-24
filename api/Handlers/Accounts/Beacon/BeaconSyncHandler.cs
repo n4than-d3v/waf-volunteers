@@ -60,18 +60,21 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
 
             int lettersOfFirstName = 1;
 
-            string username = (activeVolunteer.entity.name.first[0] + activeVolunteer.entity.name.last).ToLower();
+            string username = (activeVolunteer.entity.name.first[0] + activeVolunteer.entity.name.last)
+                .ToLower().Replace("-", "").Replace("'", "").Replace(" ", "");
 
             int tries = 1;
             while (true)
             {
                 var existingUser = accounts.FirstOrDefault(x => x.Username == username);
                 if (existingUser == null && !newlyCreatedAccountUsernames.Contains(username)) break;
-                username = (activeVolunteer.entity.name.first[..lettersOfFirstName] + activeVolunteer.entity.name.last).ToLower();
+                username = (activeVolunteer.entity.name.first[..lettersOfFirstName] + activeVolunteer.entity.name.last)
+                    .ToLower().Replace("-", "").Replace("'", "").Replace(" ", "");
                 if (lettersOfFirstName >= activeVolunteer.entity.name.first.Length)
                 {
                     tries++;
-                    username = (activeVolunteer.entity.name.first[0] + activeVolunteer.entity.name.last + tries).ToLower();
+                    username = (activeVolunteer.entity.name.first[0] + activeVolunteer.entity.name.last + tries)
+                        .ToLower().Replace("-", "").Replace("'", "").Replace(" ", "");
                 }
                 else
                 {

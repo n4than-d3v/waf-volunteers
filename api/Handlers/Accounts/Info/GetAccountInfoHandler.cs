@@ -3,6 +3,8 @@ using Api.Database.Entities.Account;
 using Api.Services;
 using MediatR;
 using Microsoft.Graph.Models;
+using Newtonsoft.Json;
+using static Api.Services.BeaconService.BeaconFilterResults;
 
 namespace Api.Handlers.Accounts.Info;
 
@@ -32,12 +34,12 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
         var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
         var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
         var email = _encryptionService.Decrypt(user.Email, user.Salt);
-        var phone = _encryptionService.Decrypt(user.Phone, user.Salt);
-        var lineOne = _encryptionService.Decrypt(user.AddressLineOne, user.Salt);
-        var lineTwo = _encryptionService.Decrypt(user.AddressLineTwo, user.Salt);
-        var city = _encryptionService.Decrypt(user.AddressCity, user.Salt);
-        var county = _encryptionService.Decrypt(user.AddressCounty, user.Salt);
-        var postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt);
+        UpdateBeaconInfo? beaconInfo = null;
+        if (!(user.BeaconId == null || string.IsNullOrWhiteSpace(user.BeaconInfo)))
+        {
+            string json = _encryptionService.Decrypt(user.BeaconInfo, user.Salt);
+            beaconInfo = JsonConvert.DeserializeObject<UpdateBeaconInfo>(json);
+        }
         var subscription = _encryptionService.Decrypt(user.PushSubscription, user.Salt);
         var cars = user.Cars.Select(car => _encryptionService.Decrypt(car, user.Salt)).ToArray();
 
@@ -46,15 +48,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
             firstName,
             lastName,
             email,
-            phone,
-            address = new
-            {
-                lineOne,
-                lineTwo,
-                city,
-                county,
-                postcode
-            },
+            beaconInfo,
             cars,
             subscribed = !string.IsNullOrWhiteSpace(subscription)
         });

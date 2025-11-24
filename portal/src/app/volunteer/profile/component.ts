@@ -22,6 +22,12 @@ import {
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { RouterLink } from '@angular/router';
+import { BeaconInfoComponent } from '../../shared/beacon/component';
+import {
+  BeaconForm,
+  createBeaconForm,
+  getBeaconInfo,
+} from '../../shared/beacon/types';
 
 @Component({
   selector: 'volunteer-profile',
@@ -34,6 +40,7 @@ import { RouterLink } from '@angular/router';
     SpinnerComponent,
     RouterLink,
     CommonModule,
+    BeaconInfoComponent,
   ],
 })
 export class VolunteerProfileComponent implements OnInit, OnDestroy {
@@ -43,16 +50,12 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
 
   subscription: Subscription | null = null;
 
+  profile: Profile | null = null;
+  beaconForm: BeaconForm;
+
+  editing = '';
+
   form = new FormGroup({
-    firstName: new FormControl(''),
-    lastName: new FormControl(''),
-    email: new FormControl(''),
-    phone: new FormControl(''),
-    lineOne: new FormControl(''),
-    lineTwo: new FormControl(''),
-    city: new FormControl(''),
-    county: new FormControl(''),
-    postcode: new FormControl(''),
     cars: new FormArray<FormControl<string | null>>([]),
   });
 
@@ -60,24 +63,17 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
     this.loading$ = this.store.select(selectProfileLoading);
     this.updated$ = this.store.select(selectProfileUpdateSuccess);
     this.error$ = this.store.select(selectProfileError);
+    this.beaconForm = createBeaconForm();
     this.subscription = this.store
       .select(selectCurrentProfile)
       .subscribe((profile) => {
         if (!profile) return;
+        this.profile = profile;
         this.form.controls.cars.clear();
         profile.cars.forEach((car) => {
           this.form.controls.cars.push(new FormControl(car));
         });
         this.form.patchValue({
-          firstName: profile.firstName,
-          lastName: profile.lastName,
-          email: profile.email,
-          phone: profile.phone,
-          lineOne: profile.address.lineOne,
-          lineTwo: profile.address.lineTwo,
-          city: profile.address.city,
-          county: profile.address.county,
-          postcode: profile.address.postcode,
           cars: profile.cars,
         });
       });
@@ -87,22 +83,16 @@ export class VolunteerProfileComponent implements OnInit, OnDestroy {
     this.form.controls.cars.push(new FormControl(''));
   }
 
+  removeCar(index: number) {
+    this.form.controls.cars.removeAt(index);
+  }
+
   save() {
     window.scrollTo(0, 0);
     this.store.dispatch(
       updateCurrentProfile({
         profile: {
-          firstName: this.form.controls.firstName.value || '',
-          lastName: this.form.controls.lastName.value || '',
-          email: this.form.controls.email.value || '',
-          phone: this.form.controls.phone.value || '',
-          address: {
-            lineOne: this.form.controls.lineOne.value || '',
-            lineTwo: this.form.controls.lineTwo.value || '',
-            city: this.form.controls.city.value || '',
-            county: this.form.controls.county.value || '',
-            postcode: this.form.controls.postcode.value || '',
-          },
+          beaconInfo: getBeaconInfo(this.beaconForm),
           cars: (
             this.form.controls.cars.controls.map((c) => c.value || '') || []
           ).filter((x) => !!x),

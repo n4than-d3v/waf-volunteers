@@ -41,13 +41,6 @@ export class AdminUsersCreateComponent {
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     email: new FormControl(''),
-    phone: new FormControl(''),
-    lineOne: new FormControl(''),
-    lineTwo: new FormControl(''),
-    city: new FormControl(''),
-    county: new FormControl(''),
-    postcode: new FormControl(''),
-    cars: new FormArray<FormControl<string | null>>([]),
     roleVolunteer: new FormControl(true),
     roleReception: new FormControl(false),
     roleTeamLeader: new FormControl(false),
@@ -62,10 +55,6 @@ export class AdminUsersCreateComponent {
     this.error$ = this.store.select(selectProfilesError);
   }
 
-  addCar() {
-    this.form.controls.cars.push(new FormControl(''));
-  }
-
   save() {
     window.scrollTo(0, 0);
     console.log(this.form);
@@ -77,17 +66,6 @@ export class AdminUsersCreateComponent {
           firstName: this.form.controls.firstName.value || '',
           lastName: this.form.controls.lastName.value || '',
           email: this.form.controls.email.value || '',
-          phone: this.form.controls.phone.value || '',
-          address: {
-            lineOne: this.form.controls.lineOne.value || '',
-            lineTwo: this.form.controls.lineTwo.value || '',
-            city: this.form.controls.city.value || '',
-            county: this.form.controls.county.value || '',
-            postcode: this.form.controls.postcode.value || '',
-          },
-          cars: (
-            this.form.controls.cars.controls.map((c) => c.value || '') || []
-          ).filter((x) => !!x),
           status: Status.Active,
           roles:
             (this.form.controls.roleVolunteer.value ? Roles.Volunteer : 0) |

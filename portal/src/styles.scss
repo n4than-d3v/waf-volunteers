@@ -63,6 +63,7 @@ main {
     accent-color: var(--theme-primary);
     transform: scale(1.5);
     margin-right: 0.75rem;
+    margin-left: 0.3rem;
   }
 }
 
@@ -185,3 +186,74 @@ th {
     color: #0f403b;
   }
 }
+
+.summary-card {
+  border: solid 2px var(--theme-primary);
+  max-width: 30rem;
+
+  .summary-card__title-wrapper {
+    background: var(--theme-primary);
+    padding: 0.25rem 1rem;
+
+    .summary-card__title {
+      color: white;
+    }
+  }
+
+  .summary-card__content {
+    padding: 0.75rem 1rem;
+
+    .right {
+      text-align: right;
+    }
+
+    .summary-list {
+      margin-bottom: 1rem;
+
+      .summary-list__row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px rgba(26, 56, 29, 0.5);
+        margin-bottom: 0.25rem;
+
+        .summary-list__key {
+          font-size: 1rem;
+        }
+
+        .summary-list__value {
+          font-weight: bold;
+          font-size: 1.125rem;
+        }
+      }
+    }
+  }
+}
+
+/*
+<div class="summary-card">
+      <div class="summary-card__title-wrapper">
+        <h2 class="summary-card__title">Name</h2>
+      </div>
+      <div class="summary-card__content">
+        <dl class="summary-list">
+          <div class="summary-list__row">
+            <dt class="summary-list__key">Full name</dt>
+            <dd class="summary-list__value">
+              {{ form.controls.name.controls.full.value }}
+            </dd>
+          </div>
+          <div class="summary-list__row">
+            <dt class="summary-list__key">Preferred name</dt>
+            <dd class="summary-list__value">
+              {{ form.controls.c_preferred_name.value }}
+            </dd>
+          </div>
+        </dl>
+        <button class="button button--primary" (click)="editing = 'name'">
+          Update
+        </button>
+      </div>
+    </div>*/

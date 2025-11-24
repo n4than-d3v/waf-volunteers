@@ -14,24 +14,16 @@ public class Account : Entity
 
     #endregion
 
-    public DateOnly CreationDate { get; private set; }
-
     #region Encrypted properties
-
-    #region Personal details
 
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
-    public string Phone { get; private set; }
-    public string AddressLineOne { get; private set; }
-    public string AddressLineTwo { get; private set; }
-    public string AddressCity { get; private set; }
-    public string AddressCounty { get; private set; }
-    public string AddressPostcode { get; private set; }
-    public string[] Cars { get; private set; }
 
-    #endregion
+    public int? BeaconId { get; private set; }
+    public string BeaconInfo { get; private set; }
+
+    public string[] Cars { get; private set; }
 
     public string PushSubscription { get; private set; }
 
@@ -43,22 +35,33 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateOnly creationDate, string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string[] cars, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, string firstName, string lastName, string email, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
         Status = status;
         Roles = roles;
-        CreationDate = creationDate;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
-        Phone = phone;
-        AddressLineOne = addressLineOne;
-        AddressLineTwo = addressLineTwo;
-        AddressCity = addressCity;
-        AddressCounty = addressCounty;
-        AddressPostcode = addressPostcode;
+        BeaconId = null;
+        BeaconInfo = string.Empty;
+        Cars = [];
+        PushSubscription = pushSubscription;
+        Salt = salt;
+    }
+
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, string firstName, string lastName, string email, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
+    {
+        Username = username;
+        Password = password;
+        Status = status;
+        Roles = roles;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        BeaconId = beaconId;
+        BeaconInfo = beaconInfo;
         Cars = cars;
         PushSubscription = pushSubscription;
         Salt = salt;
@@ -73,17 +76,25 @@ public class Account : Entity
         Password = password;
     }
 
-    public void UpdatePersonalDetails(string firstName, string lastName, string email, string phone, string addressLineOne, string addressLineTwo, string addressCity, string addressCounty, string addressPostcode, string[] cars)
+    public void UpdateBeaconId(int beaconId)
+    {
+        BeaconId = beaconId;
+    }
+
+    public void UpdatePersonalDetails(string firstName, string lastName, string email, string beaconInfo, string[] cars)
     {
         FirstName = firstName;
         LastName = lastName;
         Email = email;
-        Phone = phone;
-        AddressLineOne = addressLineOne;
-        AddressLineTwo = addressLineTwo;
-        AddressCity = addressCity;
-        AddressCounty = addressCounty;
-        AddressPostcode = addressPostcode;
+        BeaconInfo = beaconInfo;
+        Cars = cars;
+    }
+
+    public void UpdatePersonalDetails(string firstName, string lastName, string email, string[] cars)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
         Cars = cars;
     }
 

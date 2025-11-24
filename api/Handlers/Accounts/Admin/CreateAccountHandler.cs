@@ -6,6 +6,9 @@ using MediatR;
 
 namespace Api.Handlers.Accounts.Admin;
 
+/// <summary>
+/// This is ONLY to be used to create non-beacon accounts (e.g. admin / clocking)
+/// </summary>
 public class CreateAccount : IRequest<IResult>
 {
     public string Username { get; set; }
@@ -13,18 +16,6 @@ public class CreateAccount : IRequest<IResult>
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public string Phone { get; set; }
-    public CreateAccountAddress Address { get; set; }
-    public string[] Cars { get; set; }
-
-    public class CreateAccountAddress
-    {
-        public string LineOne { get; set; }
-        public string LineTwo { get; set; }
-        public string City { get; set; }
-        public string County { get; set; }
-        public string Postcode { get; set; }
-    }
 
     public AccountRoles Roles { get; set; }
 }
@@ -56,19 +47,11 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             password: "-",
             AccountStatus.Active,
             request.Roles,
-            DateOnly.FromDateTime(DateTime.UtcNow),
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Email ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Phone ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Address.LineOne ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Address.LineTwo ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Address.City ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Address.County ?? string.Empty, salt),
-            _encryptionService.Encrypt(request.Address.Postcode ?? string.Empty, salt),
-            (request.Cars ?? []).Select(car => _encryptionService.Encrypt(car, salt)).ToArray(),
             _encryptionService.Encrypt(string.Empty, salt),
-        salt
+            salt
         );
 
         _repository.Create(account);

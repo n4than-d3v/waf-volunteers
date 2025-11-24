@@ -1,3 +1,5 @@
+import { BeaconInfo } from '../../shared/beacon/types';
+
 export interface ProfileState {
   loading: boolean;
   profile: Profile | null;
@@ -9,14 +11,7 @@ export interface Profile {
   firstName: string;
   lastName: string;
   email: string;
-  phone: string;
-  address: {
-    lineOne: string;
-    lineTwo: string;
-    city: string;
-    county: string;
-    postcode: string;
-  };
+  beaconInfo: BeaconInfo;
   cars: string[];
   subscribed?: boolean;
 }

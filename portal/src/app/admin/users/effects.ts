@@ -8,6 +8,9 @@ import {
   getUsers,
   getUsersError,
   getUsersSuccess,
+  runBeaconSync,
+  runBeaconSyncError,
+  runBeaconSyncSuccess,
   updateUser,
   updateUserError,
   updateUserSuccess,
@@ -57,6 +60,25 @@ export class ProfilesEffects {
             catchError(() => of(createUserError()))
           );
       })
+    )
+  );
+
+  runBeaconSync$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(runBeaconSync),
+      switchMap((_) => {
+        return this.http.post(`account/beacon-sync`, {}).pipe(
+          map((_) => runBeaconSyncSuccess()),
+          catchError(() => of(runBeaconSyncError()))
+        );
+      })
+    )
+  );
+
+  runBeaconSyncSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(runBeaconSyncSuccess),
+      switchMap((_) => of(getUsers()))
     )
   );
 }

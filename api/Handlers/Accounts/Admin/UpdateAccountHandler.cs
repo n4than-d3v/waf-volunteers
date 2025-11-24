@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Account;
 using MediatR;
+using static Api.Services.BeaconService.BeaconFilterResults;
 
 namespace Api.Handlers.Accounts.Admin;
 
@@ -11,20 +12,13 @@ public class UpdateAccount : IRequest<IResult>
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public string Phone { get; set; }
-    public UpdateAccountAddress Address { get; set; }
+
+    public UpdateBeaconInfo? BeaconInfo { get; set; }
+
     public string[] Cars { get; set; }
+
     public AccountRoles Roles { get; set; }
     public AccountStatus Status { get; set; }
-
-    public class UpdateAccountAddress
-    {
-        public string LineOne { get; set; }
-        public string LineTwo { get; set; }
-        public string City { get; set; }
-        public string County { get; set; }
-        public string Postcode { get; set; }
-    }
 
     public UpdateAccount WithId(int id)
     {
@@ -51,15 +45,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, IResult>
             FirstName = request.FirstName,
             LastName = request.LastName,
             Email = request.Email,
-            Phone = request.Phone,
-            Address = new Info.UpdateAccountInfo.UpdateAccountInfoAddress
-            {
-                LineOne = request.Address.LineOne,
-                LineTwo = request.Address.LineTwo,
-                City = request.Address.City,
-                County = request.Address.County,
-                Postcode = request.Address.Postcode,
-            },
+            BeaconInfo = request.BeaconInfo,
             Cars = request.Cars
         }.WithId(request.Id), cancellationToken);
 

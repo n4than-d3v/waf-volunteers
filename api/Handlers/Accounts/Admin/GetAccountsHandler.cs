@@ -2,6 +2,8 @@
 using Api.Services;
 using MediatR;
 using Api.Database.Entities.Account;
+using static Api.Services.BeaconService.BeaconFilterResults;
+using Newtonsoft.Json;
 
 namespace Api.Handlers.Accounts.Admin;
 
@@ -29,6 +31,12 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
 
         foreach (var user in users)
         {
+            UpdateBeaconInfo? beaconInfo = null;
+            if (!(user.BeaconId == null || string.IsNullOrWhiteSpace(user.BeaconInfo)))
+            {
+                string json = _encryptionService.Decrypt(user.BeaconInfo, user.Salt);
+                beaconInfo = JsonConvert.DeserializeObject<UpdateBeaconInfo>(json);
+            }
             var account = new ResponseAccount
             {
                 Id = user.Id,
@@ -36,18 +44,10 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
                 FirstName = _encryptionService.Decrypt(user.FirstName, user.Salt),
                 LastName = _encryptionService.Decrypt(user.LastName, user.Salt),
                 Email = _encryptionService.Decrypt(user.Email, user.Salt),
-                Phone = _encryptionService.Decrypt(user.Phone, user.Salt),
+                BeaconInfo = beaconInfo,
                 Subscribed = !string.IsNullOrWhiteSpace(_encryptionService.Decrypt(user.PushSubscription, user.Salt)),
                 Roles = (int)user.Roles,
                 Status = (int)user.Status,
-                Address = new()
-                {
-                    LineOne = _encryptionService.Decrypt(user.AddressLineOne, user.Salt),
-                    LineTwo = _encryptionService.Decrypt(user.AddressLineTwo, user.Salt),
-                    City = _encryptionService.Decrypt(user.AddressCity, user.Salt),
-                    County = _encryptionService.Decrypt(user.AddressCounty, user.Salt),
-                    Postcode = _encryptionService.Decrypt(user.AddressPostcode, user.Salt)
-                },
                 Cars = user.Cars.Select(car => _encryptionService.Decrypt(car, user.Salt)).ToArray()
             };
             accounts.Add(account);
@@ -66,20 +66,10 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public string Phone { get; set; }
-        public ResponseAccountAddress Address { get; set; }
+        public UpdateBeaconInfo? BeaconInfo { get; set; }
         public bool Subscribed { get; set; }
         public int Roles { get; set; }
         public int Status { get; set; }
         public string[] Cars { get; set; }
-
-        public class ResponseAccountAddress
-        {
-            public string LineOne { get; set; }
-            public string LineTwo { get; set; }
-            public string City { get; set; }
-            public string County { get; set; }
-            public string Postcode { get; set; }
-        }
     }
 }

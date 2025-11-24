@@ -1,6 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 import { Profile } from './state';
-import { DayOfWeek } from '../rota/state';
+
+export const runBeaconSync = createAction('[Users] Run beacon sync');
+export const runBeaconSyncSuccess = createAction(
+  '[Users] Run beacon sync success'
+);
+export const runBeaconSyncError = createAction('[Users] Run beacon sync error');
 
 export const getUsers = createAction('[Users] Get users');
 export const getUsersSuccess = createAction(

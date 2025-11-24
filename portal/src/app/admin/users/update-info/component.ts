@@ -18,6 +18,13 @@ import {
 import { Roles, Status } from '../../../shared/token.provider';
 import { getUsers, updateUser } from '../actions';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Profile } from '../state';
+import {
+  BeaconForm,
+  createBeaconForm,
+  getBeaconInfo,
+} from '../../../shared/beacon/types';
+import { BeaconInfoComponent } from '../../../shared/beacon/component';
 
 @Component({
   selector: 'admin-users-update-info',
@@ -30,6 +37,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
     SpinnerComponent,
     RouterLink,
     CommonModule,
+    BeaconInfoComponent,
   ],
 })
 export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
@@ -41,17 +49,16 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
 
   subscription: Subscription | null = null;
 
+  profile: Profile | null = null;
+  beaconForm: BeaconForm;
+
+  editing = '';
+
   form = new FormGroup({
     username: new FormControl(''),
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     email: new FormControl(''),
-    phone: new FormControl(''),
-    lineOne: new FormControl(''),
-    lineTwo: new FormControl(''),
-    city: new FormControl(''),
-    county: new FormControl(''),
-    postcode: new FormControl(''),
     cars: new FormArray<FormControl<string | null>>([]),
     status: new FormControl(-1),
     roleVolunteer: new FormControl(false),
@@ -66,6 +73,7 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
     this.loading$ = this.store.select(selectProfilesLoading);
     this.updated$ = this.store.select(selectProfileUpdateSuccess);
     this.error$ = this.store.select(selectProfilesError);
+    this.beaconForm = createBeaconForm();
     route.params.subscribe((params) => {
       this.userId = Number(params['userId'] || 0);
     });
@@ -75,8 +83,9 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
         if (!profiles) return;
         const profile = profiles.find((p) => p.id === this.userId);
         if (!profile) return;
+        this.profile = profile;
         this.form.controls.cars.clear();
-        profile.cars.forEach((car) => {
+        (profile.cars || []).forEach((car) => {
           this.form.controls.cars.push(new FormControl(car));
         });
         this.form.patchValue({
@@ -84,12 +93,6 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
           firstName: profile.firstName,
           lastName: profile.lastName,
           email: profile.email,
-          phone: profile.phone,
-          lineOne: profile.address.lineOne,
-          lineTwo: profile.address.lineTwo,
-          city: profile.address.city,
-          county: profile.address.county,
-          postcode: profile.address.postcode,
           cars: profile.cars,
           status: profile.status,
           roleVolunteer: !!(profile.roles & Roles.Volunteer),
@@ -106,6 +109,10 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
     this.form.controls.cars.push(new FormControl(''));
   }
 
+  removeCar(index: number) {
+    this.form.controls.cars.removeAt(index);
+  }
+
   save() {
     window.scrollTo(0, 0);
     console.log(this.form);
@@ -117,14 +124,7 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
           firstName: this.form.controls.firstName.value || '',
           lastName: this.form.controls.lastName.value || '',
           email: this.form.controls.email.value || '',
-          phone: this.form.controls.phone.value || '',
-          address: {
-            lineOne: this.form.controls.lineOne.value || '',
-            lineTwo: this.form.controls.lineTwo.value || '',
-            city: this.form.controls.city.value || '',
-            county: this.form.controls.county.value || '',
-            postcode: this.form.controls.postcode.value || '',
-          },
+          beaconInfo: getBeaconInfo(this.beaconForm),
           cars: (
             this.form.controls.cars.controls.map((c) => c.value || '') || []
           ).filter((x) => !!x),

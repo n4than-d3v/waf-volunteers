@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Profile } from './state';
+import { BeaconInfo } from '../../shared/beacon/types';
 
 export const getCurrentProfile = createAction(
   '[Volunteer] Get Current Profile'
@@ -13,7 +14,7 @@ export const getCurrentProfileError = createAction(
 );
 export const updateCurrentProfile = createAction(
   '[Volunteer] Update Current Profile',
-  props<{ profile: Profile }>()
+  props<{ profile: { beaconInfo: BeaconInfo; cars: string[] } }>()
 );
 export const updateCurrentProfileSuccess = createAction(
   '[Volunteer] Update Current Profile: Success'

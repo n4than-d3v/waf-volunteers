@@ -9,6 +9,49 @@
 <div class="success">User updated</div>
 }
 <form [formGroup]="form">
+  @if (beaconForm && profile && profile.beaconInfo) {
+  <beacon-info [form]="beaconForm" [profile]="profile.beaconInfo" />
+  <div class="summary-card">
+    <div class="summary-card__title-wrapper">
+      <h2 class="summary-card__title">Cars</h2>
+    </div>
+    <div class="summary-card__content">
+      <div *ngIf="editing !== 'cars'">
+        <dl class="summary-list">
+          <div
+            *ngFor="let car of form.controls.cars.controls; let i=index"
+            class="summary-list__row"
+          >
+            <dt class="summary-list__key">Car {{ i + 1 }}</dt>
+            <dd class="summary-list__value">{{ car.value }}</dd>
+          </div>
+        </dl>
+        <div class="right">
+          <button class="button button--secondary" (click)="editing = 'cars'">
+            Update
+          </button>
+        </div>
+      </div>
+      <div *ngIf="editing === 'cars'" formGroupName="cars">
+        <div
+          class="car-field"
+          *ngFor="let car of form.controls.cars.controls; let i=index"
+        >
+          <div class="text-with-button">
+            <input type="text" [formControlName]="i" />
+            <button class="button button--warning" (click)="removeCar(i)">
+              Remove
+            </button>
+          </div>
+        </div>
+        <button class="button button--secondary add-another" (click)="addCar()">
+          Add {{ (form.controls.cars.length === 0 ? 'a' : 'another' )}} car
+        </button>
+      </div>
+    </div>
+  </div>
+  <br />
+  } @else {
   <div class="field">
     <label for="firstName">First name</label>
     <input
@@ -27,54 +70,14 @@
       formControlName="lastName"
     />
   </div>
+  <br />
   <h2>Contact details</h2>
   <div class="field">
     <label for="email">Email</label>
     <input type="text" id="email" name="email" formControlName="email" />
   </div>
-  <div class="field">
-    <label for="phone">Phone</label>
-    <input type="text" id="phone" name="phone" formControlName="phone" />
-  </div>
-  <h2>Address details</h2>
-  <div class="field">
-    <label for="lineOne">Line one</label>
-    <input type="text" id="lineOne" name="lineOne" formControlName="lineOne" />
-  </div>
-  <div class="field">
-    <label for="lineTwo">Line two</label>
-    <input type="text" id="lineTwo" name="lineTwo" formControlName="lineTwo" />
-  </div>
-  <div class="field">
-    <label for="city">City</label>
-    <input type="text" id="city" name="city" formControlName="city" />
-  </div>
-  <div class="field">
-    <label for="county">County</label>
-    <input type="text" id="county" name="county" formControlName="county" />
-  </div>
-  <div class="field">
-    <label for="postcode">Postcode</label>
-    <input
-      type="text"
-      id="postcode"
-      name="postcode"
-      formControlName="postcode"
-    />
-  </div>
-  <h2>Cars</h2>
-  <div formArrayName="cars">
-    <div
-      class="car-field"
-      *ngFor="let car of form.controls.cars.controls; let i=index"
-    >
-      <input type="text" [formControlName]="i" />
-    </div>
-    <button class="button button--secondary add-car" (click)="addCar()">
-      Add {{ (form.controls.cars.length === 0 ? 'a' : 'another' )}} car
-    </button>
-  </div>
   <br />
+  }
   <h2>Status</h2>
   <div class="field">
     <label for="status-active">Active</label>
@@ -96,6 +99,7 @@
       [value]="1"
     />
   </div>
+  <br />
   <h2>Access</h2>
   <div class="field">
     <label for="role-volunteer">Volunteer</label>

@@ -2,6 +2,7 @@ using Api.Configuration;
 using Api.Database;
 using Api.Handlers.Accounts;
 using Api.Handlers.Accounts.Admin;
+using Api.Handlers.Accounts.Beacon;
 using Api.Handlers.Accounts.Info;
 using Api.Handlers.Accounts.Reset;
 using Api.Handlers.Rota;
@@ -45,6 +46,9 @@ builder.Services.Configure<PushSettings>(
 );
 builder.Services.Configure<RotaSettings>(
     builder.Configuration.GetSection("Rota")
+);
+builder.Services.Configure<BeaconSettings>(
+    builder.Configuration.GetSection("Beacon")
 );
 
 var jwtSettings = builder.Configuration
@@ -101,6 +105,7 @@ builder.Services.AddTransient<IStringGenerator, StringGenerator>();
 builder.Services.AddTransient<IUserContext, UserContext>();
 builder.Services.AddTransient<IPushService, PushService>();
 builder.Services.AddTransient<IRotaService, RotaService>();
+builder.Services.AddTransient<IBeaconService, BeaconService>();
 
 builder.Services.AddMediatR(options =>
 {
@@ -182,6 +187,10 @@ apiAccount.MapPut("/password/reset", (IMediator mediator, ResetPassword request)
 
 apiAccount.MapGet("/users", (IMediator mediator) => mediator.Send(new GetAccounts()))
     .AddNote("Admin views all users' account info")
+    .RequireAuthorization(adminPolicy);
+
+apiAccount.MapPost("/beacon-sync", (IMediator mediator, BeaconSync request) => mediator.Send(request))
+    .AddNote("Admin synchronises accounts with Beacon CRM")
     .RequireAuthorization(adminPolicy);
 
 apiAccount.MapPost("/users", (IMediator mediator, CreateAccount request) => mediator.Send(request))

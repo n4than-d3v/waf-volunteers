@@ -7,6 +7,9 @@ import {
   getUsers,
   getUsersError,
   getUsersSuccess,
+  runBeaconSync,
+  runBeaconSyncError,
+  runBeaconSyncSuccess,
   updateUser,
   updateUserError,
   updateUserSuccess,
@@ -14,6 +17,23 @@ import {
 
 export const profilesReducer = createReducer<ProfilesState>(
   initialProfilesState,
+  on(runBeaconSync, (state) => ({
+    ...state,
+    loading: true,
+    profiles: null,
+    error: false,
+  })),
+  on(runBeaconSyncSuccess, (state) => ({
+    ...state,
+    loading: false,
+    error: false,
+  })),
+  on(runBeaconSyncError, (state) => ({
+    ...state,
+    loading: false,
+    profiles: null,
+    error: true,
+  })),
   on(getUsers, (state) => ({
     ...state,
     loading: true,

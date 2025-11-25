@@ -26,8 +26,20 @@ export interface Session {
 @Injectable()
 export class TokenProvider {
   private readonly LS_KEY = 'token';
+  private readonly LS_VERSION = 'last_refreshed';
+
+  private readonly version = '1.0.0';
+
+  private refreshIfOld() {
+    const existingVersion = localStorage.getItem(this.LS_VERSION);
+    if (existingVersion !== this.version) {
+      localStorage.setItem(this.LS_VERSION, this.version);
+      window.location.reload();
+    }
+  }
 
   public getToken() {
+    this.refreshIfOld();
     return localStorage.getItem(this.LS_KEY);
   }
 

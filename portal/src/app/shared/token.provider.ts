@@ -28,7 +28,7 @@ export class TokenProvider {
   private readonly LS_KEY = 'token';
   private readonly LS_VERSION = 'last_refreshed';
 
-  private readonly version = '1.0.0';
+  private readonly version = '1.0.1';
 
   private refreshIfOld() {
     const existingVersion = localStorage.getItem(this.LS_VERSION);

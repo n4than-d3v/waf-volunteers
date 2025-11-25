@@ -1,8 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 
-export const checkIfNeedToRefresh = createAction(
-  '[Authentication] Check if need to refresh'
-);
 export const checkIfAlreadyLoggedIn = createAction(
   '[Authentication] Check if already logged in'
 );

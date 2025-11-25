@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { selectLoginError, selectLoginLoading } from './selectors';
-import { checkIfAlreadyLoggedIn, checkIfNeedToRefresh, login } from './actions';
+import { checkIfAlreadyLoggedIn, login } from './actions';
 import {
   FormControl,
   FormGroup,
@@ -44,7 +44,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.checkIfRunningPwa();
-    this.store.dispatch(checkIfNeedToRefresh());
     this.store.dispatch(checkIfAlreadyLoggedIn());
   }
 

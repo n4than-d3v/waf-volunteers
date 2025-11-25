@@ -1,5 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 export enum Roles {
   Volunteer = 1,
@@ -27,22 +26,6 @@ export interface Session {
 @Injectable()
 export class TokenProvider {
   private readonly LS_KEY = 'token';
-  private readonly LS_VERSION = 'client_version';
-
-  http = inject(HttpClient);
-
-  public refreshIfOld() {
-    const subscription = this.http
-      .get<{ version: string }>('version')
-      .subscribe((response) => {
-        const clientVersion = localStorage.getItem(this.LS_VERSION);
-        if (response.version !== clientVersion) {
-          localStorage.setItem(this.LS_VERSION, response.version);
-          subscription.unsubscribe();
-          // window.location.reload();
-        }
-      });
-  }
 
   public getToken() {
     return localStorage.getItem(this.LS_KEY);

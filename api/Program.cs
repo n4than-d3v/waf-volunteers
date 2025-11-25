@@ -173,7 +173,14 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAngularApp");
 
+var version = Assembly.GetExecutingAssembly()
+    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+    ?.InformationalVersion;
+
 var api = app.MapGroup("/api");
+
+api.MapGet("/version", () => new { version });
+
 var apiAccount = api.MapGroup("/account");
 
 apiAccount.MapPost("/login", (IMediator mediator, Login request) => mediator.Send(request))

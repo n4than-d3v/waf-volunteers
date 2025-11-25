@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { checkIfAlreadyLoggedIn, login } from './actions';
+import { checkIfAlreadyLoggedIn, checkIfNeedToRefresh, login } from './actions';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -60,5 +60,16 @@ export class LoginEffects {
         return of();
       })
     )
+  );
+
+  checkIfNeedToRefresh$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(checkIfNeedToRefresh),
+        map(() => {
+          this.tokenProvider.refreshIfOld();
+        })
+      ),
+    { dispatch: false }
   );
 }

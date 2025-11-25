@@ -39,7 +39,7 @@ export class TokenProvider {
         if (response.version !== clientVersion) {
           localStorage.setItem(this.LS_VERSION, response.version);
           subscription.unsubscribe();
-          window.location.reload();
+          // window.location.reload();
         }
       });
   }

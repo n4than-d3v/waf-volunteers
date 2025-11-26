@@ -84,8 +84,9 @@
                   {{ expanded.includes(job) ? 'Hide' : 'Show' }}
                 </button>
               </div>
-              @if (job.isAssignable && (expanded.includes(job) || expandAll)) {
-              @if (assignableAreas$ | async; as assignableAreas) {
+              @if (job.isAssignable && job.coming > 0 &&(expanded.includes(job)
+              || expandAll)) { @if (assignableAreas$ | async; as
+              assignableAreas) {
               <div class="assignments">
                 <h4>Assignments</h4>
                 @for (volunteer of job.volunteers; track volunteer.id) { @if

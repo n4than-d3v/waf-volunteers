@@ -18,6 +18,21 @@
         <p><strong>X</strong></p>
         } @else if (selectedVolunteer == volunteer && cars) {
         <div class="cars">
+          @if (enteringCustomCar) {
+          <input type="text" class="custom-car" [(ngModel)]="customCar" />
+          <button
+            class="button button--primary"
+            (click)="clockIn(volunteer, customCar)"
+          >
+            Save
+          </button>
+          <button
+            class="button button--secondary"
+            (click)="enteringCustomCar = false"
+          >
+            Back
+          </button>
+          } @else {
           <button
             class="button button--secondary"
             (click)="clockIn(volunteer, null)"
@@ -30,6 +45,13 @@
             (click)="clockIn(volunteer, car)"
           >
             {{ car }}
+          </button>
+          }
+          <button
+            class="button button--primary"
+            (click)="enteringCustomCar = true"
+          >
+            Other
           </button>
           }
         </div>

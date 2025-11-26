@@ -1,5 +1,5 @@
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerComponent } from '../shared/spinner/component';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -24,6 +24,7 @@ import { DayPipe } from '../volunteer/rota/day.pipe';
     DayPipe,
     ReactiveFormsModule,
     SpinnerComponent,
+    FormsModule,
   ],
 })
 export class ClockingComponent implements OnInit {
@@ -34,6 +35,8 @@ export class ClockingComponent implements OnInit {
   date: string = new Date().toString();
 
   selectedVolunteer: Volunteer | null = null;
+  enteringCustomCar = false;
+  customCar = '';
   cars: string[] | null = null;
 
   constructor(private store: Store) {
@@ -50,6 +53,7 @@ export class ClockingComponent implements OnInit {
   showCars(volunteer: Volunteer) {
     this.selectedVolunteer = volunteer;
     this.cars = volunteer.cars;
+    this.enteringCustomCar = false;
   }
 
   clockIn(volunteer: Volunteer, car: string | null) {

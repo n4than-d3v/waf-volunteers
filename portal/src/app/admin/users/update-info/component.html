@@ -25,6 +25,13 @@
             <dt class="summary-list__key">Car {{ i + 1 }}</dt>
             <dd class="summary-list__value">{{ car.value }}</dd>
           </div>
+          @if (form.controls.cars.controls.length === 0) {
+          <p class="no-cars">
+            Please provide your car registration numbers if you drive to
+            Wildlife Aid. You are asked on arrival what car you came in, in case
+            of emergencies.
+          </p>
+          }
         </dl>
         <div class="right">
           <button class="button button--secondary" (click)="editing = 'cars'">

@@ -11,19 +11,28 @@
   </a>
 </div>
 
-<div class="header">
-  <h2>Filter</h2>
-  <p>
-    Viewing rota from <strong>{{ start }}</strong> to
-    <strong>{{ end }}</strong>
-  </p>
-  <div class="buttons">
-    <button class="button button--secondary" (click)="previousWeek()">
-      Previous week
-    </button>
-    <button class="button button--secondary" (click)="nextWeek()">
-      Next week
-    </button>
+<div class="header-container">
+  <div class="header">
+    <h2>Filter</h2>
+    <p>
+      Viewing rota from <strong>{{ start }}</strong> to
+      <strong>{{ end }}</strong>
+    </p>
+    <div class="buttons">
+      <button class="button button--secondary" (click)="previousWeek()">
+        Previous week
+      </button>
+      <button class="button button--secondary" (click)="nextWeek()">
+        Next week
+      </button>
+    </div>
+  </div>
+  <div class="key">
+    <h3>Key</h3>
+    <p><img src="images/rota/tick.svg" /> Coming</p>
+    <p><img src="images/rota/cross.svg" /> Not coming</p>
+    <p><img src="images/rota/question.svg" /> Unconfirmed</p>
+    <p><img src="images/rota/required.svg" /> Required</p>
   </div>
 </div>
 
@@ -32,6 +41,9 @@
 } @else if (rota.error) {
 <div class="error">Error occurred</div>
 }@else if (rota.data) {
+<button class="button button--primary expand-all" (click)="toggleAll()">
+  {{ expandAll ? 'Hide' : 'Show' }} all
+</button>
 <div class="days">
   @for (day of rota.data; track day.date) {
   <div class="day">
@@ -58,7 +70,19 @@
             </p>
             }
             <div class="volunteers">
-              @for (volunteer of job.volunteers; track volunteer.id) {
+              <div class="coming-bar">
+                <p>{{ job.coming }} <img src="images/rota/tick.svg" /></p>
+                <p>{{ job.notComing}} <img src="images/rota/cross.svg" /></p>
+                <p>
+                  {{ job.unconfirmed}} <img src="images/rota/question.svg" />
+                </p>
+                <p>{{ job.required }} <img src="images/rota/required.svg" /></p>
+                <button (click)="toggle(job)" class="button">
+                  {{ expanded.includes(job) ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+              @for (volunteer of job.volunteers; track volunteer.id) { @if
+              (expanded.includes(job) || expandAll) {
               <div class="volunteer">
                 <div class="details">
                   @if (volunteer.isRegularShift) {
@@ -128,7 +152,7 @@
                 </div>
                 }
               </div>
-              }
+              } }
             </div>
             @if (job.isAssignable) { @if (assignableAreas$ | async; as
             assignableAreas) {

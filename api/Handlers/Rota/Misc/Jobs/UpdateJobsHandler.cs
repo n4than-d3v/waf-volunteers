@@ -1,4 +1,5 @@
 ﻿using Api.Database;
+using Api.Database.Entities.Account;
 using Api.Database.Entities.Rota;
 using MediatR;
 
@@ -12,6 +13,7 @@ public class UpdateJobs : IRequest<IResult>
     {
         public int? Id { get; set; }
         public string Name { get; set; }
+        public AccountRoles BeaconAssociatedRole { get; set; }
     }
 }
 
@@ -35,6 +37,7 @@ public class UpdateJobsHandler : IRequestHandler<UpdateJobs, IResult>
             {
                 // Update existing job details
                 job.Name = updatedJob.Name;
+                job.BeaconAssociatedRole = updatedJob.BeaconAssociatedRole;
             }
             else
             {
@@ -46,7 +49,11 @@ public class UpdateJobsHandler : IRequestHandler<UpdateJobs, IResult>
         foreach (var job in request.Jobs.Where(j => j.Id == null))
         {
             // Create new jobs
-            _repository.Create(new Job { Name = job.Name });
+            _repository.Create(new Job
+            {
+                Name = job.Name,
+                BeaconAssociatedRole = job.BeaconAssociatedRole
+            });
         }
 
         await _repository.SaveChangesAsync();

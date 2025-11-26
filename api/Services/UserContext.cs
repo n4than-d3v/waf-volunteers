@@ -41,6 +41,6 @@ public static class ClaimsPrincipalExtensions
         return (AccountRoles)int.Parse(claimsPrincipal.FindFirstValue(ClaimTypes.Role) ?? "0");
     }
 
-    public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Admin);
-    public static bool IsClocking(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.Clocking);
+    public static bool IsAdmin(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.APP_ADMIN);
+    public static bool IsClocking(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.APP_CLOCKING);
 }

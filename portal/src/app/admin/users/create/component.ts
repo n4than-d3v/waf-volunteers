@@ -14,7 +14,7 @@ import {
   selectProfilesError,
   selectProfilesLoading,
 } from '../selectors';
-import { Roles, Status } from '../../../shared/token.provider';
+import { roleList, Roles, Status } from '../../../shared/token.provider';
 import { createUser } from '../actions';
 import { RouterLink } from '@angular/router';
 
@@ -36,17 +36,28 @@ export class AdminUsersCreateComponent {
   created$: Observable<string | null>;
   error$: Observable<boolean>;
 
+  roles = roleList;
+
   form = new FormGroup({
     username: new FormControl(''),
     firstName: new FormControl(''),
     lastName: new FormControl(''),
     email: new FormControl(''),
-    roleVolunteer: new FormControl(true),
-    roleReception: new FormControl(false),
-    roleTeamLeader: new FormControl(false),
-    roleVet: new FormControl(false),
-    roleAdmin: new FormControl(false),
-    roleClocking: new FormControl(false),
+    roles: new FormGroup({
+      BEACON_ANIMAL_HUSBANDRY: new FormControl(false),
+      BEACON_RECEPTIONIST: new FormControl(false),
+      BEACON_TEAM_LEADER: new FormControl(false),
+      BEACON_VET: new FormControl(false),
+      BEACON_VET_NURSE: new FormControl(false),
+      BEACON_AUXILIARY: new FormControl(false),
+      BEACON_WORK_EXPERIENCE: new FormControl(false),
+      BEACON_ORPHAN_FEEDER: new FormControl(false),
+      BEACON_RESCUER: new FormControl(false),
+      BEACON_CENTRE_MAINTENANCE: new FormControl(false),
+      BEACON_OFFICE_ADMIN: new FormControl(false),
+      APP_ADMIN: new FormControl(false),
+      APP_CLOCKING: new FormControl(false),
+    }),
   });
 
   constructor(private store: Store) {
@@ -68,12 +79,45 @@ export class AdminUsersCreateComponent {
           email: this.form.controls.email.value || '',
           status: Status.Active,
           roles:
-            (this.form.controls.roleVolunteer.value ? Roles.Volunteer : 0) |
-            (this.form.controls.roleReception.value ? Roles.Reception : 0) |
-            (this.form.controls.roleTeamLeader.value ? Roles.TeamLeader : 0) |
-            (this.form.controls.roleVet.value ? Roles.Vet : 0) |
-            (this.form.controls.roleAdmin.value ? Roles.Admin : 0) |
-            (this.form.controls.roleClocking.value ? Roles.Clocking : 0),
+            (this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.value
+              ? Roles.BEACON_ANIMAL_HUSBANDRY
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_RECEPTIONIST.value
+              ? Roles.BEACON_RECEPTIONIST
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_TEAM_LEADER.value
+              ? Roles.BEACON_TEAM_LEADER
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_VET.value
+              ? Roles.BEACON_VET
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_VET_NURSE.value
+              ? Roles.BEACON_VET_NURSE
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_AUXILIARY.value
+              ? Roles.BEACON_AUXILIARY
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_WORK_EXPERIENCE.value
+              ? Roles.BEACON_WORK_EXPERIENCE
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_ORPHAN_FEEDER.value
+              ? Roles.BEACON_ORPHAN_FEEDER
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_RESCUER.value
+              ? Roles.BEACON_RESCUER
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_CENTRE_MAINTENANCE.value
+              ? Roles.BEACON_CENTRE_MAINTENANCE
+              : 0) |
+            (this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.value
+              ? Roles.BEACON_OFFICE_ADMIN
+              : 0) |
+            (this.form.controls.roles.controls.APP_ADMIN.value
+              ? Roles.APP_ADMIN
+              : 0) |
+            (this.form.controls.roles.controls.APP_CLOCKING.value
+              ? Roles.APP_CLOCKING
+              : 0),
         },
       })
     );

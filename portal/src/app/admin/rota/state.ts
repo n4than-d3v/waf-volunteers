@@ -33,6 +33,7 @@ export enum DayOfWeek {
 export interface Job {
   id?: number;
   name: string;
+  beaconAssociatedRole: number;
 }
 
 export interface MissingReason {
@@ -45,6 +46,7 @@ export interface Time {
   name: string;
   start: string;
   end: string;
+  beaconName: string;
 }
 
 export interface Requirement {
@@ -120,6 +122,9 @@ export interface AdminRotaShiftJob {
   job: Job;
   volunteers: AdminRotaShiftJobVolunteer[];
   required: number;
+  coming: number;
+  notComing: number;
+  unconfirmed: number;
   enough: boolean;
   isAssignable: boolean;
 }

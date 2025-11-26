@@ -14,6 +14,8 @@ public class UpdateTimes : IRequest<IResult>
         public string Name { get; set; }
         public TimeOnly Start { get; set; }
         public TimeOnly End { get; set; }
+
+        public string BeaconName { get; set; }
     }
 }
 
@@ -39,6 +41,7 @@ public class UpdateTimesHandler : IRequestHandler<UpdateTimes, IResult>
                 time.Name = updatedTime.Name;
                 time.Start = updatedTime.Start;
                 time.End = updatedTime.End;
+                time.BeaconName = updatedTime.BeaconName;
             }
             else
             {
@@ -54,7 +57,8 @@ public class UpdateTimesHandler : IRequestHandler<UpdateTimes, IResult>
             {
                 Name = time.Name,
                 Start = time.Start,
-                End = time.End
+                End = time.End,
+                BeaconName = time.BeaconName
             });
         }
 

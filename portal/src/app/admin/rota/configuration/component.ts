@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Observable, Subscription } from 'rxjs';
@@ -36,19 +36,23 @@ import {
   updateTimes,
 } from '../actions';
 import { RouterLink } from '@angular/router';
+import { roleList } from '../../../shared/token.provider';
 
 @Component({
   selector: 'admin-rota-configuration',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, CommonModule],
 })
 export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   daysOfWeek = daysOfWeek;
 
+  roles = roleList;
+
   jobs: Job[] = [];
   newJobName = '';
+  newJobBeaconAssociatedRole = '';
 
   missingReasons: MissingReason[] = [];
   newMissingReasonName = '';
@@ -57,6 +61,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   newTimeName = '';
   newTimeStart = '';
   newTimeEnd = '';
+  newTimeBeaconName = '';
 
   requirements: Requirement[] = [];
   newRequirementDay = -1;
@@ -171,9 +176,16 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   ) {
     if (type === 'jobs') {
       if (this.newJobName) {
-        this.jobs.push({ name: this.newJobName });
+        this.jobs.push({
+          name: this.newJobName,
+          beaconAssociatedRole: Number(this.newJobBeaconAssociatedRole || '0'),
+        });
       }
       this.newJobName = '';
+      this.newJobBeaconAssociatedRole = '';
+      this.jobs.forEach((j) => {
+        j.beaconAssociatedRole = Number(j.beaconAssociatedRole || '0');
+      });
       this.store.dispatch(
         updateJobs({
           jobs: this.jobs,
@@ -195,11 +207,13 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
           name: this.newTimeName,
           start: this.newTimeStart,
           end: this.newTimeEnd,
+          beaconName: this.newTimeBeaconName,
         });
       }
       this.newTimeName = '';
       this.newTimeStart = '';
       this.newTimeEnd = '';
+      this.newTimeBeaconName = '';
       for (const time of this.times) {
         if (time.start.split(':').length == 2) time.start += ':00';
         if (time.end.split(':').length == 2) time.end += ':00';

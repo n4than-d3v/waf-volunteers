@@ -1,18 +1,45 @@
 import { Injectable } from '@angular/core';
 
 export enum Roles {
-  Volunteer = 1,
-  Reception = 2,
-  TeamLeader = 4,
-  Vet = 8,
-  Admin = 16,
-  Clocking = 32,
+  None = 0,
+
+  BEACON_ANIMAL_HUSBANDRY = 1,
+  BEACON_RECEPTIONIST = 2,
+  BEACON_TEAM_LEADER = 4,
+  BEACON_VET = 8,
+  BEACON_VET_NURSE = 16,
+  BEACON_AUXILIARY = 32,
+  BEACON_WORK_EXPERIENCE = 64,
+  BEACON_ORPHAN_FEEDER = 128,
+  BEACON_RESCUER = 256,
+  BEACON_CENTRE_MAINTENANCE = 512,
+  BEACON_OFFICE_ADMIN = 1024,
+
+  APP_ADMIN = 2048,
+  APP_CLOCKING = 4096,
 }
 
 export enum Status {
   Active = 0,
   Inactive = 1,
 }
+
+const roleEnumToLabel = (value: string): string => {
+  return value
+    .toLowerCase() // beacon_animal_husbandry
+    .split('_') // ["beacon", "animal", "husbandry"]
+    .slice(1) // remove BEACON
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' '); // "Animal Husbandry"
+};
+
+export const roleList = Object.keys(Roles)
+  .filter((key) => isNaN(Number(key)))
+  .map((key) => ({
+    name: key,
+    display: roleEnumToLabel(key),
+    value: Roles[key as keyof typeof Roles],
+  }));
 
 export interface Session {
   id: string;
@@ -66,13 +93,13 @@ export class TokenProvider {
     const session = this.getSession();
     if (!session) return false;
 
-    return !!(Number(session.roles) & Roles.Admin);
+    return !!(Number(session.roles) & Roles.APP_ADMIN);
   }
 
   public isClocking() {
     const session = this.getSession();
     if (!session) return false;
 
-    return !!(Number(session.roles) & Roles.Clocking);
+    return !!(Number(session.roles) & Roles.APP_CLOCKING);
   }
 }

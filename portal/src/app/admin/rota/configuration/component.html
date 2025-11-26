@@ -9,6 +9,7 @@
       <thead>
         <tr>
           <th>Name</th>
+          <th>[Beacon]</th>
           <th></th>
         </tr>
       </thead>
@@ -17,6 +18,13 @@
         <tr>
           <td>
             <input type="text" [(ngModel)]="job.name" />
+          </td>
+          <td>
+            <select [(ngModel)]="job.beaconAssociatedRole">
+              @for (role of roles; track role.value) {
+              <option value="{{ role.value }}">{{ role.display }}</option>
+              }
+            </select>
           </td>
           <td>
             <button class="button button--secondary" (click)="removeJob(job)">
@@ -28,6 +36,13 @@
         <tr>
           <td>
             <input type="text" [(ngModel)]="newJobName" />
+          </td>
+          <td>
+            <select [(ngModel)]="newJobBeaconAssociatedRole">
+              @for (role of roles; track role.value) {
+              <option value="{{ role.value }}">{{ role.display }}</option>
+              }
+            </select>
           </td>
           <td></td>
         </tr>
@@ -85,6 +100,7 @@
           <th>Name</th>
           <th>Start</th>
           <th>End</th>
+          <th>[Beacon]</th>
           <th></th>
         </tr>
       </thead>
@@ -99,6 +115,9 @@
           </td>
           <td>
             <input type="time" [(ngModel)]="time.end" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="time.beaconName" />
           </td>
           <td>
             <button class="button button--secondary" (click)="removeTime(time)">
@@ -116,6 +135,9 @@
           </td>
           <td>
             <input type="time" [(ngModel)]="newTimeEnd" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="newTimeBeaconName" />
           </td>
           <td></td>
         </tr>

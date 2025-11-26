@@ -90,7 +90,7 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                 username,
                 password: "-",
                 AccountStatus.Active,
-                AccountRoles.Volunteer,
+                AccountRoles.None,
                 _encryptionService.Encrypt(string.Empty, salt),
                 _encryptionService.Encrypt(string.Empty, salt),
                 _encryptionService.Encrypt(string.Empty, salt),
@@ -139,26 +139,13 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
             account.UpdatePersonalDetails(firstName, lastName, email, beaconInfo, account.Cars);
 
             AccountRoles roles = 0;
-            Job? job = null;
-            if (activeVolunteer.entity.volunteer_roles.Contains("Animal husbandry"))
+
+            activeVolunteer.entity.volunteer_roles.ForEach(role =>
             {
-                roles |= AccountRoles.Volunteer;
-                job = jobs.Single(j => j.Name == "Animal Husbandry");
-            }
-            if (activeVolunteer.entity.volunteer_roles.Contains("Receptionist"))
-            {
-                roles |= AccountRoles.Reception;
-                job = jobs.Single(j => j.Name == "Reception");
-            }
-            if (activeVolunteer.entity.volunteer_roles.Contains("Team Leader"))
-            {
-                roles |= AccountRoles.TeamLeader;
-                job = jobs.Single(j => j.Name == "Team Leader");
-            }
-            if (activeVolunteer.entity.volunteer_roles.Contains("Vet Nurse"))
-            {
-                roles |= AccountRoles.Vet;
-            }
+                roles |= (AccountRoles)Enum.Parse(typeof(AccountRoles), $"BEACON_{role.Replace(" ", "_").ToUpper()}");
+            });
+
+            var job = jobs.OrderByDescending(x => x.Id).FirstOrDefault(x => roles.HasFlag(x.BeaconAssociatedRole));
 
             account.UpdateRoles(roles);
 
@@ -191,12 +178,9 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                 }
 
                 DayOfWeek day = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayString);
-                TimeRange time = timeString switch
-                {
-                    "AM" => times.Single(x => x.Name == "Morning"),
-                    "PM" => times.Single(x => x.Name == "Afternoon"),
-                    "EVE" => times.Single(x => x.Name == "Evening"),
-                };
+                TimeRange time = times.FirstOrDefault(x => x.BeaconName == timeString);
+                if (time == null) continue;
+
                 int? week = null;
                 if (weekString != null)
                 {

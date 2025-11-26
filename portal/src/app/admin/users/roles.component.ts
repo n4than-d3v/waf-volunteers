@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Roles } from '../../shared/token.provider';
+import { roleList, Roles } from '../../shared/token.provider';
 
 @Component({
   selector: 'admin-users-role',
@@ -13,12 +13,13 @@ export class AdminUsersRoleComponent implements OnInit {
 
   ngOnInit() {
     const list = [];
-    if (this.roles & Roles.Volunteer) list.push('Volunteer');
-    if (this.roles & Roles.Reception) list.push('Reception');
-    if (this.roles & Roles.TeamLeader) list.push('Team leader');
-    if (this.roles & Roles.Vet) list.push('Vet');
-    if (this.roles & Roles.Admin) list.push('Admin');
-    if (this.roles & Roles.Clocking) list.push('Clocking');
+
+    for (const role of roleList) {
+      if (this.roles & role.value) {
+        list.push(role.display);
+      }
+    }
+
     this.rolesFormatted = list.join(', ');
   }
 }

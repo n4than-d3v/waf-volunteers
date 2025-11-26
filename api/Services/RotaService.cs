@@ -249,7 +249,10 @@ public class Day
             public Job Job { get; set; }
             public IReadOnlyList<DayShiftJobVolunteer> Volunteers { get; set; }
             public int Required { get; set; }
-            public bool Enough => Required <= Volunteers.Count(x => x.Confirmed ?? false);
+            public int Unconfirmed => Volunteers.Count(x => x.Confirmed == null);
+            public int NotComing => Volunteers.Count(x => x.Confirmed == false);
+            public int Coming => Volunteers.Count(x => x.Confirmed == true);
+            public bool Enough => Required <= Coming;
             public bool IsAssignable { get; set; }
 
             public class DayShiftJobVolunteer

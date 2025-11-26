@@ -125,10 +125,20 @@ public enum AccountStatus
 [Flags]
 public enum AccountRoles
 {
-    Volunteer = 1,
-    Reception = 2,
-    TeamLeader = 4,
-    Vet = 8,
-    Admin = 16,
-    Clocking = 32
+    None = 0,
+
+    BEACON_ANIMAL_HUSBANDRY = 1,
+    BEACON_RECEPTIONIST = 2,
+    BEACON_TEAM_LEADER = 4,
+    BEACON_VET = 8,
+    BEACON_VET_NURSE = 16,
+    BEACON_AUXILIARY = 32,
+    BEACON_WORK_EXPERIENCE = 64,
+    BEACON_ORPHAN_FEEDER = 128,
+    BEACON_RESCUER = 256,
+    BEACON_CENTRE_MAINTENANCE = 512,
+    BEACON_OFFICE_ADMIN = 1024,
+
+    APP_ADMIN = 2048,
+    APP_CLOCKING = 4096
 }

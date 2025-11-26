@@ -17,6 +17,30 @@ a {
   gap: 1rem;
 }
 
+.header-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.expand-all {
+  margin-bottom: 1rem;
+}
+
+.key {
+  border: solid 2px black;
+  width: max-content;
+  height: max-content;
+  padding: 0.25rem 0.5rem;
+  margin: 1rem 0rem;
+
+  img {
+    width: 1em;
+    height: 1em;
+    margin-left: 2px;
+    margin-bottom: -3px;
+  }
+}
+
 .days {
   display: flex;
   gap: 0rem;
@@ -121,6 +145,36 @@ a {
             }
 
             .volunteers {
+              .coming-bar {
+                background-color: rgb(222, 222, 222);
+                padding: 0.125rem 0.125rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border: solid 2px var(--background);
+                border-top-width: 4px;
+
+                button {
+                  padding: 0.125rem;
+                  font-size: 0.6rem;
+                  background: #bbbbbb;
+                  color: black;
+                }
+
+                p {
+                  font-size: 0.8rem;
+                  color: black;
+                  padding-left: 0.125rem;
+
+                  img {
+                    width: 1em;
+                    height: 1em;
+                    margin-left: 1px;
+                    margin-bottom: -2px;
+                  }
+                }
+              }
+
               .volunteer {
                 border-bottom: solid 1px var(--border);
 

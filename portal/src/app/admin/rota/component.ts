@@ -97,6 +97,23 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
     );
   }
 
+  expandAll = false;
+  expanded: AdminRotaShiftJob[] = [];
+
+  toggleAll() {
+    this.expandAll = !this.expandAll;
+    this.expanded = [];
+  }
+
+  toggle(job: AdminRotaShiftJob) {
+    this.expandAll = false;
+    if (this.expanded.includes(job)) {
+      this.expanded = this.expanded.filter((x) => x !== job);
+    } else {
+      this.expanded = [...this.expanded, job];
+    }
+  }
+
   private getUpdatePayload = (
     day: AdminRota,
     shift: AdminRotaShift,

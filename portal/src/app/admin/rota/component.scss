@@ -93,7 +93,7 @@ a {
               padding: 0.25rem 0.5rem;
               font-size: 0.65em;
               margin: 0rem;
-              border-left-width: 3px;
+              border-left-width: 0px;
             }
 
             h5 {
@@ -105,15 +105,13 @@ a {
             }
 
             .assignments {
-              border: solid 2px var(--background);
-              border-top-width: 4px;
+              border-bottom: solid 2px var(--background);
               border-radius: 0rem;
 
               h4 {
                 font-size: 0.8rem;
-                background-color: #2e2e2e;
-                color: white;
-                border: solid 1px var(--border);
+                background-color: white;
+                color: black;
                 border-bottom: none;
                 margin-bottom: 0rem;
                 padding: 0rem 0.25rem;
@@ -128,7 +126,7 @@ a {
                 align-content: center;
                 justify-content: space-between;
                 align-items: center;
-                border: solid 1px var(--border);
+                border-top: solid 1px var(--border);
 
                 :nth-child(1) {
                   padding-left: 0.25rem;
@@ -151,14 +149,18 @@ a {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                border: solid 2px var(--background);
-                border-top-width: 4px;
+                border-top: solid 2px var(--background);
+
+                &.coming-bar__expanded {
+                  border-bottom: solid 2px var(--background);
+                }
 
                 button {
                   padding: 0.125rem;
                   font-size: 0.6rem;
                   background: #bbbbbb;
                   color: black;
+                  width: 5ch;
                 }
 
                 p {
@@ -178,6 +180,10 @@ a {
               .volunteer {
                 border-bottom: solid 1px var(--border);
 
+                &:last-child {
+                  border-bottom: none;
+                }
+
                 .details {
                   display: flex;
                   align-items: stretch;
@@ -189,11 +195,11 @@ a {
                     flex-basis: 10%;
 
                     &.regularity--regular {
-                      border-right: solid 2px var(--theme-color-5);
+                      border-right: solid 1px var(--theme-color-5);
                     }
 
                     &.regularity--irregular {
-                      border-right: solid 2px var(--theme-color-1);
+                      border-right: solid 1px var(--theme-color-1);
                     }
                   }
 

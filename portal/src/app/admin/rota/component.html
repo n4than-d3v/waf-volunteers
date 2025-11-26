@@ -70,7 +70,10 @@
             </p>
             }
             <div class="volunteers">
-              <div class="coming-bar">
+              <div
+                class="coming-bar"
+                [class.coming-bar__expanded]="expanded.includes(job) || expandAll"
+              >
                 <p>{{ job.coming }} <img src="images/rota/tick.svg" /></p>
                 <p>{{ job.notComing}} <img src="images/rota/cross.svg" /></p>
                 <p>
@@ -81,7 +84,36 @@
                   {{ expanded.includes(job) ? 'Hide' : 'Show' }}
                 </button>
               </div>
-              @for (volunteer of job.volunteers; track volunteer.id) { @if
+              @if (job.isAssignable && (expanded.includes(job) || expandAll)) {
+              @if (assignableAreas$ | async; as assignableAreas) {
+              <div class="assignments">
+                <h4>Assignments</h4>
+                @for (volunteer of job.volunteers; track volunteer.id) { @if
+                (volunteer.confirmed) {
+                <div class="assignment">
+                  <div
+                    class="assignment__volunteer"
+                    title="{{ volunteer.fullName }}"
+                  >
+                    {{ volunteer.name }}
+                  </div>
+                  <div class="assignment__area">
+                    <select
+                      [(ngModel)]="updatingAssignableArea[volunteer.attendanceId!]"
+                      (ngModelChange)="assignArea(volunteer.attendanceId!)"
+                    >
+                      @for (assignableArea of assignableAreas.data; track
+                      assignableArea.id) {
+                      <option [value]="assignableArea.id">
+                        {{ assignableArea.name }}
+                      </option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                } }
+              </div>
+              } } @for (volunteer of job.volunteers; track volunteer.id) { @if
               (expanded.includes(job) || expandAll) {
               <div class="volunteer">
                 <div class="details">
@@ -154,36 +186,6 @@
               </div>
               } }
             </div>
-            @if (job.isAssignable) { @if (assignableAreas$ | async; as
-            assignableAreas) {
-            <div class="assignments">
-              <h4>Assignments</h4>
-              @for (volunteer of job.volunteers; track volunteer.id) { @if
-              (volunteer.confirmed) {
-              <div class="assignment">
-                <div
-                  class="assignment__volunteer"
-                  title="{{ volunteer.fullName }}"
-                >
-                  {{ volunteer.name }}
-                </div>
-                <div class="assignment__area">
-                  <select
-                    [(ngModel)]="updatingAssignableArea[volunteer.attendanceId!]"
-                    (ngModelChange)="assignArea(volunteer.attendanceId!)"
-                  >
-                    @for (assignableArea of assignableAreas.data; track
-                    assignableArea.id) {
-                    <option [value]="assignableArea.id">
-                      {{ assignableArea.name }}
-                    </option>
-                    }
-                  </select>
-                </div>
-              </div>
-              } }
-            </div>
-            } }
           </div>
           }
         </div>

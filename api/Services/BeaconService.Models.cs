@@ -5,7 +5,6 @@ public partial class BeaconService
     public class BeaconFilterRequest
     {
         public const string VolunteerType = "Volunteer";
-        public const string WorkExperienceType = "Work experience";
 
         public const string ActiveStatus = "Active";
         public const string FormerStatus = "Former";
@@ -18,7 +17,7 @@ public partial class BeaconService
                 new BeaconFilterRequestCondition {
                     field = "type",
                     @operator = "contains",
-                    value = [ VolunteerType, WorkExperienceType ]
+                    value = [ VolunteerType ]
                 },
                 new BeaconFilterRequestCondition {
                     field = "volunteer_status",
@@ -34,7 +33,7 @@ public partial class BeaconService
                 new BeaconFilterRequestCondition {
                     field = "type",
                     @operator = "contains",
-                    value = [ VolunteerType, WorkExperienceType ]
+                    value = [ VolunteerType ]
                 },
                 new BeaconFilterRequestCondition {
                     field = "volunteer_status",

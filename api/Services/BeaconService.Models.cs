@@ -4,6 +4,12 @@ public partial class BeaconService
 {
     public class BeaconFilterRequest
     {
+        public const string VolunteerType = "Volunteer";
+        public const string WorkExperienceType = "Work experience";
+
+        public const string ActiveStatus = "Active";
+        public const string FormerStatus = "Former";
+
         public BeaconFilterRequestCondition[] filter_conditions { get; set; }
 
         public static BeaconFilterRequest ActiveVolunteers = new BeaconFilterRequest
@@ -12,12 +18,12 @@ public partial class BeaconService
                 new BeaconFilterRequestCondition {
                     field = "type",
                     @operator = "contains",
-                    value = [ "Volunteer" ]
+                    value = [ VolunteerType, WorkExperienceType ]
                 },
                 new BeaconFilterRequestCondition {
                     field = "volunteer_status",
                     @operator = "contains",
-                    value = [ "Active" ]
+                    value = [ ActiveStatus ]
                 }
             ]
         };
@@ -28,12 +34,12 @@ public partial class BeaconService
                 new BeaconFilterRequestCondition {
                     field = "type",
                     @operator = "contains",
-                    value = [ "Volunteer" ]
+                    value = [ VolunteerType, WorkExperienceType ]
                 },
                 new BeaconFilterRequestCondition {
                     field = "volunteer_status",
                     @operator = "contains",
-                    value = [ "Former" ]
+                    value = [ FormerStatus ]
                 }
             ]
         };
@@ -58,6 +64,7 @@ public partial class BeaconService
         public class BeaconInfo : EntityBase
         {
             public int id { get; set; }
+            public List<string> type { get; set; }
             public List<Email> emails { get; set; }
             public List<string> volunteer_status { get; set; }
             public List<string> volunteer_availability { get; set; }

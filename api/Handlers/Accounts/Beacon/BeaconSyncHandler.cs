@@ -145,6 +145,11 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                 roles |= (AccountRoles)Enum.Parse(typeof(AccountRoles), $"BEACON_{role.Replace(" ", "_").ToUpper()}");
             });
 
+            if (activeVolunteer.entity.type.Contains(BeaconService.BeaconFilterRequest.WorkExperienceType) && !roles.HasFlag(AccountRoles.BEACON_WORK_EXPERIENCE))
+            {
+                roles |= AccountRoles.BEACON_WORK_EXPERIENCE;
+            }
+
             var job = jobs.OrderByDescending(x => x.Id).FirstOrDefault(x => roles.HasFlag(x.BeaconAssociatedRole));
 
             account.UpdateRoles(roles);

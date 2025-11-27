@@ -61,7 +61,7 @@ public partial class BeaconService : IBeaconService
             var response = await _client.PostAsync($"entities/person/filter?page={page}&per_page=200&sort_by=created_at&sort_direction=asc", payload);
             var results = await response.Content.ReadFromJsonAsync<BeaconFilterResults>();
             running = results.results.Count != 0;
-            allResults.total += results.total;
+            allResults.total += results.results.Count;
             allResults.results.AddRange(results.results);
             page++;
         }

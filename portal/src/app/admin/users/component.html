@@ -2,31 +2,29 @@
 
 <h1>Users</h1>
 
-<p>
-  <strong>Warning:</strong> Creating users directly in this application isn't
-  recommended as they won't be synchronised with Beacon. Please create volunteer
-  accounts in Beacon, then press the "sync" button.
-</p>
-
-<br />
-
-<div class="buttons">
-  <a [routerLink]="'./create'" class="button button--warning"
-    >Create new user</a
-  >
-  <button (click)="beaconSync()" class="button button--secondary">
-    Sync with Beacon
-  </button>
-</div>
-
 @if (loading$ | async) {
 <spinner></spinner>
 } @if (error$ | async) {
 <div class="error">Error occurred</div>
 } @if (users$ | async; as users) {
-<div class="search">
-  <label for="search">Search</label>
-  <input id="search" type="text" [(ngModel)]="search" autocomplete="off" />
+<div class="header">
+  <div class="search">
+    <label for="search">Search</label>
+    <input id="search" type="text" [(ngModel)]="search" autocomplete="off" />
+  </div>
+  <div class="buttons">
+    <a [routerLink]="'./create'" class="button button--warning"
+      >Create new user</a
+    >
+    <button (click)="beaconSync()" class="button button--secondary">
+      Sync with Beacon
+    </button>
+  </div>
+  <p>
+    <strong>Warning:</strong> Creating users directly in this application isn't
+    recommended as they won't be synchronised with Beacon. Please create
+    volunteer accounts in Beacon, then press the "sync" button.
+  </p>
 </div>
 <table>
   <thead>

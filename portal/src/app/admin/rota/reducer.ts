@@ -280,9 +280,9 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
     ...state,
     regularShifts: { ...state.regularShifts, loading: false, error: true },
   })),
-  on(getAdminRota, (state) => ({
+  on(getAdminRota, (state, action) => ({
     ...state,
-    rota: { ...state.rota, loading: true, error: false },
+    rota: { ...state.rota, loading: !action.silent, error: false },
   })),
   on(getAdminRotaSuccess, (state, { rota }) => ({
     ...state,
@@ -294,7 +294,7 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
   })),
   on(confirmShift, (state) => ({
     ...state,
-    rota: { ...state.rota, loading: true, error: false },
+    rota: { ...state.rota, error: false },
   })),
   on(confirmShiftSuccess, (state) => ({
     ...state,
@@ -306,7 +306,7 @@ export const rotaManagementReducer = createReducer<RotaManagementState>(
   })),
   on(denyShift, (state) => ({
     ...state,
-    rota: { ...state.rota, loading: true, error: false },
+    rota: { ...state.rota, error: false },
   })),
   on(denyShiftSuccess, (state) => ({
     ...state,

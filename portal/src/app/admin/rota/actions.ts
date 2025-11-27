@@ -151,7 +151,7 @@ export const deleteRegularShiftError = createAction(
 
 export const getAdminRota = createAction(
   '[Rota] Get Admin Rota',
-  props<{ start: string; end: string }>()
+  props<{ start: string; end: string; silent: boolean }>()
 );
 export const getAdminRotaSuccess = createAction(
   '[Rota] Get Admin Rota: Success',

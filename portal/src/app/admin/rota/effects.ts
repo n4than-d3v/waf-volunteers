@@ -396,6 +396,7 @@ export class RotaManagementEffects {
           getAdminRota({
             start: action.start,
             end: action.end,
+            silent: true,
           })
         )
       )
@@ -427,6 +428,7 @@ export class RotaManagementEffects {
           getAdminRota({
             start: action.start,
             end: action.end,
+            silent: true,
           })
         )
       )

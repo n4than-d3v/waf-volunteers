@@ -93,24 +93,38 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
       getAdminRota({
         start: this._start.format('YYYY-MM-DD'),
         end: this._end.format('YYYY-MM-DD'),
+        silent: false,
       })
     );
   }
 
   expandAll = false;
-  expanded: AdminRotaShiftJob[] = [];
+  expanded: string[] = [];
 
   toggleAll() {
     this.expandAll = !this.expandAll;
     this.expanded = [];
   }
 
-  toggle(job: AdminRotaShiftJob) {
+  private getExpansionKey(
+    day: AdminRota,
+    shift: AdminRotaShift,
+    job: AdminRotaShiftJob
+  ) {
+    return `${day.date}-${shift.time.name}-${job.job.name}`;
+  }
+
+  isExpanded(day: AdminRota, shift: AdminRotaShift, job: AdminRotaShiftJob) {
+    return this.expanded.includes(this.getExpansionKey(day, shift, job));
+  }
+
+  toggle(day: AdminRota, shift: AdminRotaShift, job: AdminRotaShiftJob) {
     this.expandAll = false;
-    if (this.expanded.includes(job)) {
-      this.expanded = this.expanded.filter((x) => x !== job);
+    const key = this.getExpansionKey(day, shift, job);
+    if (this.isExpanded(day, shift, job)) {
+      this.expanded = this.expanded.filter((x) => x !== key);
     } else {
-      this.expanded = [...this.expanded, job];
+      this.expanded = [...this.expanded, key];
     }
   }
 

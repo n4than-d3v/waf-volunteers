@@ -72,7 +72,7 @@
             <div class="volunteers">
               <div
                 class="coming-bar"
-                [class.coming-bar__expanded]="expanded.includes(job) || expandAll"
+                [class.coming-bar__expanded]="isExpanded(day,shift,job) || expandAll"
               >
                 <p>{{ job.coming }} <img src="images/rota/tick.svg" /></p>
                 <p>{{ job.notComing}} <img src="images/rota/cross.svg" /></p>
@@ -80,13 +80,13 @@
                   {{ job.unconfirmed}} <img src="images/rota/question.svg" />
                 </p>
                 <p>{{ job.required }} <img src="images/rota/required.svg" /></p>
-                <button (click)="toggle(job)" class="button">
-                  {{ expanded.includes(job) ? 'Hide' : 'Show' }}
+                <button (click)="toggle(day, shift, job)" class="button">
+                  {{ isExpanded(day,shift,job) ? 'Hide' : 'Show' }}
                 </button>
               </div>
-              @if (job.isAssignable && job.coming > 0 &&(expanded.includes(job)
-              || expandAll)) { @if (assignableAreas$ | async; as
-              assignableAreas) {
+              @if (job.isAssignable && job.coming > 0
+              &&(isExpanded(day,shift,job) || expandAll)) { @if
+              (assignableAreas$ | async; as assignableAreas) {
               <div class="assignments">
                 <h4>Assignments</h4>
                 @for (volunteer of job.volunteers; track volunteer.id) { @if
@@ -115,7 +115,7 @@
                 } }
               </div>
               } } @for (volunteer of job.volunteers; track volunteer.id) { @if
-              (expanded.includes(job) || expandAll) {
+              (isExpanded(day,shift,job) || expandAll) {
               <div class="volunteer">
                 <div class="details">
                   @if (volunteer.isRegularShift) {

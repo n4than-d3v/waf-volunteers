@@ -8,6 +8,7 @@ a {
   border-left: solid 5px var(--theme-primary);
   background-color: rgb(228, 228, 228);
   max-width: max-content;
+  max-height: max-content;
   padding: 1rem;
 }
 
@@ -27,16 +28,26 @@ a {
 }
 
 .key {
-  border: solid 2px black;
-  width: max-content;
-  height: max-content;
-  padding: 0.25rem 0.5rem;
-  margin: 1rem 0rem;
+  margin: 1.5rem 0rem;
+  border: dotted 1px var(--theme-primary);
+  background-color: rgb(240, 240, 240);
+  max-width: max-content;
+  max-height: max-content;
+  padding: 0.125rem 0.5rem;
+
+  h3 {
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin-bottom: 0.125rem;
+  }
 
   img {
     width: 1em;
     height: 1em;
     margin-left: 2px;
+    margin-right: 0.125rem;
     margin-bottom: -3px;
   }
 }

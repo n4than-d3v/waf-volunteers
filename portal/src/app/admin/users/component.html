@@ -13,12 +13,12 @@
     <input id="search" type="text" [(ngModel)]="search" autocomplete="off" />
   </div>
   <div class="buttons">
+    <button (click)="beaconSync()" class="button button--primary">
+      Sync with Beacon
+    </button>
     <a [routerLink]="'./create'" class="button button--warning"
       >Create new user</a
     >
-    <button (click)="beaconSync()" class="button button--secondary">
-      Sync with Beacon
-    </button>
   </div>
   <p>
     <strong>Warning:</strong> Creating users directly in this application isn't

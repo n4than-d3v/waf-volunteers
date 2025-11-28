@@ -98,7 +98,10 @@
       } @else if (shift.confirmed || shift.others.length) {
       <div class="people-coming">
         <strong>Who's coming?</strong>
-        <p>{{ shift.confirmed ? 'You,' : '' }} {{ shift.others.join(', ') }}</p>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
+          shift.others.length ? ',' : '' }} {{ shift.others.join(', ') }}
+        </p>
       </div>
       } @if (shift.area) {
       <div class="shift-assign">
@@ -181,7 +184,10 @@
       } @else if (shift.confirmed || shift.others.length) {
       <div class="people-coming">
         <strong>Who's coming?</strong>
-        <p>{{ shift.confirmed ? 'You,' : '' }} {{ shift.others.join(', ') }}</p>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
+          shift.others.length ? ',' : '' }} {{ shift.others.join(', ') }}
+        </p>
       </div>
       } @if (shift.area) {
       <div class="shift-assign">

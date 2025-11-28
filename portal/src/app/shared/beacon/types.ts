@@ -23,7 +23,7 @@ export interface BeaconInfoName {
   full: string;
   last: string;
   first: string;
-  middle: string | null;
+  middle: string;
   prefix: string;
 }
 
@@ -162,7 +162,7 @@ export const getBeaconInfo = (form: BeaconForm): BeaconInfo => ({
     full: getFullName(form),
     last: form.controls.name.controls.last.value || '',
     first: form.controls.name.controls.first.value || '',
-    middle: form.controls.name.controls.middle.value || null,
+    middle: form.controls.name.controls.middle.value || '',
     prefix: form.controls.name.controls.prefix.value || '',
   },
   phone_numbers: form.controls.phone_numbers.controls.map((x) => ({

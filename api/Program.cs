@@ -200,6 +200,11 @@ apiAccount.MapPost("/beacon-sync", (IMediator mediator, BeaconSync request) => m
     .AddNote("Admin synchronises accounts with Beacon CRM")
     .RequireAuthorization(adminPolicy);
 
+apiAccount.MapPost("/send-invitations", (IMediator mediator, SendInvitations request) => mediator.Send(request))
+    .AddNote("Admin rolls out the application to a team or individual user")
+    .RequireAuthorization(adminPolicy);
+
+
 apiAccount.MapPost("/users", (IMediator mediator, CreateAccount request) => mediator.Send(request))
     .AddNote("Admin creates an account")
     .RequireAuthorization(adminPolicy);

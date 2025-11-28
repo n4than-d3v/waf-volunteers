@@ -10,6 +10,7 @@ import { AdminDashboardComponent } from './admin/dashboard/component';
 import { AdminUsersComponent } from './admin/users/component';
 import { AdminUsersUpdateInfoComponent } from './admin/users/update-info/component';
 import { AdminUsersCreateComponent } from './admin/users/create/component';
+import { AdminUsersSendInvitationsComponent } from './admin/users/send-invitations/component';
 import { AdminRotaComponent } from './admin/rota/component';
 import { AdminRotaConfigurationComponent } from './admin/rota/configuration/component';
 import { AdminUsersUpdateRegularShiftsComponent } from './admin/rota/regular-shifts/component';
@@ -79,6 +80,10 @@ export const routes: Routes = [
           {
             path: 'create',
             component: AdminUsersCreateComponent,
+          },
+          {
+            path: 'send-invitations',
+            component: AdminUsersSendInvitationsComponent,
           },
           {
             path: ':userId',

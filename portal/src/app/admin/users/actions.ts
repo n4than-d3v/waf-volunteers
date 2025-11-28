@@ -29,3 +29,21 @@ export const createUserSuccess = createAction(
   props<{ id: string }>()
 );
 export const createUserError = createAction('[Users] Create user error');
+
+export const teamRollout = createAction(
+  '[Users] Team rollout',
+  props<{ day: number; timeId: number }>()
+);
+export const teamRolloutSuccess = createAction('[Users] Team rollout: success');
+export const teamRolloutError = createAction('[Users] Team rollout: error');
+
+export const individualRollout = createAction(
+  '[Users] Individual rollout',
+  props<{ username: string }>()
+);
+export const individualRolloutSuccess = createAction(
+  '[Users] Individual rollout: success'
+);
+export const individualRolloutError = createAction(
+  '[Users] Individual rollout: error'
+);

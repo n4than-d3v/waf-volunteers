@@ -95,7 +95,7 @@ public partial class BeaconService
             public string full { get; set; }
             public string last { get; set; }
             public string first { get; set; }
-            public object middle { get; set; }
+            public string middle { get; set; }
             public string prefix { get; set; }
         }
 

@@ -16,15 +16,13 @@
     <button (click)="beaconSync()" class="button button--primary">
       Sync with Beacon
     </button>
+    <a [routerLink]="'./send-invitations'" class="button button--secondary"
+      >Send invitations</a
+    >
     <a [routerLink]="'./create'" class="button button--warning"
       >Create new user</a
     >
   </div>
-  <p>
-    <strong>Warning:</strong> Creating users directly in this application isn't
-    recommended as they won't be synchronised with Beacon. Please create
-    volunteer accounts in Beacon, then press the "sync" button.
-  </p>
 </div>
 <table>
   <thead>

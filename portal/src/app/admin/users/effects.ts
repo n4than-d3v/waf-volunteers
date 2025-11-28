@@ -8,9 +8,15 @@ import {
   getUsers,
   getUsersError,
   getUsersSuccess,
+  individualRollout,
+  individualRolloutError,
+  individualRolloutSuccess,
   runBeaconSync,
   runBeaconSyncError,
   runBeaconSyncSuccess,
+  teamRollout,
+  teamRolloutError,
+  teamRolloutSuccess,
   updateUser,
   updateUserError,
   updateUserSuccess,
@@ -79,6 +85,30 @@ export class ProfilesEffects {
     this.actions$.pipe(
       ofType(runBeaconSyncSuccess),
       switchMap((_) => of(getUsers()))
+    )
+  );
+
+  teamRollout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(teamRollout),
+      switchMap((action) => {
+        return this.http.post(`account/send-invitations`, action).pipe(
+          map((_) => teamRolloutSuccess()),
+          catchError(() => of(teamRolloutError()))
+        );
+      })
+    )
+  );
+
+  individualRollout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(individualRollout),
+      switchMap((action) => {
+        return this.http.post(`account/send-invitations`, action).pipe(
+          map((_) => individualRolloutSuccess()),
+          catchError(() => of(individualRolloutError()))
+        );
+      })
     )
   );
 }

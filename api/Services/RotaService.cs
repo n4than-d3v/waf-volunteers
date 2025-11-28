@@ -91,7 +91,7 @@ public class RotaService : IRotaService
             return new Day.DayShift.DayShiftJob.DayShiftJobVolunteer
             {
                 Id = account.Id,
-                Name = firstName,
+                Name = $"{firstName} {lastName[..1]}",
                 FullName = $"{firstName} {lastName}",
                 IsRegularShift = isRegular,
                 Confirmed = null

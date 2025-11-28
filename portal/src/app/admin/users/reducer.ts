@@ -7,9 +7,15 @@ import {
   getUsers,
   getUsersError,
   getUsersSuccess,
+  individualRollout,
+  individualRolloutError,
+  individualRolloutSuccess,
   runBeaconSync,
   runBeaconSyncError,
   runBeaconSyncSuccess,
+  teamRollout,
+  teamRolloutError,
+  teamRolloutSuccess,
   updateUser,
   updateUserError,
   updateUserSuccess,
@@ -17,6 +23,42 @@ import {
 
 export const profilesReducer = createReducer<ProfilesState>(
   initialProfilesState,
+  on(individualRollout, (state) => ({
+    ...state,
+    updated: false,
+    loading: true,
+    error: false,
+  })),
+  on(individualRolloutSuccess, (state) => ({
+    ...state,
+    updated: true,
+    loading: false,
+    error: false,
+  })),
+  on(individualRolloutError, (state) => ({
+    ...state,
+    updated: false,
+    loading: false,
+    error: true,
+  })),
+  on(teamRollout, (state) => ({
+    ...state,
+    updated: false,
+    loading: true,
+    error: false,
+  })),
+  on(teamRolloutSuccess, (state) => ({
+    ...state,
+    updated: true,
+    loading: false,
+    error: false,
+  })),
+  on(teamRolloutError, (state) => ({
+    ...state,
+    updated: false,
+    loading: false,
+    error: true,
+  })),
   on(runBeaconSync, (state) => ({
     ...state,
     loading: true,

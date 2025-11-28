@@ -1,6 +1,13 @@
 <a class="back-link" [routerLink]="'../'">Back</a>
 
 <h1>User</h1>
+
+<p class="warning">
+  <strong>Warning:</strong> Creating users directly in this application isn't
+  recommended as they won't be synchronised with Beacon. Please create volunteer
+  accounts in Beacon, then press the "sync" button.
+</p>
+
 @if (loading$ | async) {
 <spinner></spinner>
 } @if (error$ | async) {

@@ -160,7 +160,7 @@ public class RotaService : IRotaService
             Confirmed = volunteer.Confirmed,
             MissingReason = volunteer.MissingReason,
             CustomMissingReason = volunteer.CustomMissingReason,
-            Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray(),
+            Others = shift.Jobs.SelectMany(j => j.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name)).ToArray(),
             Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer.AreaId)
         };
         UserRota.UrgentShift GetUrgentShift(Day day, Day.DayShift shift, Day.DayShift.DayShiftJob job)
@@ -174,7 +174,7 @@ public class RotaService : IRotaService
                 Required = job.Required,
                 Coming = job.Volunteers.Count(v => v.Confirmed == true),
                 Confirmed = volunteer?.Confirmed,
-                Others = job.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name).ToArray(),
+                Others = shift.Jobs.SelectMany(j => j.Volunteers.Where(IsOtherComing).OrderBy(v => v.Name).Select(v => v.Name)).ToArray(),
                 Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer?.AreaId)
             };
         }

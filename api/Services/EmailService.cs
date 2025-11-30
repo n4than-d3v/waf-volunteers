@@ -121,7 +121,7 @@ $"""
 <p>After you have installed the application, please return to this email.</p>
 <p>Next, <a href="{HostConstants.BaseUrl}/reset-password?token={token}">click here to set your password</a>.</p>
 <p>You will be asked to set the password that you will use to log into your account.</p>
-<p>Note that the above link will expire in 24 hours, and if you're unable to set your password within this timeframe, <a href="{HostConstants.BaseUrl}/forgot-password">click here to request a password reset</a>.</p>
+<p>Note that the above link will expire in 7 days, but if you're unable to set your password within this timeframe, <a href="{HostConstants.BaseUrl}/forgot-password">click here to request a password reset</a>.</p>
 <br />
 <p><strong>Step 3 - Log in</strong></p>
 <p>Finally, you can log into your new volunteer account.</p>

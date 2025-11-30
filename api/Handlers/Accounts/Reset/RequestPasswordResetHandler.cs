@@ -15,7 +15,7 @@ public class RequestPasswordResetHandler : IRequestHandler<RequestPasswordReset,
 {
     private const int TokenLength = 256;
     private const int TokenLifetimeSeconds = 60 * 60 * 2; // 2 hours
-    private const int TokenLifetimeSecondsWhenNewlyCreated = 60 * 60 * 24; // 24 hours
+    private const int TokenLifetimeSecondsWhenNewlyCreated = 60 * 60 * 24 * 7; // 7 days
 
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;

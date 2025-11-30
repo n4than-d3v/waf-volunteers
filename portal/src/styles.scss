@@ -18,13 +18,6 @@ body {
   color: #212529;
 }
 
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #212529;
-    color: #f8f9fa;
-  }
-}
-
 html,
 body,
 * {
@@ -32,6 +25,9 @@ body,
   padding: 0px;
   font-family: "Poppins", Sans-serif;
   box-sizing: inherit;
+}
+
+a {
   color: var(--text-color--dark);
 }
 
@@ -46,7 +42,7 @@ body {
 }
 
 main {
-  padding: 2.5rem 1.5rem;
+  padding: 1.5rem 1.5rem;
   background-color: white;
 }
 
@@ -232,28 +228,17 @@ th {
   }
 }
 
-/*
-<div class="summary-card">
-      <div class="summary-card__title-wrapper">
-        <h2 class="summary-card__title">Name</h2>
-      </div>
-      <div class="summary-card__content">
-        <dl class="summary-list">
-          <div class="summary-list__row">
-            <dt class="summary-list__key">Full name</dt>
-            <dd class="summary-list__value">
-              {{ form.controls.name.controls.full.value }}
-            </dd>
-          </div>
-          <div class="summary-list__row">
-            <dt class="summary-list__key">Preferred name</dt>
-            <dd class="summary-list__value">
-              {{ form.controls.c_preferred_name.value }}
-            </dd>
-          </div>
-        </dl>
-        <button class="button button--primary" (click)="editing = 'name'">
-          Update
-        </button>
-      </div>
-    </div>*/
+.margin-left-lists ol,
+.margin-left-lists ul {
+  margin-left: 1.125rem;
+}
+
+.NgxEditor__Content {
+  max-height: 20rem;
+  overflow-y: scroll;
+}
+
+.margin-left-lists ol,
+.margin-left-lists ul {
+  margin-left: 1.125rem;
+}

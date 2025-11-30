@@ -1,0 +1,41 @@
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (created$ | async) {
+<div class="success">Notice created successfully</div>
+}
+<div class="create-notification-wrapper">
+  <form [formGroup]="form">
+    <a class="back-link" [routerLink]="'../'">Back</a>
+
+    <h1>Create notice</h1>
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" type="text" formControlName="title" />
+    </div>
+    <div class="field">
+      <label for="editor">Content</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="content"
+        ></ngx-editor>
+      </div>
+    </div>
+    <button class="button button--primary" (click)="create()">Publish</button>
+  </form>
+  <div class="phone-wrapper">
+    <fake-phone>
+      <h2>{{ form.controls.title.value }}</h2>
+      <div
+        [innerHTML]="sanitizer.bypassSecurityTrustHtml(form.controls.content.value || '')"
+      ></div>
+    </fake-phone>
+  </div>
+</div>

@@ -17,6 +17,11 @@ import { AdminUsersUpdateRegularShiftsComponent } from './admin/rota/regular-shi
 import { AdminRotaViewAttendanceComponent } from './admin/rota/view-attendance/component';
 import { InstallationComponent } from './installation/component';
 import { ClockingComponent } from './clocking/component';
+import { AdminNoticesComponent } from './admin/notices/component';
+import { AdminNoticeCreateComponent } from './admin/notices/create/component';
+import { VolunteerNoticesComponent } from './volunteer/notices/component';
+import { VolunteerNoticeViewComponent } from './volunteer/notices/view/component';
+import { AdminNoticeInteractionsComponent } from './admin/notices/interactions/component';
 
 export const routes: Routes = [
   {
@@ -56,6 +61,13 @@ export const routes: Routes = [
       {
         path: 'profile',
         component: VolunteerProfileComponent,
+      },
+      {
+        path: 'notices',
+        children: [
+          { path: '', pathMatch: 'full', component: VolunteerNoticesComponent },
+          { path: ':id/view', component: VolunteerNoticeViewComponent },
+        ],
       },
     ],
   },
@@ -103,6 +115,17 @@ export const routes: Routes = [
           { path: '', pathMatch: 'full', component: AdminRotaComponent },
           { path: 'configuration', component: AdminRotaConfigurationComponent },
           { path: 'attendance', component: AdminRotaViewAttendanceComponent },
+        ],
+      },
+      {
+        path: 'notices',
+        children: [
+          { path: '', pathMatch: 'full', component: AdminNoticesComponent },
+          { path: 'create', component: AdminNoticeCreateComponent },
+          {
+            path: ':id/interactions',
+            component: AdminNoticeInteractionsComponent,
+          },
         ],
       },
     ],

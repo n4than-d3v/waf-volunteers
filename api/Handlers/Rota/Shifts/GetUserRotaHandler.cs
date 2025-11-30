@@ -22,7 +22,7 @@ public class GetUserRotaHandler : IRequestHandler<GetUserRota, IResult>
     public async Task<IResult> Handle(GetUserRota request, CancellationToken cancellationToken)
     {
         var userId = request.UserId ?? _context.Id;
-        var now = DateOnly.FromDateTime(DateTime.UtcNow);
+        var now = DateOnly.FromDateTime(DateTime.Now);
 
         var rota = await _rotaService.GetVolunteerRotaAsync(now, userId);
         return Results.Ok(rota);

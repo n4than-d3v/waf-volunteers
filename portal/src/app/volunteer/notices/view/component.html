@@ -1,0 +1,10 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (notice$ | async; as notice) { @if (notice) {
+<h1>{{ notice.title }}</h1>
+<div class="margin-left-lists" [innerHTML]="getNoticeContent(notice)"></div>
+} }

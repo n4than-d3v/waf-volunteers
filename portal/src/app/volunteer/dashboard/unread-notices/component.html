@@ -1,0 +1,11 @@
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (unread !== 0) {
+<div class="container">
+  <img src="images/alert.svg" />
+  <p>You have {{ unread }} unread notice{{ unread !== 1 ? 's' : ''}}</p>
+  <a [routerLink]="'../notices'">View</a>
+</div>
+}

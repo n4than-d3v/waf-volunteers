@@ -1,0 +1,42 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+<h1>Notice interactions</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (interactions$ | async; as interactions) {
+<table>
+  <thead>
+    <tr>
+      <th>Volunteer</th>
+      <th>Status</th>
+      <th>
+        <div class="flex-thirds">
+          <p>Opened</p>
+          <p>Closed</p>
+          <p>Duration</p>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (interaction of interactions; track interaction.name) {
+    <tr>
+      <td>{{ interaction.name }}</td>
+      <td>{{ interaction.read ? 'Read' : 'Unread' }}</td>
+      <td>
+        @for (event of interaction.interactions; track event.opened) {
+        <div class="flex-thirds">
+          <p>{{ event.opened | date: 'dd MMM yyyy HH:mm:ss' }}</p>
+          <p>{{ event.closed | date: 'dd MMM yyyy HH:mm:ss' }}</p>
+          <p>{{ event.duration }}</p>
+        </div>
+        }
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+}

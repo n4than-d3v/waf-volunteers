@@ -1,0 +1,69 @@
+import { createReducer, on } from '@ngrx/store';
+import { initialNoticeManagementState, NoticeManagementState } from './state';
+import {
+  createNotice,
+  createNoticeError,
+  createNoticeSuccess,
+  getNotices,
+  getNoticesError,
+  getNoticesSuccess,
+  viewNoticeInteractions,
+  viewNoticeInteractionsError,
+  viewNoticeInteractionsSuccess,
+} from './actions';
+
+export const noticeManagementReducer = createReducer<NoticeManagementState>(
+  initialNoticeManagementState,
+  on(getNotices, (state) => ({
+    ...state,
+    notices: [],
+    loading: true,
+    error: false,
+  })),
+  on(getNoticesSuccess, (state, { notices }) => ({
+    ...state,
+    notices: notices,
+    loading: false,
+    error: false,
+  })),
+  on(getNoticesError, (state) => ({
+    ...state,
+    loading: false,
+    error: true,
+  })),
+  on(viewNoticeInteractions, (state) => ({
+    ...state,
+    interactions: [],
+    loading: true,
+    error: false,
+  })),
+  on(viewNoticeInteractionsSuccess, (state, { interactions }) => ({
+    ...state,
+    interactions: interactions,
+    loading: false,
+    error: false,
+  })),
+  on(viewNoticeInteractionsError, (state) => ({
+    ...state,
+    loading: false,
+    error: true,
+  })),
+  on(createNotice, (state) => ({
+    ...state,
+    created: false,
+    loading: true,
+    error: false,
+  })),
+  on(createNoticeSuccess, (state) => ({
+    ...state,
+    created: true,
+    loading: false,
+    error: false,
+  })),
+  on(createNoticeError, (state) => ({
+    ...state,
+    created: false,
+    loading: false,
+    error: true,
+  }))
+);

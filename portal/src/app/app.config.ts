@@ -2,6 +2,7 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
   isDevMode,
+  importProvidersFrom,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
@@ -29,9 +30,50 @@ import { RotaEffects } from './volunteer/rota/effects';
 import { rotaReducer } from './volunteer/rota/reducer';
 import { ClockingEffects } from './clocking/effects';
 import { clockingReducer } from './clocking/reducer';
+import { noticeManagementReducer } from './admin/notices/reducer';
+import { NoticeManagementEffects } from './admin/notices/effects';
+import { NgxEditorModule } from 'ngx-editor';
+import { noticesReducer } from './volunteer/notices/reducer';
+import { NoticesEffects } from './volunteer/notices/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(
+      NgxEditorModule.forRoot({
+        locals: {
+          bold: 'Bold',
+          italic: 'Italic',
+          code: 'Code',
+          blockquote: 'Blockquote',
+          underline: 'Underline',
+          strike: 'Strike',
+          bullet_list: 'Bullet list',
+          ordered_list: 'Numbered list',
+          heading: 'Heading',
+          h1: 'Header 1',
+          h2: 'Header 2',
+          h3: 'Header 3',
+          h4: 'Header 4',
+          h5: 'Header 5',
+          h6: 'Header 6',
+          align_left: 'Left align',
+          align_center: 'Centre align',
+          align_right: 'Right align',
+          align_justify: 'Justify',
+          text_color: 'Text colour',
+          background_color: 'Background colour',
+          url: 'URL',
+          text: 'Text',
+          openInNewTab: 'Open in new tab',
+          insert: 'Insert',
+          altText: 'Alt text',
+          title: 'Title',
+          remove: 'Remove',
+          enterValidUrl: 'Please enter a valid URL',
+          required: 'This is required',
+        },
+      })
+    ),
     TokenProvider,
     provideHttpClient(withInterceptors([baseUrlInterceptor, tokenInterceptor])),
     provideStore<AppState>({
@@ -42,10 +84,12 @@ export const appConfig: ApplicationConfig = {
       // Volunteer
       profile: profileReducer,
       rota: rotaReducer,
+      notices: noticesReducer,
 
       // Admin
       profiles: profilesReducer,
       rotaManagement: rotaManagementReducer,
+      noticeManagement: noticeManagementReducer,
 
       // Clocking
       clocking: clockingReducer,
@@ -58,10 +102,12 @@ export const appConfig: ApplicationConfig = {
       // Volunteer
       ProfileEffects,
       RotaEffects,
+      NoticesEffects,
 
       // Admin
       ProfilesEffects,
       RotaManagementEffects,
+      NoticeManagementEffects,
 
       // Clocking
       ClockingEffects,

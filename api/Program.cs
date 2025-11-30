@@ -5,6 +5,8 @@ using Api.Handlers.Accounts.Admin;
 using Api.Handlers.Accounts.Beacon;
 using Api.Handlers.Accounts.Info;
 using Api.Handlers.Accounts.Reset;
+using Api.Handlers.Notices;
+using Api.Handlers.Notices.Interaction;
 using Api.Handlers.Rota;
 using Api.Handlers.Rota.Misc.Assignments;
 using Api.Handlers.Rota.Misc.Assignments.Areas;
@@ -350,6 +352,27 @@ apiClocking.MapPost("/out", (IMediator mediator, ClockOut request) => mediator.S
 apiClocking.MapGet("/view", (IMediator mediator) => mediator.Send(new GetClockingRota()))
     .AddNote("View clocking rota")
     .RequireAuthorization(clockingPolicy);
+
+var apiNotices = api.MapGroup("/notices");
+apiNotices.MapPost("/", (IMediator mediator, CreateNotice request) => mediator.Send(request))
+    .AddNote("Admin creates a new notice")
+    .RequireAuthorization(adminPolicy);
+
+apiNotices.MapGet("/", (IMediator mediator) => mediator.Send(new ListNotices()))
+    .AddNote("User views list of notices")
+    .RequireAuthorization(signedInPolicy);
+
+apiNotices.MapGet("/{id:int}", (IMediator mediator, int id) => mediator.Send(new ViewNoticeInteractions { NoticeId = id }))
+    .AddNote("Admin views notice interactions")
+    .RequireAuthorization(adminPolicy);
+
+apiNotices.MapPost("/{id:int}/open", (IMediator mediator, int id) => mediator.Send(new OpenNotice { NoticeId = id }))
+    .AddNote("User opens a notice, returns the content")
+    .RequireAuthorization(signedInPolicy);
+
+apiNotices.MapPost("/{id:int}/close", (IMediator mediator, int id) => mediator.Send(new CloseNotice { NoticeId = id }))
+    .AddNote("User closes a notice")
+    .RequireAuthorization(signedInPolicy);
 
 app.Run();
 

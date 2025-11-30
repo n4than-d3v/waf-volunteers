@@ -1,0 +1,15 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+th p {
+  color: white;
+}
+
+.flex-thirds {
+  display: flex;
+
+  > p {
+    flex: 1;
+  }
+}

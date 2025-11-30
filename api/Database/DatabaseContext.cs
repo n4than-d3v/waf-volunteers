@@ -1,4 +1,5 @@
 ﻿using Api.Database.Entities.Account;
+using Api.Database.Entities.Notices;
 using Api.Database.Entities.Rota;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,10 @@ public class DatabaseContext : DbContext
     public DbSet<AssignableArea> AssignableAreas { get; set; }
     public DbSet<AssignableShift> AssignableShifts { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
+
+    // Notices
+    public DbSet<Notice> Notices { get; set; }
+    public DbSet<NoticeInteraction> NoticeInteractions { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 }

@@ -81,5 +81,7 @@ public class ViewNoticeInteractionsHandler : IRequestHandler<ViewNoticeInteracti
 
             }
         }
+
+        public double? DurationSeconds => Closed.HasValue ? (Closed.Value - Opened).TotalSeconds : null;
     }
 }

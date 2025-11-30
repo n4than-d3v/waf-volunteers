@@ -19,6 +19,7 @@ export interface Interaction {
     opened: string;
     closed: string | null;
     duration: string | null;
+    durationSeconds: number | null;
   }[];
 }
 

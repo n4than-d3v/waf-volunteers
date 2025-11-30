@@ -11,20 +11,24 @@ import { viewNoticeInteractions } from '../actions';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
   selector: 'admin-notices-interactions',
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, SpinnerComponent, RouterLink, DatePipe],
+  imports: [AsyncPipe, SpinnerComponent, RouterLink, DatePipe, FormsModule],
 })
-export class AdminNoticeInteractionsComponent {
+export class AdminNoticeInteractionsComponent implements OnInit {
   id: number = 0;
 
   interactions$: Observable<Interaction[]>;
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
+
+  filter: 'none' | 'unread' | 'seconds' = 'none';
+  seconds = 0;
 
   constructor(private store: Store, route: ActivatedRoute) {
     this.interactions$ = this.store.select(selectInteractions);
@@ -32,11 +36,28 @@ export class AdminNoticeInteractionsComponent {
     this.error$ = this.store.select(selectNoticesError);
     route.params.subscribe((params) => {
       this.id = Number(params['id'] || 0);
-      this.store.dispatch(
-        viewNoticeInteractions({
-          id: this.id,
-        })
-      );
     });
+  }
+
+  ngOnInit() {
+    this.store.dispatch(
+      viewNoticeInteractions({
+        id: this.id,
+      })
+    );
+  }
+
+  shouldShow(interaction: Interaction) {
+    if (this.filter === 'none') return true;
+    if (this.filter === 'unread') return !interaction.read;
+    if (this.filter === 'seconds') {
+      if (!interaction.read) return false;
+      const interactions = interaction.interactions;
+      const shortInteractions = interactions.filter(
+        (x) => x.durationSeconds && x.durationSeconds <= this.seconds
+      );
+      return shortInteractions.length == interactions.length;
+    }
+    return true;
   }
 }

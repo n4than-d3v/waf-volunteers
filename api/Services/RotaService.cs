@@ -91,7 +91,8 @@ public class RotaService : IRotaService
             return new Day.DayShift.DayShiftJob.DayShiftJobVolunteer
             {
                 Id = account.Id,
-                Name = $"{firstName} {lastName[..1]}",
+                FirstName = firstName,
+                LastName = lastName,
                 FullName = $"{firstName} {lastName}",
                 IsRegularShift = isRegular,
                 Confirmed = null
@@ -125,11 +126,48 @@ public class RotaService : IRotaService
             };
         }
 
-        Day.DayShift GetDayShift(DateOnly date, TimeRange time) => new()
+        Day.DayShift GetDayShift(DateOnly date, TimeRange time)
         {
-            Time = time,
-            Jobs = [.. jobs.Select(job => GetDayShiftJob(date, time, job))]
-        };
+            var shift = new Day.DayShift
+            {
+                Time = time,
+                Jobs = [.. jobs.Select(job => GetDayShiftJob(date, time, job))]
+            };
+
+            var volunteers = shift.Jobs.SelectMany(x => x.Volunteers);
+            foreach (var volunteer in volunteers)
+            {
+                var sameFirstName = volunteers.Where(x => x.FirstName == volunteer.FirstName);
+                if (sameFirstName.Count() == 1)
+                {
+                    // There is only one on shift with this first name
+                    volunteer.Name = volunteer.FirstName;
+                }
+                else
+                {
+                    // There is more than one on shift with this first name
+                    bool nameSet = false;
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        if (sameFirstName.Count() == sameFirstName
+                            .Select(x => $"{x.FirstName} {x.LastName[..i]}")
+                            .Distinct()
+                            .Count())
+                        {
+                            volunteer.Name = $"{volunteer.FirstName} {volunteer.LastName[..i]}";
+                            nameSet = true;
+                            break;
+                        }
+                    }
+                    if (!nameSet)
+                    {
+                        volunteer.Name = $"{volunteer.FirstName} {volunteer.LastName}";
+                    }
+                }
+            }
+
+            return shift;
+        }
 
         for (var date = start; date <= end; date = date.AddDays(1))
         {
@@ -260,6 +298,8 @@ public class Day
                 public int Id { get; set; }
                 public string Name { get; set; }
                 public string FullName { get; set; }
+                internal string FirstName { get; set; }
+                internal string LastName { get; set; }
                 public bool IsRegularShift { get; set; }
                 public int? AttendanceId { get; set; }
                 public bool? Confirmed { get; set; }

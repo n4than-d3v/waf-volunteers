@@ -1,13 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { Notice } from '../state';
+import { Notice, NoticeAttachment } from '../state';
 import {
   selectNotice,
   selectNoticesLoading,
   selectNoticesError,
 } from '../selectors';
-import { closeNotice, getNotices, openNotice } from '../actions';
+import {
+  closeNotice,
+  downloadNoticeAttachment,
+  getNotices,
+  openNotice,
+} from '../actions';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -36,12 +41,10 @@ export class VolunteerNoticeViewComponent implements OnInit, OnDestroy {
     private router: Router,
     route: ActivatedRoute
   ) {
-    console.log('CONSTRUCTOR');
     this.notice$ = this.store.select(selectNotice);
     this.loading$ = this.store.select(selectNoticesLoading);
     this.error$ = this.store.select(selectNoticesError);
     this.subscription = route.params.subscribe((params) => {
-      console.log('ID CHANGE');
       this.id = Number(params['id'] || 0);
     });
   }
@@ -52,15 +55,22 @@ export class VolunteerNoticeViewComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
+  download(notice: Notice, attachment: NoticeAttachment) {
+    this.store.dispatch(
+      downloadNoticeAttachment({
+        notice,
+        attachment,
+      })
+    );
+  }
+
   private close() {
-    console.log('CLOSE');
     navigator.sendBeacon(`api/notices/${this.id}/close`);
     this.router.navigateByUrl('/volunteer/notices');
     setTimeout(() => window.location.reload(), 500);
   }
 
   ngOnInit() {
-    console.log('ON INIT');
     this.store.dispatch(
       openNotice({
         id: this.id,
@@ -75,7 +85,6 @@ export class VolunteerNoticeViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('ON DESTROY');
     this.store.dispatch(
       closeNotice({
         id: this.id,

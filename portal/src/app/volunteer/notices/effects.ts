@@ -7,6 +7,7 @@ import {
   closeNotice,
   closeNoticeError,
   closeNoticeSuccess,
+  downloadNoticeAttachment,
   getNotices,
   getNoticesError,
   getNoticesSuccess,
@@ -54,5 +55,29 @@ export class NoticesEffects {
         )
       )
     )
+  );
+
+  downloadNoticeAttachment$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(downloadNoticeAttachment),
+        switchMap((action) => {
+          this.http
+            .get(`notices/${action.notice.id}/files/${action.attachment.id}`, {
+              responseType: 'blob',
+            })
+            .subscribe((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = action.attachment.fileName;
+              a.click();
+
+              window.URL.revokeObjectURL(url);
+            });
+          return of();
+        })
+      ),
+    { dispatch: false }
   );
 }

@@ -81,6 +81,14 @@ select {
   }
 }
 
+input[type="file"] {
+  background-color: white;
+  max-width: max-content;
+  border: none;
+  border-radius: 0rem;
+  padding: 0rem;
+}
+
 .button {
   padding: 0.5rem;
   font-size: 1.2rem;

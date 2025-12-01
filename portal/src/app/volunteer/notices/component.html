@@ -15,7 +15,9 @@
     <div class="timeline-content">
       <p class="date">{{ notice.created | date: 'dd MMM yyyy' }}</p>
       <p class="title">
-        {{ notice.title }} @if (!notice.read) {
+        {{ notice.title }} @if (notice.hasAttachments) {
+        <img class="has-attachments" src="images/notices/attachment.svg" />
+        } @if (!notice.read) {
         <span class="unread">(unread)</span>
         }
       </p>

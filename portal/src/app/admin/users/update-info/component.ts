@@ -81,7 +81,6 @@ export class AdminUsersUpdateInfoComponent implements OnInit, OnDestroy {
   });
 
   constructor(private store: Store, route: ActivatedRoute) {
-    console.log(this.roles);
     this.loading$ = this.store.select(selectProfilesLoading);
     this.updated$ = this.store.select(selectProfileUpdateSuccess);
     this.error$ = this.store.select(selectProfilesError);

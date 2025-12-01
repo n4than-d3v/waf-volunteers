@@ -37,6 +37,8 @@ public class ViewNoticeInteractionsHandler : IRequestHandler<ViewNoticeInteracti
 
         foreach (var account in accounts)
         {
+            if (!notice.ShouldShow(account)) continue;
+
             var firstName = _encryptionService.Decrypt(account.FirstName, account.Salt);
             var lastName = _encryptionService.Decrypt(account.LastName, account.Salt);
             users.Add(new UserNotice

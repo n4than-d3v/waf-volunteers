@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Notice } from './state';
+import { Notice, NoticeAttachment } from './state';
 
 export const getNotices = createAction('[Notices] Get notices');
 export const getNoticesSuccess = createAction(
@@ -27,3 +27,8 @@ export const closeNoticeSuccess = createAction(
   props<{ notice: Notice }>()
 );
 export const closeNoticeError = createAction('[Notices] Close notice: error');
+
+export const downloadNoticeAttachment = createAction(
+  '[Notices] Download attachment',
+  props<{ notice: Notice; attachment: NoticeAttachment }>()
+);

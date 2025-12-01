@@ -12,6 +12,8 @@ public class CreateNotice : IRequest<IResult>
 {
     public string Title { get; set; }
     public string Content { get; set; }
+    public AccountRoles Roles { get; set; }
+    public IFormFileCollection Files { get; set; }
 }
 
 public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
@@ -29,13 +31,36 @@ public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
 
     public async Task<IResult> Handle(CreateNotice request, CancellationToken cancellationToken)
     {
-        var notice = new Notice(request.Title, request.Content);
+        var notice = new Notice(request.Title, request.Content, request.Roles);
         _repository.Create(notice);
         await _repository.SaveChangesAsync();
+
+        if (request.Files != null && request.Files.Count > 0)
+        {
+            foreach (var file in request.Files)
+            {
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms, cancellationToken);
+
+                var noticeFile = new NoticeAttachment
+                {
+                    Notice = notice,
+                    FileName = file.FileName,
+                    ContentType = file.ContentType,
+                    Data = ms.ToArray()
+                };
+
+                _repository.Create(noticeFile);
+            }
+
+            await _repository.SaveChangesAsync();
+        }
 
         var accounts = await _repository.GetAll<Account>(x => true, tracking: false);
         foreach (var account in accounts)
         {
+            if (!notice.ShouldShow(account)) continue;
+
             try
             {
                 var json = _encryptionService.Decrypt(account.PushSubscription, account.Salt);

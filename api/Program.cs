@@ -354,9 +354,28 @@ apiClocking.MapGet("/view", (IMediator mediator) => mediator.Send(new GetClockin
     .RequireAuthorization(clockingPolicy);
 
 var apiNotices = api.MapGroup("/notices");
-apiNotices.MapPost("/", (IMediator mediator, CreateNotice request) => mediator.Send(request))
-    .AddNote("Admin creates a new notice")
-    .RequireAuthorization(adminPolicy);
+apiNotices.MapPost("/", async (IMediator mediator, HttpRequest httpReq) =>
+{
+    var form = await httpReq.ReadFormAsync();
+    _ = int.TryParse(form["roles"], out int roles);
+
+    var request = new CreateNotice
+    {
+        Title = form["title"],
+        Content = form["content"],
+        Roles = (Api.Database.Entities.Account.AccountRoles)roles,
+        Files = form.Files
+    };
+
+    return await mediator.Send(request);
+
+})
+.AddNote("Admin creates a new notice")
+.RequireAuthorization(adminPolicy);
+
+apiNotices.MapGet("/{noticeId:int}/files/{attachmentId:int}", (IMediator mediator, int noticeId, int attachmentId) => mediator.Send(new DownloadNoticeAttachment { NoticeId = noticeId, AttachmentId = attachmentId }))
+    .AddNote("User downloads notice attachment")
+    .RequireAuthorization(signedInPolicy);
 
 apiNotices.MapGet("/", (IMediator mediator) => mediator.Send(new ListNotices()))
     .AddNote("User views list of notices")

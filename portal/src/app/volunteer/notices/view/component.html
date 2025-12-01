@@ -6,5 +6,15 @@
 <div class="error">Error occurred</div>
 } @if (notice$ | async; as notice) { @if (notice) {
 <h1>{{ notice.title }}</h1>
+@if (notice.attachments && notice.attachments.length > 0) {
+<div class="attachments">
+  @for (attachment of notice.attachments; track attachment.id) {
+  <div class="attachment" (click)="download(notice, attachment)">
+    <img src="images/notices/attachment.svg" />
+    <span>{{ attachment.fileName }}</span>
+  </div>
+  }
+</div>
+}
 <div class="margin-left-lists" [innerHTML]="getNoticeContent(notice)"></div>
 } }

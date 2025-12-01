@@ -3,6 +3,7 @@ using Api.Database.Entities.Account;
 using Api.Database.Entities.Notices;
 using Api.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Handlers.Notices.Interaction;
 
@@ -30,6 +31,10 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
         var account = await _repository.Get<Account>(_userContext.Id);
         if (account == null) return Results.BadRequest();
 
+        var attachments = await _repository.GetAll<NoticeAttachment>(
+            x => x.Notice.Id == notice.Id, tracking: false,
+            action: x => x.Include(y => y.Notice));
+
         _repository.Create(new NoticeInteraction
         {
             Account = account,
@@ -39,6 +44,18 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
         });
         await _repository.SaveChangesAsync();
 
-        return Results.Ok(notice);
+        return Results.Ok(new
+        {
+            notice.Id,
+            notice.Title,
+            notice.Content,
+            notice.Created,
+            Attachments = attachments.Select(x => new
+            {
+                x.Id,
+                x.FileName,
+                x.ContentType
+            }).ToArray()
+        });
     }
 }

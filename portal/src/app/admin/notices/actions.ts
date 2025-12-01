@@ -12,7 +12,7 @@ export const getNoticesError = createAction(
 
 export const createNotice = createAction(
   '[Admin Notices] Create notice',
-  props<{ title: string; content: string }>()
+  props<{ title: string; content: string; files: File[]; roles: number }>()
 );
 export const createNoticeSuccess = createAction(
   '[Admin Notices] Create notice: success'

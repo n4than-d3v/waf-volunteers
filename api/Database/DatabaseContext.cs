@@ -27,6 +27,7 @@ public class DatabaseContext : DbContext
 
     // Notices
     public DbSet<Notice> Notices { get; set; }
+    public DbSet<NoticeAttachment> NoticeAttachments { get; set; }
     public DbSet<NoticeInteraction> NoticeInteractions { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }

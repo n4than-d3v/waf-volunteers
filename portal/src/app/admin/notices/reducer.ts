@@ -22,6 +22,8 @@ export const noticeManagementReducer = createReducer<NoticeManagementState>(
     notices: [],
     loading: true,
     error: false,
+    created: false,
+    deleted: false,
   })),
   on(getNoticesSuccess, (state, { notices }) => ({
     ...state,

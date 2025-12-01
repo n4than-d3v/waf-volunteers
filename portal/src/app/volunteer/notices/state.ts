@@ -11,6 +11,14 @@ export interface Notice {
   content: string;
   created: string;
   read: boolean;
+  hasAttachments: boolean;
+  attachments: NoticeAttachment[];
+}
+
+export interface NoticeAttachment {
+  id: number;
+  fileName: string;
+  contentType: string;
 }
 
 export const initialNoticesState: NoticesState = {

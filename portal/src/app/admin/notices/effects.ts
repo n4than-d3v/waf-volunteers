@@ -52,12 +52,19 @@ export class NoticeManagementEffects {
   createNotice$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createNotice),
-      switchMap((action) =>
-        this.http.post('notices', action).pipe(
+      switchMap((action) => {
+        const formData = new FormData();
+        formData.append('title', action.title);
+        formData.append('content', action.content);
+        formData.append('roles', String(action.roles));
+        for (const file of action.files) {
+          formData.append('files', file);
+        }
+        return this.http.post('notices', formData).pipe(
           map(() => createNoticeSuccess()),
           catchError(() => of(createNoticeError()))
-        )
-      )
+        );
+      })
     )
   );
 

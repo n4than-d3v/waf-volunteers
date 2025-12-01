@@ -25,6 +25,9 @@ public class ViewNoticeInteractionsHandler : IRequestHandler<ViewNoticeInteracti
 
     public async Task<IResult> Handle(ViewNoticeInteractions request, CancellationToken cancellationToken)
     {
+        var notice = await _repository.Get<Notice>(request.NoticeId, tracking: false);
+        if (notice == null) return Results.BadRequest();
+
         var interactions = await _repository.GetAll<NoticeInteraction>(
             x => x.Notice.Id == request.NoticeId, tracking: false,
             action: x => x.Include(y => y.Notice).Include(y => y.Account));
@@ -65,23 +68,40 @@ public class ViewNoticeInteractionsHandler : IRequestHandler<ViewNoticeInteracti
         public DateTime Opened { get; set; }
         public DateTime? Closed { get; set; }
 
+        private static DateTime FloorToSeconds(DateTime dt)
+        {
+            return new DateTime(
+                dt.Year, dt.Month, dt.Day,
+                dt.Hour, dt.Minute, dt.Second,
+                dt.Kind
+            );
+        }
+
+        private static string ConvertTimeSpan(TimeSpan duration)
+        {
+            string formatted = $"{duration.Seconds} second{(duration.Seconds != 1 ? "s" : "")}";
+            if (duration.TotalMinutes < 1) return formatted;
+            formatted = $"{duration.Minutes} minute{(duration.Minutes != 1 ? "s" : "")} " + formatted;
+            if (duration.TotalHours < 1) return formatted;
+            return $"{duration.Hours} hour{(duration.Hours != 1 ? "s" : "")} " + formatted;
+        }
+
+        private TimeSpan GetTimeSpan()
+        {
+            return FloorToSeconds(Closed!.Value) - FloorToSeconds(Opened);
+        }
+
         public string Duration
         {
             get
             {
                 if (Closed == null) return string.Empty;
 
-                var duration = Closed.Value - Opened;
-
-                string formatted = $"{duration.Seconds} second{(duration.Seconds != 1 ? "s" : "")}";
-                if (duration.TotalMinutes < 1) return formatted;
-                formatted = $"{duration.Minutes} minute{(duration.Minutes != 1 ? "s" : "")} " + formatted;
-                if (duration.TotalHours < 1) return formatted;
-                return $"{duration.Hours} hour{(duration.Hours != 1 ? "s" : "")} " + formatted;
-
+                var duration = GetTimeSpan();
+                return ConvertTimeSpan(duration);
             }
         }
 
-        public double? DurationSeconds => Closed.HasValue ? (Closed.Value - Opened).TotalSeconds : null;
+        public double? DurationSeconds => Closed.HasValue ? GetTimeSpan().TotalSeconds : null;
     }
 }

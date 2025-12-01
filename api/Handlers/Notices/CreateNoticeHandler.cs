@@ -19,14 +19,12 @@ public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
     private readonly IPushService _pushService;
-    private readonly IEmailService _emailService;
 
-    public CreateNoticeHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService, IEmailService emailService)
+    public CreateNoticeHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IPushService pushService)
     {
         _repository = repository;
         _encryptionService = encryptionService;
         _pushService = pushService;
-        _emailService = emailService;
     }
 
     public async Task<IResult> Handle(CreateNotice request, CancellationToken cancellationToken)

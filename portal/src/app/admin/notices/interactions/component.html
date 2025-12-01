@@ -20,6 +20,16 @@
     />
   </div>
   <div class="field">
+    <label for="filterRead">Only volunteers who have read it</label>
+    <input
+      type="radio"
+      name="filter"
+      id="filterRead"
+      value="read"
+      [(ngModel)]="filter"
+    />
+  </div>
+  <div class="field">
     <label for="filterUnread">Only volunteers who have not read it</label>
     <input
       type="radio"

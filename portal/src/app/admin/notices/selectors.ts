@@ -28,3 +28,8 @@ export const selectNoticeCreated = createSelector(
   selectNoticeManagementState,
   (state) => state.created
 );
+
+export const selectNoticeDeleted = createSelector(
+  selectNoticeManagementState,
+  (state) => state.deleted
+);

@@ -7,6 +7,9 @@ import {
   createNotice,
   createNoticeError,
   createNoticeSuccess,
+  deleteNotice,
+  deleteNoticeError,
+  deleteNoticeSuccess,
   getNotices,
   getNoticesError,
   getNoticesSuccess,
@@ -53,6 +56,18 @@ export class NoticeManagementEffects {
         this.http.post('notices', action).pipe(
           map(() => createNoticeSuccess()),
           catchError(() => of(createNoticeError()))
+        )
+      )
+    )
+  );
+
+  deleteNotice$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteNotice),
+      switchMap((action) =>
+        this.http.delete('notices/' + action.id).pipe(
+          map(() => deleteNoticeSuccess()),
+          catchError(() => of(deleteNoticeError()))
         )
       )
     )

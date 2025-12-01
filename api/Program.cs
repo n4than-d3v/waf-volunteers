@@ -366,6 +366,10 @@ apiNotices.MapGet("/{id:int}", (IMediator mediator, int id) => mediator.Send(new
     .AddNote("Admin views notice interactions")
     .RequireAuthorization(adminPolicy);
 
+apiNotices.MapDelete("/{id:int}", (IMediator mediator, int id) => mediator.Send(new DeleteNotice { NoticeId = id }))
+    .AddNote("Admin deletes a notice")
+    .RequireAuthorization(adminPolicy);
+
 apiNotices.MapPost("/{id:int}/open", (IMediator mediator, int id) => mediator.Send(new OpenNotice { NoticeId = id }))
     .AddNote("User opens a notice, returns the content")
     .RequireAuthorization(signedInPolicy);

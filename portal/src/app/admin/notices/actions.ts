@@ -32,3 +32,14 @@ export const viewNoticeInteractionsSuccess = createAction(
 export const viewNoticeInteractionsError = createAction(
   '[Admin Notices] View notice interactions: error'
 );
+
+export const deleteNotice = createAction(
+  '[Admin Notices] Delete notice',
+  props<{ id: number }>()
+);
+export const deleteNoticeSuccess = createAction(
+  '[Admin Notices] Delete notice: success'
+);
+export const deleteNoticeError = createAction(
+  '[Admin Notices] Delete notice: error'
+);

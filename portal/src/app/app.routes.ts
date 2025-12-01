@@ -22,6 +22,7 @@ import { AdminNoticeCreateComponent } from './admin/notices/create/component';
 import { VolunteerNoticesComponent } from './volunteer/notices/component';
 import { VolunteerNoticeViewComponent } from './volunteer/notices/view/component';
 import { AdminNoticeInteractionsComponent } from './admin/notices/interactions/component';
+import { AdminNoticeDeleteComponent } from './admin/notices/delete/component';
 
 export const routes: Routes = [
   {
@@ -123,8 +124,17 @@ export const routes: Routes = [
           { path: '', pathMatch: 'full', component: AdminNoticesComponent },
           { path: 'create', component: AdminNoticeCreateComponent },
           {
-            path: ':id/interactions',
-            component: AdminNoticeInteractionsComponent,
+            path: ':id',
+            children: [
+              {
+                path: 'interactions',
+                component: AdminNoticeInteractionsComponent,
+              },
+              {
+                path: 'delete',
+                component: AdminNoticeDeleteComponent,
+              },
+            ],
           },
         ],
       },

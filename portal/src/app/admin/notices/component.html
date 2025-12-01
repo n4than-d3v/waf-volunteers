@@ -22,9 +22,11 @@
       <td>{{ notice.created | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>{{ notice.title }}</td>
       <td>
-        <a [routerLink]="'./' + notice.id + '/interactions'">
-          View interactions
-        </a>
+        <a [routerLink]="'./' + notice.id + '/interactions'"
+          >View interactions</a
+        >
+        |
+        <a [routerLink]="'./' + notice.id + '/delete'">Delete</a>
       </td>
     </tr>
     }

@@ -4,6 +4,7 @@ export interface NoticeManagementState {
   loading: boolean;
   error: boolean;
   created: boolean;
+  deleted: boolean;
 }
 
 export interface Notice {
@@ -29,4 +30,5 @@ export const initialNoticeManagementState: NoticeManagementState = {
   loading: false,
   error: false,
   created: false,
+  deleted: false,
 };

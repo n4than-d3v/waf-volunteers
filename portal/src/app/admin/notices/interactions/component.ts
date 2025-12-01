@@ -27,7 +27,7 @@ export class AdminNoticeInteractionsComponent implements OnInit {
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
 
-  filter: 'none' | 'unread' | 'seconds' = 'none';
+  filter: 'none' | 'read' | 'unread' | 'seconds' = 'none';
   seconds = 0;
 
   constructor(private store: Store, route: ActivatedRoute) {
@@ -49,6 +49,7 @@ export class AdminNoticeInteractionsComponent implements OnInit {
 
   shouldShow(interaction: Interaction) {
     if (this.filter === 'none') return true;
+    if (this.filter === 'read') return interaction.read;
     if (this.filter === 'unread') return !interaction.read;
     if (this.filter === 'seconds') {
       if (!interaction.read) return false;

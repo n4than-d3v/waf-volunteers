@@ -4,6 +4,9 @@ import {
   createNotice,
   createNoticeError,
   createNoticeSuccess,
+  deleteNotice,
+  deleteNoticeError,
+  deleteNoticeSuccess,
   getNotices,
   getNoticesError,
   getNoticesSuccess,
@@ -63,6 +66,24 @@ export const noticeManagementReducer = createReducer<NoticeManagementState>(
   on(createNoticeError, (state) => ({
     ...state,
     created: false,
+    loading: false,
+    error: true,
+  })),
+  on(deleteNotice, (state) => ({
+    ...state,
+    deleted: false,
+    loading: true,
+    error: false,
+  })),
+  on(deleteNoticeSuccess, (state) => ({
+    ...state,
+    deleted: true,
+    loading: false,
+    error: false,
+  })),
+  on(deleteNoticeError, (state) => ({
+    ...state,
+    deleted: false,
     loading: false,
     error: true,
   }))

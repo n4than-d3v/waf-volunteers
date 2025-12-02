@@ -1,7 +1,7 @@
 @if (profile$ | async) { @if (!((subscribed$ | async) && isPermissionGranted()))
 {
 <div class="overlay"></div>
-<div class="popup">
+<div class="popup" [class.popup--error]="!!this.error">
   <h2>Enable notifications</h2>
   <p>
     We need you to enable notifications on your device so we can let you know
@@ -13,10 +13,7 @@
     <p>It looks like there's a problem.</p>
     <p>Please check the following:</p>
     <p>
-      <strong
-        >Settings &gt; Notifications &gt; Browser (e.g. Chrome or
-        Safari)</strong
-      >
+      <strong>Settings &gt; Notifications &gt; Chrome (or Safari)</strong>
     </p>
     <ul>
       <li>"Allow notifications" is toggled on</li>
@@ -29,8 +26,14 @@
       <li>"Allow notifications" is toggled on</li>
     </ul>
     <br />
-    <p>If you're still experiencing issues, please contact the office.</p>
-    <p>{{ error }}</p>
+    <p>
+      If you're still experiencing this issue, please contact the office,
+      quoting the error details below.
+    </p>
+    <details>
+      <summary>View error details</summary>
+      <code>{{ error }}</code>
+    </details>
   </div>
   }
 </div>

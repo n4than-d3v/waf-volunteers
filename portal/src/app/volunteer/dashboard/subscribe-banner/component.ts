@@ -47,10 +47,22 @@ export class SubscribeBannerComponent implements OnInit {
           this.store.dispatch(updateSubscription({ subscription }));
         })
         .catch((reason) => {
-          this.error = JSON.stringify(reason);
+          if (reason instanceof DOMException) {
+            this.error = JSON.stringify({
+              name: reason.name,
+              message: reason.message,
+              cause: reason.cause,
+              stack: reason.stack,
+            });
+          } else {
+            this.error = JSON.stringify(
+              reason || {},
+              Object.getOwnPropertyNames(reason)
+            );
+          }
         });
     } catch (err) {
-      this.error = JSON.stringify(err);
+      this.error = JSON.stringify(err || {});
     }
   }
 }

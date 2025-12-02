@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Profile } from './state';
@@ -29,7 +29,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
   ],
 })
-export class AdminUsersComponent implements OnInit {
+export class AdminUsersComponent implements OnInit, OnDestroy {
   users$: Observable<Profile[] | null>;
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
@@ -43,10 +43,21 @@ export class AdminUsersComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.search = sessionStorage.getItem('adminUsersSearch') || '';
     this.store.dispatch(getUsers());
+  }
+
+  ngOnDestroy() {
+    sessionStorage.setItem('adminUsersSearch', this.search);
   }
 
   beaconSync() {
     this.store.dispatch(runBeaconSync());
+  }
+
+  shouldShow(profile: Profile) {
+    if (!this.search) return true;
+    const fullName = profile.firstName + ' ' + profile.lastName;
+    return fullName.toUpperCase().includes(this.search.toUpperCase());
   }
 }

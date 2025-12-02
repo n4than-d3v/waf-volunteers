@@ -36,8 +36,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (user of users; track user.id) { @if ((!search) || (user.firstName + '
-    ' + user.lastName).toUpperCase().includes(search.toUpperCase())) {
+    @for (user of users; track user.id) { @if (shouldShow(user)) {
     <tr>
       <td>{{ user.username }}</td>
       <td>{{ user.firstName }} {{ user.lastName }}</td>

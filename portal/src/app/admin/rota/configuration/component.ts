@@ -53,6 +53,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   jobs: Job[] = [];
   newJobName = '';
   newJobBeaconAssociatedRole = '';
+  newJobShowOthersInOtherJobsOnShift = false;
 
   missingReasons: MissingReason[] = [];
   newMissingReasonName = '';
@@ -179,12 +180,17 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
         this.jobs.push({
           name: this.newJobName,
           beaconAssociatedRole: Number(this.newJobBeaconAssociatedRole || '0'),
+          showOthersInOtherJobsOnShift:
+            String(this.newJobShowOthersInOtherJobsOnShift) == 'true',
         });
       }
       this.newJobName = '';
       this.newJobBeaconAssociatedRole = '';
+      this.newJobShowOthersInOtherJobsOnShift = false;
       this.jobs.forEach((j) => {
         j.beaconAssociatedRole = Number(j.beaconAssociatedRole || '0');
+        j.showOthersInOtherJobsOnShift =
+          String(j.showOthersInOtherJobsOnShift) == 'true';
       });
       this.store.dispatch(
         updateJobs({

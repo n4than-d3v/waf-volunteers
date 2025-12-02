@@ -34,6 +34,7 @@ export interface Job {
   id?: number;
   name: string;
   beaconAssociatedRole: number;
+  showOthersInOtherJobsOnShift: boolean;
 }
 
 export interface MissingReason {

@@ -9,7 +9,8 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>[Beacon]</th>
+          <th>Beacon role</th>
+          <th>Show others in other jobs on shift</th>
           <th></th>
         </tr>
       </thead>
@@ -24,6 +25,12 @@
               @for (role of roles; track role.value) {
               <option value="{{ role.value }}">{{ role.display }}</option>
               }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="job.showOthersInOtherJobsOnShift">
+              <option [value]="true">Yes</option>
+              <option [value]="false">No</option>
             </select>
           </td>
           <td>
@@ -42,6 +49,12 @@
               @for (role of roles; track role.value) {
               <option value="{{ role.value }}">{{ role.display }}</option>
               }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newJobShowOthersInOtherJobsOnShift">
+              <option [value]="true">Yes</option>
+              <option [value]="false">No</option>
             </select>
           </td>
           <td></td>
@@ -100,7 +113,7 @@
           <th>Name</th>
           <th>Start</th>
           <th>End</th>
-          <th>[Beacon]</th>
+          <th>Beacon name</th>
           <th></th>
         </tr>
       </thead>

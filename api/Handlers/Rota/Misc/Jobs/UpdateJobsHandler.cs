@@ -14,6 +14,7 @@ public class UpdateJobs : IRequest<IResult>
         public int? Id { get; set; }
         public string Name { get; set; }
         public AccountRoles BeaconAssociatedRole { get; set; }
+        public bool ShowOthersInOtherJobsOnShift { get; set; }
     }
 }
 
@@ -38,6 +39,7 @@ public class UpdateJobsHandler : IRequestHandler<UpdateJobs, IResult>
                 // Update existing job details
                 job.Name = updatedJob.Name;
                 job.BeaconAssociatedRole = updatedJob.BeaconAssociatedRole;
+                job.ShowOthersInOtherJobsOnShift = updatedJob.ShowOthersInOtherJobsOnShift;
             }
             else
             {
@@ -52,7 +54,8 @@ public class UpdateJobsHandler : IRequestHandler<UpdateJobs, IResult>
             _repository.Create(new Job
             {
                 Name = job.Name,
-                BeaconAssociatedRole = job.BeaconAssociatedRole
+                BeaconAssociatedRole = job.BeaconAssociatedRole,
+                ShowOthersInOtherJobsOnShift = job.ShowOthersInOtherJobsOnShift
             });
         }
 

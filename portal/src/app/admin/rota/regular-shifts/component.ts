@@ -65,8 +65,19 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
           jobId: Number(this.newRegularShiftJobId),
 
           // Unused properties
-          job: { id: 0, name: '', beaconAssociatedRole: 0 },
-          time: { id: 0, name: '', start: '', end: '', beaconName: '' },
+          job: {
+            id: 0,
+            name: '',
+            beaconAssociatedRole: 0,
+            showOthersInOtherJobsOnShift: false,
+          },
+          time: {
+            id: 0,
+            name: '',
+            start: '',
+            end: '',
+            beaconName: '',
+          },
           id: -1,
         },
       })

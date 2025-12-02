@@ -189,7 +189,7 @@ a {
               }
 
               .volunteer {
-                border-bottom: solid 1px var(--border);
+                border-bottom: dotted 1px var(--border);
 
                 &:last-child {
                   border-bottom: none;
@@ -206,11 +206,11 @@ a {
                     flex-basis: 10%;
 
                     &.regularity--regular {
-                      border-right: solid 1px var(--theme-color-5);
+                      border-right: dotted 1px var(--theme-color-5);
                     }
 
                     &.regularity--irregular {
-                      border-right: solid 1px var(--theme-color-1);
+                      border-right: dotted 1px var(--theme-color-1);
                     }
                   }
 

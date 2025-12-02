@@ -137,7 +137,7 @@ public class RotaService : IRotaService
             var volunteers = shift.Jobs.SelectMany(x => x.Volunteers);
             foreach (var volunteer in volunteers)
             {
-                var sameFirstName = volunteers.Where(x => x.FirstName == volunteer.FirstName && x.Id != volunteer.Id);
+                var sameFirstName = volunteers.Where(x => x.FirstName == volunteer.FirstName);
                 if (sameFirstName.Count() == 1)
                 {
                     // There is only one on shift with this first name

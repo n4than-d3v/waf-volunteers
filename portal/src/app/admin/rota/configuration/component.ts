@@ -53,7 +53,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   jobs: Job[] = [];
   newJobName = '';
   newJobBeaconAssociatedRole = '';
-  newJobShowOthersInOtherJobsOnShift = false;
+  newJobShowOthersInOtherJobsOnShift: boolean | null = null;
 
   missingReasons: MissingReason[] = [];
   newMissingReasonName = '';

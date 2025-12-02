@@ -50,7 +50,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountInfo, IResult>
         var user = await _repository.Get<Account>(request.Id ?? _userContext.Id);
         if (user == null) return Results.BadRequest();
 
-        var cars = (request.Cars ?? []).Select(car => _encryptionService.Encrypt(car, user.Salt)).ToArray();
+        var cars = (request.Cars ?? []).Select(car => _encryptionService.Encrypt(car.ToUpper(), user.Salt)).ToArray();
 
         if (user.BeaconId != null && request.BeaconInfo != null)
         {

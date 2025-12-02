@@ -232,7 +232,8 @@ a {
                     }
 
                     &.confirmation--unconfirmed {
-                      background-color: var(--theme-color-3);
+                      background-color: #cdcdcd;
+                      color: black;
                     }
 
                     &.confirmation--rejected {

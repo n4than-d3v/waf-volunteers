@@ -31,3 +31,28 @@ button {
   width: 50%;
   margin: 1rem auto 0.25rem auto;
 }
+
+.error {
+  margin-top: 1.25rem;
+  margin-bottom: 0rem;
+  text-align: left;
+
+  p {
+    font-size: 1rem;
+    margin-bottom: 0rem;
+  }
+
+  strong {
+    display: block;
+    margin-top: 0.625rem;
+  }
+
+  ul {
+    list-style-type: square;
+    margin-left: 1rem;
+
+    li {
+      font-size: 1rem;
+    }
+  }
+}

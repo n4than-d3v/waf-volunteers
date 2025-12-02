@@ -8,5 +8,30 @@
     when shifts are understaffed and for sending urgent messages.
   </p>
   <button class="button button--primary" (click)="submit()">Ok</button>
+  @if (error) {
+  <div class="error">
+    <p>It looks like there's a problem.</p>
+    <p>Please check the following:</p>
+    <p>
+      <strong
+        >Settings &gt; Notifications &gt; Browser (e.g. Chrome or
+        Safari)</strong
+      >
+    </p>
+    <ul>
+      <li>"Allow notifications" is toggled on</li>
+      <li>"wildlifeaid.org" is not "Disabled"</li>
+    </ul>
+    <p>
+      <strong>Settings &gt; Notifications &gt; WAF</strong>
+    </p>
+    <ul>
+      <li>"Allow notifications" is toggled on</li>
+    </ul>
+    <br />
+    <p>If you're still experiencing issues, please contact the office.</p>
+    <p>{{ error }}</p>
+  </div>
+  }
 </div>
 } }

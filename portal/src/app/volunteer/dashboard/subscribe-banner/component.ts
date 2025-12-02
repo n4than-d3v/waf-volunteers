@@ -21,6 +21,8 @@ export class SubscribeBannerComponent implements OnInit {
   profile$: Observable<Profile | null>;
   subscribed$: Observable<boolean>;
 
+  error = '';
+
   isPermissionGranted() {
     return Notification.permission === 'granted';
   }
@@ -35,12 +37,20 @@ export class SubscribeBannerComponent implements OnInit {
   }
 
   submit() {
-    this.swPush
-      .requestSubscription({ serverPublicKey: this.VAPID_PUBLIC_KEY })
-      .then((subscription) => {
-        console.log('[Push] New subscription');
-        console.log(subscription.toJSON());
-        this.store.dispatch(updateSubscription({ subscription }));
-      });
+    this.error = '';
+    try {
+      this.swPush
+        .requestSubscription({ serverPublicKey: this.VAPID_PUBLIC_KEY })
+        .then((subscription) => {
+          console.log('[Push] New subscription');
+          console.log(subscription.toJSON());
+          this.store.dispatch(updateSubscription({ subscription }));
+        })
+        .catch((reason) => {
+          this.error = JSON.stringify(reason);
+        });
+    } catch (err) {
+      this.error = JSON.stringify(err);
+    }
   }
 }

@@ -287,6 +287,7 @@ public class Day
     {
         public TimeRange Time { get; set; }
         public IReadOnlyList<DayShiftJob> Jobs { get; set; }
+        public bool ShowOnRota => Jobs.Any(x => x.ShowOnRota);
 
         public class DayShiftJob
         {
@@ -298,6 +299,7 @@ public class Day
             public int Coming => Volunteers.Count(x => x.Confirmed == true);
             public bool Enough => Required <= Coming;
             public bool IsAssignable { get; set; }
+            public bool ShowOnRota => (Coming + NotComing + Unconfirmed + Required) != 0;
 
             public class DayShiftJobVolunteer
             {

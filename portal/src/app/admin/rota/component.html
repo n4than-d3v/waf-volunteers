@@ -52,11 +52,11 @@
       'MMMM y'}}
     </h3>
     <div class="shifts">
-      @for (shift of day.shifts; track shift.time.id) {
+      @for (shift of day.shifts; track shift.time.id) { @if (shift.showOnRota) {
       <div class="shift">
         <h4>{{ shift.time.name }}</h4>
         <div class="jobs">
-          @for (job of shift.jobs; track job.job.id) {
+          @for (job of shift.jobs; track job.job.id) { @if (job.showOnRota) {
           <div
             class="job"
             [class.job__enough]="job.enough"
@@ -188,10 +188,10 @@
               } }
             </div>
           </div>
-          }
+          } }
         </div>
       </div>
-      }
+      } }
     </div>
   </div>
   }

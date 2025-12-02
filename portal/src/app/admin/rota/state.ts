@@ -117,6 +117,7 @@ export interface AdminRota {
 export interface AdminRotaShift {
   time: Time;
   jobs: AdminRotaShiftJob[];
+  showOnRota: boolean;
 }
 
 export interface AdminRotaShiftJob {
@@ -128,6 +129,7 @@ export interface AdminRotaShiftJob {
   unconfirmed: number;
   enough: boolean;
   isAssignable: boolean;
+  showOnRota: boolean;
 }
 
 export interface AdminRotaShiftJobVolunteer {

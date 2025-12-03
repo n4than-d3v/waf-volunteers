@@ -57,7 +57,14 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   shouldShow(profile: Profile) {
     if (!this.search) return true;
-    const fullName = profile.firstName + ' ' + profile.lastName;
-    return fullName.toUpperCase().includes(this.search.toUpperCase());
+    const term = this.search.toUpperCase().replaceAll(' ', '');
+    const fullName = profile.firstName + profile.lastName;
+    const nameMatch = fullName.toUpperCase().includes(term);
+    const carMatch =
+      profile.cars &&
+      profile.cars.find((car) =>
+        car.toUpperCase().replaceAll(' ', '').includes(term)
+      );
+    return nameMatch || carMatch;
   }
 }

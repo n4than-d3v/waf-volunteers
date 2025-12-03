@@ -131,7 +131,10 @@ public class RotaService : IRotaService
             var shift = new Day.DayShift
             {
                 Time = time,
-                Jobs = [.. jobs.Select(job => GetDayShiftJob(date, time, job))]
+                Jobs = [.. jobs
+                    .OrderBy(job => job.Id)
+                    .Select(job => GetDayShiftJob(date, time, job))
+                ]
             };
 
             var volunteers = shift.Jobs.SelectMany(x => x.Volunteers);
@@ -174,7 +177,10 @@ public class RotaService : IRotaService
             days.Add(new Day
             {
                 Date = date,
-                Shifts = [.. times.Select(time => GetDayShift(date, time))]
+                Shifts = [.. times
+                    .OrderBy(time => time.Id)
+                    .Select(time => GetDayShift(date, time))
+                ]
             });
         }
 

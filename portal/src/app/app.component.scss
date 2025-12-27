@@ -1,0 +1,48 @@
+header {
+  background-color: var(--theme-primary);
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sign-out {
+  text-align: center;
+  color: white;
+  padding-right: 0.5rem;
+
+  img {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+footer {
+  background-color: var(--theme-primary);
+  text-align: center;
+  padding: 0.5rem 0.5rem;
+  font-size: 0.75rem;
+
+  p {
+    color: var(--text-color--light);
+  }
+}
+
+.wrapper {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.logo {
+  position: relative;
+
+  #xmas-easter-egg {
+    position: absolute;
+    width: 2.5rem;
+    height: 2.5rem;
+    transform: rotate(30deg);
+    top: -1rem;
+    right: -2.25rem;
+  }
+}

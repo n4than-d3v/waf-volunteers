@@ -1,0 +1,16 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (deleted$ | async) {
+<div class="success">Successfully deleted</div>
+} @else {
+<h1>Confirm deletion</h1>
+<p>
+  Clicking this button will delete this notice, as well as all interactions
+  recorded associated with it. Are you sure you wish to proceed?
+</p>
+<button class="button button--warning" (click)="confirm()">Yes, delete</button>
+}

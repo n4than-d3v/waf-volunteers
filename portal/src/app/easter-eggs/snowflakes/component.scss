@@ -1,0 +1,52 @@
+@use "sass:math";
+
+$snowflake-count: 60;
+
+.snow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+
+  animation: snow-hide 0.6s ease forwards;
+  animation-delay: 3s;
+}
+
+.flake {
+  position: absolute;
+  top: -20%;
+  width: 18px;
+  opacity: 0.8;
+
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: 3;
+}
+
+/* 🎲 pseudo-randomized flakes */
+@for $i from 1 through $snowflake-count {
+  .flake:nth-child(#{$i}) {
+    left: math.random(100) * 1%;
+    width: math.random(10) + 12px;
+    opacity: math.div((math.random(40) + 60), 100);
+
+    animation-duration: math.div((math.random(20) + 20), 10) * 1s;
+    animation-delay: math.div(math.random(10), 10) * 1s;
+  }
+}
+
+@keyframes fall {
+  from {
+    transform: translateY(-20vh) rotate(0deg);
+  }
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+@keyframes snow-hide {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

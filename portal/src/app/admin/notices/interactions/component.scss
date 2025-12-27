@@ -1,0 +1,45 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+th p {
+  color: white;
+}
+
+.flex-thirds {
+  display: flex;
+
+  > p {
+    flex: 1;
+  }
+}
+
+.header {
+  margin: 1.5rem 0rem;
+  border-left: solid 5px var(--theme-primary);
+  background-color: rgb(228, 228, 228);
+  max-width: max-content;
+  max-height: max-content;
+  padding: 1rem;
+}
+
+.buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.field--seconds {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  margin-left: 0.25rem;
+
+  input {
+    width: 4ch;
+    padding: 0.125rem;
+    text-align: center;
+    font-size: 8pt;
+  }
+}

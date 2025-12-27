@@ -1,0 +1,21 @@
+.container {
+  border: solid 2px var(--theme-color-2);
+  padding: 0.125rem 0.25rem;
+  padding-right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+img {
+  width: 2rem;
+}
+
+p,
+a {
+  color: var(--theme-color-2);
+  font-size: 0.85rem;
+  font-weight: bold;
+}

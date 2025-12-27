@@ -1,0 +1,68 @@
+<h1>Volunteer portal</h1>
+
+<div class="wrapper">
+  <div class="header">
+    <h2>Login</h2>
+    <img src="icons/icon-white.svg" alt="Logo" />
+  </div>
+  <div class="content">
+    @if (loading$ | async) {
+    <spinner></spinner>
+    } @if (error$ | async) {
+    <div class="error">Login failed</div>
+    } @if (!isPwa) {
+    <div class="error center">
+      <p>
+        We detected the application has not been installed correctly. Please
+        follow the instructions by clicking the button below.
+      </p>
+    </div>
+    <div class="buttons">
+      <a [routerLink]="'/install'" class="button button--primary"> Install </a>
+    </div>
+    <br />
+    <p>
+      <i> If you believe this to be an error, please contact the office.</i>
+    </p>
+    } @else {
+    <form [formGroup]="form">
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          formControlName="username"
+          autocomplete="off"
+        />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          [type]="form.controls.showPassword.value ? 'text' : 'password'"
+          id="password"
+          name="password"
+          formControlName="password"
+          autocomplete="off"
+        />
+      </div>
+      <div class="field">
+        <label for="show-password">Show password</label>
+        <input
+          type="checkbox"
+          id="show-password"
+          name="show-password"
+          formControlName="showPassword"
+          autocomplete="off"
+        />
+      </div>
+      <div class="buttons">
+        <button class="button button--primary" (click)="submit()">Login</button>
+        <a [routerLink]="'/forgot-password'" class="button button--secondary">
+          Forgot password
+        </a>
+      </div>
+    </form>
+    }
+  </div>
+</div>

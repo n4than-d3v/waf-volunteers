@@ -1,0 +1,23 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+.attachments {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  .attachment {
+    border: solid 1px black;
+    padding: 0.125rem 0.5rem;
+    background: #efefef;
+    cursor: pointer;
+
+    img {
+      width: 1.125rem;
+      margin-bottom: -2px;
+      margin-right: 0.5rem;
+    }
+  }
+}

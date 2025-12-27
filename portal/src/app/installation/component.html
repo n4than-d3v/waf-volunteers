@@ -1,0 +1,42 @@
+<h1>Installation</h1>
+
+@if (mobiles.any()) { @if (mobiles.android()) {
+<p>It looks like you are using an Android device.</p>
+<p>Please follow the instructions below to install this application:</p>
+<div class="pics">
+  <img src="images/installation/android/one.jpg" />
+  <img src="images/installation/android/two.jpg" />
+  <img src="images/installation/android/three.jpg" />
+  <img src="images/installation/android/four.jpg" />
+</div>
+} @else if (mobiles.iOS()) {
+<p>It looks like you are using an iOS device.</p>
+<p>Please follow the instructions below to install this application:</p>
+<div class="pics">
+  <img src="images/installation/ios/one.jpeg" />
+  <img src="images/installation/ios/two.jpeg" />
+  <img src="images/installation/ios/three.jpeg" />
+</div>
+} @else if (mobiles.blackBerry() || mobiles.opera() || mobiles.windows()) {
+<p>It looks like you are using an unsupported device.</p>
+<p>Unfortunately, this application will not work on your phone.</p>
+<p>Please get in contact with the office, or use another device instead.</p>
+} } @else {
+<p>It looks like you are using a computer or laptop.</p>
+<p>
+  If you only intend to use this application on your computer, and do not have
+  an alternate device such as a mobile phone or tablet, please continue.
+</p>
+<p>
+  However, if you have a mobile or tablet that you regularly use, we recommend
+  you follow the installation instructions on that device instead.
+</p>
+<p>
+  If you wish to continue installing on this device, please follow the
+  instructions below:
+</p>
+<div class="pics">
+  <img src="images/installation/web/one.png" />
+  <img src="images/installation/web/two.png" />
+</div>
+}

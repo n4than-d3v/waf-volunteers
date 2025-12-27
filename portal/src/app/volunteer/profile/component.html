@@ -1,0 +1,63 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Profile</h1>
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (updated$ | async) {
+<div class="success">Profile updated</div>
+}
+<form [formGroup]="form">
+  @if (beaconForm && profile && profile.beaconInfo) {
+  <beacon-info [form]="beaconForm" [profile]="profile.beaconInfo" />
+  }
+  <div class="summary-card">
+    <div class="summary-card__title-wrapper">
+      <h2 class="summary-card__title">Cars</h2>
+    </div>
+    <div class="summary-card__content">
+      <div *ngIf="editing !== 'cars'">
+        <dl class="summary-list">
+          <div
+            *ngFor="let car of form.controls.cars.controls; let i=index"
+            class="summary-list__row"
+          >
+            <dt class="summary-list__key">Car {{ i + 1 }}</dt>
+            <dd class="summary-list__value">{{ car.value }}</dd>
+          </div>
+          @if (form.controls.cars.controls.length === 0) {
+          <p class="no-cars">
+            Please provide your car registration number(s) if you drive to
+            Wildlife Aid. You are asked on arrival which car you came in, in
+            case of emergencies.
+          </p>
+          }
+        </dl>
+        <div class="right">
+          <button class="button button--secondary" (click)="editing = 'cars'">
+            Update
+          </button>
+        </div>
+      </div>
+      <div *ngIf="editing === 'cars'" formGroupName="cars">
+        <div
+          class="car-field"
+          *ngFor="let car of form.controls.cars.controls; let i=index"
+        >
+          <div class="text-with-button">
+            <input type="text" [formControlName]="i" />
+            <button class="button button--warning" (click)="removeCar(i)">
+              Remove
+            </button>
+          </div>
+        </div>
+        <button class="button button--secondary add-another" (click)="addCar()">
+          Add {{ (form.controls.cars.length === 0 ? 'a' : 'another' )}} car
+        </button>
+      </div>
+    </div>
+  </div>
+  <br />
+  <button class="button button--primary" (click)="save()">Save</button>
+</form>

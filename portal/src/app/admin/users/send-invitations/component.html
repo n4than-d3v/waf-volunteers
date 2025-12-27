@@ -1,0 +1,75 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Send invitations</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (success$ | async) {
+<div class="success">Rollout success</div>
+}
+
+<p class="warning">
+  This tool should only be used in the initial roll-out phase, adding users /
+  teams one by one until everyone is on-boarded. After which, this tool will be
+  removed and email notifications turned on automatically when syncing with
+  Beacon.
+</p>
+
+<div class="container">
+  <section>
+    <h2>Option 1 - Team rollout</h2>
+    <div class="content">
+      <div class="field">
+        <label for="day">Day</label>
+        <select id="day" [(ngModel)]="day">
+          @for (day of daysOfWeek; track day.value) {
+          <option [value]="day.value">{{day.name}}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label for="time">Shift</label>
+        @if (times$ | async; as times) {
+        <select id="time" [(ngModel)]="time">
+          @for (time of times.data; track time.id) {
+          <option [value]="time.id">{{time.name}}</option>
+          }
+        </select>
+        }
+      </div>
+      <button class="button button--primary" (click)="sendTeam()">
+        Send invitations
+      </button>
+      <p>
+        <strong>Warning:</strong> Clicking this button will immediately send out
+        invitations to the selected team.
+      </p>
+    </div>
+  </section>
+  <section>
+    <h2>Option 2 - Individual rollout</h2>
+    <div class="content">
+      <div class="field">
+        <label for="user">User</label>
+        @if (users$ | async; as users) {
+        <select id="user" [(ngModel)]="username">
+          @for (user of users; track user.id) {
+          <option [value]="user.username">
+            {{user.firstName }} {{user.lastName}}
+          </option>
+          }
+        </select>
+        }
+      </div>
+      <button class="button button--primary" (click)="sendIndividual()">
+        Send invitation
+      </button>
+      <p>
+        <strong>Warning:</strong> Clicking this button will immediately send out
+        an invitation to the selected user.
+      </p>
+    </div>
+  </section>
+</div>

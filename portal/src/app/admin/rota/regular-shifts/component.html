@@ -1,0 +1,80 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+<h1>Regular shifts</h1>
+
+@if (regularShifts$ | async; as regularShifts) { @if (regularShifts.loading) {
+<spinner></spinner>
+} @else if (regularShifts.error) {
+<div class="error">Error loading regular shifts</div>
+} @else {
+<table>
+  <thead>
+    <tr>
+      <th>Day</th>
+      <th>Shift</th>
+      <th>Job</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (shift of regularShifts.data; track shift.id) {
+    <tr>
+      <td>
+        <admin-rota-regular-shift-day [day]="shift.day" />
+        @if (shift.week) {
+        <span> (Week {{ shift.week }})</span>
+        }
+      </td>
+      <td>{{ shift.time.name }}</td>
+      <td>{{ shift.job.name }}</td>
+      <td>
+        <button
+          class="button button--secondary"
+          (click)="deleteRegularShift(shift.id)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+    }
+    <tr>
+      <td>
+        <select [(ngModel)]="newRegularShiftDay">
+          @for (day of daysOfWeek; track day.value) {
+          <option [value]="day.value">{{ day.name }}</option>
+          }
+        </select>
+        @if (newRegularShiftDay == 0 || newRegularShiftDay == 6) {
+        <select [(ngModel)]="newRegularShiftWeek">
+          <option [value]="1">Week 1</option>
+          <option [value]="2">Week 2</option>
+        </select>
+        }
+      </td>
+      <td>
+        @if (times$ | async; as times) {
+        <select [(ngModel)]="newRegularShiftTimeId">
+          @for (time of times.data; track time.id) {
+          <option [value]="time.id">{{ time.name }}</option>
+          }
+        </select>
+        }
+      </td>
+      <td>
+        @if (jobs$ | async; as jobs) {
+        <select [(ngModel)]="newRegularShiftJobId">
+          @for (job of jobs.data; track job.id) {
+          <option [value]="job.id">{{ job.name }}</option>
+          }
+        </select>
+        }
+      </td>
+      <td>
+        <button class="button button--primary" (click)="addRegularShift()">
+          Add
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+} }

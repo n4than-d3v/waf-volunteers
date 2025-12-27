@@ -1,0 +1,391 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Rota configuration</h1>
+
+<div class="sections">
+  <section>
+    <h2>Jobs</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Beacon role</th>
+          <th>Show others in...</th>
+          <th>Can also do...</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (job of jobs; track job.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="job.name" />
+          </td>
+          <td>
+            <select [(ngModel)]="job.beaconAssociatedRole">
+              @for (role of roles; track role.value) {
+              <option value="{{ role.value }}">{{ role.display }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            @for (j of jobs; track 'SOIJ' + j.id) { @if (j.id !== job.id) {
+            <div class="field">
+              <label for="SOIJ_{{ job.id }}_{{ j.id }}"> {{ j.name }} </label>
+              <input
+                type="checkbox"
+                id="SOIJ_{{ job.id }}_{{ j.id }}"
+                [checked]="isChecked(job.showOthersInJobIds, j.id)"
+                (change)="onCheckboxChange(
+            job.showOthersInJobIds,
+            j.id!,
+            $event.target.checked
+          )"
+              />
+            </div>
+            }}
+          </td>
+          <td>
+            @for (j of jobs; track 'CADJ' + j.id) { @if (j.id !== job.id) {
+            <div class="field">
+              <label for="CADJ_{{ job.id }}_{{ j.id }}"> {{ j.name }} </label>
+              <input
+                type="checkbox"
+                id="CADJ_{{ job.id }}_{{ j.id }}"
+                [checked]="isChecked(job.canAlsoDoJobIds, j.id)"
+                (change)="onCheckboxChange(
+            job.canAlsoDoJobIds,
+            j.id!,
+            $event.target.checked
+          )"
+              />
+            </div>
+            }}
+          </td>
+          <td>
+            <button class="button button--secondary" (click)="removeJob(job)">
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newJobName" />
+          </td>
+          <td>
+            <select [(ngModel)]="newJobBeaconAssociatedRole">
+              @for (role of roles; track role.value) {
+              <option value="{{ role.value }}">{{ role.display }}</option>
+              }
+            </select>
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="button button--primary" (click)="saveChanges('jobs')">
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Missing reasons</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (missingReason of missingReasons; track missingReason.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="missingReason.name" />
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeMissingReason(missingReason)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newMissingReasonName" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('missingReasons')"
+    >
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Shifts</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Beacon name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (time of times; track time.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="time.name" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="time.start" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="time.end" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="time.beaconName" />
+          </td>
+          <td>
+            <button class="button button--secondary" (click)="removeTime(time)">
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newTimeName" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="newTimeStart" />
+          </td>
+          <td>
+            <input type="time" [(ngModel)]="newTimeEnd" />
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="newTimeBeaconName" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="button button--primary" (click)="saveChanges('times')">
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Area assignments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (assignableArea of assignableAreas; track assignableArea.id) {
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="assignableArea.name" />
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeAssignableArea(assignableArea)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <input type="text" [(ngModel)]="newAssignableAreaName" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('assignableAreas')"
+    >
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Shifts allowing area assignments</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Shift</th>
+          <th>Job</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (assignableShift of assignableShifts; track assignableShift.id) {
+        <tr>
+          <td>
+            <select [(ngModel)]="assignableShift.day">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="assignableShift.timeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="assignableShift.jobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeAssignableShift(assignableShift)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <select [(ngModel)]="newAssignableShiftDay">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newAssignableShiftTimeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newAssignableShiftJobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('assignableShifts')"
+    >
+      Save changes
+    </button>
+  </section>
+  <section>
+    <h2>Shift requirements</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Shift</th>
+          <th>Job</th>
+          <th>Minimum</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (requirement of requirements; track requirement.id) {
+        <tr>
+          <td>
+            <select [(ngModel)]="requirement.day">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="requirement.timeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="requirement.jobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <input type="number" min="0" [(ngModel)]="requirement.minimum" />
+          </td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="removeRequirement(requirement)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+        }
+        <tr>
+          <td>
+            <select [(ngModel)]="newRequirementDay">
+              @for (day of daysOfWeek; track day.value) {
+              <option [value]="day.value">{{ day.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newRequirementTimeId">
+              @for (time of times; track time.id) {
+              <option [value]="time.id">{{ time.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <select [(ngModel)]="newRequirementJobId">
+              @for (job of jobs; track job.id) {
+              <option [value]="job.id">{{ job.name }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <input type="number" min="0" [(ngModel)]="newRequirementMinimum" />
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <button
+      class="button button--primary"
+      (click)="saveChanges('requirements')"
+    >
+      Save changes
+    </button>
+  </section>
+</div>

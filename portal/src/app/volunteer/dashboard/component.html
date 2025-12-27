@@ -1,0 +1,28 @@
+<unread-notices></unread-notices>
+
+<h1>Dashboard</h1>
+
+<subscribe-banner></subscribe-banner>
+
+<div class="modules">
+  <a
+    [routerLink]="'../profile'"
+    class="module"
+    style="--bg: var(--theme-color-4)"
+  >
+    <img src="images/profile.svg" alt="Profile icon" />
+    <p>Profile</p>
+  </a>
+  <a [routerLink]="'../rota'" class="module" style="--bg: var(--theme-color-5)">
+    <img src="images/rota.svg" alt="Rota icon" />
+    <p>Rota</p>
+  </a>
+  <a
+    [routerLink]="'../notices'"
+    class="module"
+    style="--bg: var(--theme-color-1)"
+  >
+    <img src="images/notices.svg" alt="Notices icon" />
+    <p>Notices</p>
+  </a>
+</div>

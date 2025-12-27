@@ -1,0 +1,75 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>User</h1>
+
+<p class="warning">
+  <strong>Warning:</strong> Creating users directly in this application isn't
+  recommended as they won't be synchronised with Beacon. Please create volunteer
+  accounts in Beacon, then press the "sync" button.
+</p>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (created$ | async) {
+<div class="success">User created</div>
+}
+<form [formGroup]="form">
+  <h2>Login details</h2>
+  <div class="field">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      name="username"
+      formControlName="username"
+    />
+  </div>
+  <br />
+  <p>
+    Username does not need to be their email address.<br />
+    They will receive a password reset email that includes this username.
+  </p>
+  <h2>Basic details</h2>
+  <div class="field">
+    <label for="firstName">First name</label>
+    <input
+      type="text"
+      id="firstName"
+      name="firstName"
+      formControlName="firstName"
+    />
+  </div>
+  <div class="field">
+    <label for="lastName">Last name</label>
+    <input
+      type="text"
+      id="lastName"
+      name="lastName"
+      formControlName="lastName"
+    />
+  </div>
+  <h2>Contact details</h2>
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="text" id="email" name="email" formControlName="email" />
+  </div>
+  <h2>Status</h2>
+  <p>Status will be defaulted to "Active"</p>
+  <h2>Access</h2>
+  <div formGroupName="roles">
+    @for (role of roles; track role.value) { @if (role.value) {
+    <div class="field">
+      <label for="role-{{ role.name }}">{{ role.display }}</label>
+      <input
+        type="checkbox"
+        id="role-{{ role.name }}"
+        name="role-{{ role.name }}"
+        [formControlName]="role.name"
+      />
+    </div>
+    } }
+  </div>
+  <button class="button button--primary" (click)="save()">Save</button>
+</form>

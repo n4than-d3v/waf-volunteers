@@ -1,0 +1,582 @@
+<p>
+  Please check the details listed below. If anything is no longer accurate,
+  click the "update" button and then "save" once you have corrected it.
+</p>
+<br />
+<form [formGroup]="form">
+  <section>
+    <div class="summary-card">
+      <div class="summary-card__title-wrapper">
+        <h2 class="summary-card__title">Name</h2>
+      </div>
+      <div class="summary-card__content">
+        <div *ngIf="editing !== 'name'">
+          <dl class="summary-list">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Prefix</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.name.controls.prefix.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">First name</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.name.controls.first.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Middle name</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.name.controls.middle.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Last name</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.name.controls.last.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Preferred name</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.c_preferred_name.value }}
+              </dd>
+            </div>
+          </dl>
+          <div class="right">
+            <button class="button button--secondary" (click)="editing = 'name'">
+              Update
+            </button>
+          </div>
+        </div>
+        <div *ngIf="editing === 'name'">
+          <div [formGroup]="form.controls.name">
+            <div class="field">
+              <label for="prefix">Prefix</label>
+              <select id="prefix" formControlName="prefix">
+                <option>Mr</option>
+                <option>Mrs</option>
+                <option>Miss</option>
+                <option>Ms</option>
+                <option>Mx</option>
+                <option>Dr</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="first">First name</label>
+              <input id="first" type="text" formControlName="first" />
+            </div>
+            <div class="field">
+              <label for="middle">Middle name</label>
+              <input id="middle" type="text" formControlName="middle" />
+            </div>
+            <div class="field">
+              <label for="last">Last name</label>
+              <input id="last" type="text" formControlName="last" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="c_preferred_name">Preferred name</label>
+            <input
+              id="c_preferred_name"
+              type="text"
+              formControlName="c_preferred_name"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="summary-card">
+      <div class="summary-card__title-wrapper">
+        <h2 class="summary-card__title">Phone number</h2>
+      </div>
+      <div class="summary-card__content">
+        <div *ngIf="editing !== 'phone_numbers'">
+          <dl class="summary-list">
+            <div
+              *ngFor="let phone_number of form.controls.phone_numbers.controls"
+              class="summary-list__row"
+            >
+              <dt class="summary-list__key">
+                {{ phone_number.controls.is_primary.value ? 'Primary' :
+                'Secondary' }}
+              </dt>
+              <dd class="summary-list__value">
+                {{ phone_number.controls.number.value }}
+              </dd>
+            </div>
+          </dl>
+          <div class="right">
+            <button
+              class="button button--secondary"
+              (click)="editing = 'phone_numbers'"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+        <div *ngIf="editing === 'phone_numbers'">
+          <div formArrayName="phone_numbers">
+            <div
+              class="phone-number"
+              *ngFor="let phone_number of form.controls.phone_numbers.controls; let i=index"
+              [formGroupName]="i"
+            >
+              @if
+              (form.controls.phone_numbers.controls[i].controls.is_primary.value)
+              {
+              <div class="field">
+                <label for="pn{{i}}number">Primary</label>
+                <input
+                  id="pn{{i}}number"
+                  type="text"
+                  formControlName="number"
+                />
+              </div>
+              } @else {
+              <div class="field">
+                <label for="pn{{i}}number">Secondary</label>
+                <div class="text-with-button">
+                  <input
+                    id="pn{{i}}number"
+                    type="text"
+                    formControlName="number"
+                  />
+                  <button
+                    class="button button--warning"
+                    (click)="removePhoneNumber(i)"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          <button
+            class="button button--secondary add-another"
+            (click)="addPhoneNumber()"
+          >
+            Add {{ (form.controls.phone_numbers.length === 0 ? 'a' : 'another'
+            )}} phone number
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="summary-card">
+      <div class="summary-card__title-wrapper">
+        <h2 class="summary-card__title">Address</h2>
+      </div>
+      <div class="summary-card__content">
+        <div *ngIf="editing !== 'address'">
+          <dl class="summary-list">
+            <div *ngFor="let address of form.controls.address.controls">
+              <p>
+                {{ address.controls.is_primary.value ? 'Primary' : 'Secondary'
+                }}
+              </p>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">Line one</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.address_line_one.value }}
+                </dd>
+              </div>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">Line two</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.address_line_two.value }}
+                </dd>
+              </div>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">Line three</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.address_line_three.value }}
+                </dd>
+              </div>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">City</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.city.value }}
+                </dd>
+              </div>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">Region</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.region.value }}
+                </dd>
+              </div>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">Postcode</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.postal_code.value }}
+                </dd>
+              </div>
+              <div class="summary-list__row">
+                <dt class="summary-list__key">Country</dt>
+                <dd class="summary-list__value">
+                  {{ address.controls.country.value }}
+                </dd>
+              </div>
+            </div>
+          </dl>
+          <div class="right">
+            <button
+              class="button button--secondary"
+              (click)="editing = 'address'"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+        <div *ngIf="editing === 'address'">
+          <div formArrayName="address">
+            <div
+              class="address"
+              *ngFor="let address of form.controls.address.controls; let i=index"
+              [formGroupName]="i"
+            >
+              <h3>
+                {{ form.controls.address.controls[i].controls.is_primary.value ?
+                'Primary' : 'Secondary'}}
+              </h3>
+              <div class="field">
+                <label for="pn{{i}}address_line_one">Line one</label>
+                <input
+                  id="pn{{i}}address_line_one"
+                  type="text"
+                  formControlName="address_line_one"
+                />
+              </div>
+              <div class="field">
+                <label for="pn{{i}}address_line_two">Line two</label>
+                <input
+                  id="pn{{i}}address_line_two"
+                  type="text"
+                  formControlName="address_line_two"
+                />
+              </div>
+              <div class="field">
+                <label for="pn{{i}}address_line_three">Line three</label>
+                <input
+                  id="pn{{i}}address_line_three"
+                  type="text"
+                  formControlName="address_line_three"
+                />
+              </div>
+              <div class="field">
+                <label for="pn{{i}}city">City</label>
+                <input id="pn{{i}}city" type="text" formControlName="city" />
+              </div>
+              <div class="field">
+                <label for="pn{{i}}region">Region</label>
+                <input
+                  id="pn{{i}}region"
+                  type="text"
+                  formControlName="region"
+                />
+              </div>
+              <div class="field">
+                <label for="pn{{i}}postal_code">Postcode</label>
+                <input
+                  id="pn{{i}}postal_code"
+                  type="text"
+                  formControlName="postal_code"
+                />
+              </div>
+              <div class="field">
+                <label for="pn{{i}}country">Country</label>
+                <div class="text-with-button">
+                  <select id="pn{{i}}country" formControlName="country">
+                    <option
+                      *ngFor="let country of countries"
+                      value="{{ country.name }}"
+                    >
+                      {{ country.name }}
+                    </option>
+                  </select>
+                  @if
+                  (!form.controls.address.controls[i].controls.is_primary.value)
+                  {
+                  <button
+                    class="button button--warning"
+                    (click)="removeAddress(i)"
+                  >
+                    Remove
+                  </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            class="button button--secondary add-another"
+            (click)="addAddress()"
+          >
+            Add {{ (form.controls.address.length === 0 ? 'a' : 'another' )}}
+            address
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="summary-card">
+      <div class="summary-card__title-wrapper">
+        <h2 class="summary-card__title">Emergency contacts</h2>
+      </div>
+      <div class="summary-card__content">
+        <div *ngIf="editing !== 'emergency_contacts'">
+          <p>First</p>
+          <dl class="summary-list">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Name</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.emergency_contact_name.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Relationship</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.emergency_contact_relationship.value }}
+              </dd>
+            </div>
+            <div
+              *ngFor="let phone_number of form.controls.emergency_contact_phone.controls"
+              class="summary-list__row"
+            >
+              <dt class="summary-list__key">
+                {{ phone_number.controls.is_primary.value ? 'Primary' :
+                'Secondary' }} phone number
+              </dt>
+              <dd class="summary-list__value">
+                {{ phone_number.controls.number.value }}
+              </dd>
+            </div>
+          </dl>
+          <p>Second</p>
+          <dl class="summary-list">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Name</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.c_emergency_contact_name_2.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Relationship</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.c_emergency_contact_relationship_2.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Phone number</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.c_emergency_contact_phone_2.value }}
+              </dd>
+            </div>
+          </dl>
+          <div class="right">
+            <button
+              class="button button--secondary"
+              (click)="editing = 'emergency_contacts'"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+        <div *ngIf="editing === 'emergency_contacts'">
+          <h3>First</h3>
+          <div class="field">
+            <label for="emergency_contact_name">Name</label>
+            <input
+              id="emergency_contact_name"
+              type="text"
+              formControlName="emergency_contact_name"
+            />
+          </div>
+          <div class="field">
+            <label for="emergency_contact_relationship">Relationship</label>
+            <input
+              id="emergency_contact_relationship"
+              type="text"
+              formControlName="emergency_contact_relationship"
+            />
+          </div>
+          <div formArrayName="emergency_contact_phone">
+            <div
+              class="phone-number"
+              *ngFor="let phone_number of form.controls.emergency_contact_phone.controls; let i=index"
+              [formGroupName]="i"
+            >
+              @if
+              (form.controls.emergency_contact_phone.controls[i].controls.is_primary.value)
+              {
+              <div class="field">
+                <label for="ecp{{i}}number">Primary phone number</label>
+                <input
+                  id="ecp{{i}}number"
+                  type="text"
+                  formControlName="number"
+                />
+              </div>
+              } @else {
+              <div class="field">
+                <label for="ecp{{i}}number">Secondary phone number</label>
+                <div class="text-with-button">
+                  <input
+                    id="ecp{{i}}number"
+                    type="text"
+                    formControlName="number"
+                  />
+                  <button
+                    class="button button--warning"
+                    (click)="removeEmergencyContactPhone(i)"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          <button
+            class="button button--secondary add-another"
+            (click)="addEmergencyContactPhone()"
+          >
+            Add {{ (form.controls.phone_numbers.length === 0 ? 'a' : 'another'
+            )}} phone number
+          </button>
+          <br /><br />
+          <h3>Second</h3>
+          <div class="field">
+            <label for="c_emergency_contact_name_2">Name</label>
+            <input
+              id="c_emergency_contact_name_2"
+              type="text"
+              formControlName="c_emergency_contact_name_2"
+            />
+          </div>
+          <div class="field">
+            <label for="c_emergency_contact_relationship_2">Relationship</label>
+            <input
+              id="c_emergency_contact_relationship_2"
+              type="text"
+              formControlName="c_emergency_contact_relationship_2"
+            />
+          </div>
+          <div class="field">
+            <label for="c_emergency_contact_phone_2">Phone number</label>
+            <input
+              id="c_emergency_contact_phone_2"
+              type="text"
+              formControlName="c_emergency_contact_phone_2"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="summary-card">
+      <div class="summary-card__title-wrapper">
+        <h2 class="summary-card__title">Other</h2>
+      </div>
+      <div class="summary-card__content">
+        <div *ngIf="editing !== 'other'">
+          <dl class="summary-list">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Gender</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.gender.controls[0].value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Job</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.title.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Medical notes</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.volunteer_notes.value }}
+              </dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">First aid trained</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.c_first_aid_trained.value ? 'Yes' : 'No' }}
+              </dd>
+            </div>
+            @if (form.controls.c_first_aid_trained.value) {
+            <div class="summary-list__row">
+              <dt class="summary-list__key">First aid expiry date</dt>
+              <dd class="summary-list__value">
+                {{ form.controls.c_first_aid_expiry_date.value | date: 'dd MMM
+                yyyy' }}
+              </dd>
+            </div>
+            }
+          </dl>
+          <div class="right">
+            <button
+              class="button button--secondary"
+              (click)="editing = 'other'"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+        <div *ngIf="editing === 'other'">
+          <div formArrayName="gender" class="field">
+            <label for="gender">Gender</label>
+            <select id="gender" formControlName="0">
+              <option>Male</option>
+              <option>Female</option>
+              <option>Non-binary</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="title">Job</label>
+            <input id="title" type="text" formControlName="title" />
+          </div>
+          <div class="field">
+            <label for="volunteer_notes">Medical notes</label>
+            <input
+              id="volunteer_notes"
+              type="text"
+              formControlName="volunteer_notes"
+            />
+          </div>
+          <div class="field">
+            <label for="c_first_aid_trained">First aid trained</label>
+            <select
+              id="c_first_aid_trained"
+              formControlName="c_first_aid_trained"
+            >
+              <option [ngValue]="true">Yes</option>
+              <option [ngValue]="false">No</option>
+            </select>
+          </div>
+          @if (form.controls.c_first_aid_trained.value) {
+          <div class="field">
+            <label for="c_first_aid_expiry_date">First aid expiry date</label>
+            <input
+              id="c_first_aid_expiry_date"
+              type="date"
+              formControlName="c_first_aid_expiry_date"
+            />
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</form>

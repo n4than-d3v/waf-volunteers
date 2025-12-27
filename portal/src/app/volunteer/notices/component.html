@@ -1,0 +1,35 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Notices</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (notices$ | async; as notices) {
+
+<div class="timeline">
+  @for (notice of notices; track notice.id) {
+  <div class="timeline-item">
+    <div class="timeline-dot"></div>
+    <div class="timeline-content">
+      <p class="date">{{ notice.created | date: 'dd MMM yyyy' }}</p>
+      <p class="title">
+        {{ notice.title }} @if (notice.hasAttachments) {
+        <img class="has-attachments" src="images/notices/attachment.svg" />
+        } @if (!notice.read) {
+        <span class="unread">(unread)</span>
+        }
+      </p>
+      <a
+        class="button"
+        [class.button--primary]="!notice.read"
+        [class.button--secondary]="notice.read"
+        [routerLink]="'./' + notice.id + '/view'"
+        >View</a
+      >
+    </div>
+  </div>
+  }
+</div>
+}

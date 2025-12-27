@@ -1,0 +1,206 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Rota</h1>
+
+<div class="buttons">
+  <a [routerLink]="'./attendance'" class="button button--primary">
+    View attendance
+  </a>
+  <a [routerLink]="'./configuration'" class="button button--warning">
+    Update configuration
+  </a>
+</div>
+
+<div class="header-container">
+  <div class="header">
+    <h2>Filter</h2>
+    <p>
+      Viewing rota from <strong>{{ start }}</strong> to
+      <strong>{{ end }}</strong>
+    </p>
+    <div class="buttons">
+      <button class="button button--secondary" (click)="previousWeek()">
+        Previous week
+      </button>
+      <button class="button button--secondary" (click)="nextWeek()">
+        Next week
+      </button>
+    </div>
+  </div>
+  <div class="key">
+    <h3>Key</h3>
+    <p><img src="images/rota/tick.svg" /> Coming</p>
+    <p><img src="images/rota/cross.svg" /> Not coming</p>
+    <p><img src="images/rota/question.svg" /> Unconfirmed</p>
+    <p><img src="images/rota/required.svg" /> Required</p>
+  </div>
+</div>
+
+@if (rota$ | async; as rota) { @if (rota.loading) {
+<spinner></spinner>
+} @else if (rota.error) {
+<div class="error">Error occurred</div>
+}@else if (rota.data) {
+<button class="button button--primary expand-all" (click)="toggleAll()">
+  {{ expandAll ? 'Hide' : 'Show' }} all
+</button>
+<div class="days">
+  @for (day of rota.data; track day.date) {
+  <div class="day">
+    <h3>
+      {{ day.date | date:'EEEE' }} {{ day.date | day }} {{ day.date | date:
+      'MMMM y'}}
+    </h3>
+    <div class="shifts">
+      @for (shift of day.shifts; track shift.time.id) { @if (shift.showOnRota) {
+      <div class="shift">
+        <h4>{{ shift.time.name }}</h4>
+        <div class="jobs">
+          @for (job of shift.jobs; track job.job.id) { @if (job.showOnRota) {
+          <div
+            class="job"
+            [class.job__enough]="job.enough"
+            [class.job__not-enough]="!job.enough"
+          >
+            <h5>{{ job.job.name }}</h5>
+            @if (!job.enough) {
+            <p class="error">
+              There are not enough volunteers to satisfy the requirements of
+              this shift
+            </p>
+            }
+            <div class="volunteers">
+              <div
+                class="coming-bar"
+                [class.coming-bar__expanded]="isExpanded(day,shift,job) || expandAll"
+              >
+                <p>{{ job.coming }} <img src="images/rota/tick.svg" /></p>
+                <p>{{ job.notComing}} <img src="images/rota/cross.svg" /></p>
+                <p>
+                  {{ job.unconfirmed}} <img src="images/rota/question.svg" />
+                </p>
+                <p>{{ job.required }} <img src="images/rota/required.svg" /></p>
+                <button (click)="toggle(day, shift, job)" class="button">
+                  {{ isExpanded(day,shift,job) ? 'Hide' : 'Show' }}
+                </button>
+              </div>
+              @if (job.isAssignable && job.coming > 0
+              &&(isExpanded(day,shift,job) || expandAll)) { @if
+              (assignableAreas$ | async; as assignableAreas) {
+              <div class="assignments">
+                <h4>Assignments</h4>
+                @for (volunteer of job.volunteers; track volunteer.id) { @if
+                (volunteer.confirmed) {
+                <div class="assignment">
+                  <div
+                    class="assignment__volunteer"
+                    title="{{ volunteer.fullName }}"
+                  >
+                    {{ volunteer.name }}
+                  </div>
+                  <div class="assignment__area">
+                    <select
+                      [(ngModel)]="updatingAssignableArea[volunteer.attendanceId!]"
+                      (ngModelChange)="assignArea(volunteer.attendanceId!)"
+                    >
+                      @for (assignableArea of assignableAreas.data; track
+                      assignableArea.id) {
+                      <option [value]="assignableArea.id">
+                        {{ assignableArea.name }}
+                      </option>
+                      }
+                    </select>
+                  </div>
+                </div>
+                } }
+              </div>
+              } } @for (volunteer of job.volunteers; track volunteer.id) { @if
+              (isExpanded(day,shift,job) || expandAll) {
+              <div class="volunteer">
+                <div class="details">
+                  @if (volunteer.type === ShiftType.Regular) {
+                  <abbr
+                    class="regularity regularity--regular"
+                    title="Regular shift"
+                  >
+                    R
+                  </abbr>
+                  } @else if (volunteer.type === ShiftType.Urgent) {
+                  <abbr
+                    class="regularity regularity--urgent"
+                    title="Urgent shift"
+                  >
+                    U
+                  </abbr>
+                  } @else if (volunteer.type === ShiftType.Extra) {
+                  <abbr
+                    class="regularity regularity--extra"
+                    title="Extra shift"
+                  >
+                    E
+                  </abbr>
+                  }
+                  <abbr class="name" title="{{ volunteer.fullName }}">
+                    {{ volunteer.name }}
+                  </abbr>
+                  @if (volunteer.confirmed === null) {
+                  <p
+                    class="confirmation confirmation--unconfirmed"
+                    (click)="updatingShift = updatingShift === volunteer ? null: volunteer"
+                  >
+                    -
+                  </p>
+                  } @else if (volunteer.confirmed) {
+                  <p
+                    class="confirmation confirmation--confirmed"
+                    (click)="updatingShift = updatingShift === volunteer ? null: volunteer"
+                  >
+                    Yes
+                  </p>
+                  } @else {
+                  <p
+                    class="confirmation confirmation--rejected"
+                    (click)="updatingShift = updatingShift === volunteer ? null: volunteer"
+                  >
+                    No
+                  </p>
+                  }
+                </div>
+                @if (updatingShift === volunteer) {
+                <div class="actions">
+                  <button
+                    class="button button--primary"
+                    (click)="setComing(day, shift, job, volunteer)"
+                  >
+                    Coming
+                  </button>
+                  <button
+                    class="button button--warning"
+                    (click)="setNotComing(day, shift, job, volunteer)"
+                  >
+                    Not coming
+                  </button>
+                </div>
+                } @if (volunteer.missingReason || volunteer.customMissingReason)
+                {
+                <div class="reason">
+                  @if (volunteer.missingReason) {
+                  <p>{{ volunteer.missingReason.name }}</p>
+                  } @if (volunteer.customMissingReason) {
+                  <p>{{ volunteer.customMissingReason }}</p>
+                  }
+                </div>
+                }
+              </div>
+              } }
+            </div>
+          </div>
+          } }
+        </div>
+      </div>
+      } }
+    </div>
+  </div>
+  }
+</div>
+} }

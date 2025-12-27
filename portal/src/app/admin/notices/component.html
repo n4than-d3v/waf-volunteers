@@ -1,0 +1,37 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Notices</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (notices$ | async; as notices) {
+<a class="button button--primary" [routerLink]="'./create'">Create</a>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Title</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (notice of notices; track notice.id) {
+    <tr>
+      <td>{{ notice.created | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ notice.title }}</td>
+      <td>
+        <a [routerLink]="'./' + notice.id + '/edit'">Edit</a>
+        |
+        <a [routerLink]="'./' + notice.id + '/interactions'"
+          >View interactions</a
+        >
+        |
+        <a [routerLink]="'./' + notice.id + '/delete'">Delete</a>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+}

@@ -1,0 +1,28 @@
+table {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  max-width: max-content;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.25rem;
+  align-items: flex-end;
+  margin-top: 1rem;
+
+  p {
+    max-width: 50%;
+    font-size: 11pt;
+  }
+}

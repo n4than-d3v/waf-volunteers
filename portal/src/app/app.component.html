@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <header>
+    <a class="logo" [routerLink]="'./'">
+      <img src="images/header.svg" alt="Wildlife Aid Foundation" />
+      @if (easterEggs.xmas) {
+      <img
+        id="xmas-easter-egg"
+        src="images/easter-eggs/santa-hat.svg"
+        alt="Xmas easter egg"
+      />
+      }
+    </a>
+    @if (!router.url.includes('/login')){
+    <div class="sign-out">
+      <a [routerLink]="'./'" (click)="signOut()">
+        <img src="images/sign-out.svg" alt="Sign out" />
+      </a>
+    </div>
+    }
+  </header>
+  <main>
+    @if (easterEggs.xmas) {
+    <easter-eggs-snowflakes></easter-eggs-snowflakes>
+    }
+    <router-outlet />
+  </main>
+  <footer>
+    <p>
+      Wildlife Aid Foundation &copy; {{ year }}, Registered Charity No. 1138944,
+      Randalls Farm House, Randalls Rd, Leatherhead KT22 0AL
+    </p>
+  </footer>
+</div>

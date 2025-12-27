@@ -1,0 +1,94 @@
+<h1>{{date | date:'EEEE' }} {{ date | day }} {{ date | date: 'MMMM y'}}</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (rota$ | async; as rota) { @for ( shift of rota; track shift.time.id) {
+<div class="shift">
+  <h2>{{ shift.time.name }}</h2>
+  @for ( job of shift.jobs; track job.job.id) {
+  <div class="job">
+    <h3>{{ job.job.name }}</h3>
+    <div class="volunteers">
+      @for ( volunteer of job.volunteers; track volunteer.attendanceId) {
+      <div class="volunteer">
+        <p>{{ volunteer.fullName }}</p>
+        @if (!volunteer.confirmed) {
+        <p><strong>X</strong></p>
+        } @else if (selectedVolunteer == volunteer && cars) {
+        <div class="cars">
+          @if (enteringCustomCar) {
+          <input type="text" class="custom-car" [(ngModel)]="customCar" />
+          <button
+            class="button button--primary"
+            (click)="clockIn(volunteer, customCar)"
+          >
+            Save
+          </button>
+          <button
+            class="button button--secondary"
+            (click)="enteringCustomCar = false"
+          >
+            Back
+          </button>
+          } @else {
+          <button
+            class="button button--secondary"
+            (click)="clockIn(volunteer, null)"
+          >
+            No car
+          </button>
+          @for (car of cars; track car) {
+          <button
+            class="button button--primary"
+            (click)="clockIn(volunteer, car)"
+          >
+            {{ car }}
+          </button>
+          }
+          <button
+            class="button button--primary"
+            (click)="enteringCustomCar = true"
+          >
+            Other
+          </button>
+          }
+        </div>
+        } @else { @if (!volunteer.in) {
+        <button class="button button--primary" (click)="showCars(volunteer)">
+          I'm here
+        </button>
+        } @else if (!volunteer.out) {
+        <p class="clock">
+          <img src="images/rota/car.svg" />
+          {{ volunteer.car || 'No car' }}
+        </p>
+        <p class="clock">
+          <img src="images/rota/clock-in.svg" />
+          {{ volunteer.in }}
+        </p>
+        <button class="button button--secondary" (click)="clockOut(volunteer)">
+          I'm leaving
+        </button>
+        } @else {
+        <p class="clock">
+          <img src="images/rota/car.svg" />
+          {{ volunteer.car || 'No car' }}
+        </p>
+        <p class="clock">
+          <img src="images/rota/clock-in.svg" />
+          {{ volunteer.in }}
+        </p>
+        <p class="clock">
+          <img src="images/rota/clock-out.svg" />
+          {{ volunteer.out }}
+        </p>
+        }}
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+}}

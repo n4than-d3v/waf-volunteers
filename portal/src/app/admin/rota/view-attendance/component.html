@@ -1,0 +1,50 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>View attendance</h1>
+
+<div class="range">
+  <h2>Date range</h2>
+  <div>
+    <label for="start">Start</label>
+    <input type="date" id="start" [(ngModel)]="start" />
+  </div>
+  <div>
+    <label for="end">End</label>
+    <input type="date" id="end" [(ngModel)]="end" />
+  </div>
+  <button class="button button--primary" (click)="update()">View</button>
+</div>
+
+@if (reports$ | async; as reports) { @if (reports.error) {
+<div class="error">Error occurred</div>
+} @else if (reports.loading) {
+<spinner></spinner>
+} @else if (reports.data) {
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="3">Regular shifts</th>
+      <th colspan="1">Urgent shifts</th>
+    </tr>
+    <tr>
+      <th>Volunteer</th>
+      <th>-</th>
+      <th>Yes</th>
+      <th>No</th>
+      <th>Yes</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (report of reports.data; track report.id) {
+    <tr>
+      <td>{{ report.fullName }}</td>
+      <td>{{ report.regularUnresponded }}</td>
+      <td>{{ report.regularYes }}</td>
+      <td>{{ report.regularNo }}</td>
+      <td>{{ report.urgentYes }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

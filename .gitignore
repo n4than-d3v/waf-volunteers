@@ -1,0 +1,15 @@
+api/.vs
+api/bin
+api/obj
+api/appsettings.Development.json
+api/appsettings.VPS.json
+
+tests/.vs
+tests/bin
+tests/obj
+tests/appSettings.Developmenet.json
+
+portal/.angular
+portal/.vscode
+portal/node_modules
+portal/dist

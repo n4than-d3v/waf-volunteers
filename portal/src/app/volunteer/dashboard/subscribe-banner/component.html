@@ -1,0 +1,40 @@
+@if (profile$ | async) { @if (!((subscribed$ | async) && isPermissionGranted()))
+{
+<div class="overlay"></div>
+<div class="popup" [class.popup--error]="!!this.error">
+  <h2>Enable notifications</h2>
+  <p>
+    We need you to enable notifications on your device so we can let you know
+    when shifts are understaffed and for sending urgent messages.
+  </p>
+  <button class="button button--primary" (click)="submit()">Ok</button>
+  @if (error) {
+  <div class="error">
+    <p>It looks like there's a problem.</p>
+    <p>Please check the following:</p>
+    <p>
+      <strong>Settings &gt; Notifications &gt; Chrome (or Safari)</strong>
+    </p>
+    <ul>
+      <li>"Allow notifications" is toggled on</li>
+      <li>"wildlifeaid.org" is not "Disabled"</li>
+    </ul>
+    <p>
+      <strong>Settings &gt; Notifications &gt; WAF</strong>
+    </p>
+    <ul>
+      <li>"Allow notifications" is toggled on</li>
+    </ul>
+    <br />
+    <p>
+      If you're still experiencing this issue, please contact the office,
+      quoting the error details below.
+    </p>
+    <details>
+      <summary>View error details</summary>
+      <code>{{ error }}</code>
+    </details>
+  </div>
+  }
+</div>
+} }

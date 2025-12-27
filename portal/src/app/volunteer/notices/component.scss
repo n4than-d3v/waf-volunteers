@@ -1,0 +1,65 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+.timeline {
+  width: 100%;
+  max-width: 600px;
+  margin: 40px 0rem;
+  position: relative;
+}
+
+/* The vertical line */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px; /* The true center of the timeline */
+  width: 2px;
+  background: var(--theme-color-5);
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 50px; /* space for line + dot */
+  margin-bottom: 40px;
+}
+
+/* The dot uses the SAME reference as the line */
+.timeline-dot {
+  position: absolute;
+  top: 0;
+  left: 20px; /* EXACT same as the line */
+  width: 14px;
+  height: 14px;
+  background: var(--theme-color-5);
+  border-radius: 50%;
+  transform: translate(-43%, 0);
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.date {
+  color: #494949;
+  font-size: 0.9rem;
+}
+
+a.button {
+  font-size: 1rem;
+}
+
+.unread {
+  color: var(--theme-color-2);
+  font-weight: normal;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.has-attachments {
+  width: 1.125rem;
+  margin-bottom: -2px;
+}

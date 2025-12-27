@@ -1,0 +1,83 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Users</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (users$ | async; as users) {
+<div class="header">
+  <div class="search">
+    <label for="search">Search</label>
+    <input id="search" type="text" [(ngModel)]="search" autocomplete="off" />
+  </div>
+  <div class="filter">
+    <label for="notifsFilter">Notifications</label>
+    <select id="notifsFilter" [(ngModel)]="notifsFilter">
+      <option value="">All</option>
+      <option value="1">Enabled</option>
+      <option value="0">Disabled</option>
+    </select>
+  </div>
+  <div class="filter">
+    <label for="statusFilter">Status</label>
+    <select id="statusFilter" [(ngModel)]="statusFilter">
+      <option value="">All</option>
+      <option value="0">Active</option>
+      <option value="1">Inactive</option>
+      <option value="2">On hold</option>
+    </select>
+  </div>
+  <div class="buttons">
+    <button (click)="beaconSync()" class="button button--primary">
+      Sync with Beacon
+    </button>
+    <a [routerLink]="'./send-invitations'" class="button button--secondary"
+      >Send invitations</a
+    >
+    <a [routerLink]="'./create'" class="button button--warning"
+      >Create new user</a
+    >
+  </div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>Login</th>
+      <th>Full name</th>
+      <th>Notifications</th>
+      <th>Roles</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users; track user.id) { @if (shouldShow(user)) {
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.firstName }} {{ user.lastName }}</td>
+      <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
+      <!--
+      <td>
+        <admin-users-address [address]="user.address" />
+      </td>
+      -->
+      <td>
+        <admin-users-role [roles]="user.roles" />
+      </td>
+      <td>
+        <admin-users-status [status]="user.status" />
+      </td>
+      <td>
+        <a [routerLink]="'./' + user.id + '/update-info'">Details</a>
+        |
+        <a [routerLink]="'./' + user.id + '/update-regular-shifts'"
+          >Regular shifts</a
+        >
+      </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+}

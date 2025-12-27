@@ -1,0 +1,365 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Rota</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+<p class="loading">Loading rota...</p>
+} @else if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (confirming$ | async) {
+<spinner></spinner>
+<p class="loading">Confirming shift...</p>
+} @else if (denying$ | async) {
+<spinner></spinner>
+<p class="loading">Rejecting shift...</p>
+} @if (rota$ | async; as rota) {
+<div class="next-shift">
+  <h2>Next shift</h2>
+  @if (rota.nextShift) {
+  <p>
+    {{ rota.nextShift.date | date: 'EEEE' }} {{ rota.nextShift.time.name }},
+    <br />
+    {{ rota.nextShift.date | day }} {{ rota.nextShift.date | date: 'MMMM y' }}
+  </p>
+  }@else {
+  <p>You have not yet confirmed when your next shift will be</p>
+  }
+</div>
+@if (rota.urgentShifts.length > 0) {
+<div class="urgent-shifts">
+  <h2>Shifts in need</h2>
+  @for (shift of rota.urgentShifts; track shift.date) {
+  <div
+    class="shift"
+    [class.shift--confirmed]="shift.confirmed"
+    [class.shift--rejected]="shift.confirmed !== true"
+  >
+    <div class="shift-label">
+      {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
+    </div>
+    <div class="shift-content">
+      <p class="shift-date">
+        {{ shift.date | date: 'EEEE' }} {{ shift.time.name }}
+      </p>
+      <p class="shift-type">{{ shift.job.name }}</p>
+    </div>
+    <div class="shift-footer">
+      @if (shift.confirmed != true) {
+      <p>
+        Please help if you can!<br />
+        There's {{ shift.coming }} coming and we need {{ shift.required -
+        shift.coming }} more.
+      </p>
+      <div class="buttons">
+        <button
+          class="button button--primary"
+          (click)="confirm(shift, ShiftType.Urgent)"
+        >
+          I can help
+        </button>
+      </div>
+      } @else if (needToChange === shift) {
+      <p>
+        The animals <strong>really</strong> need your help. Is there
+        <em>absolutely</em> no way you can still come in? 😢
+      </p>
+      <div class="buttons">
+        <button
+          class="button button--warning"
+          (click)="askingWhyDenying = shift"
+        >
+          Sorry, I can't help
+        </button>
+      </div>
+      } @else if (shift.confirmed) {
+      <div class="decision-container">
+        <div class="decision confirmed">
+          <img src="images/rota/tick.svg" alt="Confirmed" class="icon" />
+          <p>Coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @if (askingWhyDenying === shift) {
+      <div class="why-denying">
+        <label for="missingReason">Reason</label>
+        <select id="missingReason" [(ngModel)]="missingReasonId">
+          @for (missingReason of rota.missingReasons; track missingReason.id){
+          <option [value]="missingReason.id">{{ missingReason.name }}</option>
+          }
+        </select>
+        <label for="customMissingReason">Other info</label>
+        <input
+          id="customMissingReason"
+          type="text"
+          [(ngModel)]="customMissingReason"
+        />
+        <button class="button button--warning" (click)="deny(ShiftType.Urgent)">
+          Confirm
+        </button>
+      </div>
+      } @else if (shift.confirmed || shift.others.length) {
+      <div class="people-coming">
+        <strong>Who's coming?</strong>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
+          shift.others.length ? ',' : '' }} {{ shift.others.join(', ') }}
+        </p>
+      </div>
+      } @if (shift.area) {
+      <div class="shift-assign">
+        <strong>Where am I assigned?</strong>
+        <p>{{ shift.area.name }}</p>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>
+}
+<div class="extra-shifts">
+  <h2>Extra shifts</h2>
+  <div class="extra-shift-sign-up">
+    @if (signingUpExtra) {
+    <div class="field">
+      <label for="irregularShiftDate">Date</label>
+      <input
+        type="date"
+        id="irregularShiftDate"
+        [(ngModel)]="irregularShiftDate"
+        [min]="minDate"
+        [max]="maxDate"
+      />
+    </div>
+    <div class="field">
+      <label for="irregularShiftTime">Time</label>
+      @if (times$ | async; as times) {
+      <select id="irregularShiftTime" [(ngModel)]="irregularShiftTime">
+        @for (time of times.data; track time.id) {
+        <option [value]="time.id">{{ time.name }}</option>
+        }
+      </select>
+      }
+    </div>
+    <div class="field">
+      <label for="irregularShiftJob">Job</label>
+      <select id="irregularShiftJob" [(ngModel)]="irregularShiftJob">
+        @for (job of rota.allowedJobs; track job.id) {
+        <option [value]="job.id">{{ job.name }}</option>
+        }
+      </select>
+    </div>
+    <div class="buttons">
+      <button class="button button--primary" (click)="signUpExtra()">
+        Sign up
+      </button>
+      <button class="button button--secondary" (click)="cancelSigningUpExtra()">
+        Back
+      </button>
+    </div>
+    } @else {
+    <p>
+      If you would like to sign up for an <strong>extra</strong> shift, we
+      encourage you to first consider a shift <strong>in need</strong>, if any
+      are available. Otherwise, please use the button below to continue.
+    </p>
+    <div class="buttons">
+      <button class="button button--primary" (click)="signingUpExtra = true">
+        Continue
+      </button>
+    </div>
+    }
+  </div>
+  @for (shift of rota.extraShifts; track shift.date) { @if (shift.confirmed ===
+  true) {
+  <div class="shift shift--confirmed">
+    <div class="shift-label">
+      {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
+    </div>
+    <div class="shift-content">
+      <p class="shift-date">
+        {{ shift.date | date: 'EEEE' }} {{ shift.time.name }}
+      </p>
+      <p class="shift-type">{{ shift.job.name }}</p>
+    </div>
+    <div class="shift-footer">
+      @if (shift.confirmed === null || needToChange === shift) {
+      <p>Will you be coming in?</p>
+      <div class="buttons">
+        <button
+          class="button button--primary"
+          (click)="confirm(shift, ShiftType.Extra)"
+        >
+          Yes
+        </button>
+        <button
+          class="button button--warning"
+          (click)="askingWhyDenying = shift"
+        >
+          No
+        </button>
+      </div>
+      } @else if (shift.confirmed) {
+      <div class="decision-container">
+        <div class="decision confirmed">
+          <img src="images/rota/tick.svg" alt="Confirmed" class="icon" />
+          <p>Coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @else {
+      <div class="decision-container">
+        <div class="decision rejected">
+          <img src="images/rota/cross.svg" alt="Confirmed" class="icon" />
+          <p>Not coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @if (askingWhyDenying === shift) {
+      <div class="why-denying">
+        <label for="missingReason">Reason</label>
+        <select id="missingReason" [(ngModel)]="missingReasonId">
+          @for (missingReason of rota.missingReasons; track missingReason.id){
+          <option [value]="missingReason.id">{{ missingReason.name }}</option>
+          }
+        </select>
+        <label for="customMissingReason">Other info</label>
+        <input
+          id="customMissingReason"
+          type="text"
+          [(ngModel)]="customMissingReason"
+        />
+        <button class="button button--warning" (click)="deny(ShiftType.Extra)">
+          Confirm
+        </button>
+      </div>
+      } @else if (shift.confirmed || shift.others.length) {
+      <div class="people-coming">
+        <strong>Who's coming?</strong>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
+          shift.others.length ? ',' : '' }} {{ shift.others.join(', ') }}
+        </p>
+      </div>
+      } @if (shift.area) {
+      <div class="shift-assign">
+        <strong>Where am I assigned?</strong>
+        <p>{{ shift.area.name }}</p>
+      </div>
+      }
+    </div>
+  </div>
+  }}
+</div>
+<div class="upcoming-shifts">
+  <h2>Regular shifts</h2>
+  @for (shift of rota.rota; track shift.date) {
+  <div
+    class="shift"
+    [class.shift--confirmed]="shift.confirmed"
+    [class.shift--rejected]="shift.confirmed === false"
+  >
+    <div class="shift-label">
+      {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
+    </div>
+    <div class="shift-content">
+      <p class="shift-date">
+        {{ shift.date | date: 'EEEE' }} {{ shift.time.name }}
+      </p>
+      <p class="shift-type">{{ shift.job.name }}</p>
+    </div>
+    <div class="shift-footer">
+      @if (shift.confirmed === null || needToChange === shift) {
+      <p>Will you be coming in?</p>
+      <div class="buttons">
+        <button
+          class="button button--primary"
+          (click)="confirm(shift, ShiftType.Regular)"
+        >
+          Yes
+        </button>
+        <button
+          class="button button--warning"
+          (click)="askingWhyDenying = shift"
+        >
+          No
+        </button>
+      </div>
+      } @else if (shift.confirmed) {
+      <div class="decision-container">
+        <div class="decision confirmed">
+          <img src="images/rota/tick.svg" alt="Confirmed" class="icon" />
+          <p>Coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @else {
+      <div class="decision-container">
+        <div class="decision rejected">
+          <img src="images/rota/cross.svg" alt="Confirmed" class="icon" />
+          <p>Not coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @if (askingWhyDenying === shift) {
+      <div class="why-denying">
+        <label for="missingReason">Reason</label>
+        <select id="missingReason" [(ngModel)]="missingReasonId">
+          @for (missingReason of rota.missingReasons; track missingReason.id){
+          <option [value]="missingReason.id">{{ missingReason.name }}</option>
+          }
+        </select>
+        <label for="customMissingReason">Other info</label>
+        <input
+          id="customMissingReason"
+          type="text"
+          [(ngModel)]="customMissingReason"
+        />
+        <button
+          class="button button--warning"
+          (click)="deny(ShiftType.Regular)"
+        >
+          Confirm
+        </button>
+      </div>
+      } @else if (shift.confirmed || shift.others.length) {
+      <div class="people-coming">
+        <strong>Who's coming?</strong>
+        <p>
+          {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
+          shift.others.length ? ',' : '' }} {{ shift.others.join(', ') }}
+        </p>
+      </div>
+      } @if (shift.area) {
+      <div class="shift-assign">
+        <strong>Where am I assigned?</strong>
+        <p>{{ shift.area.name }}</p>
+      </div>
+      }
+    </div>
+  </div>
+  }
+  <div class="regular-shifts">
+    <p>Your regular shifts are:</p>
+    <ul>
+      @for (shift of rota.regularShifts; track shift.id) {
+      <li>
+        <admin-rota-regular-shift-day [day]="shift.day" />
+        {{ shift.time.name }}s ({{ shift.job.name }})
+      </li>
+      }
+    </ul>
+    <p>If you need to change this, contact the office.</p>
+  </div>
+</div>
+}

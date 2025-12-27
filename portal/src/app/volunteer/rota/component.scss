@@ -1,0 +1,145 @@
+.next-shift {
+  border-left: solid 5px var(--theme-color-1);
+  background-color: rgb(232, 232, 232);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.extra-shifts {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  .extra-shift-sign-up {
+    border-left: solid 5px var(--theme-color-1);
+    background-color: rgb(232, 232, 232);
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+
+    p {
+      font-size: 1rem;
+    }
+
+    .field {
+      margin-bottom: 0.75rem;
+    }
+
+    .buttons {
+      margin-top: 1rem;
+    }
+  }
+}
+
+.regular-shifts {
+  margin-top: 1.5rem;
+  border-left: solid 5px var(--theme-color-3);
+  background-color: rgb(232, 232, 232);
+  padding: 1rem 1.5rem;
+
+  ul {
+    padding-left: 1.25rem;
+    margin: 0.5rem 0rem;
+  }
+}
+
+.decision-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.decision {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.confirmed {
+  border: solid 2px #3d531e;
+  background-color: #b5c49f;
+  color: #3d531e;
+  max-width: max-content;
+}
+
+.rejected {
+  border: solid 2px #531e23;
+  background-color: #d7a8ad;
+  color: #531e23;
+  max-width: max-content;
+}
+
+img {
+  width: 1.5rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.shift {
+  --bg: var(--theme-color-3);
+  position: relative;
+  border: 3px solid var(--bg);
+  background-color: #efefef;
+  margin-top: 1.75rem;
+}
+
+.shift--confirmed {
+  --bg: var(--theme-color-4);
+}
+
+.shift--rejected {
+  --bg: var(--theme-color-2);
+}
+
+.shift-label {
+  position: absolute;
+  top: -1rem;
+  left: 0.75rem;
+  background-color: var(--bg);
+  padding: 0rem 0.5rem;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #e6e6e6;
+}
+
+.shift-content {
+  padding: 1.5rem 1rem 1rem 1rem;
+}
+
+.shift-footer {
+  border-top: dotted 2px var(--bg);
+  background-color: white;
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+}
+
+.why-denying {
+  padding-top: 0.5rem;
+
+  button {
+    margin-top: 0.75rem;
+  }
+}
+
+.urgent-shifts {
+  margin-bottom: 1.75rem;
+}
+
+.people-coming,
+.shift-assign {
+  margin-top: 0.75rem;
+
+  strong {
+    display: block;
+    font-size: 1.125rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}

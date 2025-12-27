@@ -1,0 +1,190 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import {
+  assignArea,
+  confirmShift,
+  denyShift,
+  getAdminRota,
+  getAssignableAreas,
+} from './actions';
+import moment, { Moment } from 'moment';
+import { Observable, Subscription } from 'rxjs';
+import {
+  AdminRota,
+  AdminRotaShift,
+  AdminRotaShiftJob,
+  AdminRotaShiftJobVolunteer,
+  AssignableArea,
+  Wrapper,
+} from './state';
+import { selectAdminRota, selectAssignableAreas } from './selectors';
+import { SpinnerComponent } from '../../shared/spinner/component';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { DayPipe } from '../../volunteer/rota/day.pipe';
+import { FormsModule } from '@angular/forms';
+import { ShiftType } from '../../volunteer/rota/state';
+
+@Component({
+  selector: 'admin-rota',
+  standalone: true,
+  templateUrl: './component.html',
+  styleUrls: ['./component.scss'],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    DayPipe,
+    RouterLink,
+    SpinnerComponent,
+    FormsModule,
+  ],
+})
+export class AdminRotaComponent implements OnInit, OnDestroy {
+  private _start: Moment = moment();
+  private _end: Moment = moment();
+
+  start: string = '';
+  end: string = '';
+
+  ShiftType = ShiftType;
+
+  rota$: Observable<Wrapper<AdminRota>>;
+  assignableAreas$: Observable<Wrapper<AssignableArea>>;
+
+  updatingShift: AdminRotaShiftJobVolunteer | null = null;
+  updatingAssignableArea: { [attendanceId: number]: string } = {};
+
+  subscription: Subscription;
+
+  constructor(private store: Store) {
+    this.rota$ = this.store.select(selectAdminRota);
+    this.assignableAreas$ = this.store.select(selectAssignableAreas);
+    this.subscription = this.rota$.subscribe((rota) => {
+      if (!rota.data) return;
+      for (const day of rota.data) {
+        for (const shift of day.shifts) {
+          for (const job of shift.jobs) {
+            for (const volunteer of job.volunteers) {
+              if (volunteer.attendanceId) {
+                this.updatingAssignableArea[
+                  volunteer.attendanceId!
+                ] = `${volunteer.areaId}`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  nextWeek() {
+    this._start = moment(this._start).add(7, 'days');
+    this._end = moment(this._end).add(7, 'days');
+    this.update();
+  }
+
+  previousWeek() {
+    this._start = moment(this._start).subtract(7, 'days');
+    this._end = moment(this._end).subtract(7, 'days');
+    this.update();
+  }
+
+  private update() {
+    this.start = this._start.format('ddd Do MMM yyyy');
+    this.end = this._end.format('ddd Do MMM yyyy');
+    this.store.dispatch(
+      getAdminRota({
+        start: this._start.format('YYYY-MM-DD'),
+        end: this._end.format('YYYY-MM-DD'),
+        silent: false,
+      })
+    );
+  }
+
+  expandAll = false;
+  expanded: string[] = [];
+
+  toggleAll() {
+    this.expandAll = !this.expandAll;
+    this.expanded = [];
+  }
+
+  private getExpansionKey(
+    day: AdminRota,
+    shift: AdminRotaShift,
+    job: AdminRotaShiftJob
+  ) {
+    return `${day.date}-${shift.time.name}-${job.job.name}`;
+  }
+
+  isExpanded(day: AdminRota, shift: AdminRotaShift, job: AdminRotaShiftJob) {
+    return this.expanded.includes(this.getExpansionKey(day, shift, job));
+  }
+
+  toggle(day: AdminRota, shift: AdminRotaShift, job: AdminRotaShiftJob) {
+    this.expandAll = false;
+    const key = this.getExpansionKey(day, shift, job);
+    if (this.isExpanded(day, shift, job)) {
+      this.expanded = this.expanded.filter((x) => x !== key);
+    } else {
+      this.expanded = [...this.expanded, key];
+    }
+  }
+
+  private getUpdatePayload = (
+    day: AdminRota,
+    shift: AdminRotaShift,
+    job: AdminRotaShiftJob,
+    volunteer: AdminRotaShiftJobVolunteer
+  ) => ({
+    userId: volunteer.id!,
+    date: day.date,
+    timeId: shift.time.id!,
+    jobId: job.job.id!,
+    start: this._start.format('YYYY-MM-DD'),
+    end: this._end.format('YYYY-MM-DD'),
+    shiftType: volunteer.type,
+  });
+
+  setComing(
+    day: AdminRota,
+    shift: AdminRotaShift,
+    job: AdminRotaShiftJob,
+    volunteer: AdminRotaShiftJobVolunteer
+  ) {
+    this.store.dispatch(
+      confirmShift(this.getUpdatePayload(day, shift, job, volunteer))
+    );
+  }
+
+  setNotComing(
+    day: AdminRota,
+    shift: AdminRotaShift,
+    job: AdminRotaShiftJob,
+    volunteer: AdminRotaShiftJobVolunteer
+  ) {
+    this.store.dispatch(
+      denyShift(this.getUpdatePayload(day, shift, job, volunteer))
+    );
+  }
+
+  assignArea(attendanceId: number) {
+    this.store.dispatch(
+      assignArea({
+        attendanceId: attendanceId,
+        assignableAreaId: Number(this.updatingAssignableArea[attendanceId]),
+      })
+    );
+  }
+
+  ngOnInit() {
+    this._start = moment().startOf('isoWeek');
+    this._end = moment(this._start).add(6, 'days');
+    this.update();
+    this.store.dispatch(getAssignableAreas());
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) this.subscription.unsubscribe();
+  }
+}

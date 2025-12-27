@@ -1,0 +1,45 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+.NgxEditor__Wrapper {
+  max-width: 100%;
+}
+
+.field {
+  margin-top: 0.75rem;
+}
+
+button {
+  margin-top: 1rem;
+}
+
+.create-notification-wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+form {
+  flex: 1;
+}
+
+.phone-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  flex: 1;
+}
+
+.roles-container {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 3rem;
+}
+
+.select-all {
+  margin-top: 0rem;
+  margin-left: 0.25rem;
+  padding: 0rem 0.25rem;
+  border: solid 1px black;
+}

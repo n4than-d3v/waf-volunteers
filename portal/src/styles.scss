@@ -1,0 +1,252 @@
+:root {
+  --theme-primary: #1e544e;
+  --theme-primary-darker: #0f403b;
+  --theme-primary-lighter: #316862;
+  --theme-color-1: #331e53;
+  --theme-color-2: #531e23;
+  --theme-color-3: #534e1e;
+  --theme-color-4: #3d531e;
+  --theme-color-5: #1e3d53;
+  --theme-color-6: #2c7871;
+
+  --text-color--dark: #1d1d1d;
+  --text-color--light: rgb(218, 218, 218);
+}
+
+body {
+  background: #f8f9fa;
+  color: #212529;
+}
+
+html,
+body,
+* {
+  margin: 0px;
+  padding: 0px;
+  font-family: "Poppins", Sans-serif;
+  box-sizing: inherit;
+}
+
+a {
+  color: var(--text-color--dark);
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  font: 1.2em sans-serif;
+}
+
+main {
+  padding: 1.5rem 1.5rem;
+  background-color: white;
+}
+
+.field:has(input[type="checkbox"]),
+.field:has(input[type="radio"]) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+
+  input {
+    max-width: max-content;
+    accent-color: var(--theme-primary);
+    transform: scale(1.5);
+    margin-right: 0.75rem;
+    margin-left: 0.3rem;
+  }
+}
+
+input,
+select {
+  display: block;
+  width: 100%;
+  max-width: 30rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1.2rem;
+  outline: none;
+  color: var(--text-color--dark);
+  background-color: #e7e7e7;
+  border: solid 1px var(--theme-primary);
+  border-radius: 5px;
+
+  &:focus {
+    box-shadow: 0px 0px 3px 0px black;
+  }
+}
+
+input[type="file"] {
+  background-color: white;
+  max-width: max-content;
+  border: none;
+  border-radius: 0rem;
+  padding: 0rem;
+}
+
+.button {
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  text-align: center;
+  max-width: 30rem;
+  cursor: pointer;
+
+  &:focus {
+    box-shadow: 0px 0px 3px 0px black;
+  }
+}
+
+.button--primary {
+  background-color: var(--theme-primary);
+  color: white;
+}
+
+.button--secondary {
+  background-color: var(--theme-color-1);
+  color: var(--text-color--light);
+}
+
+.button--warning {
+  background-color: #531e23;
+  color: white;
+}
+
+.error {
+  border-left: solid 5px #531e23;
+  background-color: #d7a8ad;
+  color: #531e23;
+  padding: 1rem;
+  margin-bottom: 2rem;
+
+  ul {
+    margin-top: 0.25rem;
+    list-style: none;
+
+    li {
+      font-size: 0.75em;
+      color: #531e23;
+    }
+  }
+}
+
+.success {
+  border-left: solid 5px #2c7871;
+  background-color: #b8e0dc;
+  color: #1c5e57;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: var(--theme-primary);
+  color: white;
+}
+
+.back-link {
+  display: block;
+  text-decoration: none;
+  background-color: #c5e1df;
+  border: solid 1px #0f403b;
+  border-radius: 0.5rem;
+  padding: 0rem 0.5rem 0rem 0.25rem;
+  margin-bottom: 1rem;
+  max-width: max-content;
+  color: #0f403b;
+
+  &::before {
+    content: "<";
+    padding-right: 0.25rem;
+    color: #0f403b;
+  }
+}
+
+.summary-card {
+  border: solid 2px var(--theme-primary);
+  max-width: 30rem;
+
+  .summary-card__title-wrapper {
+    background: var(--theme-primary);
+    padding: 0.25rem 1rem;
+
+    .summary-card__title {
+      color: white;
+    }
+  }
+
+  .summary-card__content {
+    padding: 0.75rem 1rem;
+
+    .right {
+      text-align: right;
+    }
+
+    .summary-list {
+      margin-bottom: 1rem;
+
+      .summary-list__row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px rgba(26, 56, 29, 0.5);
+        margin-bottom: 0.25rem;
+
+        .summary-list__key {
+          font-size: 1rem;
+        }
+
+        .summary-list__value {
+          font-weight: bold;
+          font-size: 1.125rem;
+        }
+      }
+    }
+  }
+}
+
+.margin-left-lists ol,
+.margin-left-lists ul {
+  margin-left: 1.125rem;
+}
+
+.NgxEditor__Content {
+  max-height: 20rem;
+  overflow-y: scroll;
+}
+
+.margin-left-lists ol,
+.margin-left-lists ul {
+  margin-left: 1.125rem;
+}

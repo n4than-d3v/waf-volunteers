@@ -1,0 +1,92 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+<h1>Notice interactions</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (interactions$ | async; as interactions) {
+<div class="header">
+  <h2>Filter</h2>
+  <div class="field">
+    <label for="filterNone">All volunteers</label>
+    <input
+      type="radio"
+      name="filter"
+      id="filterNone"
+      value="none"
+      [(ngModel)]="filter"
+    />
+  </div>
+  <div class="field">
+    <label for="filterRead">Only volunteers who have read it</label>
+    <input
+      type="radio"
+      name="filter"
+      id="filterRead"
+      value="read"
+      [(ngModel)]="filter"
+    />
+  </div>
+  <div class="field">
+    <label for="filterUnread">Only volunteers who have not read it</label>
+    <input
+      type="radio"
+      name="filter"
+      id="filterUnread"
+      value="unread"
+      [(ngModel)]="filter"
+    />
+  </div>
+  <div class="field">
+    <div class="field field--seconds">
+      <input type="text" id="filterLessThanSeconds" [(ngModel)]="seconds" />
+      <label for="filterLessThanSeconds">seconds</label>
+    </div>
+    <label for="filterLessThan"
+      >Only volunteers who have read it for less than</label
+    >
+    <input
+      type="radio"
+      name="filter"
+      id="filterLessThan"
+      value="seconds"
+      [(ngModel)]="filter"
+    />
+  </div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>Volunteer</th>
+      <th>Status</th>
+      <th>
+        <div class="flex-thirds">
+          <p>Opened</p>
+          <p>Closed</p>
+          <p>Duration</p>
+        </div>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (interaction of interactions; track interaction.name) { @if
+    (shouldShow(interaction)) {
+    <tr>
+      <td>{{ interaction.name }}</td>
+      <td>{{ interaction.read ? 'Read' : 'Unread' }}</td>
+      <td>
+        @for (event of interaction.interactions; track event.opened) {
+        <div class="flex-thirds">
+          <p>{{ event.opened | date: 'dd MMM yyyy HH:mm:ss' }}</p>
+          <p>{{ event.closed | date: 'dd MMM yyyy HH:mm:ss' }}</p>
+          <p>{{ event.duration }}</p>
+        </div>
+        }
+      </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+}

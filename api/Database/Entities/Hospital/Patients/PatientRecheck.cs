@@ -11,6 +11,6 @@ public class PatientRecheck : Entity
     public AccountRoles Roles { get; set; }
 
     public Rechecker? Rechecker { get; set; }
-    public DateOnly? Rechecked { get; set; }
+    public DateTime? Rechecked { get; set; }
     public string? Comments { get; set; }
 }

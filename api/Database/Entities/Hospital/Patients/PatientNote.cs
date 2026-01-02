@@ -1,4 +1,5 @@
-﻿using Noter = Api.Database.Entities.Account.Account;
+﻿using Api.Database.Entities.Hospital.Patients.Exams;
+using Noter = Api.Database.Entities.Account.Account;
 
 namespace Api.Database.Entities.Hospital.Patients;
 
@@ -8,6 +9,6 @@ public class PatientNote : Entity
     public Noter Noter { get; set; }
     public DateTime Noted { get; set; }
     public decimal? WeightValue { get; set; }
-    public string? WeightUnit { get; set; }
+    public WeightUnit? WeightUnit { get; set; }
     public string Comments { get; set; }
 }

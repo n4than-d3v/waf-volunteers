@@ -1,6 +1,7 @@
 ﻿using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients.Admission;
 using Api.Database.Entities.Hospital.Patients.Exams;
+using Api.Database.Entities.Hospital.Patients.HomeCare;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
@@ -27,6 +28,8 @@ public class Patient : Entity
     public string Reference { get; set; }
     public string? Name { get; set; }
     public string? UniqueIdentifier { get; set; }
+    public Species? Species { get; set; }
+    public SpeciesVariant? SpeciesVariant { get; set; }
 
     #endregion
 
@@ -43,6 +46,8 @@ public class Patient : Entity
     public List<PatientMovement> Movements { get; set; }
     public List<Tag> Tags { get; set; }
     public List<Diet> Diets { get; set; }
+    public List<HomeCareRequest> HomeCareRequests { get; set; }
+    public List<HomeCareMessage> HomeCareMessages { get; set; }
 
     #endregion
 

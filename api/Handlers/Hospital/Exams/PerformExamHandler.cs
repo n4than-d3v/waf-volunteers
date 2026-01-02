@@ -1,0 +1,173 @@
+﻿using Api.Database;
+using Api.Database.Entities.Account;
+using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Exams;
+using Api.Database.Entities.Hospital.Patients.Medications;
+using Api.Handlers.Hospital.Patients.Outcome;
+using Api.Services;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+namespace Api.Handlers.Hospital.Exams;
+
+public class PerformExam : IRequest<IResult>
+{
+    public int PatientId { get; set; }
+    public int SpeciesId { get; set; }
+    public int SpeciesAgeId { get; set; }
+    public Sex Sex { get; set; }
+    public decimal? WeightValue { get; set; }
+    public WeightUnit? WeightUnit { get; set; }
+    public decimal? TemperatureValue { get; set; }
+    public TemperatureUnit? TemperatureUnit { get; set; }
+    public int? AttitudeId { get; set; }
+    public int? BodyConditionId { get; set; }
+    public int? DehydrationId { get; set; }
+    public int? MucousMembraneColourId { get; set; }
+    public int? MucousMembraneTextureId { get; set; }
+    public List<TreatmentInstruction> TreatmentInstructions { get; set; }
+    public List<TreatmentMedication> TreatmentMedications { get; set; }
+    public string Comments { get; set; }
+
+    public class TreatmentInstruction
+    {
+        public string Instructions { get; set; }
+    }
+
+    public class TreatmentMedication
+    {
+        public decimal QuantityValue { get; set; }
+        public string QuantityUnit { get; set; }
+        public int MedicationId { get; set; }
+        public int AdministrationMethodId { get; set; }
+
+        public string Comments { get; set; }
+    }
+}
+
+public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
+{
+    private readonly IDatabaseRepository _repository;
+    private readonly IUserContext _userContext;
+    private readonly IMediator _mediator;
+
+    public PerformExamHandler(IDatabaseRepository repository, IUserContext userContext, IMediator mediator)
+    {
+        _repository = repository;
+        _userContext = userContext;
+        _mediator = mediator;
+    }
+
+    public async Task<IResult> Handle(PerformExam request, CancellationToken cancellationToken)
+    {
+        var patient = await _repository.Get<Patient>(request.PatientId);
+        if (patient == null) return Results.BadRequest();
+
+        var examiner = await _repository.Get<Account>(_userContext.Id);
+        if (examiner == null) return Results.BadRequest();
+
+        var species = await _repository.Get<Species>(request.SpeciesId);
+        if (species == null) return Results.BadRequest();
+
+        var speciesAge = await _repository.Get<SpeciesAge>(request.SpeciesAgeId, action: x => x.Include(y => y.AssociatedVariant));
+        if (speciesAge == null) return Results.BadRequest();
+
+        Attitude? attitude = null;
+        if (request.AttitudeId.HasValue)
+        {
+            attitude = await _repository.Get<Attitude>(request.AttitudeId.Value);
+            if (attitude == null) return Results.BadRequest();
+        }
+        BodyCondition? bodyCondition = null;
+        if (request.BodyConditionId.HasValue)
+        {
+            bodyCondition = await _repository.Get<BodyCondition>(request.BodyConditionId.Value);
+            if (bodyCondition == null) return Results.BadRequest();
+        }
+        Dehydration? dehydration = null;
+        if (request.DehydrationId.HasValue)
+        {
+            dehydration = await _repository.Get<Dehydration>(request.DehydrationId.Value);
+            if (dehydration == null) return Results.BadRequest();
+        }
+        MucousMembraneColour? mucousMembraneColour = null;
+        if (request.MucousMembraneColourId.HasValue)
+        {
+            mucousMembraneColour = await _repository.Get<MucousMembraneColour>(request.MucousMembraneColourId.Value);
+            if (mucousMembraneColour == null) return Results.BadRequest();
+        }
+        MucousMembraneTexture? mucousMembraneTexture = null;
+        if (request.MucousMembraneTextureId.HasValue)
+        {
+            mucousMembraneTexture = await _repository.Get<MucousMembraneTexture>(request.MucousMembraneTextureId.Value);
+            if (mucousMembraneTexture == null) return Results.BadRequest();
+        }
+
+        bool isInitialExam = patient.Exams.Count == 0;
+
+        var examType = isInitialExam ? ExamType.Intake : ExamType.Regular;
+
+        var exam = new Exam
+        {
+            Patient = patient,
+            Examiner = examiner,
+            Date = DateTime.UtcNow,
+            Type = examType,
+            Species = species,
+            SpeciesAge = speciesAge,
+            Sex = request.Sex,
+            WeightValue = request.WeightValue,
+            WeightUnit = request.WeightUnit,
+            TemperatureValue = request.TemperatureValue,
+            TemperatureUnit = request.TemperatureUnit,
+            Attitude = attitude,
+            BodyCondition = bodyCondition,
+            Dehydration = dehydration,
+            MucousMembraneColour = mucousMembraneColour,
+            MucousMembraneTexture = mucousMembraneTexture,
+            TreatmentInstructions = [],
+            TreatmentMedications = [],
+            Comments = request.Comments
+        };
+
+        foreach (var treatmentInstruction in request.TreatmentInstructions)
+        {
+            exam.TreatmentInstructions.Add(new ExamTreatmentInstruction
+            {
+                Exam = exam,
+                Instructions = treatmentInstruction.Instructions
+            });
+        }
+
+        foreach (var treatmentMedication in request.TreatmentMedications)
+        {
+            var medication = await _repository.Get<Medication>(treatmentMedication.MedicationId);
+            if (medication == null) return Results.BadRequest();
+
+            var administrationMethod = await _repository.Get<AdministrationMethod>(treatmentMedication.AdministrationMethodId);
+            if (administrationMethod == null) return Results.BadRequest();
+
+            exam.TreatmentMedications.Add(new ExamTreatmentMedication
+            {
+                Exam = exam,
+                Medication = medication,
+                AdministrationMethod = administrationMethod,
+                QuantityUnit = treatmentMedication.QuantityUnit,
+                QuantityValue = treatmentMedication.QuantityValue,
+                Comments = treatmentMedication.Comments
+            });
+        }
+
+        if (isInitialExam)
+        {
+            patient.Status = PatientStatus.Inpatient;
+            patient.Species = species;
+            patient.SpeciesVariant = speciesAge.AssociatedVariant;
+        }
+
+        _repository.Create(exam);
+        await _repository.SaveChangesAsync();
+
+        return Results.Created();
+    }
+}

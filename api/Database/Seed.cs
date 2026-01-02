@@ -142,19 +142,8 @@ public static class Seed
                 new MucousMembraneTexture { Description = "Oily" }
             );
         }
-        if (!context.Tags.Any())
-        {
-            context.Tags.AddRange(
-                new Tag { Name = "Do not feed", Description = "..." },
-                new Tag { Name = "Do not clean", Description = "..." }
-            );
-        }
         if (!context.AdministrationMethods.Any())
         {
-            context.AdministrationMethods.AddRange(
-                new AdministrationMethod { Description = "Oral" },
-                new AdministrationMethod { Description = "Subcutaneous" }
-            );
         }
         if (!context.ReleaseTypes.Any())
         {
@@ -162,8 +151,15 @@ public static class Seed
                 new ReleaseType { Description = "Hard" },
                 new ReleaseType { Description = "Soft" },
                 new ReleaseType { Description = "Hack" },
-                new ReleaseType { Description = "Self" },
-                new ReleaseType { Description = "Hard" }
+                new ReleaseType { Description = "Escape" },
+                new ReleaseType { Description = "Returned to rescuer" },
+                new ReleaseType { Description = "Reunited with family" }
+            );
+        }
+        if (!context.TransferLocations.Any())
+        {
+            context.TransferLocations.AddRange(
+                new TransferLocation { Description = "Steve (Batman)" }
             );
         }
 

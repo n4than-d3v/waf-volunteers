@@ -3,6 +3,7 @@ using System;
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260102151724_PatientSpecies")]
+    partial class PatientSpecies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -963,8 +966,8 @@ namespace Api.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("WeightUnit")
-                        .HasColumnType("integer");
+                    b.Property<string>("WeightUnit")
+                        .HasColumnType("text");
 
                     b.Property<decimal?>("WeightValue")
                         .HasColumnType("numeric");
@@ -999,8 +1002,8 @@ namespace Api.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("Rechecked")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly?>("Rechecked")
+                        .HasColumnType("date");
 
                     b.Property<int?>("RecheckerId")
                         .HasColumnType("integer");

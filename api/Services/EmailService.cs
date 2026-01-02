@@ -39,6 +39,7 @@ public class EmailService : IEmailService
             {
                 Message = new Message
                 {
+                    IsDraft = email.Draft,
                     Subject = email.Subject,
                     Body = new ItemBody
                     {
@@ -79,6 +80,8 @@ public class Email
     public string Subject { get; private set; }
     public string Body { get; private set; }
 
+    public bool Draft { get; set; } = false;
+
     private Email(string firstName, string lastName, string address, string subject, string body)
     {
         FirstName = firstName;
@@ -101,6 +104,22 @@ $"""
 <p><strong>Previous phone number:</strong> {previousPrimaryPhoneNumber}</p>
 <p><strong>Updated phone number:</strong> {updatedPrimaryPhoneNumber}</p>
 """));
+
+    public static Email External_PatientUpdate_Death(string fullName, string recipient, string content) =>
+        new(fullName, "", $"{recipient}@{HostConstants.Domain}", "Wildlife Aid Foundation - Patient Update", Format.Replace(ContentPlaceholder, content))
+        { Draft = true };
+
+    public static Email External_PatientUpdate_ReadyForCollection(string fullName, string recipient, string species, DateTime admissionDate) =>
+        new(fullName, "", $"{recipient}@{HostConstants.Domain}", "Wildlife Aid Foundation - Patient Update", Format.Replace(ContentPlaceholder,
+$"""
+<p>Hi {fullName},</p>
+<br />
+<p>We are pleased to announce that the {species} you dropped off on {admissionDate:dddd d MMMM} has made a full recovery and is now ready for collection.</p>
+<p>You can find us at: <a href="https://maps.app.goo.gl/XDBoof9GPp7z47Xa7">Randalls Farm House, Randalls Rd, Leatherhead KT22 0AL</a>.</p>
+<p>If you are unable to collect, please let us know by responding to this email. Otherwise, we look forward to seeing you soon!</p>
+<p>Thank you again for your commitment to keeping wildlife safe and sound!</p>
+"""))
+        { Draft = true };
 
     public static Email AccountCreated(string firstName, string lastName, string username, string email, string token) =>
         new(firstName, lastName, email, "WAF - Account created", Format.Replace(ContentPlaceholder,

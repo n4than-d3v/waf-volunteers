@@ -56,6 +56,8 @@ public class Patient : Entity
     public Dispositioner? Dispositioner { get; set; }
 
     #endregion
+
+    public string Salt { get; set; }
 }
 
 public enum PatientStatus

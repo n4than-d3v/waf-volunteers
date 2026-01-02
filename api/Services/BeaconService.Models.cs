@@ -21,15 +21,12 @@ public partial class BeaconService
             public DateTime created_at { get; set; }
             public string c_id_number { get; set; }
             public List<int> c_person { get; set; }
-            public DateTime c_submission_date { get; set; }
             public List<string> c_animal { get; set; }
             public string c_other_animal { get; set; }
             public string c_specific_animal { get; set; }
             public string c_alternative_address { get; set; }
             public List<string> c_animal_found_at_different_address { get; set; }
             public List<string> c_reason_for_admission { get; set; }
-            public List<string> c_final_outcome { get; set; }
-            public DateTime? c_date_of_final_outcome { get; set; }
             public bool c_rescue { get; set; }
         }
 

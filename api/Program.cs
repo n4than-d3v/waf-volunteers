@@ -1,6 +1,5 @@
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,11 +47,15 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     await context.Database.MigrateAsync();
+}
 
+_ = Task.Run(async () =>
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
     await context.LoadMedications();
     await context.SetupHospitalReferenceData();
-
-}
+});
 
 UseSwagger(app);
 

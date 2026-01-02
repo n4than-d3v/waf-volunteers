@@ -145,8 +145,8 @@ public static class Seed
         if (!context.Tags.Any())
         {
             context.Tags.AddRange(
-                new Tag { Description = "Do not feed" },
-                new Tag { Description = "Do not clean" }
+                new Tag { Name = "Do not feed", Description = "..." },
+                new Tag { Name = "Do not clean", Description = "..." }
             );
         }
         if (!context.AdministrationMethods.Any())
@@ -165,6 +165,15 @@ public static class Seed
                 new ReleaseType { Description = "Self" },
                 new ReleaseType { Description = "Hard" }
             );
+        }
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+
         }
     }
 }

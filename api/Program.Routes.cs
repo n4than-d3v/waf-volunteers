@@ -17,6 +17,7 @@ using Api.Handlers.Rota;
 using Api.Handlers.Rota.Notify;
 using Api.Handlers.Notices.Interaction;
 using Api.Handlers.Notices;
+using Api.Handlers.Hospital.Admission;
 
 public partial class Program
 {
@@ -27,6 +28,15 @@ public partial class Program
         RegisterNotifyRoutes(api);
         RegisterClockingRoutes(api);
         RegisterNoticeRoutes(api);
+        RegisterHospitalRoutes(api);
+    }
+
+    private static void RegisterHospitalRoutes(RouteGroupBuilder api)
+    {
+        var apiHospital = api.MapGroup("/hospital");
+
+        apiHospital.MapPost("/refresh-admissions", (IMediator mediator, CheckPatientAdmissions request) => mediator.Send(request))
+            .AddNote("Refresh patient admissions");
     }
 
     private static void RegisterAccountRoutes(RouteGroupBuilder api)

@@ -14,6 +14,12 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
     public int SpeciesVariantId { get; set; }
     public List<int> TagIds { get; set; }
     public List<int> DietIds { get; set; }
+
+    public UpdatePatientBasicDetails WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBasicDetails, IResult>

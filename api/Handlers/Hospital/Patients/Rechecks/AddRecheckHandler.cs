@@ -11,6 +11,12 @@ public class AddRecheck : IRequest<IResult>
     public AccountRoles Roles { get; set; }
     public string Description { get; set; }
     public DateOnly Due { get; set; }
+
+    public AddRecheck WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class AddRecheckHandler : IRequestHandler<AddRecheck, IResult>

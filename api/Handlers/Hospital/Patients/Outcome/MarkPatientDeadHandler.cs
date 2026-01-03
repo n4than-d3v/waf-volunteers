@@ -14,6 +14,12 @@ public class MarkPatientDead : IRequest<IResult>
 
     public bool PutToSleep { get; set; }
     public bool OnArrival { get; set; }
+
+    public MarkPatientDead WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>

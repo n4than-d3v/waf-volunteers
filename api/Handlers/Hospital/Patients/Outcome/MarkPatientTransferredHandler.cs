@@ -11,6 +11,12 @@ public class MarkPatientTransferred : IRequest<IResult>
 {
     public int PatientId { get; set; }
     public int TransferLocationId { get; set; }
+
+    public MarkPatientTransferred WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransferred, IResult>

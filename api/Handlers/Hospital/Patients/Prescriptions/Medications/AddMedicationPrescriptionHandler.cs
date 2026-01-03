@@ -18,6 +18,12 @@ public class AddMedicationPrescription : IRequest<IResult>
     public int AdministrationMethodId { get; set; }
     public string Comments { get; set; }
     public string Frequency { get; set; }
+
+    public AddMedicationPrescription WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class AddMedicationPrescriptionHandler : IRequestHandler<AddMedicationPrescription, IResult>

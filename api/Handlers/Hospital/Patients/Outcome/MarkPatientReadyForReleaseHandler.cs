@@ -10,6 +10,12 @@ namespace Api.Handlers.Hospital.Patients.Outcome;
 public class MarkPatientReadyForRelease : IRequest<IResult>
 {
     public int PatientId { get; set; }
+
+    public MarkPatientReadyForRelease WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientReadyForRelease, IResult>

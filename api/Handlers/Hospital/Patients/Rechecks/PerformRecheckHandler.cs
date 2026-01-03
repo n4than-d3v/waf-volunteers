@@ -10,6 +10,12 @@ public class PerformRecheck : IRequest<IResult>
 {
     public int RecheckId { get; set; }
     public string Comments { get; set; }
+
+    public PerformRecheck WithId(int id)
+    {
+        RecheckId = id;
+        return this;
+    }
 }
 
 public class PerformRecheckHandler : IRequestHandler<PerformRecheck, IResult>

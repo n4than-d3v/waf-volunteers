@@ -13,6 +13,12 @@ public class AddPatientNote : IRequest<IResult>
     public decimal? WeightValue { get; set; }
     public WeightUnit? WeightUnit { get; set; }
     public string Comments { get; set; }
+
+    public AddPatientNote WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class AddPatientNoteHandler : IRequestHandler<AddPatientNote, IResult>

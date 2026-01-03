@@ -14,6 +14,12 @@ public class RequireHomeCare : IRequest<IResult>
 {
     public int PatientId { get; set; }
     public string Notes { get; set; }
+
+    public RequireHomeCare WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
@@ -38,6 +44,8 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
 
         var requester = await _repository.Get<Account>(_userContext.Id);
         if (requester == null) return Results.BadRequest();
+
+        patient.Status = PatientStatus.PendingHomeCare;
 
         var homeCareRequest = new HomeCareRequest
         {

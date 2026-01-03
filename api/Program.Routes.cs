@@ -18,6 +18,18 @@ using Api.Handlers.Rota.Notify;
 using Api.Handlers.Notices.Interaction;
 using Api.Handlers.Notices;
 using Api.Handlers.Hospital.Admission;
+using Api.Handlers.Hospital.Exams;
+using Api.Handlers.Hospital.HomeCare;
+using Api.Handlers.Hospital.Husbandry;
+using Api.Handlers.Hospital.Locations;
+using Api.Handlers.Hospital.Medications;
+using Api.Handlers.Hospital.Patients.Outcome;
+using Api.Handlers.Hospital.Patients.Prescriptions.Instructions;
+using Api.Handlers.Hospital.Patients.Prescriptions.Medications;
+using Api.Handlers.Hospital.Patients.Rechecks;
+using Api.Handlers.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients;
+using Api.Handlers.Hospital.PatientTypes;
 
 public partial class Program
 {
@@ -37,6 +49,180 @@ public partial class Program
 
         apiHospital.MapPost("/refresh-admissions", (IMediator mediator, CheckPatientAdmissions request) => mediator.Send(request))
             .AddNote("Refresh patient admissions");
+
+        var apiHospitalExams = apiHospital.MapGroup("/exam-options");
+
+        apiHospitalExams.MapGet("/attitudes", (IMediator mediator) => mediator.Send(new GetAttitudes()))
+            .AddNote("Get attitude options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalExams.MapGet("/body-conditions", (IMediator mediator) => mediator.Send(new GetBodyConditions()))
+            .AddNote("Get body condition options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalExams.MapGet("/dehydrations", (IMediator mediator) => mediator.Send(new GetDehydrations()))
+            .AddNote("Get dehydration options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalExams.MapGet("/mucous-membrane-colours", (IMediator mediator) => mediator.Send(new GetMucousMembraneColours()))
+            .AddNote("Get mucous membrane colour options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalExams.MapGet("/mucous-membrane-textures", (IMediator mediator) => mediator.Send(new GetMucousMembraneTextures()))
+            .AddNote("Get mucous membrane texture options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        var apiHospitalPatient = apiHospital.MapGroup("/patients");
+
+        apiHospitalPatient.MapPost("/{id:int}/exam", (IMediator mediator, int id, PerformExam request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet performs initial exam")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/request-home-care", (IMediator mediator, int id, RequireHomeCare request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet requests home care for patient")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/ready-for-release", (IMediator mediator, int id, MarkPatientReadyForRelease request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet marks patient as ready for release")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/die", (IMediator mediator, int id, MarkPatientDead request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet marks patient as dead")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/release", (IMediator mediator, int id, MarkPatientReleased request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet marks patient as released")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/transfer", (IMediator mediator, int id, MarkPatientTransferred request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet marks patient as transferred")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/prescriptions/instruction", (IMediator mediator, int id, AddInstructionPrescription request) => mediator.Send(request.WithId(id)))
+            .AddNote("Create prescription instruction")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/prescriptions/instruction/{id:int}/administer", (IMediator mediator, int id, PerformInstructionPrescription request) => mediator.Send(request.WithId(id)))
+            .AddNote("Administer prescription instruction")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/prescriptions/medication", (IMediator mediator, int id, AddMedicationPrescription request) => mediator.Send(request.WithId(id)))
+            .AddNote("Create prescription medication")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/prescriptions/medication/{id:int}/administer", (IMediator mediator, int id, PerformMedicationPrescription request) => mediator.Send(request.WithId(id)))
+            .AddNote("Administer prescription medication")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/recheck", (IMediator mediator, int id, AddRecheck request) => mediator.Send(request.WithId(id)))
+            .AddNote("Create recheck")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/recheck/{id:int}/perform", (IMediator mediator, int id, PerformRecheck request) => mediator.Send(request.WithId(id)))
+            .AddNote("Perform recheck")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/note", (IMediator mediator, int id, AddPatientNote request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet or aux adds a note")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/move", (IMediator mediator, int id, MovePatient request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet moves patient")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPut("/{id:int}/basic-details", (IMediator mediator, int id, UpdatePatientBasicDetails request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet updates patient basic details")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapGet("/search", (IMediator mediator, string query) => mediator.Send(new SearchPatients { Search = query }))
+            .AddNote("Search for a patient")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalPatient.MapGet("/{id:int}", (IMediator mediator, int id) => mediator.Send(new ViewPatient { Id = id }))
+            .AddNote("View patient details")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalPatient.MapGet("/status/{status:int}", (IMediator mediator, int status) => mediator.Send(new ViewPatients { Status = (PatientStatus)status }))
+            .AddNote("Filter patients by status")
+            .RequireAuthorization(signedInPolicy);
+
+        var apiHospitalHomeCare = apiHospital.MapGroup("/home-care");
+
+        apiHospitalHomeCare.MapPost("/{id:int}/accept", (IMediator mediator, int id, AcceptHomeCare request) => mediator.Send(request.WithId(id)))
+            .AddNote("Orphan feeder accepts home care request")
+            .RequireAuthorization(orphanFeederPolicy);
+
+        apiHospitalHomeCare.MapPost("/{id:int}/message", (IMediator mediator, int id, HomeCareMessage request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet or orphan feeder sends home care message")
+            .RequireAuthorization(vetOrOrphanFeederPolicy);
+
+        apiHospitalHomeCare.MapGet("/outstanding", (IMediator mediator) => mediator.Send(new ViewOutstandingHomeCareRequests()))
+            .AddNote("Orphan feeder views outstanding home care requests")
+            .RequireAuthorization(orphanFeederPolicy);
+
+        apiHospitalHomeCare.MapGet("/active", (IMediator mediator) => mediator.Send(new ViewMyActiveHomeCareRequests()))
+            .AddNote("Orphan feeder views active home care requests")
+            .RequireAuthorization(orphanFeederPolicy);
+
+        var apiHospitalHusbandry = apiHospital.MapGroup("/husbandry");
+
+        apiHospitalHusbandry.MapGet("/diets", (IMediator mediator) => mediator.Send(new GetDiets()))
+            .AddNote("View diets")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalHusbandry.MapGet("/tags", (IMediator mediator) => mediator.Send(new GetTags()))
+            .AddNote("View tags")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalHusbandry.MapPut("/diet", (IMediator mediator, UpsertDiet request) => mediator.Send(request))
+            .AddNote("Update or create diet")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalHusbandry.MapPut("/tag", (IMediator mediator, UpsertTag request) => mediator.Send(request))
+            .AddNote("Update or create tag")
+            .RequireAuthorization(adminPolicy);
+
+        var apiHospitalLocations = apiHospital.MapGroup("/locations");
+
+        apiHospitalLocations.MapGet("/", (IMediator mediator) => mediator.Send(new GetAreas()))
+            .AddNote("Get list of areas, including pens")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalLocations.MapPost("/area", (IMediator mediator, CreateArea request) => mediator.Send(request))
+            .AddNote("Admin creates a new area")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalLocations.MapPost("/pen", (IMediator mediator, CreatePen request) => mediator.Send(request))
+            .AddNote("Admin creates a new pen")
+            .RequireAuthorization(adminPolicy);
+
+        var apiHospitalMedications = apiHospital.MapGroup("/medications");
+
+        apiHospitalMedications.MapGet("/", (IMediator mediator) => mediator.Send(new GetMedications()))
+            .AddNote("View list of medications")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalMedications.MapGet("/administration-methods", (IMediator mediator) => mediator.Send(new GetAdministrationMethods()))
+            .AddNote("View list of administration methods")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        var apiHospitalSpecies = apiHospital.MapGroup("/species");
+
+        apiHospitalSpecies.MapGet("/", (IMediator mediator) => mediator.Send(new GetSpecies()))
+            .AddNote("View list of species")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalSpecies.MapPut("/", (IMediator mediator, UpsertSpecies request) => mediator.Send(request))
+            .AddNote("Update or create species")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalSpecies.MapPut("/age", (IMediator mediator, UpsertSpeciesAge request) => mediator.Send(request))
+            .AddNote("Update or create species age")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalSpecies.MapPut("/variant", (IMediator mediator, UpsertSpeciesVariant request) => mediator.Send(request))
+            .AddNote("Update or create species variant")
+            .RequireAuthorization(adminPolicy);
     }
 
     private static void RegisterAccountRoutes(RouteGroupBuilder api)

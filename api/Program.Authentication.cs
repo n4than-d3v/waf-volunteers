@@ -8,6 +8,10 @@ public partial class Program
 {
     private const string signedInPolicy = "SignedIn";
     private const string adminPolicy = "Admin";
+    private const string vetPolicy = "Vet";
+    private const string vetOrAuxPolicy = "VetOrAux";
+    private const string orphanFeederPolicy = "OrphanFeeder";
+    private const string vetOrOrphanFeederPolicy = "VetOrOrphanFeeder";
     private const string clockingPolicy = "Clocking";
 
     private static void RegisterAuthentication(WebApplicationBuilder builder)
@@ -37,6 +41,10 @@ public partial class Program
             .AddAuthorizationBuilder()
             .AddPolicy(signedInPolicy, policy => policy.RequireAuthenticatedUser())
             .AddPolicy(adminPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsAdmin()))
+            .AddPolicy(vetPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsVet()))
+            .AddPolicy(vetOrAuxPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsVetOrAux()))
+            .AddPolicy(orphanFeederPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsOrphanFeeder()))
+            .AddPolicy(vetOrOrphanFeederPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsVet() || context.User.IsOrphanFeeder()))
             .AddPolicy(clockingPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsClocking()));
     }
 }

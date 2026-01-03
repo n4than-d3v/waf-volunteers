@@ -11,6 +11,12 @@ public class HomeCareMessage : IRequest<IResult>
 {
     public int HomeCareRequestId { get; set; }
     public string Message { get; set; }
+
+    public HomeCareMessage WithId(int id)
+    {
+        HomeCareRequestId = id;
+        return this;
+    }
 }
 
 public class HomeCareMessageHandler : IRequestHandler<HomeCareMessage, IResult>

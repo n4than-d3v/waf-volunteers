@@ -13,6 +13,12 @@ public class AddInstructionPrescription : IRequest<IResult>
     public DateOnly End { get; set; }
     public string Instructions { get; set; }
     public string Frequency { get; set; }
+
+    public AddInstructionPrescription WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class AddInstructionPrescriptionHandler : IRequestHandler<AddInstructionPrescription, IResult>

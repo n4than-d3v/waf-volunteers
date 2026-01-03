@@ -9,6 +9,12 @@ public class MovePatient : IRequest<IResult>
 {
     public int PatientId { get; set; }
     public int PenId { get; set; }
+
+    public MovePatient WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
 }
 
 public class MovePatientHandler : IRequestHandler<MovePatient, IResult>

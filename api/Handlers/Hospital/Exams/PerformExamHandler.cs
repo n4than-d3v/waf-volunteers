@@ -29,6 +29,12 @@ public class PerformExam : IRequest<IResult>
     public List<TreatmentMedication> TreatmentMedications { get; set; }
     public string Comments { get; set; }
 
+    public PerformExam WithId(int id)
+    {
+        PatientId = id;
+        return this;
+    }
+
     public class TreatmentInstruction
     {
         public string Instructions { get; set; }

@@ -11,6 +11,12 @@ public class PerformMedicationPrescription : IRequest<IResult>
     public int PrescriptionId { get; set; }
     public bool Success { get; set; }
     public string Comments { get; set; }
+
+    public PerformMedicationPrescription WithId(int id)
+    {
+        PrescriptionId = id;
+        return this;
+    }
 }
 
 public class PerformMedicationPrescriptionHandler : IRequestHandler<PerformMedicationPrescription, IResult>

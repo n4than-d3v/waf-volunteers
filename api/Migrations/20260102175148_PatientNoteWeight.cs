@@ -10,27 +10,23 @@ namespace Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<int>(
-                name: "WeightUnit",
-                table: "PatientNotes",
-                type: "integer",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "text",
-                oldNullable: true);
+            migrationBuilder.Sql("""
+        ALTER TABLE "PatientNotes"
+        ALTER COLUMN "WeightUnit"
+        TYPE integer
+        USING "WeightUnit"::integer;
+    """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<string>(
-                name: "WeightUnit",
-                table: "PatientNotes",
-                type: "text",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "integer",
-                oldNullable: true);
+            migrationBuilder.Sql("""
+        ALTER TABLE "PatientNotes"
+        ALTER COLUMN "WeightUnit"
+        TYPE text
+        USING "WeightUnit"::text;
+    """);
         }
     }
 }

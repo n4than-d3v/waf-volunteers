@@ -1,0 +1,93 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Areas and pens</h1>
+
+<p>
+  The hospital is split into areas and pens.<br />
+  Patients are housed in pens, which are part of areas, e.g. area "DS / Deer
+  sheds" containing pens "1", "2", and "3".<br />
+  You don't need to include the area code as a prefix for the pen code, e.g.
+  area "DS" pen "1" is formatted as "DS-1".
+</p>
+
+@if (areas$ | async; as areas) { @if (areas.loading) {
+<spinner></spinner>
+} @else if (areas.error) {
+<div class="error">Error occurred</div>
+} @else if (areas.data) { @if (!creatingArea && !creatingPen) {
+<button (click)="beginCreateArea()" class="button button--primary">
+  Create new area
+</button>
+} @else if (creatingArea) {
+<section>
+  <h2>Create new area</h2>
+  <form [formGroup]="areaForm">
+    <div class="field">
+      <label for="code">Code</label>
+      <input id="code" type="text" formControlName="code" />
+    </div>
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="buttons">
+      <button (click)="createArea()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (creatingPen) {
+<section>
+  <h2>Create new pen</h2>
+  <form [formGroup]="penForm">
+    <div class="field">
+      <label for="area">Area</label>
+      <input
+        id="area"
+        type="text"
+        disabled="disabled"
+        value="{{ creatingPenForArea?.name }}"
+      />
+    </div>
+    <div class="field">
+      <label for="code">Code</label>
+      <input id="code" type="text" formControlName="code" />
+    </div>
+    <div class="buttons">
+      <button (click)="createPen()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Name</th>
+      <th>Pens</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (area of areas.data; track area.id) {
+    <tr>
+      <td>{{ area.code }}</td>
+      <td>{{ area.name }}</td>
+      <td>{{ formatPens(area) }}</td>
+      <td>
+        <button (click)="beginCreatePen(area)" class="button button--secondary">
+          Add pen
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

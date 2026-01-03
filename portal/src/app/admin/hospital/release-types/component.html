@@ -1,0 +1,76 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Release types</h1>
+
+<p>
+  Release types are required to be selected by vets when marking a patient as
+  released.<br />
+  They provide additional context for the release, such as "Soft" / "Hard" /
+  "Escaped", etc.
+</p>
+
+@if (releaseTypes$ | async; as releaseTypes) { @if (releaseTypes.loading) {
+<spinner></spinner>
+} @else if (releaseTypes.error) {
+<div class="error">Error occurred</div>
+} @else if (releaseTypes.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new release type
+</button>
+} @else if (creating) {
+<section>
+  <h2>Create new release type</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating) {
+<section>
+  <h2>Edit release type</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (releaseType of releaseTypes.data; track releaseType.id) {
+    <tr>
+      <td>{{ releaseType.description }}</td>
+      <td>
+        <button
+          (click)="beginUpdate(releaseType)"
+          class="button button--secondary"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

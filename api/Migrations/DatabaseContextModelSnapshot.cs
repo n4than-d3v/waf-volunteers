@@ -692,6 +692,9 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("Used")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("VMDProductNo")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1802,7 +1805,7 @@ namespace Api.Migrations
                         .IsRequired();
 
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Patient", "Patient")
-                        .WithMany()
+                        .WithMany("HomeCareMessages")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1815,7 +1818,7 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.HomeCare.HomeCareRequest", b =>
                 {
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Patient", "Patient")
-                        .WithMany()
+                        .WithMany("HomeCareRequests")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2310,6 +2313,10 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Patient", b =>
                 {
                     b.Navigation("Exams");
+
+                    b.Navigation("HomeCareMessages");
+
+                    b.Navigation("HomeCareRequests");
 
                     b.Navigation("Movements");
 

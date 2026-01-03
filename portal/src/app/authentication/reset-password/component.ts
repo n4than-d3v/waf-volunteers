@@ -43,6 +43,7 @@ export class ResetPasswordComponent {
       ],
     }),
     confirmPassword: new FormControl(''),
+    showPassword: new FormControl(false),
   });
 
   constructor(private store: Store, route: ActivatedRoute) {

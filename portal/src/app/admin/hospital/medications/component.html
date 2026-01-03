@@ -1,0 +1,192 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Medications</h1>
+
+<p>
+  This is the full list of currently authorised products, imported from
+  <a href="https://www.vmd.defra.gov.uk/productinformationdatabase">VMD</a>.
+  <br />
+  You can select which ones are available for vets to use.
+</p>
+
+@if (medications$ | async; as medications) { @if (medications.loading) {
+<spinner></spinner>
+} @else if (medications.error) {
+<div class="error">Error occurred</div>
+} @else if (medications.data) {
+<section>
+  <h2>Filter</h2>
+  <div class="filter">
+    <div class="filter-section">
+      <h3>Search</h3>
+      <div class="field">
+        <input type="text" [(ngModel)]="search" />
+      </div>
+    </div>
+    <div class="filter-section">
+      <h3>Status</h3>
+      <ul>
+        <li>
+          <div class="field">
+            <label for="all">All</label>
+            <input type="radio" id="all" [(ngModel)]="status" value="all" />
+          </div>
+          <div class="field">
+            <label for="enabled">Enabled</label>
+            <input
+              type="radio"
+              id="enabled"
+              [(ngModel)]="status"
+              value="enabled"
+            />
+          </div>
+          <div class="field">
+            <label for="disabled">Disabled</label>
+            <input
+              type="radio"
+              id="disabled"
+              [(ngModel)]="status"
+              value="disabled"
+            />
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="filter-section">
+      <h3>Columns</h3>
+      <ul>
+        <li>
+          <div class="field">
+            <label for="c1">VM &numero;</label
+            ><input type="checkbox" id="c1" [(ngModel)]="columns.c1" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c2">Name</label
+            ><input type="checkbox" id="c2" [(ngModel)]="columns.c2" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c3">MA Holder</label
+            ><input type="checkbox" id="c3" [(ngModel)]="columns.c3" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c4">Distributors</label
+            ><input type="checkbox" id="c4" [(ngModel)]="columns.c4" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c5">Active Substances</label
+            ><input type="checkbox" id="c5" [(ngModel)]="columns.c5" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c6">Target Species</label
+            ><input type="checkbox" id="c6" [(ngModel)]="columns.c6" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c7">Pharmaceutical Form</label
+            ><input type="checkbox" id="c7" [(ngModel)]="columns.c7" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c8">Therapeutic Group</label
+            ><input type="checkbox" id="c8" [(ngModel)]="columns.c8" />
+          </div>
+        </li>
+        <li>
+          <div class="field">
+            <label for="c9">Links</label
+            ><input type="checkbox" id="c9" [(ngModel)]="columns.c9" />
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+<table>
+  <thead>
+    <tr>
+      @if (columns.c1) {
+      <th>VM &numero;</th>
+      } @if (columns.c2) {
+      <th>Name</th>
+      } @if (columns.c3) {
+      <th>MA Holder</th>
+      } @if (columns.c4) {
+      <th>Distributors</th>
+      } @if (columns.c5) {
+      <th>Active Substances</th>
+      } @if (columns.c6) {
+      <th>Target Species</th>
+      } @if (columns.c7) {
+      <th>Pharmaceutical Form</th>
+      } @if (columns.c8) {
+      <th>Therapeutic Group</th>
+      } @if (columns.c9) {
+      <th>Links</th>
+      }
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (medication of medications.data; track medication.id) { @if
+    (shouldShow(medication)) {
+    <tr>
+      @if (columns.c1) {
+      <td>
+        {{ medication.vmdProductNo }} <br />
+        {{ medication.vmNo }}
+      </td>
+      } @if (columns.c2) {
+      <td>{{ medication.name }}</td>
+      } @if (columns.c3) {
+      <td>{{ medication.maHolder }}</td>
+      } @if (columns.c4) {
+      <td [innerHTML]="medication.distributors"></td>
+      } @if (columns.c5) {
+      <td>{{ formatList(medication.activeSubstances) }}</td>
+      } @if (columns.c6) {
+      <td>{{ formatList(medication.targetSpecies) }}</td>
+      } @if (columns.c7) {
+      <td>{{ formatItem(medication.pharmaceuticalForm) }}</td>
+      } @if (columns.c8) {
+      <td>{{ formatItem(medication.therapeuticGroup) }}</td>
+      } @if (columns.c9) {
+      <td>
+        @if (medication.spcLink) {
+        <a href="{{ medication.spcLink }}" target="_blank">SPC</a>
+        <span>&nbsp;</span>
+        } @if (medication.ukparLink) {
+        <a href="{{ medication.ukparLink }}" target="_blank">UKPAAR</a>
+        <span>&nbsp;</span>
+        } @if (medication.paarLink) {
+        <a href="{{ medication.paarLink }}" target="_blank">PAAR</a>
+        }
+      </td>
+      }
+      <td class="shown">
+        @if (medication.used) {
+        <button (click)="disable(medication.id)" class="button button--warning">
+          Disable
+        </button>
+        } @else {
+        <button (click)="enable(medication.id)" class="button button--primary">
+          Enable
+        </button>
+        }
+      </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+} }

@@ -76,7 +76,8 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
 
         var communication = dispositionReason.Communication
             .Replace("%NAME%", patient.Admitter.FullName)
-            .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown");
+            .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown")
+            .Replace("%ADMITTED%", $"{patient.Admitted:dddd d MMMM}");
 
         var admitterEmail = _encryptionService.Decrypt(patient.Admitter.Email, patient.Admitter.Salt);
         var email = Email.External_PatientUpdate_Death(patient.Admitter.FullName, admitterEmail, communication);

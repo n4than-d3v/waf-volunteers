@@ -35,6 +35,8 @@ import { NoticeManagementEffects } from './admin/notices/effects';
 import { NgxEditorModule } from 'ngx-editor';
 import { noticesReducer } from './volunteer/notices/reducer';
 import { NoticesEffects } from './volunteer/notices/effects';
+import { AdminHospitalManagementEffects } from './admin/hospital/effects';
+import { adminHospitalManagementReducer } from './admin/hospital/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -90,6 +92,7 @@ export const appConfig: ApplicationConfig = {
       profiles: profilesReducer,
       rotaManagement: rotaManagementReducer,
       noticeManagement: noticeManagementReducer,
+      adminHospitalManagement: adminHospitalManagementReducer,
 
       // Clocking
       clocking: clockingReducer,
@@ -108,6 +111,7 @@ export const appConfig: ApplicationConfig = {
       ProfilesEffects,
       RotaManagementEffects,
       NoticeManagementEffects,
+      AdminHospitalManagementEffects,
 
       // Clocking
       ClockingEffects,

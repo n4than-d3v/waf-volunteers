@@ -1,0 +1,117 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Disposition reasons</h1>
+
+<p>
+  Disposition reasons are used to record the reason for a patient's negative
+  outcome.
+  <br />
+  Vets are required to provide one of these options if a patient is put to sleep
+  or dies.<br />
+  Emails are sent to the admitter with the "communication" text configured.
+</p>
+<p>You can use the following placeholders in communications:</p>
+<ul>
+  <li><em>%NAME%</em> Name of admitter (e.g. Mr John Doe)</li>
+  <li><em>%SPECIES%</em> Name of species (e.g. Hedgehog)</li>
+  <li><em>%ADMITTED%</em> Date of admission (e.g. Monday 5 January)</li>
+</ul>
+
+@if (dispositionReasons$ | async; as dispositionReasons) { @if
+(dispositionReasons.loading) {
+<spinner></spinner>
+} @else if (dispositionReasons.error) {
+<div class="error">Error occurred</div>
+} @else if (dispositionReasons.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new disposition reason
+</button>
+} @else if (creating && editor) {
+<section>
+  <h2>Create new disposition reason</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="field">
+      <label for="editor">Communication</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="communication"
+        >
+        </ngx-editor>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating && editor) {
+<section>
+  <h2>Edit disposition reason</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="field">
+      <label for="editor">Communication</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="communication"
+        ></ngx-editor>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Communication</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (dispositionReason of dispositionReasons.data; track
+    dispositionReason.id) {
+    <tr>
+      <td>{{ dispositionReason.description }}</td>
+      <td [innerHTML]="convertHtml(dispositionReason.communication)"></td>
+      <td>
+        <button
+          (click)="beginUpdate(dispositionReason)"
+          class="button button--secondary"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

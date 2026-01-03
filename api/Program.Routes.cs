@@ -50,27 +50,55 @@ public partial class Program
         apiHospital.MapPost("/refresh-admissions", (IMediator mediator, CheckPatientAdmissions request) => mediator.Send(request))
             .AddNote("Refresh patient admissions");
 
-        var apiHospitalExams = apiHospital.MapGroup("/exam-options");
+        var apiHospitalOptions = apiHospital.MapGroup("/options");
 
-        apiHospitalExams.MapGet("/attitudes", (IMediator mediator) => mediator.Send(new GetAttitudes()))
+        var apiHospitalOptionsExams = apiHospitalOptions.MapGroup("/exams");
+
+        apiHospitalOptionsExams.MapGet("/attitudes", (IMediator mediator) => mediator.Send(new GetAttitudes()))
             .AddNote("Get attitude options")
             .RequireAuthorization(vetOrAuxPolicy);
 
-        apiHospitalExams.MapGet("/body-conditions", (IMediator mediator) => mediator.Send(new GetBodyConditions()))
+        apiHospitalOptionsExams.MapGet("/body-conditions", (IMediator mediator) => mediator.Send(new GetBodyConditions()))
             .AddNote("Get body condition options")
             .RequireAuthorization(vetOrAuxPolicy);
 
-        apiHospitalExams.MapGet("/dehydrations", (IMediator mediator) => mediator.Send(new GetDehydrations()))
+        apiHospitalOptionsExams.MapGet("/dehydrations", (IMediator mediator) => mediator.Send(new GetDehydrations()))
             .AddNote("Get dehydration options")
             .RequireAuthorization(vetOrAuxPolicy);
 
-        apiHospitalExams.MapGet("/mucous-membrane-colours", (IMediator mediator) => mediator.Send(new GetMucousMembraneColours()))
+        apiHospitalOptionsExams.MapGet("/mucous-membrane-colours", (IMediator mediator) => mediator.Send(new GetMucousMembraneColours()))
             .AddNote("Get mucous membrane colour options")
             .RequireAuthorization(vetOrAuxPolicy);
 
-        apiHospitalExams.MapGet("/mucous-membrane-textures", (IMediator mediator) => mediator.Send(new GetMucousMembraneTextures()))
+        apiHospitalOptionsExams.MapGet("/mucous-membrane-textures", (IMediator mediator) => mediator.Send(new GetMucousMembraneTextures()))
             .AddNote("Get mucous membrane texture options")
             .RequireAuthorization(vetOrAuxPolicy);
+
+        var apiHospitalOptionsOutcome = apiHospitalOptions.MapGroup("/outcome");
+
+        apiHospitalOptionsOutcome.MapGet("/disposition-reasons", (IMediator mediator) => mediator.Send(new GetDispositionReasons()))
+            .AddNote("Get disposition reason options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalOptionsOutcome.MapGet("/release-types", (IMediator mediator) => mediator.Send(new GetReleaseTypes()))
+            .AddNote("Get release type options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalOptionsOutcome.MapGet("/transfer-locations", (IMediator mediator) => mediator.Send(new GetTransferLocations()))
+            .AddNote("Get transfer location options")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalOptionsOutcome.MapPut("/disposition-reason", (IMediator mediator, UpsertDispositionReason request) => mediator.Send(request))
+            .AddNote("Update or create disposition reason")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalOptionsOutcome.MapPut("/release-type", (IMediator mediator, UpsertReleaseType request) => mediator.Send(request))
+            .AddNote("Update or create release type")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalOptionsOutcome.MapPut("/transfer-location", (IMediator mediator, UpsertTransferLocation request) => mediator.Send(request))
+            .AddNote("Update or create transfer location")
+            .RequireAuthorization(adminPolicy);
 
         var apiHospitalPatient = apiHospital.MapGroup("/patients");
 
@@ -205,6 +233,18 @@ public partial class Program
         apiHospitalMedications.MapGet("/administration-methods", (IMediator mediator) => mediator.Send(new GetAdministrationMethods()))
             .AddNote("View list of administration methods")
             .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalMedications.MapPost("/{id:int}/enable", (IMediator mediator, int id) => mediator.Send(new SetMedicationUsage { Id = id, Used = true }))
+            .AddNote("Enable usage of medication")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalMedications.MapPost("/{id:int}/disable", (IMediator mediator, int id) => mediator.Send(new SetMedicationUsage { Id = id, Used = false }))
+            .AddNote("Disable usage of medication")
+            .RequireAuthorization(adminPolicy);
+
+        apiHospitalMedications.MapPut("/administration-method", (IMediator mediator, UpsertAdministrationMethod request) => mediator.Send(request))
+            .AddNote("Update or create administration method")
+            .RequireAuthorization(adminPolicy);
 
         var apiHospitalSpecies = apiHospital.MapGroup("/species");
 

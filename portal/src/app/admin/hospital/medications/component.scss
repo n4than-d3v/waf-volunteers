@@ -1,0 +1,62 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+h2 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  margin-top: 1rem;
+}
+
+strong {
+  margin-top: 0.75rem;
+  display: block;
+}
+
+button {
+  margin: 0.5rem 0rem;
+}
+
+.filter {
+  display: flex;
+  gap: 2rem;
+
+  .filter-section:nth-child(1) {
+    min-width: 25rem;
+  }
+
+  .filter-section:nth-child(2) {
+    min-width: 10rem;
+  }
+}
+
+ul {
+  list-style-type: none;
+  display: flex;
+  column-gap: 2rem;
+  flex-wrap: wrap;
+}
+
+section {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border-left: solid 5px var(--theme-primary);
+  padding: 1rem;
+
+  h2 {
+    margin: 0rem;
+  }
+
+  .field {
+    margin-top: 0.75rem;
+  }
+
+  .buttons {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+}

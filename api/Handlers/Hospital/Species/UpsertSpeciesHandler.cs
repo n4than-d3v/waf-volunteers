@@ -10,11 +10,11 @@ public class UpsertSpecies : IRequest<IResult>
     public string Name { get; set; }
 }
 
-public class UpsertSpeciesHandler : IRequestHandler<UpsertSpecies, IResult>
+public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IResult>
 {
     private readonly IDatabaseRepository _repository;
 
-    public UpsertSpeciesHandler(IDatabaseRepository repository)
+    public UpsertDispositionReasonHandler(IDatabaseRepository repository)
     {
         _repository = repository;
     }

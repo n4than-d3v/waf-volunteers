@@ -1,0 +1,50 @@
+<a class="back-link" [routerLink]="'../dashboard'">Back</a>
+
+<h1>Hospital</h1>
+
+<p>
+  This is the admin version of the hospital management system (HMS-A).
+  <br />
+  From here, you can manage the hospital settings and view reports.
+  <br />
+  If you're looking for the vet / aux version (HMS-V), go back to the dashboard.
+</p>
+
+<h2>Management</h2>
+
+<p>
+  <strong>Centre</strong>
+</p>
+<p>
+  <a [routerLink]="'areas'">Areas and pens</a> |
+  <a [routerLink]="'species'">Species, ages, and variants</a>
+</p>
+
+<p>
+  <strong>Husbandry</strong>
+</p>
+<p>
+  <a [routerLink]="'diets'">Diets</a> |
+  <a [routerLink]="'tags'">Tags</a>
+</p>
+
+<p>
+  <strong>Medical</strong>
+</p>
+<p>
+  <a [routerLink]="'medications'">Medications</a> |
+  <a [routerLink]="'administration-methods'">Administration methods</a>
+</p>
+
+<p>
+  <strong>Outcomes</strong>
+</p>
+<p>
+  <a [routerLink]="'disposition-reasons'">Disposition reasons</a> |
+  <a [routerLink]="'release-types'">Release types</a> |
+  <a [routerLink]="'transfer-locations'">Transfer locations</a>
+</p>
+
+<h2>Reports</h2>
+
+<p>Coming soon...</p>

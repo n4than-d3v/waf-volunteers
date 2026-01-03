@@ -1,0 +1,104 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Tags</h1>
+
+<p>
+  Tags are labels that can be associated with patients.<br />
+  They can be used to provide additional information for husbandry
+  volunteers.<br />
+  Example: "do not feed", "vet team only", etc.
+</p>
+
+@if (tags$ | async; as tags) { @if (tags.loading) {
+<spinner></spinner>
+} @else if (tags.error) {
+<div class="error">Error occurred</div>
+} @else if (tags.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new tag
+</button>
+} @else if (creating && editor) {
+<section>
+  <h2>Create new tag</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="editor">Description</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="description"
+        >
+        </ngx-editor>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating && editor) {
+<section>
+  <h2>Edit tag</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="editor">Description</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="description"
+        ></ngx-editor>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (tag of tags.data; track tag.id) {
+    <tr>
+      <td>{{ tag.name }}</td>
+      <td [innerHTML]="convertHtml(tag.description)"></td>
+      <td>
+        <button (click)="beginUpdate(tag)" class="button button--secondary">
+          Edit
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

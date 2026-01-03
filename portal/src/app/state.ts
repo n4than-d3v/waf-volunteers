@@ -1,3 +1,4 @@
+import { AdminHospitalManagementState } from './admin/hospital/state';
 import { NoticeManagementState } from './admin/notices/state';
 import { RotaManagementState } from './admin/rota/state';
 import { ProfilesState } from './admin/users/state';
@@ -21,6 +22,7 @@ export interface AppState {
   profiles: ProfilesState;
   rotaManagement: RotaManagementState;
   noticeManagement: NoticeManagementState;
+  adminHospitalManagement: AdminHospitalManagementState;
 
   // Clocking
   clocking: ClockingState;

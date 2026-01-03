@@ -24,12 +24,12 @@ public class GetMedicationsHandler : IRequestHandler<GetMedications, IResult>
         var showAll = string.IsNullOrWhiteSpace(request.Search);
         var search = (request.Search ?? string.Empty).ToUpper();
         var medications = await _repository.GetAll<Medication>(
-            x => showAll || (
+            x => showAll || (x.Used && (
                 x.VMNo.Contains(search, StringComparison.OrdinalIgnoreCase) ||
                 x.VMDProductNo.Contains(search, StringComparison.OrdinalIgnoreCase) ||
                 x.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
                 x.ActiveSubstances.Any(y => y.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
-            ),
+            )),
             tracking: false,
             x => x
                 .Include(y => y.ActiveSubstances)

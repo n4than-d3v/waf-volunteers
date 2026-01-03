@@ -1,0 +1,104 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Diets</h1>
+
+<p>
+  Custom diets that can be associated with patients. <br />
+  This is not standard feeding guidance, but specific diets for individual
+  patient needs.<br />
+  Standard feeding guidance is managed in the species variant configuration.
+</p>
+
+@if (diets$ | async; as diets) { @if (diets.loading) {
+<spinner></spinner>
+} @else if (diets.error) {
+<div class="error">Error occurred</div>
+} @else if (diets.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new diet
+</button>
+} @else if (creating && editor) {
+<section>
+  <h2>Create new diet</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="editor">Description</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="description"
+        >
+        </ngx-editor>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating && editor) {
+<section>
+  <h2>Edit diet</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="editor">Description</label>
+      <div class="NgxEditor__Wrapper margin-left-lists">
+        <ngx-editor-menu
+          [editor]="editor"
+          [toolbar]="toolbar"
+        ></ngx-editor-menu>
+        <ngx-editor
+          [editor]="editor"
+          [placeholder]="'Type here...'"
+          formControlName="description"
+        ></ngx-editor>
+      </div>
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (diet of diets.data; track diet.id) {
+    <tr>
+      <td>{{ diet.name }}</td>
+      <td [innerHTML]="convertHtml(diet.description)"></td>
+      <td>
+        <button (click)="beginUpdate(diet)" class="button button--secondary">
+          Edit
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

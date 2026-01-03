@@ -1,0 +1,78 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Transfer locations</h1>
+
+<p>
+  Transfer locations are required to be selected by vets when marking a patient
+  as transferred.<br />
+  They allow for analytics to be used to track where patients are being
+  transferred to.
+</p>
+
+@if (transferLocations$ | async; as transferLocations) { @if
+(transferLocations.loading) {
+<spinner></spinner>
+} @else if (transferLocations.error) {
+<div class="error">Error occurred</div>
+} @else if (transferLocations.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new transfer location
+</button>
+} @else if (creating) {
+<section>
+  <h2>Create new transfer location</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating) {
+<section>
+  <h2>Edit transfer location</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (transferLocation of transferLocations.data; track transferLocation.id)
+    {
+    <tr>
+      <td>{{ transferLocation.description }}</td>
+      <td>
+        <button
+          (click)="beginUpdate(transferLocation)"
+          class="button button--secondary"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

@@ -13,6 +13,15 @@ import { AdminNoticeCreateComponent } from './admin/notices/create/component';
 import { AdminNoticeInteractionsComponent } from './admin/notices/interactions/component';
 import { AdminNoticeDeleteComponent } from './admin/notices/delete/component';
 import { AdminNoticeUpdateComponent } from './admin/notices/update/component';
+import { AdminHospitalComponent } from './admin/hospital/component';
+import { AdminHospitalDietsComponent } from './admin/hospital/diets/component';
+import { AdminHospitalTagsComponent } from './admin/hospital/tags/component';
+import { AdminHospitalDispositionReasonsComponent } from './admin/hospital/disposition-reasons/component';
+import { AdminHospitalReleaseTypesComponent } from './admin/hospital/release-types/component';
+import { AdminHospitalTransferLocationsComponent } from './admin/hospital/transfer-locations/component';
+import { AdminHospitalAdministrationMethodsComponent } from './admin/hospital/administration-methods/component';
+import { AdminHospitalMedicationsComponent } from './admin/hospital/medications/component';
+import { AdminHospitalAreasComponent } from './admin/hospital/areas/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -70,6 +79,48 @@ export const routes: Routes = [
             component: AdminNoticeDeleteComponent,
           },
         ],
+      },
+    ],
+  },
+  {
+    path: 'hospital',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: AdminHospitalComponent,
+      },
+      {
+        path: 'diets',
+        component: AdminHospitalDietsComponent,
+      },
+      {
+        path: 'tags',
+        component: AdminHospitalTagsComponent,
+      },
+      {
+        path: 'disposition-reasons',
+        component: AdminHospitalDispositionReasonsComponent,
+      },
+      {
+        path: 'release-types',
+        component: AdminHospitalReleaseTypesComponent,
+      },
+      {
+        path: 'transfer-locations',
+        component: AdminHospitalTransferLocationsComponent,
+      },
+      {
+        path: 'administration-methods',
+        component: AdminHospitalAdministrationMethodsComponent,
+      },
+      {
+        path: 'medications',
+        component: AdminHospitalMedicationsComponent,
+      },
+      {
+        path: 'areas',
+        component: AdminHospitalAreasComponent,
       },
     ],
   },

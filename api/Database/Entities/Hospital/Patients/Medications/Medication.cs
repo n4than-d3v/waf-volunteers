@@ -15,4 +15,5 @@ public class Medication : Entity
     public string SPCLink { get; set; }
     public string UKPARLink { get; set; }
     public string PAARLink { get; set; }
+    public bool Used { get; set; }
 }

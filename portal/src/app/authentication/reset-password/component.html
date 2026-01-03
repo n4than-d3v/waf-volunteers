@@ -1,4 +1,4 @@
-<h1>Volunteer portal</h1>
+<h1>Portal</h1>
 
 <div class="wrapper">
   <div class="header">
@@ -31,7 +31,7 @@
       <div class="field">
         <label for="password">Password</label>
         <input
-          type="password"
+          [type]="form.controls.showPassword.value ? 'text' : 'password'"
           id="password"
           name="password"
           formControlName="password"
@@ -41,10 +41,20 @@
       <div class="field">
         <label for="confirmPassword">Confirm password</label>
         <input
-          type="password"
+          [type]="form.controls.showPassword.value ? 'text' : 'password'"
           id="confirmPassword"
           name="confirmPassword"
           formControlName="confirmPassword"
+          autocomplete="off"
+        />
+      </div>
+      <div class="field">
+        <label for="show-password">Show password</label>
+        <input
+          type="checkbox"
+          id="show-password"
+          name="show-password"
+          formControlName="showPassword"
           autocomplete="off"
         />
       </div>

@@ -22,6 +22,7 @@ import { AdminHospitalTransferLocationsComponent } from './admin/hospital/transf
 import { AdminHospitalAdministrationMethodsComponent } from './admin/hospital/administration-methods/component';
 import { AdminHospitalMedicationsComponent } from './admin/hospital/medications/component';
 import { AdminHospitalAreasComponent } from './admin/hospital/areas/component';
+import { AdminHospitalSpeciesComponent } from './admin/hospital/species/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -121,6 +122,10 @@ export const routes: Routes = [
       {
         path: 'areas',
         component: AdminHospitalAreasComponent,
+      },
+      {
+        path: 'species',
+        component: AdminHospitalSpeciesComponent,
       },
     ],
   },

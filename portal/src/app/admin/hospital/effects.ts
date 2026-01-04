@@ -644,7 +644,7 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(createSpeciesAge),
       switchMap((action) =>
-        this.http.put('hospital/species/age', action.species).pipe(
+        this.http.put('hospital/species/age', action.age).pipe(
           map((_) => createSpeciesAgeSuccess()),
           catchError(() => of(createSpeciesAgeError()))
         )
@@ -663,7 +663,7 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(updateSpeciesAge),
       switchMap((action) =>
-        this.http.put('hospital/species/age', action.species).pipe(
+        this.http.put('hospital/species/age', action.age).pipe(
           map((_) => updateSpeciesAgeSuccess()),
           catchError(() => of(updateSpeciesAgeError()))
         )
@@ -682,7 +682,7 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(createSpeciesVariant),
       switchMap((action) =>
-        this.http.put('hospital/species/variant', action.species).pipe(
+        this.http.put('hospital/species/variant', action.variant).pipe(
           map((_) => createSpeciesVariantSuccess()),
           catchError(() => of(createSpeciesVariantError()))
         )
@@ -701,7 +701,7 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(updateSpeciesVariant),
       switchMap((action) =>
-        this.http.put('hospital/species/variant', action.species).pipe(
+        this.http.put('hospital/species/variant', action.variant).pipe(
           map((_) => updateSpeciesVariantSuccess()),
           catchError(() => of(updateSpeciesVariantError()))
         )
@@ -715,7 +715,4 @@ export class AdminHospitalManagementEffects {
       switchMap((_) => of(getSpecies()))
     )
   );
-
-  // I've finished the effects, reducer, selector, state
-  // Need to do the component :)
 }

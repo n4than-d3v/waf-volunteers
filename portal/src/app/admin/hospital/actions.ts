@@ -285,7 +285,7 @@ export const createSpeciesError = createAction('[HMS-A] Create species: error');
 
 export const createSpeciesAge = createAction(
   '[HMS-A] Create species age',
-  props<{ species: CreateSpeciesAgeCommand }>()
+  props<{ age: CreateSpeciesAgeCommand }>()
 );
 export const createSpeciesAgeSuccess = createAction(
   '[HMS-A] Create species age: success'
@@ -296,7 +296,7 @@ export const createSpeciesAgeError = createAction(
 
 export const createSpeciesVariant = createAction(
   '[HMS-A] Create species variant',
-  props<{ species: CreateSpeciesVariantCommand }>()
+  props<{ variant: CreateSpeciesVariantCommand }>()
 );
 export const createSpeciesVariantSuccess = createAction(
   '[HMS-A] Create species variant: success'
@@ -316,7 +316,7 @@ export const updateSpeciesError = createAction('[HMS-A] Update species: error');
 
 export const updateSpeciesAge = createAction(
   '[HMS-A] Update species age',
-  props<{ species: UpdateSpeciesAgeCommand }>()
+  props<{ age: UpdateSpeciesAgeCommand }>()
 );
 export const updateSpeciesAgeSuccess = createAction(
   '[HMS-A] Update species age: success'
@@ -327,7 +327,7 @@ export const updateSpeciesAgeError = createAction(
 
 export const updateSpeciesVariant = createAction(
   '[HMS-A] Update species variant',
-  props<{ species: UpdateSpeciesVariantCommand }>()
+  props<{ variant: UpdateSpeciesVariantCommand }>()
 );
 export const updateSpeciesVariantSuccess = createAction(
   '[HMS-A] Update species variant: success'

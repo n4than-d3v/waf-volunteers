@@ -132,10 +132,21 @@ export interface UpdateSpeciesVariantCommand
   id: number;
 }
 
-export interface Species extends CreateSpeciesCommand {
+export interface SpeciesAge {
   id: number;
-  ages: UpdateSpeciesAgeCommand[];
-  variants: UpdateSpeciesVariantCommand[];
+  name: string;
+  associatedVariant: { id: number; name: string };
+}
+
+export interface SpeciesVariant {
+  id: number;
+  name: string;
+  feedingGuidance: string;
+}
+
+export interface Species extends UpdateSpeciesCommand {
+  ages: SpeciesAge[];
+  variants: SpeciesVariant[];
 }
 
 const createWrapper = <T>(): Wrapper<T> => ({

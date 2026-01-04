@@ -5,7 +5,12 @@ import { ResetPasswordComponent } from './authentication/reset-password/componen
 import { VolunteerDashboardComponent } from './volunteer/dashboard/component';
 import { VolunteerRotaComponent } from './volunteer/rota/component';
 import { VolunteerProfileComponent } from './volunteer/profile/component';
-import { isAdmin, isAuthenticated, isClocking } from './authentication/guards';
+import {
+  isAdmin,
+  isAuthenticated,
+  isClocking,
+  isVet,
+} from './authentication/guards';
 import { AdminDashboardComponent } from './admin/dashboard/component';
 import { AdminUsersComponent } from './admin/users/component';
 import { AdminUsersUpdateInfoComponent } from './admin/users/update-info/component';
@@ -64,5 +69,10 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [isAuthenticated, isAdmin],
     loadChildren: () => import('./app.routes.admin').then((m) => m.routes),
+  },
+  {
+    path: 'vet',
+    canActivate: [isAuthenticated, isVet],
+    loadChildren: () => import('./app.routes.vet').then((m) => m.routes),
   },
 ];

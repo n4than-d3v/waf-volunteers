@@ -12,38 +12,53 @@
 
 <h2>Management</h2>
 
-<p>
-  <strong>Centre</strong>
-</p>
-<p>
-  <a [routerLink]="'areas'">Areas and pens</a> |
-  <a [routerLink]="'species'">Species, ages, and variants</a>
-</p>
-
-<p>
-  <strong>Husbandry</strong>
-</p>
-<p>
-  <a [routerLink]="'diets'">Diets</a> |
-  <a [routerLink]="'tags'">Tags</a>
-</p>
-
-<p>
-  <strong>Medical</strong>
-</p>
-<p>
-  <a [routerLink]="'medications'">Medications</a> |
-  <a [routerLink]="'administration-methods'">Administration methods</a>
-</p>
-
-<p>
-  <strong>Outcomes</strong>
-</p>
-<p>
-  <a [routerLink]="'disposition-reasons'">Disposition reasons</a> |
-  <a [routerLink]="'release-types'">Release types</a> |
-  <a [routerLink]="'transfer-locations'">Transfer locations</a>
-</p>
+<div class="modules">
+  <a [routerLink]="'areas'" class="module">
+    <img src="images/hospital/areas.svg" alt="Pens icon" />
+    <p>Pens</p>
+  </a>
+  <a [routerLink]="'species'" class="module">
+    <img src="images/hospital/species.svg" alt="Species icon" />
+    <p>Species</p>
+  </a>
+  <a [routerLink]="'diets'" class="module">
+    <img src="images/hospital/diets.svg" alt="Diets icon" />
+    <p>Diets</p>
+  </a>
+  <a [routerLink]="'tags'" class="module">
+    <img src="images/hospital/tags.svg" alt="Tags icon" />
+    <p>Tags</p>
+  </a>
+  <a [routerLink]="'medications'" class="module">
+    <img src="images/hospital/medications.svg" alt="Medications icon" />
+    <p>Medications</p>
+  </a>
+  <a [routerLink]="'administration-methods'" class="module">
+    <img
+      src="images/hospital/administration-methods.svg"
+      alt="Administration methods icon"
+    />
+    <p>Administration methods</p>
+  </a>
+  <a [routerLink]="'disposition-reasons'" class="module">
+    <img
+      src="images/hospital/disposition-reasons.svg"
+      alt="Disposition reasons icon"
+    />
+    <p>Disposition reasons</p>
+  </a>
+  <a [routerLink]="'release-types'" class="module">
+    <img src="images/hospital/release-types.svg" alt="Release types icon" />
+    <p>Release types</p>
+  </a>
+  <a [routerLink]="'transfer-locations'" class="module">
+    <img
+      src="images/hospital/transfer-locations.svg"
+      alt="Transfer locations icon"
+    />
+    <p>Transfer locations</p>
+  </a>
+</div>
 
 <h2>Reports</h2>
 

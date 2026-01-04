@@ -16,3 +16,13 @@ export const isClocking: CanActivateFn = () => {
   const tokenProvider = inject(TokenProvider);
   return tokenProvider.isClocking();
 };
+
+export const isVet: CanActivateFn = () => {
+  const tokenProvider = inject(TokenProvider);
+  return tokenProvider.isVet() || tokenProvider.isAdmin();
+};
+
+export const isAuxiliary: CanActivateFn = () => {
+  const tokenProvider = inject(TokenProvider);
+  return tokenProvider.isAuxiliary() || tokenProvider.isAdmin();
+};

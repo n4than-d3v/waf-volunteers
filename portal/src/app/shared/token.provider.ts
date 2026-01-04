@@ -102,4 +102,21 @@ export class TokenProvider {
 
     return !!(Number(session.roles) & Roles.APP_CLOCKING);
   }
+
+  public isVet() {
+    const session = this.getSession();
+    if (!session) return false;
+
+    return (
+      !!(Number(session.roles) & Roles.BEACON_VET) ||
+      !!(Number(session.roles) & Roles.BEACON_VET_NURSE)
+    );
+  }
+
+  public isAuxiliary() {
+    const session = this.getSession();
+    if (!session) return false;
+
+    return !!(Number(session.roles) & Roles.BEACON_AUXILIARY);
+  }
 }

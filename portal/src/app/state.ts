@@ -6,6 +6,7 @@ import { ForgotPasswordState } from './authentication/forgot-password/state';
 import { LoginState } from './authentication/login/state';
 import { ResetPasswordState } from './authentication/reset-password/state';
 import { ClockingState } from './clocking/state';
+import { HospitalState } from './hospital/state';
 import { NoticesState } from './volunteer/notices/state';
 import { ProfileState } from './volunteer/profile/state';
 import { RotaState } from './volunteer/rota/state';
@@ -23,6 +24,9 @@ export interface AppState {
   rotaManagement: RotaManagementState;
   noticeManagement: NoticeManagementState;
   adminHospitalManagement: AdminHospitalManagementState;
+
+  // Hospital
+  hospital: HospitalState;
 
   // Clocking
   clocking: ClockingState;

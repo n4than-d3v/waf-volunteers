@@ -38,7 +38,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             var year = DateTime.UtcNow.Year;
             var admittedThisYear = patients.Count(x => x.Admitted.Year == year);
 
-            foreach (var admission in beaconAdmissions.results)
+            foreach (var admission in beaconAdmissions.results.OrderBy(x => x.entity.created_at))
             {
                 var patient = patients.FirstOrDefault(x => x.BeaconId == admission.entity.id);
                 if (patient != null) continue;

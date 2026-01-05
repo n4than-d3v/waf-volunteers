@@ -1,7 +1,10 @@
-﻿namespace Api.Database.Entities.Hospital.Patients.Prescriptions;
+﻿using System.Text.Json.Serialization;
+
+namespace Api.Database.Entities.Hospital.Patients.Prescriptions;
 
 public class PatientPrescriptionInstruction : Entity
 {
+    [JsonIgnore]
     public Patient Patient { get; set; }
 
     public DateOnly Start { get; set; }

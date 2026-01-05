@@ -1,0 +1,508 @@
+import { createReducer, on } from '@ngrx/store';
+import { HospitalState, initialHospitalState } from './state';
+import {
+  getPatient,
+  getPatientCounts,
+  getPatientCountsError,
+  getPatientCountsSuccess,
+  getPatientError,
+  getPatientsByStatus,
+  getPatientsByStatusError,
+  getPatientsByStatusSuccess,
+  getPatientSuccess,
+  setTab,
+  getAttitudes,
+  getAttitudesSuccess,
+  getAttitudesError,
+  getBodyConditions,
+  getBodyConditionsSuccess,
+  getBodyConditionsError,
+  getDehydrations,
+  getDehydrationsSuccess,
+  getDehydrationsError,
+  getMucousMembraneColours,
+  getMucousMembraneColoursSuccess,
+  getMucousMembraneColoursError,
+  getMucousMembraneTextures,
+  getMucousMembraneTexturesSuccess,
+  getMucousMembraneTexturesError,
+  getAdministrationMethods,
+  getAdministrationMethodsError,
+  getAdministrationMethodsSuccess,
+  getAreas,
+  getAreasError,
+  getAreasSuccess,
+  getDiets,
+  getDietsError,
+  getDietsSuccess,
+  getDispositionReasons,
+  getDispositionReasonsError,
+  getDispositionReasonsSuccess,
+  getMedications,
+  getMedicationsError,
+  getMedicationsSuccess,
+  getReleaseTypes,
+  getReleaseTypesError,
+  getReleaseTypesSuccess,
+  getSpecies,
+  getSpeciesError,
+  getSpeciesSuccess,
+  getTags,
+  getTagsError,
+  getTagsSuccess,
+  getTransferLocations,
+  getTransferLocationsError,
+  getTransferLocationsSuccess,
+} from './actions';
+
+export const hospitalReducer = createReducer<HospitalState>(
+  initialHospitalState,
+  on(setTab, (state, { tab }) => ({
+    ...state,
+    tab: { ...tab },
+  })),
+  // Patient counts
+  on(getPatientCounts, (state) => ({
+    ...state,
+    patientCounts: {
+      ...state.patientCounts,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getPatientCountsSuccess, (state, { patientCounts }) => ({
+    ...state,
+    patientCounts: {
+      ...state.patientCounts,
+      data: patientCounts,
+      loading: false,
+    },
+  })),
+  on(getPatientCountsError, (state) => ({
+    ...state,
+    patientCounts: {
+      ...state.patientCounts,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Patients by status
+  on(getPatientsByStatus, (state) => ({
+    ...state,
+    patientsByStatus: {
+      ...state.patientsByStatus,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getPatientsByStatusSuccess, (state, { patients }) => ({
+    ...state,
+    patientsByStatus: {
+      ...state.patientsByStatus,
+      data: patients,
+      loading: false,
+    },
+  })),
+  on(getPatientsByStatusError, (state) => ({
+    ...state,
+    patientsByStatus: {
+      ...state.patientsByStatus,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Patient
+  on(getPatient, (state) => ({
+    ...state,
+    patient: {
+      ...state.patient,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getPatientSuccess, (state, { patient }) => ({
+    ...state,
+    patient: {
+      ...state.patient,
+      data: patient,
+      loading: false,
+    },
+  })),
+  on(getPatientError, (state) => ({
+    ...state,
+    patient: {
+      ...state.patient,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Attitude
+  on(getAttitudes, (state) => ({
+    ...state,
+    attitudes: {
+      ...state.attitudes,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getAttitudesSuccess, (state, { attitudes }) => ({
+    ...state,
+    attitudes: {
+      ...state.attitudes,
+      data: attitudes,
+      loading: false,
+    },
+  })),
+  on(getAttitudesError, (state) => ({
+    ...state,
+    attitudes: {
+      ...state.attitudes,
+      loading: false,
+      error: true,
+    },
+  })),
+
+  // BodyCondition
+  on(getBodyConditions, (state) => ({
+    ...state,
+    bodyConditions: {
+      ...state.bodyConditions,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getBodyConditionsSuccess, (state, { bodyConditions }) => ({
+    ...state,
+    bodyConditions: {
+      ...state.bodyConditions,
+      data: bodyConditions,
+      loading: false,
+    },
+  })),
+  on(getBodyConditionsError, (state) => ({
+    ...state,
+    bodyConditions: {
+      ...state.bodyConditions,
+      loading: false,
+      error: true,
+    },
+  })),
+
+  // Dehydration
+  on(getDehydrations, (state) => ({
+    ...state,
+    dehydrations: {
+      ...state.dehydrations,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getDehydrationsSuccess, (state, { dehydrations }) => ({
+    ...state,
+    dehydrations: {
+      ...state.dehydrations,
+      data: dehydrations,
+      loading: false,
+    },
+  })),
+  on(getDehydrationsError, (state) => ({
+    ...state,
+    dehydrations: {
+      ...state.dehydrations,
+      loading: false,
+      error: true,
+    },
+  })),
+
+  // MucousMembraneColour
+  on(getMucousMembraneColours, (state) => ({
+    ...state,
+    mucousMembraneColours: {
+      ...state.mucousMembraneColours,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getMucousMembraneColoursSuccess, (state, { mucousMembraneColours }) => ({
+    ...state,
+    mucousMembraneColours: {
+      ...state.mucousMembraneColours,
+      data: mucousMembraneColours,
+      loading: false,
+    },
+  })),
+  on(getMucousMembraneColoursError, (state) => ({
+    ...state,
+    mucousMembraneColours: {
+      ...state.mucousMembraneColours,
+      loading: false,
+      error: true,
+    },
+  })),
+
+  // MucousMembraneTexture
+  on(getMucousMembraneTextures, (state) => ({
+    ...state,
+    mucousMembraneTextures: {
+      ...state.mucousMembraneTextures,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getMucousMembraneTexturesSuccess, (state, { mucousMembraneTextures }) => ({
+    ...state,
+    mucousMembraneTextures: {
+      ...state.mucousMembraneTextures,
+      data: mucousMembraneTextures,
+      loading: false,
+    },
+  })),
+  on(getMucousMembraneTexturesError, (state) => ({
+    ...state,
+    mucousMembraneTextures: {
+      ...state.mucousMembraneTextures,
+      loading: false,
+      error: true,
+    },
+  })), // Diets
+  on(getDiets, (state) => ({
+    ...state,
+    diets: {
+      ...state.diets,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getDietsSuccess, (state, { diets }) => ({
+    ...state,
+    diets: {
+      ...state.diets,
+      data: diets,
+      loading: false,
+    },
+  })),
+  on(getDietsError, (state) => ({
+    ...state,
+    diets: {
+      ...state.diets,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Tags
+  on(getTags, (state) => ({
+    ...state,
+    tags: {
+      ...state.tags,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getTagsSuccess, (state, { tags }) => ({
+    ...state,
+    tags: {
+      ...state.tags,
+      data: tags,
+      loading: false,
+    },
+  })),
+  on(getTagsError, (state) => ({
+    ...state,
+    tags: {
+      ...state.tags,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Disposition reasons
+  on(getDispositionReasons, (state) => ({
+    ...state,
+    dispositionReasons: {
+      ...state.dispositionReasons,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getDispositionReasonsSuccess, (state, { dispositionReasons }) => ({
+    ...state,
+    dispositionReasons: {
+      ...state.dispositionReasons,
+      data: dispositionReasons,
+      loading: false,
+    },
+  })),
+  on(getDispositionReasonsError, (state) => ({
+    ...state,
+    dispositionReasons: {
+      ...state.dispositionReasons,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Release types
+  on(getReleaseTypes, (state) => ({
+    ...state,
+    releaseTypes: {
+      ...state.releaseTypes,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getReleaseTypesSuccess, (state, { releaseTypes }) => ({
+    ...state,
+    releaseTypes: {
+      ...state.releaseTypes,
+      data: releaseTypes,
+      loading: false,
+    },
+  })),
+  on(getReleaseTypesError, (state) => ({
+    ...state,
+    releaseTypes: {
+      ...state.releaseTypes,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Transfer locations
+  on(getTransferLocations, (state) => ({
+    ...state,
+    transferLocations: {
+      ...state.transferLocations,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getTransferLocationsSuccess, (state, { transferLocations }) => ({
+    ...state,
+    transferLocations: {
+      ...state.transferLocations,
+      data: transferLocations,
+      loading: false,
+    },
+  })),
+  on(getTransferLocationsError, (state) => ({
+    ...state,
+    transferLocations: {
+      ...state.transferLocations,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Administration methods
+  on(getAdministrationMethods, (state) => ({
+    ...state,
+    administrationMethods: {
+      ...state.administrationMethods,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getAdministrationMethodsSuccess, (state, { administrationMethods }) => ({
+    ...state,
+    administrationMethods: {
+      ...state.administrationMethods,
+      data: administrationMethods,
+      loading: false,
+    },
+  })),
+  on(getAdministrationMethodsError, (state) => ({
+    ...state,
+    administrationMethods: {
+      ...state.administrationMethods,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Medications
+  on(getMedications, (state) => ({
+    ...state,
+    medications: {
+      ...state.medications,
+      loading: true,
+      error: false,
+      updated: false,
+    },
+  })),
+  on(getMedicationsSuccess, (state, { medications }) => ({
+    ...state,
+    medications: {
+      ...state.medications,
+      data: medications,
+      loading: false,
+    },
+  })),
+  on(getMedicationsError, (state) => ({
+    ...state,
+    medications: {
+      ...state.medications,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Areas
+  on(getAreas, (state) => ({
+    ...state,
+    areas: {
+      ...state.areas,
+      loading: true,
+      error: false,
+      created: false,
+    },
+  })),
+  on(getAreasSuccess, (state, { areas }) => ({
+    ...state,
+    areas: {
+      ...state.areas,
+      data: areas,
+      loading: false,
+    },
+  })),
+  on(getAreasError, (state) => ({
+    ...state,
+    areas: {
+      ...state.areas,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Species
+  on(getSpecies, (state) => ({
+    ...state,
+    species: {
+      ...state.species,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getSpeciesSuccess, (state, { species }) => ({
+    ...state,
+    species: {
+      ...state.species,
+      data: species,
+      loading: false,
+    },
+  })),
+  on(getSpeciesError, (state) => ({
+    ...state,
+    species: {
+      ...state.species,
+      loading: false,
+      error: true,
+    },
+  }))
+);

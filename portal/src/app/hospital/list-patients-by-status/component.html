@@ -1,0 +1,29 @@
+@if (patients$ | async; as patients) { @if (patients.error) {
+<div class="error">Error occurred</div>
+} @else if (patients.data) { @if (_status === PatientStatus.PendingInitialExam)
+{
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Suspected species</th>
+      <th>Date admitted</th>
+      <th>Initial location</th>
+      <th>Admission reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (patient of patients.data; track patient.id) {
+    <tr>
+      <td>
+        <a (click)="view(patient)">{{ patient.reference }}</a>
+      </td>
+      <td>{{ patient.suspectedSpecies.description }}</td>
+      <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ patient.initialLocation.description }}</td>
+      <td>{{ formatAdmissionReasons(patient) }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} } }

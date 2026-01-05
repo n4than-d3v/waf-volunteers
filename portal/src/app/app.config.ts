@@ -37,6 +37,8 @@ import { noticesReducer } from './volunteer/notices/reducer';
 import { NoticesEffects } from './volunteer/notices/effects';
 import { AdminHospitalManagementEffects } from './admin/hospital/effects';
 import { adminHospitalManagementReducer } from './admin/hospital/reducer';
+import { HospitalEffects } from './hospital/effects';
+import { hospitalReducer } from './hospital/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -94,6 +96,9 @@ export const appConfig: ApplicationConfig = {
       noticeManagement: noticeManagementReducer,
       adminHospitalManagement: adminHospitalManagementReducer,
 
+      // Hospital
+      hospital: hospitalReducer,
+
       // Clocking
       clocking: clockingReducer,
     }),
@@ -112,6 +117,9 @@ export const appConfig: ApplicationConfig = {
       RotaManagementEffects,
       NoticeManagementEffects,
       AdminHospitalManagementEffects,
+
+      // Hospital
+      HospitalEffects,
 
       // Clocking
       ClockingEffects,

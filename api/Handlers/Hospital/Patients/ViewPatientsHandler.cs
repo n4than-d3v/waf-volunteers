@@ -1,5 +1,6 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,10 +14,12 @@ public class ViewPatients : IRequest<IResult>
 public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IEncryptionService _encryptionService;
 
-    public ViewPatientsHandler(IDatabaseRepository repository)
+    public ViewPatientsHandler(IDatabaseRepository repository, IEncryptionService encryptionService)
     {
         _repository = repository;
+        _encryptionService = encryptionService;
     }
 
     public async Task<IResult> Handle(ViewPatients request, CancellationToken cancellationToken)
@@ -28,6 +31,12 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
                 .IncludeAdmission()
                 .IncludeBasicDetails()
                 .IncludeHusbandry());
-        return Results.Ok(patients);
+
+        foreach (var patient in patients)
+        {
+            patient.DecryptProperties(_encryptionService);
+        }
+
+        return Results.Ok(patients.OrderByDescending(x => x.Admitted));
     }
 }

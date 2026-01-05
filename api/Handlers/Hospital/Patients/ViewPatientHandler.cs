@@ -37,11 +37,7 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
             .IncludeOutcome());
         if (patient == null) return Results.NotFound();
 
-        if (!string.IsNullOrWhiteSpace(patient.FoundAt))
-        {
-            // Doesn't actually update the value, just for the sake of the DTO
-            patient.FoundAt = _encryptionService.Decrypt(patient.FoundAt, patient.Salt);
-        }
+        patient.DecryptProperties(_encryptionService);
 
         return Results.Ok(patient);
     }
@@ -49,6 +45,27 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
 
 public static class ViewPatientExtensions
 {
+    public static void DecryptProperties(this Patient patient, IEncryptionService encryptionService)
+    {
+        // Doesn't actually update the values, just for the sake of the DTO
+
+        if (!string.IsNullOrWhiteSpace(patient.FoundAt))
+            patient.FoundAt = encryptionService.Decrypt(patient.FoundAt, patient.Salt);
+
+        if (patient.Admitter != null)
+        {
+            var admitter = patient.Admitter;
+            if (!string.IsNullOrWhiteSpace(admitter.FullName))
+                admitter.FullName = encryptionService.Decrypt(admitter.FullName, admitter.Salt);
+            if (!string.IsNullOrWhiteSpace(admitter.Email))
+                admitter.Email = encryptionService.Decrypt(admitter.Email, admitter.Salt);
+            if (!string.IsNullOrWhiteSpace(admitter.Address))
+                admitter.Address = encryptionService.Decrypt(admitter.Address, admitter.Salt);
+            if (!string.IsNullOrWhiteSpace(admitter.Telephone))
+                admitter.Telephone = encryptionService.Decrypt(admitter.Telephone, admitter.Salt);
+        }
+    }
+
     public static IQueryable<Patient> IncludeAdmission(this IQueryable<Patient> x)
     {
         return x

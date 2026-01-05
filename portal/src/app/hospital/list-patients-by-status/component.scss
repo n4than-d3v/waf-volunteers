@@ -1,0 +1,11 @@
+td,
+th {
+  padding: 0.125rem 0.25rem;
+  max-width: max-content;
+
+  a {
+    color: var(--theme-primary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

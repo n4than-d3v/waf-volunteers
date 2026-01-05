@@ -30,6 +30,7 @@ using Api.Handlers.Hospital.Patients.Rechecks;
 using Api.Handlers.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Handlers.Hospital.PatientTypes;
+using Api.Handlers.Hospital.Tasks;
 
 public partial class Program
 {
@@ -170,6 +171,10 @@ public partial class Program
             .AddNote("View patient details")
             .RequireAuthorization(signedInPolicy);
 
+        apiHospitalPatient.MapGet("/status", (IMediator mediator) => mediator.Send(new ViewPatientCounts()))
+            .AddNote("View patient counts by status")
+            .RequireAuthorization(signedInPolicy);
+
         apiHospitalPatient.MapGet("/status/{status:int}", (IMediator mediator, int status) => mediator.Send(new ViewPatients { Status = (PatientStatus)status }))
             .AddNote("Filter patients by status")
             .RequireAuthorization(signedInPolicy);
@@ -263,6 +268,16 @@ public partial class Program
         apiHospitalSpecies.MapPut("/variant", (IMediator mediator, UpsertSpeciesVariant request) => mediator.Send(request))
             .AddNote("Update or create species variant")
             .RequireAuthorization(adminPolicy);
+
+        var apiHospitalTasks = apiHospital.MapGroup("/tasks");
+
+        apiHospitalTasks.MapGet("/rechecks", (IMediator mediator, string on) => mediator.Send(new ViewRechecks { Date = DateOnly.Parse(on) }))
+            .AddNote("View list of rechecks on any given date (includes overdue)")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalTasks.MapGet("/prescriptions", (IMediator mediator, string on) => mediator.Send(new ViewPrescriptions { Date = DateOnly.Parse(on) }))
+            .AddNote("View list of prescriptions on any given date")
+            .RequireAuthorization(vetOrAuxPolicy);
     }
 
     private static void RegisterAccountRoutes(RouteGroupBuilder api)

@@ -1,9 +1,11 @@
 ﻿using Api.Database.Entities.Hospital.Patients.Medications;
+using System.Text.Json.Serialization;
 
 namespace Api.Database.Entities.Hospital.Patients.Exams;
 
 public class ExamTreatmentMedication : Entity
 {
+    [JsonIgnore]
     public Exam Exam { get; set; }
 
     public decimal QuantityValue { get; set; }

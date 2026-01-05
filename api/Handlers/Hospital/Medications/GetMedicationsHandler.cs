@@ -25,10 +25,10 @@ public class GetMedicationsHandler : IRequestHandler<GetMedications, IResult>
         var search = (request.Search ?? string.Empty).ToUpper();
         var medications = await _repository.GetAll<Medication>(
             x => showAll || (x.Used && (
-                x.VMNo.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                x.VMDProductNo.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                x.Name.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                x.ActiveSubstances.Any(y => y.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
+                x.VMNo.ToUpper().Contains(search) ||
+                x.VMDProductNo.ToUpper().Contains(search) ||
+                x.Name.ToUpper().Contains(search) ||
+                x.ActiveSubstances.Any(y => y.Name.ToUpper().Contains(search))
             )),
             tracking: false,
             x => x

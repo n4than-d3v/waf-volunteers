@@ -93,3 +93,18 @@ export const selectSpecies = createSelector(
   selectHospitalState,
   (state) => state.species
 );
+
+export const selectPerformExam = createSelector(
+  selectHospitalState,
+  (state) => state.performExam
+);
+
+export const selectSetDisposition = createSelector(
+  selectHospitalState,
+  (state) => state.setDisposition
+);
+
+export const selectMovePatient = createSelector(
+  selectHospitalState,
+  (state) => state.movePatient
+);

@@ -53,6 +53,18 @@ import {
   getTransferLocations,
   getTransferLocationsError,
   getTransferLocationsSuccess,
+  performExam,
+  performExamSuccess,
+  performExamError,
+  markPatientDead,
+  markPatientDeadSuccess,
+  markPatientDeadError,
+  markPatientReadyForRelease,
+  markPatientReadyForReleaseError,
+  markPatientReadyForReleaseSuccess,
+  movePatient,
+  movePatientError,
+  movePatientSuccess,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -501,6 +513,84 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     species: {
       ...state.species,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Perform exam
+  on(performExam, (state) => ({
+    ...state,
+    performExam: {
+      ...state.performExam,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(performExamSuccess, (state) => ({
+    ...state,
+    performExam: {
+      ...state.performExam,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(performExamError, (state) => ({
+    ...state,
+    performExam: {
+      ...state.performExam,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Set disposition
+  on(markPatientDead, markPatientReadyForRelease, (state) => ({
+    ...state,
+    setDisposition: {
+      ...state.setDisposition,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(markPatientDeadSuccess, markPatientReadyForReleaseSuccess, (state) => ({
+    ...state,
+    setDisposition: {
+      ...state.setDisposition,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(markPatientDeadError, markPatientReadyForReleaseError, (state) => ({
+    ...state,
+    setDisposition: {
+      ...state.setDisposition,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Move patient
+  on(movePatient, (state) => ({
+    ...state,
+    movePatient: {
+      ...state.movePatient,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(movePatientSuccess, (state) => ({
+    ...state,
+    movePatient: {
+      ...state.movePatient,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(movePatientError, (state) => ({
+    ...state,
+    movePatient: {
+      ...state.movePatient,
       loading: false,
       error: true,
     },

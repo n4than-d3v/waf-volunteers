@@ -20,7 +20,7 @@ import {
   Area,
   Species,
 } from './state';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
 import {
   getPatient,
   getPatientCounts,
@@ -73,6 +73,18 @@ import {
   getTransferLocations,
   getTransferLocationsError,
   getTransferLocationsSuccess,
+  performExam,
+  performExamSuccess,
+  performExamError,
+  markPatientDead,
+  markPatientReadyForRelease,
+  markPatientDeadSuccess,
+  markPatientDeadError,
+  markPatientReadyForReleaseSuccess,
+  markPatientReadyForReleaseError,
+  movePatient,
+  movePatientSuccess,
+  movePatientError,
 } from './actions';
 
 @Injectable()
@@ -355,6 +367,102 @@ export class HospitalEffects {
           map((species) => getSpeciesSuccess({ species })),
           catchError(() => of(getSpeciesError()))
         )
+      )
+    )
+  );
+
+  // Perform exam
+
+  performExam$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(performExam),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.exam.patientId}/exam`, action.exam)
+          .pipe(
+            mergeMap(() => {
+              const actions: any[] = [performExamSuccess()];
+
+              if (
+                action.outcome === 'deadOnArrival' ||
+                action.outcome === 'pts'
+              ) {
+                actions.push(
+                  markPatientDead({
+                    patientId: action.exam.patientId,
+                    dispositionReasonId: action.dispositionReasonId!,
+                    onArrival: action.outcome === 'deadOnArrival',
+                    putToSleep: action.outcome === 'pts',
+                  })
+                );
+              } else if (action.outcome === 'release') {
+                actions.push(
+                  markPatientReadyForRelease({
+                    patientId: action.exam.patientId,
+                  })
+                );
+              } else if (action.outcome === 'alive') {
+                actions.push(
+                  movePatient({
+                    patientId: action.exam.patientId,
+                    penId: action.penId!,
+                  })
+                );
+              }
+
+              return actions;
+            }),
+            catchError(() => of(performExamError()))
+          )
+      )
+    )
+  );
+
+  // Set disposition
+
+  markPatientDead$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientDead),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/die`, action)
+          .pipe(
+            map(() => markPatientDeadSuccess()),
+            catchError(() => of(markPatientDeadError()))
+          )
+      )
+    )
+  );
+
+  markPatientReadyForRelease$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientReadyForRelease),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/patients/${action.patientId}/ready-for-release`,
+            action
+          )
+          .pipe(
+            map(() => markPatientReadyForReleaseSuccess()),
+            catchError(() => of(markPatientReadyForReleaseError()))
+          )
+      )
+    )
+  );
+
+  // Move patient
+
+  movePatient$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(movePatient),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/move`, action)
+          .pipe(
+            map(() => movePatientSuccess()),
+            catchError(() => of(movePatientError()))
+          )
       )
     )
   );

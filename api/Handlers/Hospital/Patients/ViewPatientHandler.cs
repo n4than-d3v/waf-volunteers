@@ -1,8 +1,11 @@
 ﻿using Api.Database;
+using Api.Database.Entities.Account;
+using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace Api.Handlers.Hospital.Patients;
 
@@ -64,6 +67,55 @@ public static class ViewPatientExtensions
             if (!string.IsNullOrWhiteSpace(admitter.Telephone))
                 admitter.Telephone = encryptionService.Decrypt(admitter.Telephone, admitter.Salt);
         }
+
+        if (patient.Exams?.Any() ?? false)
+        {
+            foreach (var exam in patient.Exams)
+            {
+                if (exam.Examiner != null) CleanUser(exam.Examiner, encryptionService);
+            }
+        }
+
+        if (patient.PrescriptionInstructions?.Any() ?? false)
+        {
+            foreach (var prescription in patient.PrescriptionInstructions)
+            {
+                foreach (var administration in prescription.Administrations)
+                {
+                    if (administration.Administrator != null) CleanUser(administration.Administrator, encryptionService);
+                }
+            }
+        }
+
+        if (patient.PrescriptionMedications?.Any() ?? false)
+        {
+            foreach (var prescription in patient.PrescriptionMedications)
+            {
+                foreach (var administration in prescription.Administrations)
+                {
+                    if (administration.Administrator != null) CleanUser(administration.Administrator, encryptionService);
+                }
+            }
+        }
+
+        if (patient.HomeCareRequests?.Any() ?? false)
+        {
+            foreach (var request in patient.HomeCareRequests)
+            {
+                if (request.Requester != null) CleanUser(request.Requester, encryptionService);
+                if (request.Responder != null) CleanUser(request.Responder, encryptionService);
+            }
+        }
+    }
+
+    private static void CleanUser(Account account, IEncryptionService encryptionService)
+    {
+        account.Subscribe("");
+        account.ResetPassword("");
+        account.UpdatePersonalDetails(
+            encryptionService.Decrypt(account.FirstName, account.Salt),
+            encryptionService.Decrypt(account.LastName, account.Salt),
+            encryptionService.Decrypt(account.Email, account.Salt), []);
     }
 
     public static IQueryable<Patient> IncludeAdmission(this IQueryable<Patient> x)
@@ -93,6 +145,11 @@ public static class ViewPatientExtensions
     public static IQueryable<Patient> IncludeExams(this IQueryable<Patient> x)
     {
         return x
+            .Include(y => y.Exams).ThenInclude(e => e.Attitude)
+            .Include(y => y.Exams).ThenInclude(e => e.BodyCondition)
+            .Include(y => y.Exams).ThenInclude(e => e.Dehydration)
+            .Include(y => y.Exams).ThenInclude(e => e.MucousMembraneColour)
+            .Include(y => y.Exams).ThenInclude(e => e.MucousMembraneTexture)
             .Include(y => y.Exams).ThenInclude(e => e.Examiner)
             .Include(y => y.Exams).ThenInclude(e => e.Species)
             .Include(y => y.Exams).ThenInclude(e => e.SpeciesAge)

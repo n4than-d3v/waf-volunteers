@@ -30,7 +30,9 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
                 .AsSplitQuery()
                 .IncludeAdmission()
                 .IncludeBasicDetails()
-                .IncludeHusbandry());
+                .IncludeHusbandry()
+                .IncludeHomeCare()
+                .IncludeOutcome());
 
         foreach (var patient in patients)
         {

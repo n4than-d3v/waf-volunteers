@@ -1,2 +1,46 @@
-<label for="medication">Medication</label>
-<input id="medication" type="text" ([ngModel])="search" />
+<div [formGroup]="formGroup" class="wrapper">
+  <label for="{{ id }}">
+    Medication
+    <span class="required">*</span>
+  </label>
+  @if (medication) {
+  <div class="clear-input">
+    <input type="text" [disabled]="true" [value]="medication.name" />
+    <a
+      (keydown)="clearSelection($event)"
+      (click)="clearSelection($event)"
+      tabindex="0"
+    >
+      Clear
+    </a>
+  </div>
+  } @else {
+  <input
+    id="{{ id }}"
+    type="text"
+    [(ngModel)]="search"
+    [ngModelOptions]="{standalone: true}"
+    (input)="onInput($event)"
+  />
+  } @if (open) {
+  <div class="selector">
+    <ul>
+      @if (medications$ | async; as medications) { @if (medications.loading) {
+      <spinner />
+      } @else if (medications.error) {
+      <div class="error">Error occurred</div>
+      } @else if (medications.data) { @for (medication of medications.data;
+      track medication.id) {
+      <li
+        (keydown)="selectMedication(medication, $event)"
+        (click)="selectMedication(medication, $event)"
+        tabindex="0"
+      >
+        {{ medication.name }}
+      </li>
+      } }}
+    </ul>
+  </div>
+  }
+  <input type="hidden" [formControlName]="control" />
+</div>

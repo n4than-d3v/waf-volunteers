@@ -231,7 +231,7 @@ public partial class Program
 
         var apiHospitalMedications = apiHospital.MapGroup("/medications");
 
-        apiHospitalMedications.MapGet("/", (IMediator mediator) => mediator.Send(new GetMedications()))
+        apiHospitalMedications.MapGet("/", (IMediator mediator, string search) => mediator.Send(new GetMedications { Search = search }))
             .AddNote("View list of medications")
             .RequireAuthorization(vetOrAuxPolicy);
 

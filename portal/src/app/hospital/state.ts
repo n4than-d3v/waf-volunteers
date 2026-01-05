@@ -7,11 +7,18 @@ export interface HospitalState {
   patient: ReadOnlyWrapper<Patient>;
 
   // Exams
+  performExam: Task;
   attitudes: ReadOnlyWrapper<Attitude[]>;
   bodyConditions: ReadOnlyWrapper<BodyCondition[]>;
   dehydrations: ReadOnlyWrapper<Dehydration[]>;
   mucousMembraneColours: ReadOnlyWrapper<MucousMembraneColour[]>;
   mucousMembraneTextures: ReadOnlyWrapper<MucousMembraneTexture[]>;
+
+  // Disposition
+  setDisposition: Task;
+
+  // Tasks
+  movePatient: Task;
 
   // Patient details
   tags: ReadOnlyWrapper<Tag[]>;
@@ -36,6 +43,12 @@ export interface Tab {
   title: string;
 
   id?: number;
+}
+
+export interface Task {
+  loading: boolean;
+  success: boolean;
+  error: boolean;
 }
 
 export interface ReadOnlyWrapper<T> {
@@ -94,19 +107,30 @@ export interface ListPatient {
   reference: string;
   name: string | null;
   uniqueIdentifier: string | null;
-  species: { name: string } | null;
-  speciesVariant: {} | null;
+  species: Species | null;
+  speciesVariant: SpeciesVariant | null;
   status: PatientStatus;
-  pen: {} | null;
-  tags: {}[];
-  diets: {}[];
-  disposition: {} | null;
+  pen: Pen | null;
+  tags: Tag[];
+  diets: Diet[];
+  disposition: Disposition | null;
   dispositioned: string | null;
-  dispositionReason: {} | null;
-  releaseType: {} | null;
-  transferLocation: {} | null;
+  dispositionReason: DispositionReason | null;
+  releaseType: ReleaseType | null;
+  transferLocation: TransferLocation | null;
   dispositioner: {} | null;
+  homeCareRequests: HomeCareRequest[];
   id: number;
+}
+
+export interface HomeCareRequest {
+  id: number;
+  requested: string;
+  requester: { firstName: string; lastName: string } | null;
+  responded: string | null;
+  responder: { firstName: string; lastName: string } | null;
+  pickup: string | null;
+  dropoff: string | null;
 }
 
 export interface Patient extends ListPatient {
@@ -116,7 +140,6 @@ export interface Patient extends ListPatient {
   prescriptionInstructions: {}[];
   notes: {}[];
   movements: {}[];
-  homeCareRequests: {}[];
   homeCareMessages: {}[];
 }
 
@@ -155,6 +178,16 @@ export interface Tag {
   id: number;
   name: string;
   description: string;
+}
+
+export enum Disposition {
+  Released = 1,
+  Transferred = 2,
+  DeadOnArrival = 3,
+  DiedBefore24Hrs = 4,
+  DiedAfter24Hrs = 5,
+  PtsBefore24Hrs = 6,
+  PtsAfter24Hrs = 7,
 }
 
 export interface DispositionReason {
@@ -196,11 +229,17 @@ export interface Medication {
   used: boolean;
 }
 
+export interface Pen {
+  id: number;
+  code: string;
+  reference: string;
+}
+
 export interface Area {
   id: number;
   name: string;
   code: string;
-  pens: { code: string }[];
+  pens: Pen[];
 }
 
 export interface SpeciesAge {
@@ -221,6 +260,35 @@ export interface Species {
   ages: SpeciesAge[];
   variants: SpeciesVariant[];
 }
+
+export interface Exam {
+  patientId: number;
+  speciesId: number;
+  speciesAgeId: number;
+  sex: number;
+  weightValue: number | null;
+  weightUnit: number | null;
+  temperatureValue: number | null;
+  temperatureUnit: number | null;
+  attitudeId: number | null;
+  bodyConditionId: number | null;
+  dehydrationId: number | null;
+  mucousMembraneColourId: number | null;
+  mucousMembraneTextureId: number | null;
+  treatmentInstructions: {
+    instructions: string;
+  }[];
+  treatmentMedications: {
+    quantityValue: number;
+    quantityUnit: string;
+    medicationId: number;
+    administrationMethodId: number;
+    comments: string;
+  }[];
+  comments: string;
+}
+
+export type Outcome = 'alive' | 'release' | 'deadOnArrival' | 'pts';
 
 const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
   data: null,
@@ -253,4 +321,19 @@ export const initialHospitalState: HospitalState = {
   medications: createReadOnlyWrapper<Medication[]>(),
   areas: createReadOnlyWrapper<Area[]>(),
   species: createReadOnlyWrapper<Species[]>(),
+  performExam: {
+    loading: false,
+    success: false,
+    error: false,
+  },
+  setDisposition: {
+    loading: false,
+    success: false,
+    error: false,
+  },
+  movePatient: {
+    loading: false,
+    success: false,
+    error: false,
+  },
 };

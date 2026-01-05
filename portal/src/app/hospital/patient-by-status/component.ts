@@ -32,7 +32,7 @@ export class HospitalPatientByStatusComponent implements OnInit, OnDestroy {
     let title = '...';
     switch (status) {
       case PatientStatus.PendingInitialExam:
-        title = 'Patients pending initial exam';
+        title = 'Patients pending intake exam';
         break;
       case PatientStatus.Inpatient:
         title = 'Patients in centre';

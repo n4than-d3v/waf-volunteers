@@ -19,6 +19,8 @@ import {
   Medication,
   Area,
   Species,
+  Exam,
+  Outcome,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -200,3 +202,55 @@ export const getSpeciesSuccess = createAction(
   props<{ species: Species[] }>()
 );
 export const getSpeciesError = createAction('[HMS-V] Get species: error');
+
+// Exam
+
+export const performExam = createAction(
+  '[HMS-V] Perform exam',
+  props<{
+    exam: Exam;
+    outcome: Outcome;
+    dispositionReasonId?: number;
+    penId?: number;
+  }>()
+);
+export const performExamSuccess = createAction('[HMS-V] Perform exam: success');
+export const performExamError = createAction('[HMS-V] Perform exam: error');
+
+// Disposition
+
+export const markPatientDead = createAction(
+  '[HMS-V] Mark patient dead',
+  props<{
+    patientId: number;
+    dispositionReasonId: number;
+    onArrival: boolean;
+    putToSleep: boolean;
+  }>()
+);
+export const markPatientDeadSuccess = createAction(
+  '[HMS-V] Mark patient dead: success'
+);
+export const markPatientDeadError = createAction(
+  '[HMS-V] Mark patient dead: error'
+);
+
+export const markPatientReadyForRelease = createAction(
+  '[HMS-V] Mark patient ready for release',
+  props<{ patientId: number }>()
+);
+export const markPatientReadyForReleaseSuccess = createAction(
+  '[HMS-V] Mark patient ready for release: success'
+);
+export const markPatientReadyForReleaseError = createAction(
+  '[HMS-V] Mark patient ready for release: error'
+);
+
+// Move
+
+export const movePatient = createAction(
+  '[HMS-V] Move patient',
+  props<{ patientId: number; penId: number }>()
+);
+export const movePatientSuccess = createAction('[HMS-V] Move patient: success');
+export const movePatientError = createAction('[HMS-V] Move patient: error');

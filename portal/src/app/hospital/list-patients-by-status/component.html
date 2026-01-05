@@ -26,4 +26,121 @@
     }
   </tbody>
 </table>
+} @else if (_status === PatientStatus.Inpatient || _status
+===PatientStatus.ReadyForRelease) {
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Species</th>
+      <th>Variant</th>
+      <th>Pen</th>
+      <th>Date admitted</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (patient of patients.data; track patient.id) {
+    <tr>
+      <td>
+        <a (click)="view(patient)">{{ patient.reference }}</a>
+      </td>
+      <td>{{ patient.species?.name }}</td>
+      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.pen?.reference }}</td>
+      <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @else if (_status === PatientStatus.PendingHomeCare) {
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Species</th>
+      <th>Variant</th>
+      <th>Pen</th>
+      <th>Date admitted</th>
+      <th>Home care requested</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (patient of patients.data; track patient.id) {
+    <tr>
+      <td>
+        <a (click)="view(patient)">{{ patient.reference }}</a>
+      </td>
+      <td>{{ patient.species?.name }}</td>
+      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.pen?.reference }}</td>
+      <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>
+        {{ patient.homeCareRequests[0]?.requested | date: 'dd MMM yyyy HH:mm' }}
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @else if (_status === PatientStatus.ReceivingHomeCare) {
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Species</th>
+      <th>Variant</th>
+      <th>Date admitted</th>
+      <th>Home care since</th>
+      <th>Home carer</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (patient of patients.data; track patient.id) {
+    <tr>
+      <td>
+        <a (click)="view(patient)">{{ patient.reference }}</a>
+      </td>
+      <td>{{ patient.species?.name }}</td>
+      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>
+        {{ patient.homeCareRequests[0]?.requested | date: 'dd MMM yyyy HH:mm' }}
+      </td>
+      <td>
+        {{ patient.homeCareRequests[0]?.pickup | date: 'dd MMM yyyy HH:mm' }}
+      </td>
+      <td>
+        {{ patient.homeCareRequests[0]?.responder?.firstName }} {{
+        patient.homeCareRequests[0]?.responder?.lastName }}
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @else if (_status === PatientStatus.Dispositioned) {
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Species</th>
+      <th>Variant</th>
+      <th>Date admitted</th>
+      <th>Date dispositioned</th>
+      <th>Disposition reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (patient of patients.data; track patient.id) {
+    <tr>
+      <td>
+        <a (click)="view(patient)">{{ patient.reference }}</a>
+      </td>
+      <td>{{ patient.species?.name }}</td>
+      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ patient.dispositioned | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ patient.dispositionReason?.description }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
 } } }

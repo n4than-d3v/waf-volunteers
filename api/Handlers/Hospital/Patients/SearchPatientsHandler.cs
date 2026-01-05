@@ -47,7 +47,7 @@ public class SearchPatientsHandler : IRequestHandler<SearchPatients, IResult>
         }
 
         // Search by name
-        patient ??= await _repository.Get<Patient>(x => x.Name != null && x.Name.Contains(request.Search, StringComparison.OrdinalIgnoreCase), tracking: false, Action);
+        patient ??= await _repository.Get<Patient>(x => x.Name != null && x.Name.ToUpper().Contains(request.Search), tracking: false, Action);
 
         return Results.NotFound();
     }

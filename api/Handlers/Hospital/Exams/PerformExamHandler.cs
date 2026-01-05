@@ -66,7 +66,7 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
 
     public async Task<IResult> Handle(PerformExam request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId);
+        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.Include(y => y.Exams));
         if (patient == null) return Results.BadRequest();
 
         var examiner = await _repository.Get<Account>(_userContext.Id);

@@ -1,10 +1,13 @@
-﻿using Examiner = Api.Database.Entities.Account.Account;
+﻿using System.Text.Json.Serialization;
+using Examiner = Api.Database.Entities.Account.Account;
 
 namespace Api.Database.Entities.Hospital.Patients.Exams;
 
 public class Exam : Entity
 {
+    [JsonIgnore]
     public Patient Patient { get; set; }
+
     public Examiner Examiner { get; set; }
     public DateTime Date { get; set; }
     public ExamType Type { get; set; }

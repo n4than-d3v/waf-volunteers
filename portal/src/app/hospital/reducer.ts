@@ -65,6 +65,12 @@ import {
   movePatient,
   movePatientError,
   movePatientSuccess,
+  addNote,
+  addNoteSuccess,
+  addNoteError,
+  addRecheck,
+  addRecheckSuccess,
+  addRecheckError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -591,6 +597,58 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     movePatient: {
       ...state.movePatient,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Add note
+  on(addNote, (state) => ({
+    ...state,
+    addNote: {
+      ...state.addNote,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(addNoteSuccess, (state) => ({
+    ...state,
+    addNote: {
+      ...state.addNote,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(addNoteError, (state) => ({
+    ...state,
+    addNote: {
+      ...state.addNote,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Add recheck
+  on(addRecheck, (state) => ({
+    ...state,
+    addRecheck: {
+      ...state.addRecheck,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(addRecheckSuccess, (state) => ({
+    ...state,
+    addRecheck: {
+      ...state.addRecheck,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(addRecheckError, (state) => ({
+    ...state,
+    addRecheck: {
+      ...state.addRecheck,
       loading: false,
       error: true,
     },

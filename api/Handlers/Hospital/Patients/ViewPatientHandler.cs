@@ -106,6 +106,14 @@ public static class ViewPatientExtensions
                 if (request.Responder != null) CleanUser(request.Responder, encryptionService);
             }
         }
+
+        if (patient.Notes?.Any() ?? false)
+        {
+            foreach (var note in patient.Notes)
+            {
+                if (note.Noter != null) CleanUser(note.Noter, encryptionService);
+            }
+        }
     }
 
     private static void CleanUser(Account account, IEncryptionService encryptionService)
@@ -154,6 +162,7 @@ public static class ViewPatientExtensions
             .Include(y => y.Exams).ThenInclude(e => e.Species)
             .Include(y => y.Exams).ThenInclude(e => e.SpeciesAge)
             .Include(y => y.Exams).ThenInclude(e => e.TreatmentInstructions)
+            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.AdministrationMethod)
             .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.ActiveSubstances)
             .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.PharmaceuticalForm)
             .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.TargetSpecies)

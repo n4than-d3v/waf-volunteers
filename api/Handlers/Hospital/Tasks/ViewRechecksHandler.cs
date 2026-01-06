@@ -39,7 +39,7 @@ public class ViewRechecksHandler : IRequestHandler<ViewRechecks, IResult>
         public Pen Pen { get; set; } = recheck.Patient.Pen;
         public DateOnly Due { get; set; } = recheck.Due;
         public string Description { get; set; } = recheck.Description;
-        public AccountRoles Roles { get; set; } = recheck.Roles;
+        public RecheckRoles Roles { get; set; } = recheck.Roles;
         public Account? Rechecker { get; set; } = recheck.Rechecker;
         public DateTime? Rechecked { get; set; } = recheck.Rechecked;
         public string? Comments { get; set; } = recheck.Comments;

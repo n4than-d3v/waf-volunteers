@@ -1,0 +1,55 @@
+.row {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+
+  table {
+    flex: 1;
+    max-width: max-content;
+  }
+}
+
+table.treatments {
+  width: 100%;
+  margin-top: 1rem;
+
+  td,
+  th {
+    font-size: 1rem;
+    padding: 0.125rem 0.25rem;
+    border-left: none;
+    border-right: none;
+    align-content: flex-start;
+  }
+
+  td:not(:nth-child(3)),
+  th:not(:nth-child(3)) {
+    min-width: 10rem;
+  }
+
+  th {
+    background-color: var(--theme-color-5);
+  }
+
+  tr {
+    background-color: transparent !important;
+  }
+}
+
+table:not(:has(thead)) tbody {
+  td {
+    font-size: 1.125rem;
+    padding: 0.125rem 0.25rem;
+    border: none;
+  }
+
+  td:nth-child(2) {
+    font-weight: bold;
+    padding-left: 1rem;
+  }
+
+  tr {
+    background-color: transparent !important;
+  }
+}

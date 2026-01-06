@@ -1,0 +1,71 @@
+<form [formGroup]="noteForm">
+  @if (patient.notes.length > 0) {
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Author</th>
+        <th>Weight</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (note of patient.notes; track note.id) {
+      <tr>
+        <td>{{ note.noted | date: 'dd MMM yyyy HH:mm' }}</td>
+        <td>{{ note.noter.firstName }} {{ note.noter.lastName }}</td>
+        <td>
+          {{ note.weightValue ? note.weightValue +
+          getWeightUnit(note.weightUnit) : '' }}
+        </td>
+        <td>{{ note.comments }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  } @else {
+  <p><em>No notes have been added for this patient.</em></p>
+  }
+  <div class="flex">
+    @if (!adding) {
+    <button (click)="adding = true" class="button button--secondary">
+      Add note
+    </button>
+    } @else {
+    <div class="field">
+      <label for="comments">Note</label>
+      <textarea
+        id="comments"
+        type="text"
+        formControlName="comments"
+        autocomplete="off"
+        rows="3"
+      ></textarea>
+    </div>
+    <div class="field">
+      <label for="weight">Weight</label>
+      <div class="input-with-units">
+        <input
+          id="weight"
+          type="text"
+          formControlName="weightValue"
+          autocomplete="off"
+        />
+        <select id="weightUnit" formControlName="weightUnit">
+          <option value="1">g</option>
+          <option value="2">kg</option>
+          <option value="3">oz</option>
+          <option value="4">lbs</option>
+        </select>
+      </div>
+    </div>
+    @if (saving) {
+    <spinner />
+    } @else {
+    <div class="buttons">
+      <button (click)="add()" class="button button--primary">Add note</button>
+      <button (click)="reset()" class="button button--secondary">Back</button>
+    </div>
+    } }
+  </div>
+</form>

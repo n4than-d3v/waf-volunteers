@@ -486,7 +486,7 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(getMedications),
       switchMap(() =>
-        this.http.get<Medication[]>('hospital/medications').pipe(
+        this.http.get<Medication[]>('hospital/medications?search=').pipe(
           map((medications) => getMedicationsSuccess({ medications })),
           catchError(() => of(getMedicationsError()))
         )

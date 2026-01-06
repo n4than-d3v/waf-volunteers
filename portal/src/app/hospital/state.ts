@@ -18,6 +18,8 @@ export interface HospitalState {
   setDisposition: Task;
 
   // Tasks
+  addNote: Task;
+  addRecheck: Task;
   movePatient: Task;
 
   // Patient details
@@ -134,14 +136,121 @@ export interface HomeCareRequest {
 }
 
 export interface Patient extends ListPatient {
-  exams: {}[];
-  rechecks: {}[];
-  prescriptionMedications: {}[];
-  prescriptionInstructions: {}[];
-  notes: {}[];
+  exams: ListExam[];
+  rechecks: ListRecheck[];
+  prescriptionMedications: PrescriptionMedication[];
+  prescriptionInstructions: PrescriptionInstruction[];
+  notes: ListNote[];
   movements: {}[];
   homeCareMessages: {}[];
 }
+
+export function getSex(sex: number): string {
+  switch (sex) {
+    case 1:
+      return 'Male';
+    case 2:
+      return 'Female';
+    default:
+      return 'Unknown';
+  }
+}
+
+export function getWeightUnit(weightUnit: number | null): string {
+  switch (weightUnit) {
+    case 1:
+      return 'g';
+    case 2:
+      return 'kg';
+    case 3:
+      return 'oz';
+    case 4:
+      return 'lbs';
+    default:
+      return '';
+  }
+}
+
+export function getTemperatureUnit(temperatureUnit: number | null): string {
+  switch (temperatureUnit) {
+    case 1:
+      return '°C';
+    case 2:
+      return '°F';
+    default:
+      return '';
+  }
+}
+
+export function getRecheckRoles(roles: number): string {
+  if (roles === 1) return 'Veterinarian';
+  if (roles === 2) return 'Technician';
+  return '';
+}
+
+export interface ListRecheck {
+  id: number;
+  due: string;
+  description: string;
+  roles: number;
+  rechecker: { firstName: string; lastName: string } | null;
+  rechecked: string | null;
+  comments: string | null;
+}
+
+export interface ListNote {
+  id: number;
+  noter: { firstName: string; lastName: string };
+  noted: string;
+  weightValue: number | null;
+  weightUnit: number | null;
+  comments: string;
+}
+
+export enum ExamType {
+  Initial = 1,
+  FollowUp = 2,
+}
+
+export interface ListExam {
+  id: number;
+  type: ExamType;
+  examiner: { firstName: string; lastName: string };
+  date: string;
+  species: Species;
+  speciesAge: SpeciesAge;
+  sex: number;
+  weightValue: number | null;
+  weightUnit: number | null;
+  temperatureValue: number | null;
+  temperatureUnit: number | null;
+  attitude: Attitude | null;
+  bodyCondition: BodyCondition | null;
+  dehydration: Dehydration | null;
+  mucousMembraneColour: MucousMembraneColour | null;
+  mucousMembraneTexture: MucousMembraneTexture | null;
+  treatmentInstructions: TreatmentInstruction[];
+  treatmentMedications: TreatmentMedication[];
+  comments: string;
+}
+
+export interface PrescriptionInstruction {
+  id: number;
+  instructions: string;
+}
+
+export interface TreatmentInstruction extends PrescriptionInstruction {}
+
+export interface PrescriptionMedication {
+  id: number;
+  quantityValue: number;
+  quantityUnit: string;
+  medication: Medication;
+  administrationMethod: AdministrationMethod;
+  comments: string;
+}
+
+export interface TreatmentMedication extends PrescriptionMedication {}
 
 export interface Attitude {
   id: number;
@@ -327,6 +436,16 @@ export const initialHospitalState: HospitalState = {
     error: false,
   },
   setDisposition: {
+    loading: false,
+    success: false,
+    error: false,
+  },
+  addNote: {
+    loading: false,
+    success: false,
+    error: false,
+  },
+  addRecheck: {
     loading: false,
     success: false,
     error: false,

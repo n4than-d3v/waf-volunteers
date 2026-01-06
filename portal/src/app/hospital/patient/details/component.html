@@ -1,0 +1,34 @@
+<div class="row">
+  <table>
+    <tbody>
+      <tr>
+        <td>Reference</td>
+        <td>{{ patient.reference }}</td>
+      </tr>
+      <tr>
+        <td>Species</td>
+        <td>{{ patient.species?.name }}</td>
+      </tr>
+      <tr>
+        <td>Variant</td>
+        <td>{{ patient.speciesVariant?.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>Name</td>
+        <td>{{ patient.name || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Pen</td>
+        <td>{{ patient.pen?.reference || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Unique identifier</td>
+        <td>{{ patient.uniqueIdentifier || '(blank)' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

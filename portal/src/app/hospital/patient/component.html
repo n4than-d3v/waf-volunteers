@@ -11,61 +11,45 @@ PatientStatus.PendingInitialExam) {
 </p>
 <section>
   <h3>Admission</h3>
-  <div class="row">
-    <table>
-      <tbody>
-        <tr>
-          <td>Reference</td>
-          <td>{{ patient.data.reference }}</td>
-        </tr>
-        <tr>
-          <td>Suspected species</td>
-          <td>{{ patient.data.suspectedSpecies.description }}</td>
-        </tr>
-        <tr>
-          <td>Initial location</td>
-          <td>{{ patient.data.initialLocation.description }}</td>
-        </tr>
-        <tr>
-          <td>Admission reason</td>
-          <td>{{ formatAdmissionReasons(patient.data) }}</td>
-        </tr>
-        <tr>
-          <td>Date admitted</td>
-          <td>{{ patient.data.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <table>
-      <tbody>
-        <tr>
-          <td>Found at</td>
-          <td>{{ patient.data.foundAt }}</td>
-        </tr>
-        @if (patient.data.admitter) {
-        <tr>
-          <td>Admitted by</td>
-          <td>{{ patient.data.admitter.fullName }}</td>
-        </tr>
-        <tr>
-          <td>Address</td>
-          <td>{{ patient.data.admitter.address }}</td>
-        </tr>
-        <tr>
-          <td>Email</td>
-          <td>{{ patient.data.admitter.email }}</td>
-        </tr>
-        <tr>
-          <td>Telephone</td>
-          <td>{{ patient.data.admitter.telephone }}</td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+  <hospital-patient-admission
+    [patient]="patient.data"
+  ></hospital-patient-admission>
 </section>
 <section>
   <h3>Intake exam</h3>
   <hospital-patient-exam [id]="patient.data.id"></hospital-patient-exam>
+</section>
+} @else {
+<section>
+  <h3>Details</h3>
+  <hospital-patient-details [patient]="patient.data"></hospital-patient-details>
+</section>
+<section>
+  <h3>Notes</h3>
+  <hospital-patient-notes [patient]="patient.data"></hospital-patient-notes>
+</section>
+<section>
+  <h3>Rechecks</h3>
+  <hospital-patient-rechecks
+    [patient]="patient.data"
+  ></hospital-patient-rechecks>
+</section>
+<section>
+  <h3>Prescriptions</h3>
+  <hospital-patient-prescriptions
+    [patient]="patient.data"
+  ></hospital-patient-prescriptions>
+</section>
+@for (exam of patient.data.exams; track exam.id) {
+<section>
+  <h3>{{ exam.type === 1 ? 'Intake exam' : 'Follow-up exam' }}</h3>
+  <hospital-patient-view-exam [exam]="exam"></hospital-patient-view-exam>
+</section>
+}
+<section>
+  <h3>Admission</h3>
+  <hospital-patient-admission
+    [patient]="patient.data"
+  ></hospital-patient-admission>
 </section>
 } } }

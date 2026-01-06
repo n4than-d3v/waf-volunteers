@@ -85,6 +85,12 @@ import {
   movePatient,
   movePatientSuccess,
   movePatientError,
+  addNote,
+  addNoteSuccess,
+  addNoteError,
+  addRecheck,
+  addRecheckSuccess,
+  addRecheckError,
 } from './actions';
 
 @Injectable()
@@ -427,10 +433,17 @@ export class HospitalEffects {
         this.http
           .post(`hospital/patients/${action.patientId}/die`, action)
           .pipe(
-            map(() => markPatientDeadSuccess()),
+            map(() => markPatientDeadSuccess({ patientId: action.patientId })),
             catchError(() => of(markPatientDeadError()))
           )
       )
+    )
+  );
+
+  markPatientDeadSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientDeadSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
     )
   );
 
@@ -444,10 +457,19 @@ export class HospitalEffects {
             action
           )
           .pipe(
-            map(() => markPatientReadyForReleaseSuccess()),
+            map(() =>
+              markPatientReadyForReleaseSuccess({ patientId: action.patientId })
+            ),
             catchError(() => of(markPatientReadyForReleaseError()))
           )
       )
+    )
+  );
+
+  markPatientReadyForReleaseSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientReadyForReleaseSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
     )
   );
 
@@ -460,10 +482,63 @@ export class HospitalEffects {
         this.http
           .post(`hospital/patients/${action.patientId}/move`, action)
           .pipe(
-            map(() => movePatientSuccess()),
+            map(() => movePatientSuccess({ patientId: action.patientId })),
             catchError(() => of(movePatientError()))
           )
       )
+    )
+  );
+
+  movePatientSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(movePatientSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Add note
+
+  addNote$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addNote),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/note`, action)
+          .pipe(
+            map(() => addNoteSuccess({ patientId: action.patientId })),
+            catchError(() => of(addNoteError()))
+          )
+      )
+    )
+  );
+
+  addNoteSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addNoteSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Add recheck
+
+  addRecheck$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addRecheck),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/recheck`, action)
+          .pipe(
+            map(() => addRecheckSuccess({ patientId: action.patientId })),
+            catchError(() => of(addRecheckError()))
+          )
+      )
+    )
+  );
+
+  addRecheckSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addRecheckSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
     )
   );
 }

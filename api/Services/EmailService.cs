@@ -33,20 +33,15 @@ public class EmailService : IEmailService
 
         var client = new GraphServiceClient(credential, [Scope]);
 
-        await client.Users[_settings.Sender.Email]
-            .SendMail
-            .PostAsync(new SendMailPostRequestBody
+        var message = new Message
+        {
+            Subject = email.Subject,
+            Body = new ItemBody
             {
-                Message = new Message
-                {
-                    IsDraft = email.Draft,
-                    Subject = email.Subject,
-                    Body = new ItemBody
-                    {
-                        ContentType = BodyType.Html,
-                        Content = email.Body
-                    },
-                    ToRecipients =
+                ContentType = BodyType.Html,
+                Content = email.Body
+            },
+            ToRecipients =
                     [
                         new Recipient
                         {
@@ -57,17 +52,32 @@ public class EmailService : IEmailService
                             }
                         }
                     ],
-                    From = new Recipient
-                    {
-                        EmailAddress = new EmailAddress
-                        {
-                            Address = _settings.Sender.Email,
-                            Name = _settings.Sender.Name
-                        }
-                    }
-                },
-                SaveToSentItems = true
-            });
+            From = new Recipient
+            {
+                EmailAddress = new EmailAddress
+                {
+                    Address = _settings.Sender.Email,
+                    Name = _settings.Sender.Name
+                }
+            }
+        };
+
+        if (email.Draft)
+        {
+            message.IsDraft = true;
+            await client.Users[_settings.Sender.Email]
+                .Messages
+                .PostAsync(message);
+        }
+        else
+        {
+            await client.Users[_settings.Sender.Email]
+                .SendMail
+                .PostAsync(new SendMailPostRequestBody
+                {
+                    Message = message
+                });
+        }
     }
 }
 
@@ -106,11 +116,11 @@ $"""
 """));
 
     public static Email External_PatientUpdate_Death(string fullName, string recipient, string content) =>
-        new(fullName, "", $"{recipient}@{HostConstants.Domain}", "Wildlife Aid Foundation - Patient Update", Format.Replace(ContentPlaceholder, content))
+        new(fullName, "", recipient, "Wildlife Aid Foundation - Patient Update", Format.Replace(ContentPlaceholder, content))
         { Draft = true };
 
     public static Email External_PatientUpdate_ReadyForCollection(string fullName, string recipient, string species, DateTime admissionDate) =>
-        new(fullName, "", $"{recipient}@{HostConstants.Domain}", "Wildlife Aid Foundation - Patient Update", Format.Replace(ContentPlaceholder,
+        new(fullName, "", recipient, "Wildlife Aid Foundation - Patient Update", Format.Replace(ContentPlaceholder,
 $"""
 <p>Hi {fullName},</p>
 <br />

@@ -1,4 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Observable, Subscription, timer } from 'rxjs';
 import {
   AdministrationMethod,
@@ -10,7 +16,6 @@ import {
   MucousMembraneColour,
   MucousMembraneTexture,
   Outcome,
-  Patient,
   ReadOnlyWrapper,
   Species,
 } from '../../../hospital/state';
@@ -24,7 +29,6 @@ import {
   selectDispositionReasons,
   selectMucousMembraneColours,
   selectMucousMembraneTextures,
-  selectPatient,
   selectSpecies,
 } from '../../../hospital/selectors';
 import {
@@ -39,7 +43,7 @@ import {
   getSpecies,
   performExam,
 } from '../../actions';
-import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
   FormArray,
@@ -54,6 +58,7 @@ import { HospitalPatientMedicationSelectorComponent } from './../medication-sele
 @Component({
   selector: 'hospital-patient-exam',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
   imports: [

@@ -108,3 +108,13 @@ export const selectMovePatient = createSelector(
   selectHospitalState,
   (state) => state.movePatient
 );
+
+export const selectAddNote = createSelector(
+  selectHospitalState,
+  (state) => state.addNote
+);
+
+export const selectAddRecheck = createSelector(
+  selectHospitalState,
+  (state) => state.addRecheck
+);

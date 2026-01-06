@@ -229,7 +229,8 @@ export const markPatientDead = createAction(
   }>()
 );
 export const markPatientDeadSuccess = createAction(
-  '[HMS-V] Mark patient dead: success'
+  '[HMS-V] Mark patient dead: success',
+  props<{ patientId: number }>()
 );
 export const markPatientDeadError = createAction(
   '[HMS-V] Mark patient dead: error'
@@ -240,7 +241,8 @@ export const markPatientReadyForRelease = createAction(
   props<{ patientId: number }>()
 );
 export const markPatientReadyForReleaseSuccess = createAction(
-  '[HMS-V] Mark patient ready for release: success'
+  '[HMS-V] Mark patient ready for release: success',
+  props<{ patientId: number }>()
 );
 export const markPatientReadyForReleaseError = createAction(
   '[HMS-V] Mark patient ready for release: error'
@@ -252,5 +254,42 @@ export const movePatient = createAction(
   '[HMS-V] Move patient',
   props<{ patientId: number; penId: number }>()
 );
-export const movePatientSuccess = createAction('[HMS-V] Move patient: success');
+export const movePatientSuccess = createAction(
+  '[HMS-V] Move patient: success',
+  props<{ patientId: number }>()
+);
 export const movePatientError = createAction('[HMS-V] Move patient: error');
+
+// Add note
+
+export const addNote = createAction(
+  '[HMS-V] Add note',
+  props<{
+    patientId: number;
+    weightValue: number | null;
+    weightUnit: number | null;
+    comments: string;
+  }>()
+);
+export const addNoteSuccess = createAction(
+  '[HMS-V] Add note: success',
+  props<{ patientId: number }>()
+);
+export const addNoteError = createAction('[HMS-V] Add note: error');
+
+// Add recheck
+
+export const addRecheck = createAction(
+  '[HMS-V] Add recheck',
+  props<{
+    patientId: number;
+    roles: number;
+    description: string;
+    due: string;
+  }>()
+);
+export const addRecheckSuccess = createAction(
+  '[HMS-V] Add recheck: success',
+  props<{ patientId: number }>()
+);
+export const addRecheckError = createAction('[HMS-V] Add recheck: error');

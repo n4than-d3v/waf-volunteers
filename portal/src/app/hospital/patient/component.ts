@@ -7,6 +7,12 @@ import { getPatient } from '../actions';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { HospitalPatientExamComponent } from './exam/component';
+import { HospitalPatientAdmissionComponent } from './admission/component';
+import { HospitalPatientDetailsComponent } from './details/component';
+import { HospitalPatientViewExamComponent } from './view-exam/component';
+import { HospitalPatientNotesComponent } from './notes/component';
+import { HospitalPatientRechecksComponent } from './rechecks/component';
+import { HospitalPatientPrescriptionsComponent } from './prescriptions/component';
 
 @Component({
   selector: 'hospital-patient',
@@ -15,9 +21,14 @@ import { HospitalPatientExamComponent } from './exam/component';
   styleUrls: ['./component.scss'],
   imports: [
     AsyncPipe,
-    DatePipe,
     SpinnerComponent,
     HospitalPatientExamComponent,
+    HospitalPatientAdmissionComponent,
+    HospitalPatientDetailsComponent,
+    HospitalPatientViewExamComponent,
+    HospitalPatientNotesComponent,
+    HospitalPatientRechecksComponent,
+    HospitalPatientPrescriptionsComponent,
   ],
 })
 export class HospitalPatientComponent implements OnInit {
@@ -34,10 +45,6 @@ export class HospitalPatientComponent implements OnInit {
 
   constructor(private store: Store) {
     this.patient$ = this.store.select(selectPatient);
-  }
-
-  formatAdmissionReasons(patient: Patient) {
-    return patient.admissionReasons.map((x) => x.description).join(', ');
   }
 
   ngOnInit() {}

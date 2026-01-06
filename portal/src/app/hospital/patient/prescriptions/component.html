@@ -1,0 +1,158 @@
+@if (patient.prescriptionInstructions.length === 0 &&
+patient.prescriptionMedications.length === 0) {
+<p><em>No prescriptions have been added for this patient.</em></p>
+} @if (patient.prescriptionInstructions.length > 0) { } @if
+(patient.prescriptionMedications.length > 0) { } @if (!(addingMedication ||
+addingInstruction)) {
+<div class="buttons">
+  <button (click)="addingMedication = true" class="button button--secondary">
+    Add medication
+  </button>
+  <button (click)="addingInstruction = true" class="button button--secondary">
+    Add other
+  </button>
+</div>
+} @else if (addingMedication) {
+<form [formGroup]="prescriptionMedicationForm">
+  <div class="fields">
+    <div class="field">
+      <label for="start">
+        Start
+        <span class="required">*</span>
+      </label>
+      <input
+        id="start"
+        type="date"
+        formControlName="start"
+        autocomplete="off"
+      />
+    </div>
+    <div class="field">
+      <label for="end">
+        End
+        <span class="required">*</span>
+      </label>
+      <input id="end" type="date" formControlName="end" autocomplete="off" />
+    </div>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label for="quantity">
+        Quantity
+        <span class="required">*</span>
+      </label>
+      <div class="input-with-units">
+        <input
+          id="quantity"
+          type="text"
+          formControlName="quantityValue"
+          autocomplete="off"
+        />
+        <select id="quantityUnit" formControlName="quantityUnit">
+          <option>ml</option>
+          <option>unit</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="administrationMethod">
+        Administration
+        <span class="required">*</span>
+      </label>
+      <select
+        id="administrationMethod"
+        formControlName="administrationMethodId"
+      >
+        <option value=""></option>
+        @if (administrationMethods$ | async; as administrationMethods) { @if
+        (administrationMethods.loading) {
+        <spinner />
+        } @else if (administrationMethods.error) {
+        <div class="error">Error occurred</div>
+        } @else if (administrationMethods.data) { @for (administrationMethod of
+        administrationMethods.data; track administrationMethod.id) {
+        <option [value]="administrationMethod.id">
+          {{ administrationMethod.description }}
+        </option>
+        } }}
+      </select>
+    </div>
+    <div class="field">
+      <hospital-patient-medication-selector
+        [id]="'medications'"
+        [control]="'medicationId'"
+        [formGroup]="prescriptionMedicationForm"
+      ></hospital-patient-medication-selector>
+    </div>
+  </div>
+  <div class="field">
+    <label for="comments">Comments</label>
+    <textarea
+      id="comments"
+      formControlName="comments"
+      autocomplete="off"
+      rows="3"
+    ></textarea>
+  </div>
+  @if (saving) {
+  <spinner />
+  } @else { @if (attemptedSave && !prescriptionMedicationForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  }
+  <div class="buttons">
+    <button (click)="addMedication()" class="button button--primary">
+      Add medication prescription
+    </button>
+    <button (click)="reset()" class="button button--secondary">Back</button>
+  </div>
+  }
+</form>
+} @else if (addingInstruction) {
+<form [formGroup]="prescriptionInstructionForm">
+  <div class="fields">
+    <div class="field">
+      <label for="start">
+        Start
+        <span class="required">*</span>
+      </label>
+      <input
+        id="start"
+        type="date"
+        formControlName="start"
+        autocomplete="off"
+      />
+    </div>
+    <div class="field">
+      <label for="end">
+        End
+        <span class="required">*</span>
+      </label>
+      <input id="end" type="date" formControlName="end" autocomplete="off" />
+    </div>
+  </div>
+  <div class="field">
+    <label for="instructions">
+      Instruction
+      <span class="required">*</span>
+    </label>
+    <textarea
+      id="instructions"
+      formControlName="instructions"
+      autocomplete="off"
+      rows="3"
+    ></textarea>
+  </div>
+  @if (saving) {
+  <spinner />
+  } @else { @if (attemptedSave && !prescriptionInstructionForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  }
+  <div class="buttons">
+    <button (click)="addInstruction()" class="button button--primary">
+      Add other prescription
+    </button>
+    <button (click)="reset()" class="button button--secondary">Back</button>
+  </div>
+  }
+</form>
+}

@@ -1,0 +1,109 @@
+<div class="row">
+  <table>
+    <tbody>
+      <tr>
+        <td>Examiner</td>
+        <td>{{ exam.examiner.firstName }} {{ exam.examiner.lastName }}</td>
+      </tr>
+      <tr>
+        <td>Date</td>
+        <td>{{ exam.date | date: 'dd MMM yyyy HH:mm' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>Species</td>
+        <td>{{ exam.species.name }}</td>
+      </tr>
+      <tr>
+        <td>Age</td>
+        <td>{{ exam.speciesAge.name }}</td>
+      </tr>
+      <tr>
+        <td>Sex</td>
+        <td>{{ getSex(exam.sex) }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>Weight</td>
+        <td>
+          {{ exam.weightValue ? exam.weightValue +
+          getWeightUnit(exam.weightUnit) : '(blank)' }}
+        </td>
+      </tr>
+      <tr>
+        <td>Temperature</td>
+        <td>
+          {{ exam.temperatureValue ? exam.temperatureValue +
+          getTemperatureUnit(exam.temperatureUnit) : '(blank)' }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>Attitude</td>
+        <td>{{ exam.attitude?.description || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Body condition</td>
+        <td>{{ exam.bodyCondition?.description || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Dehydration</td>
+        <td>{{ exam.dehydration?.description || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Mucous membrane colour</td>
+        <td>{{ exam.mucousMembraneColour?.description || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Mucous membrane texture</td>
+        <td>{{ exam.mucousMembraneTexture?.description || '(blank)' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+@if (exam.treatmentInstructions.length > 0) {
+<table class="treatments">
+  <thead>
+    <tr>
+      <th>Treatment</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (instruction of exam.treatmentInstructions; track instruction.id) {
+    <tr>
+      <td>{{ instruction.instructions }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @if (exam.treatmentMedications.length > 0) {
+<table class="treatments">
+  <thead>
+    <tr>
+      <th>Quantity</th>
+      <th>Administration</th>
+      <th>Medication</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (medication of exam.treatmentMedications; track medication.id) {
+    <tr>
+      <td>{{ medication.quantityValue }}{{ medication.quantityUnit }}</td>
+      <td>{{ medication.administrationMethod.description }}</td>
+      <td>{{ medication.medication.name }}</td>
+      <td>{{ medication.comments }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+}

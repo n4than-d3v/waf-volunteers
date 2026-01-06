@@ -1,0 +1,81 @@
+<form [formGroup]="recheckForm">
+  @if (patient.rechecks.length > 0) {
+  <table>
+    <thead>
+      <tr>
+        <th>Due</th>
+        <th>For</th>
+        <th>Description</th>
+        <th>Performed on</th>
+        <th>Performed by</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (recheck of patient.rechecks; track recheck.id) {
+      <tr>
+        <td>{{ recheck.due | date: 'EEEE, dd MMM yyyy' }}</td>
+        <td>{{ getRecheckRoles(recheck.roles) }}</td>
+        <td>{{ recheck.description }}</td>
+        <td>
+          {{ recheck.rechecker?.firstName }} {{ recheck.rechecker?.lastName }}
+        </td>
+        <td>{{ recheck.rechecked | date: 'dd MMM yyyy HH:mm' }}</td>
+        <td>{{ recheck.comments }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  } @else {
+  <p><em>No rechecks have been added for this patient.</em></p>
+  }
+  <div class="flex">
+    @if (!adding) {
+    <button (click)="adding = true" class="button button--secondary">
+      Add recheck
+    </button>
+    } @else {
+    <div class="field">
+      <label for="due">
+        Due
+        <span class="required">*</span>
+      </label>
+      <input id="due" type="date" formControlName="due" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label for="roles">
+        For
+        <span class="required">*</span>
+      </label>
+      <select id="roles" formControlName="roles">
+        <option value="1">Veterinarian</option>
+        <option value="2">Technician</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="description">
+        Description
+        <span class="required">*</span>
+      </label>
+      <textarea
+        id="description"
+        type="text"
+        formControlName="description"
+        autocomplete="off"
+        rows="3"
+      ></textarea>
+    </div>
+    @if (saving) {
+    <spinner />
+    } @else { @if (attemptedSave && !recheckForm.valid) {
+    <div class="error">Please fill in all required fields</div>
+    }
+    <div class="buttons">
+      <button (click)="add()" class="button button--primary">
+        Add recheck
+      </button>
+      <button (click)="reset()" class="button button--secondary">Back</button>
+    </div>
+    } }
+  </div>
+</form>

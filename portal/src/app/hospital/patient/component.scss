@@ -1,30 +1,10 @@
-.row {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-
-  table {
-    flex: 1;
-    max-width: max-content;
-  }
-}
-
-table:not(:has(thead)) tbody {
-  td {
-    padding: 0.125rem 0.25rem;
-    border: none;
-  }
-
-  td:nth-child(2) {
-    font-weight: bold;
-    padding-left: 0.5rem;
-  }
-}
-
 section {
-  border: solid 2px var(--theme-primary);
-  padding: 0.5rem 0.75rem;
-  margin-top: 0.75rem;
+  padding: 0.35rem 1.5rem 0.75rem 0.65rem;
+  border-bottom: dotted 0px var(--theme-primary);
+  border: solid 1px rgb(215, 215, 215);
+  background-color: white;
+  margin-bottom: 0.75rem;
+  max-width: max-content;
 
   h3 {
     padding: 0.125rem 0.25rem;

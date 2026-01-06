@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Admission;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Services;
 using MediatR;
@@ -42,10 +43,12 @@ public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientRead
         await _repository.SaveChangesAsync();
 
         if (patient.Admitter == null) return Results.NoContent();
-        if (string.IsNullOrWhiteSpace(patient.Admitter.Email)) return Results.NoContent();
+        var admitter = patient.Admitter;
+        if (string.IsNullOrWhiteSpace(admitter.Email)) return Results.NoContent();
 
-        var admitterEmail = _encryptionService.Decrypt(patient.Admitter.Email, patient.Admitter.Salt);
-        var email = Email.External_PatientUpdate_ReadyForCollection(patient.Admitter.FullName, admitterEmail, patient.Species?.Name ?? "Unknown", patient.Admitted);
+        var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
+        var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
+        var email = Email.External_PatientUpdate_ReadyForCollection(admitterFullName, admitterEmail, patient.Species?.Name ?? "Unknown", patient.Admitted);
         await _emailService.SendEmailAsync(email);
 
         return Results.NoContent();

@@ -1,9 +1,10 @@
 .page {
   display: flex;
   gap: 1rem;
+  background-color: #f2f2f2;
 
   .sidebar {
-    background-color: #e0e0e0;
+    background-color: #dbe8d4;
     border-right: solid 1px black;
 
     .patients,
@@ -17,9 +18,9 @@
     flex-grow: 1;
     margin-top: 0.75rem;
     margin-right: 1.25rem;
+    min-height: calc(100vh - 9rem);
 
     .header {
-      border-bottom: solid 2px black;
     }
 
     .content {

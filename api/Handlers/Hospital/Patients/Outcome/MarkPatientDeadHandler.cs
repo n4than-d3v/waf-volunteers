@@ -72,15 +72,17 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         await _repository.SaveChangesAsync();
 
         if (patient.Admitter == null) return Results.NoContent();
-        if (string.IsNullOrWhiteSpace(patient.Admitter.Email)) return Results.NoContent();
+        var admitter = patient.Admitter;
+        if (string.IsNullOrWhiteSpace(admitter.Email)) return Results.NoContent();
 
         var communication = dispositionReason.Communication
-            .Replace("%NAME%", patient.Admitter.FullName)
+            .Replace("%NAME%", admitter.FullName)
             .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown")
             .Replace("%ADMITTED%", $"{patient.Admitted:dddd d MMMM}");
 
-        var admitterEmail = _encryptionService.Decrypt(patient.Admitter.Email, patient.Admitter.Salt);
-        var email = Email.External_PatientUpdate_Death(patient.Admitter.FullName, admitterEmail, communication);
+        var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
+        var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
+        var email = Email.External_PatientUpdate_Death(admitterFullName, admitterEmail, communication);
         await _emailService.SendEmailAsync(email);
 
         return Results.NoContent();

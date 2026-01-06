@@ -11,9 +11,15 @@ public class PatientRecheck : Entity
 
     public DateOnly Due { get; set; }
     public string Description { get; set; }
-    public AccountRoles Roles { get; set; }
+    public RecheckRoles Roles { get; set; }
 
     public Rechecker? Rechecker { get; set; }
     public DateTime? Rechecked { get; set; }
     public string? Comments { get; set; }
+}
+
+public enum RecheckRoles
+{
+    Vet = 1,
+    Technician = 2
 }

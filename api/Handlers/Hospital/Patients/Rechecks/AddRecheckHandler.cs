@@ -8,7 +8,7 @@ namespace Api.Handlers.Hospital.Patients.Rechecks;
 public class AddRecheck : IRequest<IResult>
 {
     public int PatientId { get; set; }
-    public AccountRoles Roles { get; set; }
+    public RecheckRoles Roles { get; set; }
     public string Description { get; set; }
     public DateOnly Due { get; set; }
 

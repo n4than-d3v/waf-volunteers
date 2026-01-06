@@ -1,0 +1,52 @@
+<div class="row">
+  <table>
+    <tbody>
+      @if (patient.status === PatientStatus.PendingInitialExam) {
+      <tr>
+        <td>Reference</td>
+        <td>{{ patient.reference }}</td>
+      </tr>
+      }
+      <tr>
+        <td>Suspected species</td>
+        <td>{{ patient.suspectedSpecies.description }}</td>
+      </tr>
+      <tr>
+        <td>Initial location</td>
+        <td>{{ patient.initialLocation.description }}</td>
+      </tr>
+      <tr>
+        <td>Admission reason</td>
+        <td>{{ formatAdmissionReasons(patient) }}</td>
+      </tr>
+      <tr>
+        <td>Date admitted</td>
+        <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
+      <tr>
+        <td>Found at</td>
+        <td>{{ patient.foundAt }}</td>
+      </tr>
+      <tr>
+        <td>Admitted by</td>
+        <td>{{ patient.admitter?.fullName || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Address</td>
+        <td>{{ patient.admitter?.address || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>{{ patient.admitter?.email || '(blank)' }}</td>
+      </tr>
+      <tr>
+        <td>Telephone</td>
+        <td>{{ patient.admitter?.telephone || '(blank)' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

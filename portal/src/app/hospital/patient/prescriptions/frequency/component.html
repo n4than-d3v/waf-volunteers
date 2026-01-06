@@ -1,0 +1,16 @@
+<div [formGroup]="formGroup" class="wrapper">
+  <label for="{{ id }}">
+    Frequency
+    <span class="required">*</span>
+  </label>
+  <select
+    id="{{ id }}"
+    type="text"
+    [(ngModel)]="search"
+    [ngModelOptions]="{standalone: true}"
+    (input)="onInput($event)"
+  >
+    <option>Every (N)</option>
+  </select>
+  <input type="hidden" [formControlName]="control" />
+</div>

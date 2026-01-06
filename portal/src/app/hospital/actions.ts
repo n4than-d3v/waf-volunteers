@@ -293,3 +293,47 @@ export const addRecheckSuccess = createAction(
   props<{ patientId: number }>()
 );
 export const addRecheckError = createAction('[HMS-V] Add recheck: error');
+
+// Add prescription medication
+
+export const addPrescriptionMedication = createAction(
+  '[HMS-V] Add prescription medication',
+  props<{
+    patientId: number;
+    start: string;
+    end: string;
+    frequency: string;
+    quantityValue: number;
+    quantityUnit: string;
+    administrationMethodId: number;
+    medicationId: number;
+    comments: string;
+  }>()
+);
+export const addPrescriptionMedicationSuccess = createAction(
+  '[HMS-V] Add prescription medication: success',
+  props<{ patientId: number }>()
+);
+export const addPrescriptionMedicationError = createAction(
+  '[HMS-V] Add prescription medication: error'
+);
+
+// Add prescription instruction
+
+export const addPrescriptionInstruction = createAction(
+  '[HMS-V] Add prescription instruction',
+  props<{
+    patientId: number;
+    start: string;
+    end: string;
+    frequency: string;
+    instructions: string;
+  }>()
+);
+export const addPrescriptionInstructionSuccess = createAction(
+  '[HMS-V] Add prescription instruction: success',
+  props<{ patientId: number }>()
+);
+export const addPrescriptionInstructionError = createAction(
+  '[HMS-V] Add prescription instruction: error'
+);

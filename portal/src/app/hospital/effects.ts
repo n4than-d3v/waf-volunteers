@@ -91,6 +91,12 @@ import {
   addRecheck,
   addRecheckSuccess,
   addRecheckError,
+  addPrescriptionInstruction,
+  addPrescriptionInstructionSuccess,
+  addPrescriptionInstructionError,
+  addPrescriptionMedication,
+  addPrescriptionMedicationSuccess,
+  addPrescriptionMedicationError,
 } from './actions';
 
 @Injectable()
@@ -538,6 +544,62 @@ export class HospitalEffects {
   addRecheckSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addRecheckSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Add prescription instruction
+
+  addPrescriptionInstruction$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addPrescriptionInstruction),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/patients/${action.patientId}/prescriptions/instruction`,
+            action
+          )
+          .pipe(
+            map(() =>
+              addPrescriptionInstructionSuccess({ patientId: action.patientId })
+            ),
+            catchError(() => of(addPrescriptionInstructionError()))
+          )
+      )
+    )
+  );
+
+  addPrescriptionInstructionSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addPrescriptionInstructionSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Add prescription medication
+
+  addPrescriptionMedication$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addPrescriptionMedication),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/patients/${action.patientId}/prescriptions/medication`,
+            action
+          )
+          .pipe(
+            map(() =>
+              addPrescriptionMedicationSuccess({ patientId: action.patientId })
+            ),
+            catchError(() => of(addPrescriptionMedicationError()))
+          )
+      )
+    )
+  );
+
+  addPrescriptionMedicationSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addPrescriptionMedicationSuccess),
       switchMap((action) => of(getPatient({ id: action.patientId })))
     )
   );

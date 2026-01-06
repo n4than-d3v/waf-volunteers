@@ -71,6 +71,12 @@ import {
   addRecheck,
   addRecheckSuccess,
   addRecheckError,
+  addPrescriptionInstruction,
+  addPrescriptionMedication,
+  addPrescriptionInstructionSuccess,
+  addPrescriptionMedicationSuccess,
+  addPrescriptionInstructionError,
+  addPrescriptionMedicationError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -652,5 +658,39 @@ export const hospitalReducer = createReducer<HospitalState>(
       loading: false,
       error: true,
     },
-  }))
+  })),
+  // Add prescription
+  on(addPrescriptionInstruction, addPrescriptionMedication, (state) => ({
+    ...state,
+    addPrescription: {
+      ...state.addPrescription,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(
+    addPrescriptionInstructionSuccess,
+    addPrescriptionMedicationSuccess,
+    (state) => ({
+      ...state,
+      addPrescription: {
+        ...state.addPrescription,
+        loading: false,
+        success: true,
+      },
+    })
+  ),
+  on(
+    addPrescriptionInstructionError,
+    addPrescriptionMedicationError,
+    (state) => ({
+      ...state,
+      addPrescription: {
+        ...state.addPrescription,
+        loading: false,
+        error: true,
+      },
+    })
+  )
 );

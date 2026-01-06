@@ -1,5 +1,6 @@
 table {
   width: 100%;
+  margin-bottom: 0.75rem;
 
   td,
   th {
@@ -8,11 +9,6 @@ table {
     border-left: none;
     border-right: none;
     align-content: flex-start;
-  }
-
-  td:not(:nth-child(3)),
-  th:not(:nth-child(3)) {
-    min-width: 10rem;
   }
 
   th {

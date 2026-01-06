@@ -9,11 +9,16 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { getAdministrationMethods } from '../../actions';
+import {
+  addPrescriptionInstruction,
+  addPrescriptionMedication,
+  getAdministrationMethods,
+} from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { HospitalPatientMedicationSelectorComponent } from '../medication-selector/component';
 import { Observable } from 'rxjs';
 import { selectAdministrationMethods } from '../../selectors';
+import { HospitalPatientPrescriptionsFrequencyComponent } from './frequency/component';
 
 @Component({
   selector: 'hospital-patient-prescriptions',
@@ -25,6 +30,7 @@ import { selectAdministrationMethods } from '../../selectors';
     DatePipe,
     SpinnerComponent,
     HospitalPatientMedicationSelectorComponent,
+    HospitalPatientPrescriptionsFrequencyComponent,
     FormsModule,
     ReactiveFormsModule,
   ],
@@ -76,16 +82,43 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
   }
 
   addMedication() {
+    console.log(this.prescriptionMedicationForm.value);
     this.attemptedSave = true;
     if (!this.prescriptionMedicationForm.valid) return;
     this.saving = true;
-    // Dispatch action to add medication
+    this.store.dispatch(
+      addPrescriptionMedication({
+        patientId: this.patient.id,
+        start: this.prescriptionMedicationForm.value.start!,
+        end: this.prescriptionMedicationForm.value.end!,
+        frequency: this.prescriptionMedicationForm.value.frequency!,
+        quantityValue: Number(
+          this.prescriptionMedicationForm.value.quantityValue!
+        ),
+        quantityUnit: this.prescriptionMedicationForm.value.quantityUnit!,
+        administrationMethodId: Number(
+          this.prescriptionMedicationForm.value.administrationMethodId!
+        ),
+        medicationId: Number(
+          this.prescriptionMedicationForm.value.medicationId!
+        ),
+        comments: this.prescriptionMedicationForm.value.comments || '',
+      })
+    );
   }
 
   addInstruction() {
     this.attemptedSave = true;
     if (!this.prescriptionInstructionForm.valid) return;
     this.saving = true;
-    // Dispatch action to add instruction
+    this.store.dispatch(
+      addPrescriptionInstruction({
+        patientId: this.patient.id,
+        start: this.prescriptionInstructionForm.value.start!,
+        end: this.prescriptionInstructionForm.value.end!,
+        frequency: this.prescriptionInstructionForm.value.frequency!,
+        instructions: this.prescriptionInstructionForm.value.instructions || '',
+      })
+    );
   }
 }

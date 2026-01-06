@@ -1,9 +1,57 @@
 @if (patient.prescriptionInstructions.length === 0 &&
 patient.prescriptionMedications.length === 0) {
 <p><em>No prescriptions have been added for this patient.</em></p>
-} @if (patient.prescriptionInstructions.length > 0) { } @if
-(patient.prescriptionMedications.length > 0) { } @if (!(addingMedication ||
-addingInstruction)) {
+} @if (patient.prescriptionMedications.length > 0) {
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>End</th>
+      <th>Frequency</th>
+      <th>Quantity</th>
+      <th>Administration</th>
+      <th>Medication</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (prescription of patient.prescriptionMedications; track
+    prescription.id) {
+    <tr>
+      <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.frequency }}</td>
+      <td>{{ prescription.quantityValue }}{{ prescription.quantityUnit }}</td>
+      <td>{{ prescription.administrationMethod.description }}</td>
+      <td>{{ prescription.medication.name }}</td>
+      <td>{{ prescription.comments }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @if (patient.prescriptionInstructions.length > 0) {
+<table>
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>End</th>
+      <th>Frequency</th>
+      <th>Prescription</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (prescription of patient.prescriptionInstructions; track
+    prescription.id) {
+    <tr>
+      <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.frequency }}</td>
+      <td>{{ prescription.instructions }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @if (!(addingMedication || addingInstruction)) {
 <div class="buttons">
   <button (click)="addingMedication = true" class="button button--secondary">
     Add medication
@@ -34,6 +82,13 @@ addingInstruction)) {
       </label>
       <input id="end" type="date" formControlName="end" autocomplete="off" />
     </div>
+    <div class="field">
+      <hospital-patient-prescriptions-frequency
+        [id]="'frequency'"
+        [control]="'frequency'"
+        [formGroup]="prescriptionMedicationForm"
+      ></hospital-patient-prescriptions-frequency>
+    </div>
   </div>
   <div class="fields">
     <div class="field">
@@ -44,7 +99,7 @@ addingInstruction)) {
       <div class="input-with-units">
         <input
           id="quantity"
-          type="text"
+          type="number"
           formControlName="quantityValue"
           autocomplete="off"
         />
@@ -129,10 +184,17 @@ addingInstruction)) {
       </label>
       <input id="end" type="date" formControlName="end" autocomplete="off" />
     </div>
+    <div class="field">
+      <hospital-patient-prescriptions-frequency
+        [id]="'frequency'"
+        [control]="'frequency'"
+        [formGroup]="prescriptionInstructionForm"
+      ></hospital-patient-prescriptions-frequency>
+    </div>
   </div>
   <div class="field">
     <label for="instructions">
-      Instruction
+      Prescription
       <span class="required">*</span>
     </label>
     <textarea

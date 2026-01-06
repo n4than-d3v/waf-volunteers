@@ -20,6 +20,7 @@ export interface HospitalState {
   // Tasks
   addNote: Task;
   addRecheck: Task;
+  addPrescription: Task;
   movePatient: Task;
 
   // Patient details
@@ -234,14 +235,26 @@ export interface ListExam {
   comments: string;
 }
 
-export interface PrescriptionInstruction {
+export interface PrescriptionInstruction extends TreatmentInstruction {
+  start: string;
+  end: string;
+  frequency: string;
+  administrations: Administration[];
+}
+
+export interface TreatmentInstruction {
   id: number;
   instructions: string;
 }
 
-export interface TreatmentInstruction extends PrescriptionInstruction {}
+export interface PrescriptionMedication extends TreatmentMedication {
+  start: string;
+  end: string;
+  frequency: string;
+  administrations: Administration[];
+}
 
-export interface PrescriptionMedication {
+export interface TreatmentMedication {
   id: number;
   quantityValue: number;
   quantityUnit: string;
@@ -250,7 +263,11 @@ export interface PrescriptionMedication {
   comments: string;
 }
 
-export interface TreatmentMedication extends PrescriptionMedication {}
+export interface Administration {
+  administrator: { firstName: string; lastName: string };
+  success: boolean;
+  comments: string;
+}
 
 export interface Attitude {
   id: number;
@@ -411,6 +428,12 @@ const createWrapper = <T>(): Wrapper<T> => ({
   updated: false,
 });
 
+const createTask = (): Task => ({
+  loading: false,
+  success: false,
+  error: false,
+});
+
 export const initialHospitalState: HospitalState = {
   tab: { code: 'DASHBOARD', title: 'Dashboard' },
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
@@ -430,29 +453,10 @@ export const initialHospitalState: HospitalState = {
   medications: createReadOnlyWrapper<Medication[]>(),
   areas: createReadOnlyWrapper<Area[]>(),
   species: createReadOnlyWrapper<Species[]>(),
-  performExam: {
-    loading: false,
-    success: false,
-    error: false,
-  },
-  setDisposition: {
-    loading: false,
-    success: false,
-    error: false,
-  },
-  addNote: {
-    loading: false,
-    success: false,
-    error: false,
-  },
-  addRecheck: {
-    loading: false,
-    success: false,
-    error: false,
-  },
-  movePatient: {
-    loading: false,
-    success: false,
-    error: false,
-  },
+  performExam: createTask(),
+  setDisposition: createTask(),
+  addNote: createTask(),
+  addRecheck: createTask(),
+  addPrescription: createTask(),
+  movePatient: createTask(),
 };

@@ -118,3 +118,8 @@ export const selectAddRecheck = createSelector(
   selectHospitalState,
   (state) => state.addRecheck
 );
+
+export const selectAddPrescription = createSelector(
+  selectHospitalState,
+  (state) => state.addPrescription
+);

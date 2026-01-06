@@ -174,6 +174,7 @@ public static class ViewPatientExtensions
         return x
             .Include(y => y.PrescriptionInstructions).ThenInclude(p => p.Administrations).ThenInclude(a => a.Administrator)
             .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Administrations).ThenInclude(a => a.Administrator)
+            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.AdministrationMethod)
             .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.ActiveSubstances)
             .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.PharmaceuticalForm)
             .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.TargetSpecies)

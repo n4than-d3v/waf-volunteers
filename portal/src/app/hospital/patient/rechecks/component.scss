@@ -10,11 +10,6 @@ table {
     align-content: flex-start;
   }
 
-  td:not(:nth-child(3)),
-  th:not(:nth-child(3)) {
-    min-width: 10rem;
-  }
-
   th {
     background-color: var(--theme-color-5);
   }

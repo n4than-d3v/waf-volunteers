@@ -1,53 +1,36 @@
-input[type="text"] {
+input[type="text"],
+input[type="number"],
+select {
   padding: 0.25rem;
   max-width: max-content;
 }
 
-a {
-  color: var(--theme-primary);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.wrapper {
-  position: relative;
-
-  .selector {
-    position: absolute;
-    top: 4rem;
-    width: 30rem;
-    background-color: rgb(222, 222, 222);
-    border: solid 1px rgb(71, 71, 71);
-
-    ul {
-      list-style: none;
-      max-width: max-content;
-
-      li {
-        cursor: pointer;
-        padding: 0.125rem 0.25rem;
-      }
-
-      li:focus,
-      li:hover,
-      li:active {
-        background-color: rgb(200, 200, 200);
-        outline: none;
-      }
-
-      li:not(:last-child) {
-        border-bottom: solid 1px rgb(150, 150, 150);
-      }
-    }
-  }
-}
-
-.clear-input {
+.flex {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 1rem;
+}
+
+.input-with-units {
+  display: flex;
   align-items: center;
 
+  span {
+    display: block;
+    margin-right: 0.5rem;
+  }
+
   input {
-    cursor: not-allowed;
+    max-width: 6ch;
+    text-align: right;
+    border-top-right-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+    border-right: none;
+  }
+
+  select {
+    max-width: max-content;
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
   }
 }

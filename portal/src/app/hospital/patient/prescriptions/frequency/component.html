@@ -3,14 +3,52 @@
     Frequency
     <span class="required">*</span>
   </label>
-  <select
-    id="{{ id }}"
-    type="text"
-    [(ngModel)]="search"
-    [ngModelOptions]="{standalone: true}"
-    (input)="onInput($event)"
-  >
-    <option>Every (N)</option>
-  </select>
+  <div class="flex">
+    <select [(ngModel)]="frequencyType" [ngModelOptions]="{standalone: true}">
+      <option value=""></option>
+      <option value="rate">Rate (X times per Y)</option>
+      <option value="interval">Interval (Every X Y)</option>
+    </select>
+    @if (frequencyType === 'rate') {
+    <div class="input-with-units">
+      <input
+        id="{{ id }}"
+        [(ngModel)]="x"
+        [ngModelOptions]="{standalone: true}"
+        (change)="update()"
+        type="number"
+      />
+      <select
+        [(ngModel)]="y"
+        [ngModelOptions]="{standalone: true}"
+        (change)="update()"
+      >
+        <option>times per hour</option>
+        <option>times per day</option>
+        <option>times per week</option>
+      </select>
+    </div>
+    } @else if (frequencyType === 'interval') {
+    <div class="input-with-units">
+      <span>Every</span>
+      <input
+        id="{{ id }}"
+        [(ngModel)]="x"
+        [ngModelOptions]="{standalone: true}"
+        type="number"
+        (change)="update()"
+      />
+      <select
+        [(ngModel)]="y"
+        [ngModelOptions]="{standalone: true}"
+        (change)="update()"
+      >
+        <option>hours</option>
+        <option>days</option>
+        <option>weeks</option>
+      </select>
+    </div>
+    }
+  </div>
   <input type="hidden" [formControlName]="control" />
 </div>

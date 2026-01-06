@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'hospital-patient-medication-selector',
+  selector: 'hospital-patient-prescriptions-frequency',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
@@ -21,4 +21,19 @@ export class HospitalPatientPrescriptionsFrequencyComponent {
   @Input({ required: true }) id!: string;
   @Input({ required: true }) control!: string;
   @Input({ required: true }) formGroup!: FormGroup;
+
+  frequencyType: '' | 'rate' | 'interval' = '';
+
+  x: number | null = null;
+  y: string | null = null;
+
+  update() {
+    if (this.frequencyType === 'rate') {
+      this.formGroup.controls[this.control].setValue(`${this.x} ${this.y}`);
+    } else if (this.frequencyType === 'interval') {
+      this.formGroup.controls[this.control].setValue(
+        `Every ${this.x} ${this.y}`
+      );
+    }
+  }
 }

@@ -1,0 +1,69 @@
+<div class="wrapper">
+  <p>Species variant default:</p>
+  <div [innerHTML]="getHtml(patient.speciesVariant?.feedingGuidance)"></div>
+  @if (patient.diets.length > 0) {
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Diet</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (diet of patient.diets; track diet.id) {
+        <tr>
+          <td>{{ diet.name }}</td>
+          <td [innerHTML]="getHtml(diet.description)"></td>
+          <td>
+            @if (removing === diet.id) {
+            <spinner />
+            } @else if (patient.status != PatientStatus.Dispositioned) {
+            <button (click)="remove(diet.id)" class="button button--none">
+              🗑️
+            </button>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @if (!adding) { @if (patient.status != PatientStatus.Dispositioned) {
+  <div class="buttons">
+    <button (click)="adding = true" class="button button--secondary-invert">
+      🍔 Add instruction
+    </button>
+  </div>
+  } } @else {
+  <form [formGroup]="dietForm">
+    <div class="field">
+      <label for="diet">
+        Diet
+        <span class="required">*</span>
+      </label>
+      <select id="diet" formControlName="dietId">
+        <option value=""></option>
+        @if (diets$ | async; as diets) { @if (diets.loading) {
+        <spinner />
+        } @else if (diets.error) {
+        <div class="error">Error occurred</div>
+        } @else if (diets.data) { @for (diet of diets.data; track diet.id) {
+        <option [value]="diet.id">{{ diet.name }}</option>
+        } }}
+      </select>
+    </div>
+    @if (saving) {
+    <spinner />
+    } @else { @if (attemptedSave && !dietForm.valid) {
+    <div class="error">Please fill in all required fields</div>
+    }
+    <div class="buttons">
+      <button (click)="add()" class="button button--primary">Save</button>
+      <button (click)="reset()" class="button button--secondary">Back</button>
+    </div>
+    }
+  </form>
+  }
+</div>

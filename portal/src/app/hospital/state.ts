@@ -20,7 +20,9 @@ export interface HospitalState {
   // Tasks
   addNote: Task;
   addRecheck: Task;
+  removeRecheck: Task;
   addPrescription: Task;
+  removePrescription: Task;
   movePatient: Task;
 
   // Patient details
@@ -142,8 +144,15 @@ export interface Patient extends ListPatient {
   prescriptionMedications: PrescriptionMedication[];
   prescriptionInstructions: PrescriptionInstruction[];
   notes: ListNote[];
-  movements: {}[];
+  movements: Movement[];
   homeCareMessages: {}[];
+}
+
+export interface Movement {
+  id: number;
+  moved: string;
+  from: Pen;
+  to: Pen;
 }
 
 export function getSex(sex: number): string {
@@ -316,6 +325,27 @@ export enum Disposition {
   PtsAfter24Hrs = 7,
 }
 
+export function getDisposition(patient: ListPatient) {
+  switch (patient.disposition) {
+    case 1:
+      return 'Released';
+    case 2:
+      return 'Transferred';
+    case 3:
+      return 'Dead on arrival';
+    case 4:
+      return 'Died before 24 hrs';
+    case 5:
+      return 'Died after 24 hrs';
+    case 6:
+      return 'Put to sleep before 24 hrs';
+    case 7:
+      return 'Put to sleep after 24 hrs';
+    default:
+      return 'Unknown';
+  }
+}
+
 export interface DispositionReason {
   id: number;
   description: string;
@@ -457,6 +487,8 @@ export const initialHospitalState: HospitalState = {
   setDisposition: createTask(),
   addNote: createTask(),
   addRecheck: createTask(),
+  removeRecheck: createTask(),
   addPrescription: createTask(),
+  removePrescription: createTask(),
   movePatient: createTask(),
 };

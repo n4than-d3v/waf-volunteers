@@ -120,6 +120,17 @@ input[type="file"] {
   color: white;
 }
 
+.button--none {
+  background-color: transparent;
+  padding: 0rem;
+}
+
+.button--secondary-invert {
+  background-color: transparent;
+  color: var(--theme-color-1);
+  border: solid 2px var(--theme-color-1);
+}
+
 .error {
   border-left: solid 5px #531e23;
   background-color: #d7a8ad;

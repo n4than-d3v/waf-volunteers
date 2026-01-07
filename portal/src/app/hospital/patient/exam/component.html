@@ -1,4 +1,4 @@
-<form [formGroup]="examForm" (submit)="performExam()">
+<form [formGroup]="examForm">
   <div class="row">
     <div class="exam-section">
       <h4>Identification</h4>
@@ -315,6 +315,8 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="row">
     <div class="exam-section">
       <h4>Comments</h4>
       <div class="fields">
@@ -439,7 +441,7 @@
   <div class="error">Please fill in all required fields</div>
   } @if (!saving) {
   <div class="buttons">
-    <button class="button button--primary">Save</button>
+    <button (click)="performExam()" class="button button--primary">Save</button>
   </div>
   } @else {
   <spinner></spinner>

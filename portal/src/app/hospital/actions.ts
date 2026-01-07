@@ -248,6 +248,30 @@ export const markPatientReadyForReleaseError = createAction(
   '[HMS-V] Mark patient ready for release: error'
 );
 
+export const markPatientReleased = createAction(
+  '[HMS-V] Mark patient as released',
+  props<{ patientId: number; releaseTypeId: number }>()
+);
+export const markPatientReleasedSuccess = createAction(
+  '[HMS-V] Mark patient as released: success',
+  props<{ patientId: number }>()
+);
+export const markPatientReleasedError = createAction(
+  '[HMS-V] Mark patient as released: error'
+);
+
+export const markPatientTransferred = createAction(
+  '[HMS-V] Mark patient as transferred',
+  props<{ patientId: number; transferLocationId: number }>()
+);
+export const markPatientTransferredSuccess = createAction(
+  '[HMS-V] Mark patient as transferred: success',
+  props<{ patientId: number }>()
+);
+export const markPatientTransferredError = createAction(
+  '[HMS-V] Mark patient as transferred: error'
+);
+
 // Move
 
 export const movePatient = createAction(
@@ -336,4 +360,75 @@ export const addPrescriptionInstructionSuccess = createAction(
 );
 export const addPrescriptionInstructionError = createAction(
   '[HMS-V] Add prescription instruction: error'
+);
+
+// Remove recheck
+
+export const removeRecheck = createAction(
+  '[HMS-V] Remove recheck',
+  props<{
+    patientId: number;
+    patientRecheckId: number;
+  }>()
+);
+export const removeRecheckSuccess = createAction(
+  '[HMS-V] Remove recheck: success',
+  props<{ patientId: number }>()
+);
+export const removeRecheckError = createAction('[HMS-V] Remove recheck: error');
+
+// Remove prescription medication
+
+export const removePrescriptionMedication = createAction(
+  '[HMS-V] Remove prescription medication',
+  props<{
+    patientId: number;
+    patientPrescriptionMedicationId: number;
+  }>()
+);
+export const removePrescriptionMedicationSuccess = createAction(
+  '[HMS-V] Remove prescription medication: success',
+  props<{ patientId: number }>()
+);
+export const removePrescriptionMedicationError = createAction(
+  '[HMS-V] Remove prescription medication: error'
+);
+
+// Remove prescription instruction
+
+export const removePrescriptionInstruction = createAction(
+  '[HMS-V] Remove prescription instruction',
+  props<{
+    patientId: number;
+    patientPrescriptionInstructionId: number;
+  }>()
+);
+export const removePrescriptionInstructionSuccess = createAction(
+  '[HMS-V] Remove prescription instruction: success',
+  props<{ patientId: number }>()
+);
+export const removePrescriptionInstructionError = createAction(
+  '[HMS-V] Remove prescription instruction: error'
+);
+
+// Update basic details
+
+export const updatePatientBasicDetails = createAction(
+  '[HMS-V] Update patient basic details',
+  props<{
+    patientId: number;
+    name: string;
+    uniqueIdentifier: string;
+    speciesId: number;
+    speciesVariantId: number;
+    tagIds: number[];
+    dietIds: number[];
+  }>()
+);
+export const updatePatientBasicDetailsSuccess = createAction(
+  '[HMS-V] Update patient basic details: success',
+  props<{ patientId: number }>()
+);
+export const updatePatientBasicDetailsError = createAction(
+  '[HMS-V] Update patient basic details: error'
 );

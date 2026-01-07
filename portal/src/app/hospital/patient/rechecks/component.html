@@ -9,6 +9,7 @@
         <th>Performed on</th>
         <th>Performed by</th>
         <th>Comments</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -22,6 +23,15 @@
         </td>
         <td>{{ recheck.rechecked | date: 'dd MMM yyyy HH:mm' }}</td>
         <td>{{ recheck.comments }}</td>
+        <td>
+          @if (removing === recheck.id) {
+          <spinner />
+          } @else if (patient.status != PatientStatus.Dispositioned) {
+          <button (click)="remove(recheck.id)" class="button button--warning">
+            🗑️
+          </button>
+          }
+        </td>
       </tr>
       }
     </tbody>
@@ -30,11 +40,11 @@
   <p><em>No rechecks have been added for this patient.</em></p>
   }
   <div class="flex">
-    @if (!adding) {
-    <button (click)="adding = true" class="button button--secondary">
-      Add recheck
+    @if (!adding) { @if (patient.status != PatientStatus.Dispositioned) {
+    <button (click)="adding = true" class="button button--secondary-invert">
+      🩺 Add recheck
     </button>
-    } @else {
+    } } @else {
     <div class="field">
       <label for="due">
         Due
@@ -71,9 +81,7 @@
     <div class="error">Please fill in all required fields</div>
     }
     <div class="buttons">
-      <button (click)="add()" class="button button--primary">
-        Add recheck
-      </button>
+      <button (click)="add()" class="button button--primary">Save</button>
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     } }

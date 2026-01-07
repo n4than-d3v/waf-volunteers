@@ -14,7 +14,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { addNote, addRecheck } from '../../actions';
+import { addNote, addRecheck, removeRecheck } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 
 @Component({
@@ -29,9 +29,13 @@ export class HospitalPatientRechecksComponent {
 
   constructor(private store: Store) {}
 
+  PatientStatus = PatientStatus;
+
   adding = false;
   saving = false;
   attemptedSave = false;
+
+  removing: number | null = null;
 
   recheckForm = new FormGroup({
     roles: new FormControl('', [Validators.required]),
@@ -56,6 +60,16 @@ export class HospitalPatientRechecksComponent {
   reset() {
     this.recheckForm.reset();
     this.adding = false;
+  }
+
+  remove(patientRecheckId: number) {
+    this.removing = patientRecheckId;
+    this.store.dispatch(
+      removeRecheck({
+        patientId: this.patient.id,
+        patientRecheckId,
+      })
+    );
   }
 
   getRecheckRoles = getRecheckRoles;

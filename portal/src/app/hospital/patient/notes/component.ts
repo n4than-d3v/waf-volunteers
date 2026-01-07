@@ -23,6 +23,8 @@ export class HospitalPatientNotesComponent {
 
   constructor(private store: Store) {}
 
+  PatientStatus = PatientStatus;
+
   adding = false;
   saving = false;
 

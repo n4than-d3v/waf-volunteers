@@ -131,6 +131,10 @@ public partial class Program
             .AddNote("Create prescription instruction")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalPatient.MapDelete("/prescriptions/instruction/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveInstructionPrescription { PrescriptionInstructionId = id }))
+            .AddNote("Remove prescription instruction")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalPatient.MapPost("/prescriptions/instruction/{id:int}/administer", (IMediator mediator, int id, PerformInstructionPrescription request) => mediator.Send(request.WithId(id)))
             .AddNote("Administer prescription instruction")
             .RequireAuthorization(vetOrAuxPolicy);
@@ -139,12 +143,20 @@ public partial class Program
             .AddNote("Create prescription medication")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalPatient.MapDelete("/prescriptions/medication/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveMedicationPrescription { PrescriptionMedicationId = id }))
+            .AddNote("Remove prescription medication")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalPatient.MapPost("/prescriptions/medication/{id:int}/administer", (IMediator mediator, int id, PerformMedicationPrescription request) => mediator.Send(request.WithId(id)))
             .AddNote("Administer prescription medication")
             .RequireAuthorization(vetOrAuxPolicy);
 
         apiHospitalPatient.MapPost("/{id:int}/recheck", (IMediator mediator, int id, AddRecheck request) => mediator.Send(request.WithId(id)))
             .AddNote("Create recheck")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapDelete("/recheck/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveRecheck { PatientRecheckId = id }))
+            .AddNote("Remove recheck")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalPatient.MapPost("/recheck/{id:int}/perform", (IMediator mediator, int id, PerformRecheck request) => mediator.Send(request.WithId(id)))

@@ -1,3 +1,11 @@
+.wrapper {
+  padding: 0.125rem 0.25rem;
+}
+
+p {
+  font-size: 1rem;
+}
+
 .row {
   display: flex;
   gap: 2.5rem;
@@ -8,6 +16,10 @@
     flex: 1;
     max-width: max-content;
   }
+}
+
+.field {
+  margin-bottom: 1rem;
 }
 
 table:not(:has(thead)) tbody {
@@ -27,18 +39,33 @@ table:not(:has(thead)) tbody {
   }
 }
 
-.fields {
-  margin-top: 1rem;
+table:has(thead) {
+  width: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
 
-  .field {
-    margin-bottom: 0.5rem;
+  td,
+  th {
+    font-size: 1rem;
+    padding: 0.125rem 0.25rem;
+    border-left: none;
+    border-right: none;
+    align-content: flex-start;
+  }
+
+  th {
+    background-color: var(--theme-color-5);
+  }
+
+  tr {
+    background-color: transparent !important;
   }
 }
 
 .buttons {
   display: flex;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 
   button {
     padding: 0.125rem 0.25rem;

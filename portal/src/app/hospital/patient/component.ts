@@ -13,6 +13,10 @@ import { HospitalPatientViewExamComponent } from './view-exam/component';
 import { HospitalPatientNotesComponent } from './notes/component';
 import { HospitalPatientRechecksComponent } from './rechecks/component';
 import { HospitalPatientPrescriptionsComponent } from './prescriptions/component';
+import { HospitalPatientLocationComponent } from './location/component';
+import { HospitalPatientDietsComponent } from './diets/component';
+import { HospitalPatientTagsComponent } from './tags/component';
+import { HospitalPatientStatusComponent } from './status/component';
 
 @Component({
   selector: 'hospital-patient',
@@ -25,6 +29,10 @@ import { HospitalPatientPrescriptionsComponent } from './prescriptions/component
     HospitalPatientExamComponent,
     HospitalPatientAdmissionComponent,
     HospitalPatientDetailsComponent,
+    HospitalPatientStatusComponent,
+    HospitalPatientLocationComponent,
+    HospitalPatientDietsComponent,
+    HospitalPatientTagsComponent,
     HospitalPatientViewExamComponent,
     HospitalPatientNotesComponent,
     HospitalPatientRechecksComponent,

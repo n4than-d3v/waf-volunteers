@@ -77,6 +77,21 @@ import {
   addPrescriptionMedicationSuccess,
   addPrescriptionInstructionError,
   addPrescriptionMedicationError,
+  removeRecheck,
+  removeRecheckSuccess,
+  removeRecheckError,
+  removePrescriptionInstruction,
+  removePrescriptionMedication,
+  removePrescriptionInstructionSuccess,
+  removePrescriptionMedicationSuccess,
+  removePrescriptionInstructionError,
+  removePrescriptionMedicationError,
+  markPatientReleased,
+  markPatientTransferred,
+  markPatientReleasedSuccess,
+  markPatientTransferredSuccess,
+  markPatientReleasedError,
+  markPatientTransferredError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -556,31 +571,49 @@ export const hospitalReducer = createReducer<HospitalState>(
     },
   })),
   // Set disposition
-  on(markPatientDead, markPatientReadyForRelease, (state) => ({
-    ...state,
-    setDisposition: {
-      ...state.setDisposition,
-      loading: true,
-      success: false,
-      error: false,
-    },
-  })),
-  on(markPatientDeadSuccess, markPatientReadyForReleaseSuccess, (state) => ({
-    ...state,
-    setDisposition: {
-      ...state.setDisposition,
-      loading: false,
-      success: true,
-    },
-  })),
-  on(markPatientDeadError, markPatientReadyForReleaseError, (state) => ({
-    ...state,
-    setDisposition: {
-      ...state.setDisposition,
-      loading: false,
-      error: true,
-    },
-  })),
+  on(
+    markPatientDead,
+    markPatientReadyForRelease,
+    markPatientReleased,
+    markPatientTransferred,
+    (state) => ({
+      ...state,
+      setDisposition: {
+        ...state.setDisposition,
+        loading: true,
+        success: false,
+        error: false,
+      },
+    })
+  ),
+  on(
+    markPatientDeadSuccess,
+    markPatientReadyForReleaseSuccess,
+    markPatientReleasedSuccess,
+    markPatientTransferredSuccess,
+    (state) => ({
+      ...state,
+      setDisposition: {
+        ...state.setDisposition,
+        loading: false,
+        success: true,
+      },
+    })
+  ),
+  on(
+    markPatientDeadError,
+    markPatientReadyForReleaseError,
+    markPatientReleasedError,
+    markPatientTransferredError,
+    (state) => ({
+      ...state,
+      setDisposition: {
+        ...state.setDisposition,
+        loading: false,
+        error: true,
+      },
+    })
+  ),
   // Move patient
   on(movePatient, (state) => ({
     ...state,
@@ -688,6 +721,66 @@ export const hospitalReducer = createReducer<HospitalState>(
       ...state,
       addPrescription: {
         ...state.addPrescription,
+        loading: false,
+        error: true,
+      },
+    })
+  ),
+  // Remove recheck
+  on(removeRecheck, (state) => ({
+    ...state,
+    removeRecheck: {
+      ...state.removeRecheck,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(removeRecheckSuccess, (state) => ({
+    ...state,
+    removeRecheck: {
+      ...state.removeRecheck,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(removeRecheckError, (state) => ({
+    ...state,
+    removeRecheck: {
+      ...state.removeRecheck,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Remove prescription
+  on(removePrescriptionInstruction, removePrescriptionMedication, (state) => ({
+    ...state,
+    removePrescription: {
+      ...state.removePrescription,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(
+    removePrescriptionInstructionSuccess,
+    removePrescriptionMedicationSuccess,
+    (state) => ({
+      ...state,
+      removePrescription: {
+        ...state.removePrescription,
+        loading: false,
+        success: true,
+      },
+    })
+  ),
+  on(
+    removePrescriptionInstructionError,
+    removePrescriptionMedicationError,
+    (state) => ({
+      ...state,
+      removePrescription: {
+        ...state.removePrescription,
         loading: false,
         error: true,
       },

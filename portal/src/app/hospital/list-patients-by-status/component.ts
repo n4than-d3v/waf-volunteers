@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription, timer } from 'rxjs';
 import {
+  getDisposition,
   ListPatient,
   PatientStatus,
   ReadOnlyWrapper,
@@ -27,6 +28,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   _status: PatientStatus | null = null;
 
   PatientStatus = PatientStatus;
+  getDisposition = getDisposition;
 
   patients$: Observable<ReadOnlyWrapper<ListPatient[]>>;
 

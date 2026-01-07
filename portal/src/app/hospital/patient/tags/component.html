@@ -1,0 +1,68 @@
+<div class="wrapper">
+  <p>Tags to provide instructions for husbandry.</p>
+  @if (patient.tags.length > 0) {
+  <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Tag</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (tag of patient.tags; track tag.id) {
+        <tr>
+          <td>{{ tag.name }}</td>
+          <td [innerHTML]="getHtml(tag.description)"></td>
+          <td>
+            @if (removing === tag.id) {
+            <spinner />
+            } @else if (patient.status != PatientStatus.Dispositioned) {
+            <button (click)="remove(tag.id)" class="button button--none">
+              🗑️
+            </button>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  } @if (!adding) { @if (patient.status != PatientStatus.Dispositioned) {
+  <div class="buttons">
+    <button (click)="adding = true" class="button button--secondary-invert">
+      🏷️ Add tag
+    </button>
+  </div>
+  } } @else {
+  <form [formGroup]="tagForm">
+    <div class="field">
+      <label for="tag">
+        Tag
+        <span class="required">*</span>
+      </label>
+      <select id="tag" formControlName="tagId">
+        <option value=""></option>
+        @if (tags$ | async; as tags) { @if (tags.loading) {
+        <spinner />
+        } @else if (tags.error) {
+        <div class="error">Error occurred</div>
+        } @else if (tags.data) { @for (tag of tags.data; track tag.id) {
+        <option [value]="tag.id">{{ tag.name }}</option>
+        } }}
+      </select>
+    </div>
+    @if (saving) {
+    <spinner />
+    } @else { @if (attemptedSave && !tagForm.valid) {
+    <div class="error">Please fill in all required fields</div>
+    }
+    <div class="buttons">
+      <button (click)="add()" class="button button--primary">Save</button>
+      <button (click)="reset()" class="button button--secondary">Back</button>
+    </div>
+    }
+  </form>
+  }
+</div>

@@ -1,7 +1,7 @@
 @if (patient.prescriptionInstructions.length === 0 &&
 patient.prescriptionMedications.length === 0) {
 <p><em>No prescriptions have been added for this patient.</em></p>
-} @if (patient.prescriptionMedications.length > 0) {
+} @else {
 <table>
   <thead>
     <tr>
@@ -12,31 +12,7 @@ patient.prescriptionMedications.length === 0) {
       <th>Administration</th>
       <th>Medication</th>
       <th>Comments</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (prescription of patient.prescriptionMedications; track
-    prescription.id) {
-    <tr>
-      <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
-      <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
-      <td>{{ prescription.frequency }}</td>
-      <td>{{ prescription.quantityValue }}{{ prescription.quantityUnit }}</td>
-      <td>{{ prescription.administrationMethod.description }}</td>
-      <td>{{ prescription.medication.name }}</td>
-      <td>{{ prescription.comments }}</td>
-    </tr>
-    }
-  </tbody>
-</table>
-} @if (patient.prescriptionInstructions.length > 0) {
-<table>
-  <thead>
-    <tr>
-      <th>Start</th>
-      <th>End</th>
-      <th>Frequency</th>
-      <th>Prescription</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -46,21 +22,64 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
+      <td colspan="3"></td>
       <td>{{ prescription.instructions }}</td>
+      <td>
+        @if (removingInstruction === prescription.id) {
+        <spinner />
+        } @else {
+        <button
+          (click)="removeInstruction(prescription.id)"
+          class="button button--warning"
+        >
+          Delete
+        </button>
+        }
+      </td>
+    </tr>
+    } @for (prescription of patient.prescriptionMedications; track
+    prescription.id) {
+    <tr>
+      <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.frequency }}</td>
+      <td>{{ prescription.quantityValue }}{{ prescription.quantityUnit }}</td>
+      <td>{{ prescription.administrationMethod.description }}</td>
+      <td>{{ prescription.medication.name }}</td>
+      <td>{{ prescription.comments }}</td>
+      <td>
+        @if (removingMedication === prescription.id) {
+        <spinner />
+        } @else if (patient.status != PatientStatus.Dispositioned) {
+        <button
+          (click)="removeMedication(prescription.id)"
+          class="button button--warning"
+        >
+          🗑️
+        </button>
+        }
+      </td>
     </tr>
     }
   </tbody>
 </table>
-} @if (!(addingMedication || addingInstruction)) {
+} @if (!(addingMedication || addingInstruction)) { @if (patient.status !=
+PatientStatus.Dispositioned) {
 <div class="buttons">
-  <button (click)="addingMedication = true" class="button button--secondary">
-    Add medication
+  <button
+    (click)="addingMedication = true"
+    class="button button--secondary-invert"
+  >
+    💊 Add medication
   </button>
-  <button (click)="addingInstruction = true" class="button button--secondary">
-    Add other
+  <button
+    (click)="addingInstruction = true"
+    class="button button--secondary-invert"
+  >
+    🛁 Add other
   </button>
 </div>
-} @else if (addingMedication) {
+} } @else if (addingMedication) {
 <form [formGroup]="prescriptionMedicationForm">
   <div class="fields">
     <div class="field">
@@ -156,7 +175,7 @@ patient.prescriptionMedications.length === 0) {
   }
   <div class="buttons">
     <button (click)="addMedication()" class="button button--primary">
-      Add medication prescription
+      Save
     </button>
     <button (click)="reset()" class="button button--secondary">Back</button>
   </div>
@@ -211,7 +230,7 @@ patient.prescriptionMedications.length === 0) {
   }
   <div class="buttons">
     <button (click)="addInstruction()" class="button button--primary">
-      Add other prescription
+      Save
     </button>
     <button (click)="reset()" class="button button--secondary">Back</button>
   </div>

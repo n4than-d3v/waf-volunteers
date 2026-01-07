@@ -97,6 +97,24 @@ import {
   addPrescriptionMedication,
   addPrescriptionMedicationSuccess,
   addPrescriptionMedicationError,
+  removeRecheck,
+  removeRecheckSuccess,
+  removeRecheckError,
+  removePrescriptionInstruction,
+  removePrescriptionInstructionSuccess,
+  removePrescriptionInstructionError,
+  removePrescriptionMedication,
+  removePrescriptionMedicationSuccess,
+  removePrescriptionMedicationError,
+  updatePatientBasicDetails,
+  updatePatientBasicDetailsSuccess,
+  updatePatientBasicDetailsError,
+  markPatientReleased,
+  markPatientReleasedSuccess,
+  markPatientReleasedError,
+  markPatientTransferred,
+  markPatientTransferredSuccess,
+  markPatientTransferredError,
 } from './actions';
 
 @Injectable()
@@ -479,6 +497,52 @@ export class HospitalEffects {
     )
   );
 
+  markPatientReleased$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientReleased),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/release`, action)
+          .pipe(
+            map(() =>
+              markPatientReleasedSuccess({ patientId: action.patientId })
+            ),
+            catchError(() => of(markPatientReleasedError()))
+          )
+      )
+    )
+  );
+
+  markPatientReleasedSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientReleasedSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  markPatientTransferred$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientTransferred),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/transfer`, action)
+          .pipe(
+            map(() =>
+              markPatientTransferredSuccess({ patientId: action.patientId })
+            ),
+            catchError(() => of(markPatientTransferredError()))
+          )
+      )
+    )
+  );
+
+  markPatientTransferredSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientTransferredSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
   // Move patient
 
   movePatient$ = createEffect(() =>
@@ -600,6 +664,112 @@ export class HospitalEffects {
   addPrescriptionMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addPrescriptionMedicationSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Remove recheck
+
+  removeRecheck$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeRecheck),
+      switchMap((action) =>
+        this.http
+          .delete(`hospital/patients/recheck/${action.patientRecheckId}`)
+          .pipe(
+            map(() => removeRecheckSuccess({ patientId: action.patientId })),
+            catchError(() => of(removeRecheckError()))
+          )
+      )
+    )
+  );
+
+  removeRecheckSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeRecheckSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Remove prescription instruction
+
+  removePrescriptionInstruction$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removePrescriptionInstruction),
+      switchMap((action) =>
+        this.http
+          .delete(
+            `hospital/patients/prescriptions/instruction/${action.patientPrescriptionInstructionId}`
+          )
+          .pipe(
+            map(() =>
+              removePrescriptionInstructionSuccess({
+                patientId: action.patientId,
+              })
+            ),
+            catchError(() => of(removePrescriptionInstructionError()))
+          )
+      )
+    )
+  );
+
+  removePrescriptionInstructionSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removePrescriptionInstructionSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Remove prescription medication
+
+  removePrescriptionMedication$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removePrescriptionMedication),
+      switchMap((action) =>
+        this.http
+          .delete(
+            `hospital/patients/prescriptions/medication/${action.patientPrescriptionMedicationId}`
+          )
+          .pipe(
+            map(() =>
+              removePrescriptionMedicationSuccess({
+                patientId: action.patientId,
+              })
+            ),
+            catchError(() => of(removePrescriptionMedicationError()))
+          )
+      )
+    )
+  );
+
+  removePrescriptionMedicationSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removePrescriptionMedicationSuccess),
+      switchMap((action) => of(getPatient({ id: action.patientId })))
+    )
+  );
+
+  // Update patient basic details
+
+  updatePatientBasicDetails$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePatientBasicDetails),
+      switchMap((action) =>
+        this.http
+          .put(`hospital/patients/${action.patientId}/basic-details`, action)
+          .pipe(
+            map(() =>
+              updatePatientBasicDetailsSuccess({ patientId: action.patientId })
+            ),
+            catchError(() => of(updatePatientBasicDetailsError()))
+          )
+      )
+    )
+  );
+
+  updatePatientBasicDetailsSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePatientBasicDetailsSuccess),
       switchMap((action) => of(getPatient({ id: action.patientId })))
     )
   );

@@ -2,10 +2,6 @@
   <table>
     <tbody>
       <tr>
-        <td>Reference</td>
-        <td>{{ patient.reference }}</td>
-      </tr>
-      <tr>
         <td>Species</td>
         <td>{{ patient.species?.name }}</td>
       </tr>
@@ -22,13 +18,77 @@
         <td>{{ patient.name || '(blank)' }}</td>
       </tr>
       <tr>
-        <td>Pen</td>
-        <td>{{ patient.pen?.reference || '(blank)' }}</td>
-      </tr>
-      <tr>
         <td>Unique identifier</td>
         <td>{{ patient.uniqueIdentifier || '(blank)' }}</td>
       </tr>
     </tbody>
   </table>
 </div>
+@if (!updating) { @if (patient.status != PatientStatus.Dispositioned) {
+<div class="buttons">
+  <button
+    (click)="beginUpdate(patient)"
+    class="button button--secondary-invert"
+  >
+    ✏️ Edit
+  </button>
+</div>
+} } @else {
+<form [formGroup]="detailsForm">
+  <div class="fields">
+    <div class="field">
+      <label for="species">
+        Species
+        <span class="required">*</span>
+      </label>
+      <select id="species" formControlName="speciesId">
+        <option value=""></option>
+        @if (species$ | async; as specieses) { @if (specieses.loading) {
+        <spinner />
+        } @else if (specieses.error) {
+        <div class="error">Error occurred</div>
+        } @else if (specieses.data) { @for (species of specieses.data; track
+        species.id) {
+        <option [value]="species.id">{{ species.name }}</option>
+        } } }
+      </select>
+    </div>
+    <div class="field">
+      <label for="species">
+        Variant
+        <span class="required">*</span>
+      </label>
+      <select id="speciesVariant" formControlName="speciesVariantId">
+        <option value=""></option>
+        @if (species$ | async; as specieses) { @if (specieses.loading) {
+        <spinner />
+        } @else if (specieses.error) {
+        <div class="error">Error occurred</div>
+        } @else if (specieses.data) { @for (species of specieses.data; track
+        species.id) { @if (species.id.toString() == detailsForm.value.speciesId)
+        { @for (variant of species.variants; track variant.id) {
+        <option [value]="variant.id">{{ variant.name }}</option>
+        } } } } }
+      </select>
+    </div>
+    <div class="field">
+      <label for="name"> Name </label>
+      <input type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="uniqueIdentifier"> Unique identifier </label>
+      <input type="text" formControlName="uniqueIdentifier" />
+    </div>
+  </div>
+  @if (attemptedSave && !detailsForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  } @if (!saving) {
+  <div class="buttons">
+    <button (click)="update()" class="button button--primary">Save</button>
+    <button (click)="reset()" class="button button--secondary">Back</button>
+  </div>
+  } @else {
+  <spinner></spinner>
+  }
+</form>
+}

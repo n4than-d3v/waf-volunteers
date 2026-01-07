@@ -9,21 +9,47 @@ PatientStatus.PendingInitialExam) {
   Please perform the intake exam in order to view and modify the full patient
   record.
 </p>
-<section>
-  <h3>Admission</h3>
-  <hospital-patient-admission
-    [patient]="patient.data"
-  ></hospital-patient-admission>
-</section>
-<section>
-  <h3>Intake exam</h3>
-  <hospital-patient-exam [id]="patient.data.id"></hospital-patient-exam>
-</section>
+<div class="sections">
+  <section>
+    <h3>Admission</h3>
+    <hospital-patient-admission
+      [patient]="patient.data"
+    ></hospital-patient-admission>
+  </section>
+  <section>
+    <h3>Intake exam</h3>
+    <hospital-patient-exam [id]="patient.data.id"></hospital-patient-exam>
+  </section>
+</div>
 } @else {
-<section>
-  <h3>Details</h3>
-  <hospital-patient-details [patient]="patient.data"></hospital-patient-details>
-</section>
+<div class="sections">
+  <section>
+    <h3>Details</h3>
+    <hospital-patient-details
+      [patient]="patient.data"
+    ></hospital-patient-details>
+  </section>
+  <section>
+    <h3>Status</h3>
+    <hospital-patient-status [patient]="patient.data"></hospital-patient-status>
+  </section>
+</div>
+<div class="sections">
+  <section>
+    <h3>Location</h3>
+    <hospital-patient-location
+      [patient]="patient.data"
+    ></hospital-patient-location>
+  </section>
+  <section>
+    <h3>Diet</h3>
+    <hospital-patient-diets [patient]="patient.data"></hospital-patient-diets>
+  </section>
+  <section>
+    <h3>Tags</h3>
+    <hospital-patient-tags [patient]="patient.data"></hospital-patient-tags>
+  </section>
+</div>
 <section>
   <h3>Notes</h3>
   <hospital-patient-notes [patient]="patient.data"></hospital-patient-notes>

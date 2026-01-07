@@ -27,11 +27,11 @@
   <p><em>No notes have been added for this patient.</em></p>
   }
   <div class="flex">
-    @if (!adding) {
-    <button (click)="adding = true" class="button button--secondary">
-      Add note
+    @if (!adding) { @if (patient.status != PatientStatus.Dispositioned) {
+    <button (click)="adding = true" class="button button--secondary-invert">
+      📝 Add note
     </button>
-    } @else {
+    } } @else {
     <div class="field">
       <label for="comments">Note</label>
       <textarea
@@ -63,7 +63,7 @@
     <spinner />
     } @else {
     <div class="buttons">
-      <button (click)="add()" class="button button--primary">Add note</button>
+      <button (click)="add()" class="button button--primary">Save</button>
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     } }

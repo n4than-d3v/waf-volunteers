@@ -1,0 +1,171 @@
+<div class="row">
+  <table>
+    <tbody>
+      <tr>
+        <td>Reference</td>
+        <td>{{ patient.reference }}</td>
+      </tr>
+      <tr>
+        <td>Status</td>
+        <td>{{ getStatus() }}</td>
+      </tr>
+    </tbody>
+  </table>
+  @if (patient.status == PatientStatus.Dispositioned) {
+  <table>
+    <tbody>
+      <tr>
+        <td>Status</td>
+        <td>{{ getDisposition(patient) }}</td>
+      </tr>
+      @if (patient.dispositionReason) {
+      <tr>
+        <td>Disposition reason</td>
+        <td>{{ patient.dispositionReason.description }}</td>
+      </tr>
+      } @else if (patient.releaseType) {
+      <tr>
+        <td>Release type</td>
+        <td>{{ patient.releaseType.description }}</td>
+      </tr>
+      } @else if (patient.transferLocation) {
+      <tr>
+        <td>Transfer location</td>
+        <td>{{ patient.transferLocation.description }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  }
+</div>
+@if (!updating) { @if (patient.status != PatientStatus.Dispositioned) {
+<div class="buttons">
+  @if (patient.status == PatientStatus.ReadyForRelease) {
+  <button
+    (click)="updating = 'release'"
+    class="button button--secondary-invert"
+  >
+    🕊️ Released
+  </button>
+  } @else {
+  <button (click)="readyToRelease()" class="button button--secondary-invert">
+    🕊️ Ready to release
+  </button>
+  }
+  <button (click)="updating = 'die'" class="button button--secondary-invert">
+    🪦 Died
+  </button>
+  <button (click)="updating = 'pts'" class="button button--secondary-invert">
+    💉💝 Put to sleep
+  </button>
+  <button
+    (click)="updating = 'transfer'"
+    class="button button--secondary-invert"
+  >
+    ✏️ Transferred
+  </button>
+</div>
+} } @else if (updating === 'die' || updating === 'pts') {
+<form [formGroup]="deadForm">
+  <div class="fields">
+    <div class="field">
+      <label for="dispositionReasonId">
+        Disposition reason
+        <span class="required">*</span>
+      </label>
+      <select id="dispositionReasonId" formControlName="dispositionReasonId">
+        <option value=""></option>
+        @if (dispositionReasons$ | async; as dispositionReasons) { @if
+        (dispositionReasons.loading) {
+        <spinner />
+        } @else if (dispositionReasons.error) {
+        <div class="error">Error occurred</div>
+        } @else if (dispositionReasons.data) { @for (dispositionReason of
+        dispositionReasons.data; track dispositionReason.id) {
+        <option [value]="dispositionReason.id">
+          {{ dispositionReason.description }}
+        </option>
+        } } }
+      </select>
+    </div>
+  </div>
+  @if (attemptedSave && !deadForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  } @if (!saving) {
+  <div class="buttons">
+    <button (click)="die()" class="button button--primary">Save</button>
+    <button (click)="reset()" class="button button--secondary">Back</button>
+  </div>
+  } @else {
+  <spinner></spinner>
+  }
+</form>
+} @else if (updating === 'release') {
+<form [formGroup]="releaseForm">
+  <div class="fields">
+    <div class="field">
+      <label for="releaseTypeId">
+        Release type
+        <span class="required">*</span>
+      </label>
+      <select id="releaseTypeId" formControlName="releaseTypeId">
+        <option value=""></option>
+        @if (releaseTypes$ | async; as releaseTypes) { @if
+        (releaseTypes.loading) {
+        <spinner />
+        } @else if (releaseTypes.error) {
+        <div class="error">Error occurred</div>
+        } @else if (releaseTypes.data) { @for (releaseType of releaseTypes.data;
+        track releaseType.id) {
+        <option [value]="releaseType.id">{{ releaseType.description }}</option>
+        } } }
+      </select>
+    </div>
+  </div>
+  @if (attemptedSave && !releaseForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  } @if (!saving) {
+  <div class="buttons">
+    <button (click)="release()" class="button button--primary">Save</button>
+    <button (click)="reset()" class="button button--secondary">Back</button>
+  </div>
+  } @else {
+  <spinner></spinner>
+  }
+</form>
+} @else if (updating === 'transfer') {
+<form [formGroup]="transferForm">
+  <div class="fields">
+    <div class="field">
+      <label for="transferLocationId">
+        Transfer location
+        <span class="required">*</span>
+      </label>
+      <select id="transferLocationId" formControlName="transferLocationId">
+        <option value=""></option>
+        @if (transferLocations$ | async; as transferLocations) { @if
+        (transferLocations.loading) {
+        <spinner />
+        } @else if (transferLocations.error) {
+        <div class="error">Error occurred</div>
+        } @else if (transferLocations.data) { @for (transferLocation of
+        transferLocations.data; track transferLocation.id) {
+        <option [value]="transferLocation.id">
+          {{ transferLocation.description }}
+        </option>
+        } } }
+      </select>
+    </div>
+  </div>
+  @if (attemptedSave && !transferForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  } @if (!saving) {
+  <div class="buttons">
+    <button (click)="transfer()" class="button button--primary">Save</button>
+    <button (click)="reset()" class="button button--secondary">Back</button>
+  </div>
+  } @else {
+  <spinner></spinner>
+  }
+</form>
+}

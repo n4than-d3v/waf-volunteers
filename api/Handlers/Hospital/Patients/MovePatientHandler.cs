@@ -2,6 +2,7 @@
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Handlers.Hospital.Patients;
 
@@ -28,7 +29,7 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 
     public async Task<IResult> Handle(MovePatient request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId);
+        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.Include(y => y.Pen));
         if (patient == null) return Results.BadRequest();
 
         var pen = await _repository.Get<Pen>(request.PenId);

@@ -1,5 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AdministrationMethod, Patient, ReadOnlyWrapper } from '../../state';
+import {
+  AdministrationMethod,
+  Patient,
+  PatientStatus,
+  ReadOnlyWrapper,
+} from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import {
   FormControl,
@@ -13,6 +18,8 @@ import {
   addPrescriptionInstruction,
   addPrescriptionMedication,
   getAdministrationMethods,
+  removePrescriptionInstruction,
+  removePrescriptionMedication,
 } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { HospitalPatientMedicationSelectorComponent } from '../medication-selector/component';
@@ -40,6 +47,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
 
+  PatientStatus = PatientStatus;
+
   constructor(private store: Store) {
     this.administrationMethods$ = this.store.select(
       selectAdministrationMethods
@@ -55,6 +64,9 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   saving = false;
   attemptedSave = false;
+
+  removingInstruction: number | null = null;
+  removingMedication: number | null = null;
 
   prescriptionInstructionForm = new FormGroup({
     start: new FormControl('', [Validators.required]),
@@ -118,6 +130,26 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
         end: this.prescriptionInstructionForm.value.end!,
         frequency: this.prescriptionInstructionForm.value.frequency!,
         instructions: this.prescriptionInstructionForm.value.instructions || '',
+      })
+    );
+  }
+
+  removeInstruction(patientPrescriptionInstructionId: number) {
+    this.removingInstruction = patientPrescriptionInstructionId;
+    this.store.dispatch(
+      removePrescriptionInstruction({
+        patientId: this.patient.id,
+        patientPrescriptionInstructionId,
+      })
+    );
+  }
+
+  removeMedication(patientPrescriptionMedicationId: number) {
+    this.removingMedication = patientPrescriptionMedicationId;
+    this.store.dispatch(
+      removePrescriptionMedication({
+        patientId: this.patient.id,
+        patientPrescriptionMedicationId,
       })
     );
   }

@@ -62,7 +62,7 @@ patient.prescriptionMedications.length === 0) {
         {{ administration.administrator.firstName }} {{
         administration.administrator.lastName }}
       </td>
-      <td>{{ administration.success ? 'Yes' : 'No' }}</td>
+      <td>{{ administration.success ? 'Success' : 'Fail' }}</td>
       <td>{{ administration.comments }}</td>
       <td></td>
     </tr>
@@ -100,13 +100,13 @@ patient.prescriptionMedications.length === 0) {
     @for (administration of prescription.administrations; track
     administration.id) {
     <tr>
-      <td colspan="2"></td>
+      <td colspan="3"></td>
       <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
         {{ administration.administrator.firstName }} {{
         administration.administrator.lastName }}
       </td>
-      <td>{{ administration.success ? 'Yes' : 'No' }}</td>
+      <td>{{ administration.success ? 'Success' : 'Fail' }}</td>
       <td>{{ administration.comments }}</td>
       <td></td>
     </tr>
@@ -126,7 +126,7 @@ PatientStatus.Dispositioned) {
     (click)="addingInstruction = true"
     class="button button--secondary-invert"
   >
-    🛁 Add other
+    📋 Add other
   </button>
 </div>
 } } @else if (addingMedication) {

@@ -110,6 +110,13 @@ import {
   performRecheck,
   performRecheckSuccess,
   performRecheckError,
+  listPrescriptions,
+  listPrescriptionsSuccess,
+  listPrescriptionsError,
+  administerPrescriptionInstruction,
+  administerPrescriptionMedication,
+  administerPrescriptionSuccess,
+  administerPrescriptionError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -988,6 +995,61 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     performRecheck: {
       ...state.performRecheck,
+      loading: false,
+      error: true,
+    },
+  })),
+  // List prescriptions
+  on(listPrescriptions, (state) => ({
+    ...state,
+    listPrescriptions: {
+      ...state.listPrescriptions,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(listPrescriptionsSuccess, (state, { prescriptions }) => ({
+    ...state,
+    listPrescriptions: {
+      ...state.listPrescriptions,
+      data: prescriptions,
+      loading: false,
+    },
+  })),
+  on(listPrescriptionsError, (state) => ({
+    ...state,
+    listPrescriptions: {
+      ...state.listPrescriptions,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Administer prescription
+  on(
+    administerPrescriptionInstruction,
+    administerPrescriptionMedication,
+    (state) => ({
+      ...state,
+      administerPrescription: {
+        ...state.administerPrescription,
+        loading: true,
+        success: false,
+        error: false,
+      },
+    })
+  ),
+  on(administerPrescriptionSuccess, (state) => ({
+    ...state,
+    administerPrescription: {
+      ...state.administerPrescription,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(administerPrescriptionError, (state) => ({
+    ...state,
+    administerPrescription: {
+      ...state.administerPrescription,
       loading: false,
       error: true,
     },

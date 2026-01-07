@@ -20,6 +20,8 @@ import {
   Area,
   Species,
   ListRecheck,
+  PrescriptionInstruction,
+  PrescriptionMedication,
 } from './state';
 import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -135,6 +137,13 @@ import {
   performRecheck,
   performRecheckSuccess,
   performRecheckError,
+  listPrescriptions,
+  listPrescriptionsSuccess,
+  listPrescriptionsError,
+  administerPrescriptionInstruction,
+  administerPrescriptionSuccess,
+  administerPrescriptionError,
+  administerPrescriptionMedication,
 } from './actions';
 
 @Injectable()
@@ -964,7 +973,19 @@ export class HospitalEffects {
         this.http
           .get<ListRecheck[]>(`hospital/tasks/rechecks?on=${action.date}`)
           .pipe(
-            map((rechecks) => listRechecksSuccess({ rechecks })),
+            map((rechecks) =>
+              listRechecksSuccess({
+                rechecks: rechecks.sort((a, b) => {
+                  const penCompare = a.pen.reference.localeCompare(
+                    b.pen.reference
+                  );
+                  if (penCompare !== 0) {
+                    return penCompare;
+                  }
+                  return a.reference.localeCompare(b.reference);
+                }),
+              })
+            ),
             catchError(() => of(listRechecksError()))
           )
       )
@@ -991,6 +1012,82 @@ export class HospitalEffects {
     this.actions$.pipe(
       ofType(performRecheckSuccess),
       switchMap((action) => of(listRechecks({ date: action.date })))
+    )
+  );
+
+  // List prescriptions
+
+  listPrescriptions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(listPrescriptions),
+      switchMap((action) =>
+        this.http
+          .get<{
+            instructions: PrescriptionInstruction[];
+            medications: PrescriptionMedication[];
+          }>(`hospital/tasks/prescriptions?on=${action.date}`)
+          .pipe(
+            map(({ instructions, medications }) =>
+              listPrescriptionsSuccess({
+                prescriptions: [...instructions, ...medications].sort(
+                  (a, b) => {
+                    const penCompare = a.pen.reference.localeCompare(
+                      b.pen.reference
+                    );
+                    if (penCompare !== 0) {
+                      return penCompare;
+                    }
+                    return a.reference.localeCompare(b.reference);
+                  }
+                ),
+              })
+            ),
+            catchError(() => of(listPrescriptionsError()))
+          )
+      )
+    )
+  );
+
+  // Administer prescription
+
+  administerPrescriptionInstruction$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(administerPrescriptionInstruction),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/patients/prescriptions/instruction/${action.prescriptionInstructionId}/administer`,
+            action
+          )
+          .pipe(
+            map(() => administerPrescriptionSuccess({ date: action.date })),
+            catchError(() => of(administerPrescriptionError()))
+          )
+      )
+    )
+  );
+
+  administerPrescriptionMedication$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(administerPrescriptionMedication),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/patients/prescriptions/medication/${action.prescriptionMedicationId}/administer`,
+            action
+          )
+          .pipe(
+            map(() => administerPrescriptionSuccess({ date: action.date })),
+            catchError(() => of(administerPrescriptionError()))
+          )
+      )
+    )
+  );
+
+  administerPrescriptionSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(administerPrescriptionSuccess),
+      switchMap((action) => of(listPrescriptions({ date: action.date })))
     )
   );
 }

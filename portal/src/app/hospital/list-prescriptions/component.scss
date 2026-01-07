@@ -20,20 +20,20 @@ table {
   }
 }
 
-.rechecks {
+.prescriptions {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 0.75rem;
 }
 
-.recheck {
+.prescription {
   min-width: 20rem;
   border-radius: 0.5rem;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
   border: solid 1px rgb(153, 153, 153);
   max-width: max-content;
-  padding: 0.5rem 0.75rem 1rem 0.75rem;
+  padding: 0.75rem 0.75rem 1rem 0.75rem;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -59,6 +59,7 @@ table {
 
 textarea {
   font-size: 1rem;
+  margin-bottom: 0.5rem;
   width: 100%;
 }
 

@@ -10,6 +10,7 @@ import { HospitalPatientComponent } from '../../hospital/patient/component';
 import { HospitalPatientSearchComponent } from '../../hospital/patient-search/component';
 import { HospitalListRechecks } from '../../hospital/list-rechecks/component';
 import { setTab } from '../../hospital/actions';
+import { HospitalListPrescriptions } from '../../hospital/list-prescriptions/component';
 
 @Component({
   selector: 'vet-hospital',
@@ -23,6 +24,7 @@ import { setTab } from '../../hospital/actions';
     HospitalPatientComponent,
     HospitalPatientSearchComponent,
     HospitalListRechecks,
+    HospitalListPrescriptions,
   ],
 })
 export class VetHospitalComponent {
@@ -43,5 +45,14 @@ export class VetHospitalComponent {
     );
   }
 
-  viewPrescriptions() {}
+  viewPrescriptions() {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'LIST_PRESCRIPTIONS',
+          title: 'View prescriptions',
+        },
+      })
+    );
+  }
 }

@@ -29,6 +29,8 @@
       <hospital-patient [id]="tab.id!"></hospital-patient>
       } @else if (tab.code === 'LIST_RECHECKS') {
       <hospital-list-rechecks></hospital-list-rechecks>
+      } @else if (tab.code === 'LIST_PRESCRIPTIONS') {
+      <hospital-list-prescriptions></hospital-list-prescriptions>
       }
     </div>
     }

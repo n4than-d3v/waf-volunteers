@@ -22,6 +22,9 @@ import {
   Exam,
   Outcome,
   ListRecheck,
+  PrescriptionInstruction,
+  PrescriptionMedication,
+  Prescription,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -522,4 +525,46 @@ export const performRecheckSuccess = createAction(
 );
 export const performRecheckError = createAction(
   '[HMS-V] Perform recheck: error'
+);
+
+// List prescriptions
+
+export const listPrescriptions = createAction(
+  '[HMS-V] List prescriptions',
+  props<{ date: string }>()
+);
+export const listPrescriptionsSuccess = createAction(
+  '[HMS-V] List prescriptions: success',
+  props<{ prescriptions: Prescription[] }>()
+);
+export const listPrescriptionsError = createAction(
+  '[HMS-V] List prescriptions: error'
+);
+
+// Administer prescription
+
+export const administerPrescriptionInstruction = createAction(
+  '[HMS-V] Administer prescription instruction',
+  props<{
+    date: string;
+    prescriptionInstructionId: number;
+    success: boolean;
+    comments: string;
+  }>()
+);
+export const administerPrescriptionMedication = createAction(
+  '[HMS-V] Administer prescription medication',
+  props<{
+    date: string;
+    prescriptionMedicationId: number;
+    success: boolean;
+    comments: string;
+  }>()
+);
+export const administerPrescriptionSuccess = createAction(
+  '[HMS-V] Administer prescription: success',
+  props<{ date: string }>()
+);
+export const administerPrescriptionError = createAction(
+  '[HMS-V] Administer prescription: error'
 );

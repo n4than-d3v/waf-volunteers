@@ -8,8 +8,8 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { getRecheckRoles, ListRecheck, ReadOnlyWrapper } from '../state';
-import { selectListRechecks } from '../selectors';
+import { getRecheckRoles, ListRecheck, ReadOnlyWrapper, Task } from '../state';
+import { selectListRechecks, selectPerformRecheck } from '../selectors';
 import { listRechecks, performRecheck, setTab } from '../actions';
 import { SpinnerComponent } from '../../shared/spinner/component';
 
@@ -32,10 +32,13 @@ export class HospitalListRechecks implements OnInit {
 
   listRechecks$: Observable<ReadOnlyWrapper<ListRecheck[]>>;
 
+  task$: Observable<Task>;
+
   comments: any = {};
 
   constructor(private store: Store) {
     this.listRechecks$ = this.store.select(selectListRechecks);
+    this.task$ = this.store.select(selectPerformRecheck);
   }
 
   getRecheckRoles = getRecheckRoles;

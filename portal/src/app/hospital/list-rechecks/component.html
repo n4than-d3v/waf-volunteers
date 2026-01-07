@@ -12,53 +12,71 @@
 <spinner></spinner>
 } @else if (rechecks.error) {
 <div class="error">Error occurred</div>
-} @else if (rechecks.data && rechecks.data.length > 0) { @for (recheck of
-rechecks.data; track recheck.id) {
-<div class="recheck">
-  <div class="date">
-    @if (recheck.due == viewingDate) { @if (recheck.rechecked) {
-    <span class="done">Done</span>
-    } @else {
-    <span class="due">Due</span>
-    } } @else {
-    <span class="overdue">
-      Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
-    </span>
-    }
-  </div>
-  <div class="patient">
-    <a (click)="viewPatient(recheck)">{{ recheck.reference }}</a>
-    <p>{{ recheck.species.name }} ({{ recheck.variant.name }})</p>
-    <p>
-      {{ recheck.pen.reference }} @if (recheck.uniqueIdentifier) { ({{
-      recheck.uniqueIdentifier }}) }
-    </p>
-    <p>{{ getRecheckRoles(recheck.roles) }}</p>
-  </div>
-  <div class="description">
-    <p>{{ recheck.description }}</p>
-  </div>
-  @if (!recheck.rechecked) {
-  <div class="perform">
-    <div class="field">
-      <label for="comments">Comments</label>
-      <textarea
-        id="comments"
-        [(ngModel)]="comments[recheck.id]"
-        rows="3"
-      ></textarea>
+} @else if (rechecks.data && rechecks.data.length > 0) {
+<div class="rechecks">
+  @for (recheck of rechecks.data; track recheck.id) {
+  <div class="recheck">
+    <div class="flex">
+      <div class="date">
+        @if (recheck.due == viewingDate) { @if (recheck.rechecked) {
+        <span class="done">Done</span>
+        } @else {
+        <span class="due">Due</span>
+        } } @else {
+        <span class="overdue">
+          Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
+        </span>
+        }
+      </div>
+      <div class="roles">
+        <p>{{ getRecheckRoles(recheck.roles) }}</p>
+      </div>
     </div>
-    <button (click)="perform(recheck)" class="button button--secondary-invert">
-      ✔️ Perform
-    </button>
-  </div>
-  } @else {
-  <div class="performed">
-    {{ recheck.rechecker?.firstName }} {{ recheck.rechecker?.lastName }}<br />
-    {{ recheck.comments }}
+    <div class="patient">
+      <p>🔗 <a (click)="viewPatient(recheck)">{{ recheck.reference }}</a></p>
+      <p>
+        📍 {{ recheck.pen.reference }} @if (recheck.uniqueIdentifier) { ({{
+        recheck.uniqueIdentifier }}) }
+      </p>
+      <p>🐾 {{ recheck.species.name }} ({{ recheck.variant.name }})</p>
+    </div>
+    <div class="description">
+      <p>🩺 {{ recheck.description }}</p>
+    </div>
+    @if (!recheck.rechecked) {
+    <div class="perform">
+      <div class="field">
+        <label for="comments">Comments</label>
+        <textarea
+          id="comments"
+          [(ngModel)]="comments[recheck.id]"
+          rows="3"
+        ></textarea>
+      </div>
+      <button
+        (click)="perform(recheck)"
+        class="button button--secondary-invert"
+      >
+        ✔️ Perform
+      </button>
+    </div>
+    } @else {
+    <div class="performed">
+      <p>
+        🧑‍⚕️ {{ recheck.rechecker?.firstName }} {{ recheck.rechecker?.lastName }}
+      </p>
+      @if (recheck.comments) {
+      <p>✏️ {{ recheck.comments }}</p>
+      }
+    </div>
+    }
   </div>
   }
 </div>
-} } @else {
+} @else {
 <p>There are no rechecks created for this date.</p>
+} } @if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
 } }

@@ -484,3 +484,15 @@ export const sendHomeCareMessageSuccess = createAction(
 export const sendHomeCareMessageError = createAction(
   '[HMS-V] Send home care message: error'
 );
+
+// Search for patient
+
+export const searchPatient = createAction(
+  '[HMS-V] Search patient',
+  props<{ search: string }>()
+);
+export const searchPatientSuccess = createAction(
+  '[HMS-V] Search patient: success',
+  props<{ patientId: number; reference: string; species: string }>()
+);
+export const searchPatientError = createAction('[HMS-V] Search patient: error');

@@ -163,3 +163,8 @@ export const selectMessageHomeCare = createSelector(
   selectHospitalState,
   (state) => state.messageHomeCare
 );
+
+export const selectSearchPatient = createSelector(
+  selectHospitalState,
+  (state) => state.searchPatient
+);

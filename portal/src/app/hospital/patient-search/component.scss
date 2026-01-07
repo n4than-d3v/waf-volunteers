@@ -1,0 +1,17 @@
+.search {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0rem 0.25rem 0.5rem 0.25rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 18rem;
+
+  input {
+    padding: 0.125rem 0.25rem;
+    flex: 1;
+  }
+}
+
+.error {
+  margin-bottom: 0.5rem;
+}

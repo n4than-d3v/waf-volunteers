@@ -7,6 +7,7 @@ import { HospitalPatientByStatusComponent } from '../../hospital/patient-by-stat
 import { AsyncPipe } from '@angular/common';
 import { HospitalListPatientByStatusComponent } from '../../hospital/list-patients-by-status/component';
 import { HospitalPatientComponent } from '../../hospital/patient/component';
+import { HospitalPatientSearchComponent } from '../../hospital/patient-search/component';
 
 @Component({
   selector: 'vet-hospital',
@@ -18,6 +19,7 @@ import { HospitalPatientComponent } from '../../hospital/patient/component';
     HospitalPatientByStatusComponent,
     HospitalListPatientByStatusComponent,
     HospitalPatientComponent,
+    HospitalPatientSearchComponent,
   ],
 })
 export class VetHospitalComponent {

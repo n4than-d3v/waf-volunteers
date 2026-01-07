@@ -124,6 +124,10 @@ import {
   sendHomeCareMessage,
   sendHomeCareMessageSuccess,
   sendHomeCareMessageError,
+  searchPatient,
+  searchPatientSuccess,
+  searchPatientError,
+  setTab,
 } from './actions';
 
 @Injectable()
@@ -899,6 +903,47 @@ export class HospitalEffects {
       ofType(sendHomeCareMessageSuccess),
       switchMap((action) =>
         of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  // Search patient
+
+  searchPatient$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(searchPatient),
+      switchMap((action) =>
+        this.http
+          .get<{ id: number; reference: string; species: string }>(
+            `hospital/patients/search?query=${action.search}`
+          )
+          .pipe(
+            map(({ id, reference, species }) =>
+              searchPatientSuccess({
+                patientId: id,
+                reference,
+                species,
+              })
+            ),
+            catchError(() => of(searchPatientError()))
+          )
+      )
+    )
+  );
+
+  searchPatientSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(searchPatientSuccess),
+      switchMap(({ patientId, reference, species }) =>
+        of(
+          setTab({
+            tab: {
+              code: 'VIEW_PATIENT',
+              title: `[${reference}] ${species}`,
+              id: patientId,
+            },
+          })
+        )
       )
     )
   );

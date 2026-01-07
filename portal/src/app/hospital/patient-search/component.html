@@ -1,0 +1,15 @@
+<div class="search">
+  <input
+    id="search"
+    type="text"
+    [(ngModel)]="search"
+    autocomplete="off"
+    (keydown)="onKeyDown($event)"
+  />
+  <button (click)="performSearch()" class="button button--none">🔍</button>
+</div>
+@if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Unable to find patient</div>
+} }

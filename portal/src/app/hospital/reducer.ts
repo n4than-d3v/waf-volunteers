@@ -101,6 +101,9 @@ import {
   homeCarerDropOff,
   homeCarerDropOffSuccess,
   homeCarerDropOffError,
+  searchPatient,
+  searchPatientSuccess,
+  searchPatientError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -901,6 +904,33 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     dropOffHomeCare: {
       ...state.dropOffHomeCare,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Search patient
+  on(searchPatient, (state) => ({
+    ...state,
+    searchPatient: {
+      ...state.searchPatient,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(searchPatientSuccess, (state, { patientId }) => ({
+    ...state,
+    searchPatient: {
+      ...state.searchPatient,
+      loading: false,
+      success: true,
+      id: patientId,
+    },
+  })),
+  on(searchPatientError, (state) => ({
+    ...state,
+    searchPatient: {
+      ...state.searchPatient,
       loading: false,
       error: true,
     },

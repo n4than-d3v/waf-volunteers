@@ -5,6 +5,7 @@ export interface HospitalState {
   patientsByStatus: ReadOnlyWrapper<ListPatient[]>;
 
   patient: ReadOnlyWrapper<Patient>;
+  searchPatient: Task & { id: number | null };
 
   // Exams
   performExam: Task;
@@ -478,6 +479,7 @@ export const initialHospitalState: HospitalState = {
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
   patientsByStatus: createReadOnlyWrapper<ListPatient[]>(),
   patient: createReadOnlyWrapper<Patient>(),
+  searchPatient: { ...createTask(), id: null },
   attitudes: createReadOnlyWrapper<Attitude[]>(),
   bodyConditions: createReadOnlyWrapper<BodyCondition[]>(),
   dehydrations: createReadOnlyWrapper<Dehydration[]>(),

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Author = Api.Database.Entities.Account.Account;
 
 
@@ -12,4 +13,7 @@ public class HomeCareMessage : Entity
     public Author Author { get; set; }
     public DateTime Date { get; set; }
     public string Message { get; set; }
+
+    [NotMapped]
+    public bool Me { get; set; }
 }

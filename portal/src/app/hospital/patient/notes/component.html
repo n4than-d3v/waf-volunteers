@@ -12,7 +12,7 @@
     <tbody>
       @for (note of patient.notes; track note.id) {
       <tr>
-        <td>{{ note.noted | date: 'EEEE, dd MMM yyyy HH:mm' }}</td>
+        <td>{{ note.noted | date: 'dd MMM yyyy HH:mm' }}</td>
         <td>{{ note.noter.firstName }} {{ note.noter.lastName }}</td>
         <td>
           {{ note.weightValue ? note.weightValue +

@@ -118,6 +118,12 @@ import {
   requestHomeCare,
   requestHomeCareSuccess,
   requestHomeCareError,
+  homeCarerDropOff,
+  homeCarerDropOffSuccess,
+  homeCarerDropOffError,
+  sendHomeCareMessage,
+  sendHomeCareMessageSuccess,
+  sendHomeCareMessageError,
 } from './actions';
 
 @Injectable()
@@ -830,6 +836,67 @@ export class HospitalEffects {
   requestHomeCareSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(requestHomeCareSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  // Home carer drop off
+
+  homeCarerDropOff$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(homeCarerDropOff),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/home-care/${action.homeCareRequestId}/drop-off`,
+            action
+          )
+          .pipe(
+            map(() => homeCarerDropOffSuccess({ patientId: action.patientId })),
+            catchError(() => of(homeCarerDropOffError()))
+          )
+      )
+    )
+  );
+
+  homeCarerDropOffSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(homeCarerDropOffSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  // Send home care message
+
+  sendHomeCareMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(sendHomeCareMessage),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/home-care/${action.homeCareRequestId}/message`,
+            action
+          )
+          .pipe(
+            map(() =>
+              sendHomeCareMessageSuccess({
+                patientId: action.patientId,
+                homeCareRequestId: action.homeCareRequestId,
+              })
+            ),
+            catchError(() => of(sendHomeCareMessageError()))
+          )
+      )
+    )
+  );
+
+  sendHomeCareMessageSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(sendHomeCareMessageSuccess),
       switchMap((action) =>
         of(getPatient({ id: action.patientId, silent: true }))
       )

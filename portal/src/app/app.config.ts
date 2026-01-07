@@ -39,6 +39,8 @@ import { AdminHospitalManagementEffects } from './admin/hospital/effects';
 import { adminHospitalManagementReducer } from './admin/hospital/reducer';
 import { HospitalEffects } from './hospital/effects';
 import { hospitalReducer } from './hospital/reducer';
+import { orphanFeederReducer } from './volunteer/home-care/reducer';
+import { OrphanFeederEffects } from './volunteer/home-care/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -89,6 +91,7 @@ export const appConfig: ApplicationConfig = {
       profile: profileReducer,
       rota: rotaReducer,
       notices: noticesReducer,
+      orphanFeeder: orphanFeederReducer,
 
       // Admin
       profiles: profilesReducer,
@@ -111,6 +114,7 @@ export const appConfig: ApplicationConfig = {
       ProfileEffects,
       RotaEffects,
       NoticesEffects,
+      OrphanFeederEffects,
 
       // Admin
       ProfilesEffects,

@@ -31,6 +31,7 @@ import {
   selectMucousMembraneColours,
   selectMucousMembraneTextures,
   selectPerformExam,
+  selectSetDisposition,
   selectSpecies,
 } from '../../../hospital/selectors';
 import {
@@ -86,7 +87,8 @@ export class HospitalPatientExamComponent implements OnInit {
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
 
-  task$: Observable<Task>;
+  performExamTask$: Observable<Task>;
+  setDispositionTask$: Observable<Task>;
 
   areaId: string | null = null;
 
@@ -142,7 +144,8 @@ export class HospitalPatientExamComponent implements OnInit {
       selectAdministrationMethods
     );
     this.areas$ = this.store.select(selectAreas);
-    this.task$ = this.store.select(selectPerformExam);
+    this.performExamTask$ = this.store.select(selectPerformExam);
+    this.setDispositionTask$ = this.store.select(selectSetDisposition);
   }
 
   addTreatmentInstruction() {

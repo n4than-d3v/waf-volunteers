@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   DispositionReason,
   getDisposition,
@@ -11,11 +6,10 @@ import {
   PatientStatus,
   ReadOnlyWrapper,
   ReleaseType,
-  Species,
   Task,
   TransferLocation,
 } from '../../state';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -24,20 +18,17 @@ import {
   selectReleaseTypes,
   selectRequestHomeCare,
   selectSetDisposition,
-  selectSpecies,
   selectTransferLocations,
 } from '../../selectors';
 import {
   getDispositionReasons,
   getReleaseTypes,
-  getSpecies,
   getTransferLocations,
   markPatientDead,
   markPatientReadyForRelease,
   markPatientReleased,
   markPatientTransferred,
   requestHomeCare,
-  updatePatientBasicDetails,
 } from '../../actions';
 import {
   FormControl,

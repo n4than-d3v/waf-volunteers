@@ -98,6 +98,9 @@ import {
   updatePatientBasicDetails,
   updatePatientBasicDetailsSuccess,
   updatePatientBasicDetailsError,
+  homeCarerDropOff,
+  homeCarerDropOffSuccess,
+  homeCarerDropOffError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -872,6 +875,32 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     requestHomeCare: {
       ...state.requestHomeCare,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Home carer drop-off
+  on(homeCarerDropOff, (state) => ({
+    ...state,
+    dropOffHomeCare: {
+      ...state.dropOffHomeCare,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(homeCarerDropOffSuccess, (state) => ({
+    ...state,
+    dropOffHomeCare: {
+      ...state.dropOffHomeCare,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(homeCarerDropOffError, (state) => ({
+    ...state,
+    dropOffHomeCare: {
+      ...state.dropOffHomeCare,
       loading: false,
       error: true,
     },

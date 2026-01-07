@@ -1,4 +1,6 @@
-﻿using Api.Database.Entities.Hospital.Patients.Medications;
+﻿using Api.Database.Entities.Hospital.Locations;
+using Api.Database.Entities.Hospital.Patients.Medications;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Api.Database.Entities.Hospital.Patients.Prescriptions;
@@ -21,4 +23,11 @@ public class PatientPrescriptionMedication : Entity
     public string Frequency { get; set; }
 
     public List<PatientPrescriptionMedicationAdministration> Administrations { get; set; }
+
+    [NotMapped]
+    public Species Species => Patient.Species;
+    [NotMapped]
+    public SpeciesVariant SpeciesVariant => Patient.SpeciesVariant;
+    [NotMapped]
+    public Pen Pen => Patient.Pen;
 }

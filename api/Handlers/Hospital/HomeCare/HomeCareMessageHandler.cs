@@ -7,19 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Handlers.Hospital.HomeCare;
 
-public class HomeCareMessage : IRequest<IResult>
+public class AddHomeCareMessage : IRequest<IResult>
 {
     public int HomeCareRequestId { get; set; }
     public string Message { get; set; }
 
-    public HomeCareMessage WithId(int id)
+    public AddHomeCareMessage WithId(int id)
     {
         HomeCareRequestId = id;
         return this;
     }
 }
 
-public class HomeCareMessageHandler : IRequestHandler<HomeCareMessage, IResult>
+public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResult>
 {
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
@@ -30,7 +30,7 @@ public class HomeCareMessageHandler : IRequestHandler<HomeCareMessage, IResult>
         _userContext = userContext;
     }
 
-    public async Task<IResult> Handle(HomeCareMessage request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(AddHomeCareMessage request, CancellationToken cancellationToken)
     {
         var homeCareRequest = await _repository.Get<HomeCareRequest>(request.HomeCareRequestId, action: x => x.Include(y => y.Patient));
         if (homeCareRequest == null) return Results.BadRequest();
@@ -38,7 +38,7 @@ public class HomeCareMessageHandler : IRequestHandler<HomeCareMessage, IResult>
         var author = await _repository.Get<Account>(_userContext.Id);
         if (author == null) return Results.BadRequest();
 
-        var homeCareMessage = new Database.Entities.Hospital.Patients.HomeCare.HomeCareMessage
+        var homeCareMessage = new HomeCareMessage
         {
             Date = DateTime.UtcNow,
             Author = author,

@@ -4,6 +4,8 @@ import { VolunteerRotaComponent } from './volunteer/rota/component';
 import { VolunteerProfileComponent } from './volunteer/profile/component';
 import { VolunteerNoticesComponent } from './volunteer/notices/component';
 import { VolunteerNoticeViewComponent } from './volunteer/notices/view/component';
+import { VolunteerHomeCareComponent } from './volunteer/home-care/component';
+import { isAuthenticated, isOrphanFeeder } from './authentication/guards';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -25,5 +27,10 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', component: VolunteerNoticesComponent },
       { path: ':id/view', component: VolunteerNoticeViewComponent },
     ],
+  },
+  {
+    path: 'home-care',
+    canActivate: [isOrphanFeeder],
+    component: VolunteerHomeCareComponent,
   },
 ];

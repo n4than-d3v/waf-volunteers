@@ -23,6 +23,8 @@ export interface HospitalState {
   movePatient: Task;
   setDisposition: Task;
   requestHomeCare: Task;
+  dropOffHomeCare: Task;
+  messageHomeCare: Task;
   updateBasicDetails: Task;
   updateDiets: Task;
   updateTags: Task;
@@ -62,11 +64,6 @@ export interface ReadOnlyWrapper<T> {
   data: T | null;
   loading: boolean;
   error: boolean;
-}
-
-export interface Wrapper<T> extends ReadOnlyWrapper<T> {
-  created: boolean;
-  updated: boolean;
 }
 
 export interface PatientCounts {
@@ -134,10 +131,24 @@ export interface HomeCareRequest {
   id: number;
   requested: string;
   requester: { firstName: string; lastName: string } | null;
+  notes: string;
   responded: string | null;
   responder: { firstName: string; lastName: string } | null;
   pickup: string | null;
   dropoff: string | null;
+
+  reference: string;
+  species: Species;
+  variant: SpeciesVariant;
+  pen: Pen;
+}
+
+export interface HomeCareMessage {
+  id: number;
+  author: { firstName: string; lastName: string };
+  date: string;
+  message: string;
+  me: boolean;
 }
 
 export interface Patient extends ListPatient {
@@ -147,7 +158,7 @@ export interface Patient extends ListPatient {
   prescriptionInstructions: PrescriptionInstruction[];
   notes: ListNote[];
   movements: Movement[];
-  homeCareMessages: {}[];
+  homeCareMessages: HomeCareMessage[];
 }
 
 export interface Movement {
@@ -275,6 +286,8 @@ export interface TreatmentMedication {
 }
 
 export interface Administration {
+  id: number;
+  administered: string;
   administrator: { firstName: string; lastName: string };
   success: boolean;
   comments: string;
@@ -448,19 +461,13 @@ export interface Exam {
 
 export type Outcome = 'alive' | 'release' | 'deadOnArrival' | 'pts';
 
-const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
+export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
   data: null,
   loading: false,
   error: false,
 });
 
-const createWrapper = <T>(): Wrapper<T> => ({
-  ...createReadOnlyWrapper<T>(),
-  created: false,
-  updated: false,
-});
-
-const createTask = (): Task => ({
+export const createTask = (): Task => ({
   loading: false,
   success: false,
   error: false,
@@ -494,6 +501,8 @@ export const initialHospitalState: HospitalState = {
   removePrescription: createTask(),
   movePatient: createTask(),
   requestHomeCare: createTask(),
+  dropOffHomeCare: createTask(),
+  messageHomeCare: createTask(),
   updateBasicDetails: createTask(),
   updateDiets: createTask(),
   updateTags: createTask(),

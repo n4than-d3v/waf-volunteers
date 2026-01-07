@@ -55,6 +55,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
   addTask$: Observable<Task>;
   removeTask$: Observable<Task>;
 
+  showAdministrations = false;
+
   PatientStatus = PatientStatus;
 
   constructor(private store: Store) {

@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using Api.Database.Entities.Hospital.Locations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Requester = Api.Database.Entities.Account.Account;
 using Responder = Api.Database.Entities.Account.Account;
 
@@ -18,4 +20,13 @@ public class HomeCareRequest : Entity
     public DateTime? Pickup { get; set; }
 
     public DateTime? Dropoff { get; set; }
+
+    [NotMapped]
+    public string Reference => Patient.Reference;
+    [NotMapped]
+    public Species Species => Patient.Species;
+    [NotMapped]
+    public SpeciesVariant Variant => Patient.SpeciesVariant;
+    [NotMapped]
+    public Pen Pen => Patient.Pen;
 }

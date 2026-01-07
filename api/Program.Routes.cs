@@ -197,7 +197,15 @@ public partial class Program
             .AddNote("Orphan feeder accepts home care request")
             .RequireAuthorization(orphanFeederPolicy);
 
-        apiHospitalHomeCare.MapPost("/{id:int}/message", (IMediator mediator, int id, HomeCareMessage request) => mediator.Send(request.WithId(id)))
+        apiHospitalHomeCare.MapPost("/{id:int}/drop-off", (IMediator mediator, int id) => mediator.Send(new DroppedOffHomeCare { HomeCareRequestId = id }))
+            .AddNote("Vet accepts patient back as an inpatient")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalHomeCare.MapGet("/{id:int}/messages", (IMediator mediator, int id) => mediator.Send(new ViewHomeCareMessages { HomeCareRequestId = id }))
+            .AddNote("Orphan feeder views home care messages")
+            .RequireAuthorization(orphanFeederPolicy);
+
+        apiHospitalHomeCare.MapPost("/{id:int}/message", (IMediator mediator, int id, AddHomeCareMessage request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet or orphan feeder sends home care message")
             .RequireAuthorization(vetOrOrphanFeederPolicy);
 

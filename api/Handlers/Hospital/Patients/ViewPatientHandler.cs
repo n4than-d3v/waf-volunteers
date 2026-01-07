@@ -72,7 +72,7 @@ public static class ViewPatientExtensions
         {
             foreach (var exam in patient.Exams)
             {
-                if (exam.Examiner != null) CleanUser(exam.Examiner, encryptionService);
+                exam.Examiner?.CleanUser(encryptionService);
             }
         }
 
@@ -82,7 +82,7 @@ public static class ViewPatientExtensions
             {
                 foreach (var administration in prescription.Administrations)
                 {
-                    if (administration.Administrator != null) CleanUser(administration.Administrator, encryptionService);
+                    administration.Administrator?.CleanUser(encryptionService);
                 }
             }
         }
@@ -93,7 +93,7 @@ public static class ViewPatientExtensions
             {
                 foreach (var administration in prescription.Administrations)
                 {
-                    if (administration.Administrator != null) CleanUser(administration.Administrator, encryptionService);
+                    administration.Administrator?.CleanUser(encryptionService);
                 }
             }
         }
@@ -102,8 +102,16 @@ public static class ViewPatientExtensions
         {
             foreach (var request in patient.HomeCareRequests)
             {
-                if (request.Requester != null) CleanUser(request.Requester, encryptionService);
-                if (request.Responder != null) CleanUser(request.Responder, encryptionService);
+                request.Requester?.CleanUser(encryptionService);
+                request.Responder?.CleanUser(encryptionService);
+            }
+        }
+
+        if (patient.HomeCareMessages?.Any() ?? false)
+        {
+            foreach (var message in patient.HomeCareMessages)
+            {
+                message.Author?.CleanUser(encryptionService);
             }
         }
 
@@ -111,12 +119,12 @@ public static class ViewPatientExtensions
         {
             foreach (var note in patient.Notes)
             {
-                if (note.Noter != null) CleanUser(note.Noter, encryptionService);
+                note.Noter?.CleanUser(encryptionService);
             }
         }
     }
 
-    private static void CleanUser(Account account, IEncryptionService encryptionService)
+    public static void CleanUser(this Account account, IEncryptionService encryptionService)
     {
         account.Subscribe("");
         account.ResetPassword("");

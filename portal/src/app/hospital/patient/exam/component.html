@@ -445,7 +445,11 @@
   </div>
   }
 </form>
-@if (task$ | async; as task) { @if (task.loading) {
+@if (performExamTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} } @if (setDispositionTask$ | async; as task) { @if (task.loading) {
 <spinner></spinner>
 } @else if (task.error) {
 <div class="error">Error occurred</div>

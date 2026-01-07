@@ -4,6 +4,7 @@ import { Store } from '@ngrx/store';
 import { getCurrentProfile } from '../profile/actions';
 import { SubscribeBannerComponent } from './subscribe-banner/component';
 import { UnreadNoticesComponent } from './unread-notices/component';
+import { TokenProvider } from '../../shared/token.provider';
 
 @Component({
   selector: 'volunteer-dashboard',
@@ -13,9 +14,12 @@ import { UnreadNoticesComponent } from './unread-notices/component';
   imports: [RouterLink, SubscribeBannerComponent, UnreadNoticesComponent],
 })
 export class VolunteerDashboardComponent implements OnInit {
-  constructor(private store: Store) {}
+  isOrphanFeeder = false;
+
+  constructor(private store: Store, private tokenProvider: TokenProvider) {}
 
   ngOnInit() {
     this.store.dispatch(getCurrentProfile());
+    this.isOrphanFeeder = this.tokenProvider.isOrphanFeeder();
   }
 }

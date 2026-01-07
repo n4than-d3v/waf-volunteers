@@ -20,7 +20,7 @@
   <tbody>
     @for (movement of patient.movements; track movement.id) {
     <tr>
-      <td>{{ movement.moved | date: 'EEEE, dd MMM yyyy HH:mm' }}</td>
+      <td>{{ movement.moved | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>{{ movement.from.reference }}</td>
       <td>{{ movement.to.reference }}</td>
     </tr>

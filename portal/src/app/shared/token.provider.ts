@@ -113,6 +113,13 @@ export class TokenProvider {
     );
   }
 
+  public isOrphanFeeder() {
+    const session = this.getSession();
+    if (!session) return false;
+
+    return !!(Number(session.roles) & Roles.BEACON_ORPHAN_FEEDER);
+  }
+
   public isAuxiliary() {
     const session = this.getSession();
     if (!session) return false;

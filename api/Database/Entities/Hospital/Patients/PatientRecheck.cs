@@ -1,4 +1,6 @@
 ﻿using Api.Database.Entities.Account;
+using Api.Database.Entities.Hospital.Locations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Rechecker = Api.Database.Entities.Account.Account;
 
@@ -16,6 +18,13 @@ public class PatientRecheck : Entity
     public Rechecker? Rechecker { get; set; }
     public DateTime? Rechecked { get; set; }
     public string? Comments { get; set; }
+
+    [NotMapped]
+    public Species Species => Patient.Species;
+    [NotMapped]
+    public SpeciesVariant SpeciesVariant => Patient.SpeciesVariant;
+    [NotMapped]
+    public Pen Pen => Patient.Pen;
 }
 
 public enum RecheckRoles

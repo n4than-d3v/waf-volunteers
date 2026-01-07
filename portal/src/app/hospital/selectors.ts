@@ -153,3 +153,13 @@ export const selectUpdateTags = createSelector(
   selectHospitalState,
   (state) => state.updateTags
 );
+
+export const selectDropOffHomeCare = createSelector(
+  selectHospitalState,
+  (state) => state.dropOffHomeCare
+);
+
+export const selectMessageHomeCare = createSelector(
+  selectHospitalState,
+  (state) => state.messageHomeCare
+);

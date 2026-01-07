@@ -1,0 +1,136 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+<h1>Home care</h1>
+
+<h2>Outstanding requests</h2>
+
+@if (outstanding$ | async; as requests) { @if (requests.loading) {
+<spinner></spinner>
+} @else if (requests.error) {
+<div class="error">Error occurred</div>
+} @else if (requests.data && requests.data.length > 0) { @for (request of
+requests.data; track request.id) {
+<div class="request">
+  <div>
+    <p>
+      <strong>{{ request.variant.name }}</strong>
+    </p>
+    @if (request.notes) {
+    <p>{{ request.notes }}</p>
+    }
+    <p>
+      Requested <em>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</em>
+    </p>
+  </div>
+  @if (!accepting) {
+  <div class="buttons">
+    <button (click)="accepting = request.id" class="button button--secondary">
+      Accept
+    </button>
+  </div>
+  } @else if (accepting == request.id) {
+  <div>
+    <form [formGroup]="acceptForm">
+      <h3>Pickup</h3>
+      <div class="field">
+        <label for="pickupDate">Date</label>
+        <input id="pickupDate" type="date" formControlName="pickupDate" />
+      </div>
+      <div class="field">
+        <label for="pickupTime">Time</label>
+        <input id="pickupTime" type="time" formControlName="pickupTime" />
+      </div>
+    </form>
+    @if (attemptedSave && !acceptForm.valid) {
+    <div class="error">Please provide pick up date</div>
+    } @if (!saving) {
+    <div class="buttons">
+      <button (click)="accept()" class="button button--primary">Accept</button>
+      <button (click)="reset()" class="button button--secondary">Cancel</button>
+    </div>
+    } @if (acceptRequest$ | async; as task) { @if (task.loading) {
+    <spinner></spinner>
+    } @else if (task.error) {
+    <div class="error">Error occurred</div>
+    } }
+  </div>
+  }
+</div>
+} } @else {
+<p>There are no outstanding requests for home care.</p>
+} }
+
+<h2>Patients in my care</h2>
+
+@if (active$ | async; as requests) { @if (requests.loading) {
+<spinner></spinner>
+} @else if (requests.error) {
+<div class="error">Error occurred</div>
+} @else if (requests.data && requests.data.length > 0) { @for (request of
+requests.data; track request.id) {
+<div class="request">
+  <div>
+    <p>
+      <strong>{{ request.variant.name }}</strong>
+    </p>
+    <p>Patient reference <strong>{{ request.reference }}</strong></p>
+    <p>Pickup location <strong>{{ request.pen.reference }}</strong></p>
+    <p>
+      Pickup date
+      <strong>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</strong>
+    </p>
+    @if (request.notes) {
+    <p>{{ request.notes }}</p>
+    }
+  </div>
+  @if (!viewingMessages) {
+  <div class="buttons">
+    <button (click)="openMessages(request.id)" class="button button--secondary">
+      Open messages
+    </button>
+  </div>
+  } @else if (viewingMessages == request.id) {
+  <div class="chat-container">
+    <div class="chat">
+      @if (messages$ | async; as messages) { @if (messages.loading) {
+      <spinner></spinner>
+      } @else if (messages.error) {
+      <div class="error">Error occurred</div>
+      } @else if (messages.data) { @for (message of messages.data; track
+      message.id) {
+      <div class="message" [class.message--me]="message.me">
+        <div class="content">{{ message.message }}</div>
+        <div class="underneath">
+          <div class="author">
+            @if (!message.me) { {{ message.author.firstName }} {{
+            message.author.lastName }} }
+          </div>
+          <div class="date">{{ message.date | date: 'dd MMM yyyy HH:mm' }}</div>
+        </div>
+      </div>
+      } } }
+    </div>
+    <div class="send">
+      <form [formGroup]="messageForm">
+        <textarea id="message" formControlName="message"></textarea>
+      </form>
+      @if (attemptedSave && !messageForm.valid) {
+      <div class="error">Please provide message</div>
+      } @if (!saving) {
+      <div class="buttons">
+        <button (click)="sendMessage()" class="button button--primary">
+          Send
+        </button>
+      </div>
+      } @if (sendMessage$ | async; as task) { @if (task.loading) {
+      <spinner></spinner>
+      } @else if (task.error) {
+      <div class="error">Error occurred</div>
+      } }
+    </div>
+  </div>
+  }
+</div>
+} } @else {
+<p>You do not currently have any patients in your care.</p>
+} }

@@ -1,0 +1,43 @@
+table {
+  width: 100%;
+  margin-top: 1rem;
+
+  td,
+  th {
+    font-size: 1rem;
+    padding: 0.125rem 0.25rem;
+    border-left: none;
+    border-right: none;
+    align-content: flex-start;
+  }
+
+  th {
+    background-color: var(--theme-color-5);
+  }
+
+  tr {
+    background-color: transparent !important;
+  }
+}
+
+.flex {
+  margin-top: 1rem;
+
+  .field {
+    margin-bottom: 1rem;
+  }
+
+  textarea {
+    min-width: 40rem;
+    font-size: 1rem;
+  }
+
+  button {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}

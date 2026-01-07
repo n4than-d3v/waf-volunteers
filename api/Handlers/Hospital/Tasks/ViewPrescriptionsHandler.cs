@@ -24,41 +24,13 @@ public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResu
 
     public async Task<IResult> Handle(ViewPrescriptions request, CancellationToken cancellationToken)
     {
-        var instructions = await _repository.GetAll<PatientPrescriptionInstruction>(x => x.Start <= request.Date && request.Date <= x.End, tracking: false, Action);
-        var medications = await _repository.GetAll<PatientPrescriptionMedication>(x => x.Start <= request.Date && request.Date <= x.End, tracking: false, Action);
-        return Results.Ok(new
-        {
-            instructions = instructions.Select(x => new InstructionDto(x)).ToList(),
-            medications = medications.Select(x => new MedicationDto(x)).ToList()
-        });
-    }
-
-    public class InstructionDto(PatientPrescriptionInstruction instruction)
-    {
-        public Species Species { get; set; } = instruction.Patient.Species;
-        public SpeciesVariant SpeciesVariant { get; set; } = instruction.Patient.SpeciesVariant;
-        public Pen Pen { get; set; } = instruction.Patient.Pen;
-        public DateOnly Start { get; set; } = instruction.Start;
-        public DateOnly End { get; set; } = instruction.End;
-        public string Instructions { get; set; } = instruction.Instructions;
-        public string Frequency { get; set; } = instruction.Frequency;
-        public List<PatientPrescriptionInstructionAdministration> Administrations { get; set; } = instruction.Administrations;
-    }
-
-    public class MedicationDto(PatientPrescriptionMedication medication)
-    {
-        public Species Species { get; set; } = medication.Patient.Species;
-        public SpeciesVariant SpeciesVariant { get; set; } = medication.Patient.SpeciesVariant;
-        public Pen Pen { get; set; } = medication.Patient.Pen;
-        public DateOnly Start { get; set; } = medication.Start;
-        public DateOnly End { get; set; } = medication.End;
-        public decimal QuantityValue { get; set; } = medication.QuantityValue;
-        public string QuantityUnit { get; set; } = medication.QuantityUnit;
-        public Medication Medication { get; set; } = medication.Medication;
-        public AdministrationMethod AdministrationMethod { get; set; } = medication.AdministrationMethod;
-        public string Comments { get; set; } = medication.Comments;
-        public string Frequency { get; set; } = medication.Frequency;
-        public List<PatientPrescriptionMedicationAdministration> Administrations { get; set; } = medication.Administrations;
+        var instructions = await _repository.GetAll<PatientPrescriptionInstruction>(x =>
+            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
+                x.Start <= request.Date && request.Date <= x.End, tracking: false, Action);
+        var medications = await _repository.GetAll<PatientPrescriptionMedication>(x =>
+            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
+                x.Start <= request.Date && request.Date <= x.End, tracking: false, Action);
+        return Results.Ok(new { instructions, medications });
     }
 
     static IQueryable<PatientPrescriptionInstruction> Action(DbSet<PatientPrescriptionInstruction> x)

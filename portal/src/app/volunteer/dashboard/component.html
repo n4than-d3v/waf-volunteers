@@ -25,4 +25,14 @@
     <img src="images/notices.svg" alt="Notices icon" />
     <p>Notices</p>
   </a>
+  @if (isOrphanFeeder) {
+  <a
+    [routerLink]="'../home-care'"
+    class="module"
+    style="--bg: var(--theme-color-6)"
+  >
+    <img src="images/home-care.svg" alt="Notices icon" />
+    <p>Home care</p>
+  </a>
+  }
 </div>

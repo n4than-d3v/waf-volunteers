@@ -453,3 +453,34 @@ export const requestHomeCareSuccess = createAction(
 export const requestHomeCareError = createAction(
   '[HMS-V] Request home care: error'
 );
+
+// Home carer drop-off
+
+export const homeCarerDropOff = createAction(
+  '[HMS-V] Home carer drop-off',
+  props<{
+    patientId: number;
+    homeCareRequestId: number;
+  }>()
+);
+export const homeCarerDropOffSuccess = createAction(
+  '[HMS-V] Home carer drop-off: success',
+  props<{ patientId: number }>()
+);
+export const homeCarerDropOffError = createAction(
+  '[HMS-V] Home carer drop-off: error'
+);
+
+// Send home care message
+
+export const sendHomeCareMessage = createAction(
+  '[HMS-V] Send home care message',
+  props<{ patientId: number; homeCareRequestId: number; message: string }>()
+);
+export const sendHomeCareMessageSuccess = createAction(
+  '[HMS-V] Send home care message: success',
+  props<{ patientId: number; homeCareRequestId: number }>()
+);
+export const sendHomeCareMessageError = createAction(
+  '[HMS-V] Send home care message: error'
+);

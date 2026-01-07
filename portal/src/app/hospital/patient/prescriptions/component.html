@@ -2,6 +2,14 @@
 patient.prescriptionMedications.length === 0) {
 <p><em>No prescriptions have been added for this patient.</em></p>
 } @else {
+<div class="field showAdministrations">
+  <label for="showAdministrations">Show administrations</label>
+  <input
+    id="showAdministrations"
+    type="checkbox"
+    [(ngModel)]="showAdministrations"
+  />
+</div>
 <table>
   <thead>
     <tr>
@@ -12,15 +20,15 @@ patient.prescriptionMedications.length === 0) {
       <th>Administration</th>
       <th>Medication</th>
       <th>Comments</th>
-      <th></th>
+      <th colspan="5"></th>
     </tr>
   </thead>
   <tbody>
     @for (prescription of patient.prescriptionInstructions; track
     prescription.id) {
     <tr>
-      <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
-      <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
+      <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
       <td colspan="3"></td>
       <td>{{ prescription.instructions }}</td>
@@ -35,11 +43,34 @@ patient.prescriptionMedications.length === 0) {
         }
       </td>
     </tr>
-    } @for (prescription of patient.prescriptionMedications; track
+    @if (showAdministrations && prescription.administrations.length > 0) {
+    <tr class="administration-header">
+      <td colspan="2"></td>
+      <th>Administered</th>
+      <th>On</th>
+      <th>By</th>
+      <th>Success</th>
+      <th>Comments</th>
+      <td></td>
+    </tr>
+    @for (administration of prescription.administrations; track
+    administration.id) {
+    <tr>
+      <td colspan="3"></td>
+      <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>
+        {{ administration.administrator.firstName }} {{
+        administration.administrator.lastName }}
+      </td>
+      <td>{{ administration.success ? 'Yes' : 'No' }}</td>
+      <td>{{ administration.comments }}</td>
+      <td></td>
+    </tr>
+    } } } @for (prescription of patient.prescriptionMedications; track
     prescription.id) {
     <tr>
-      <td>{{ prescription.start | date: 'EEEE, dd MMM yyyy' }}</td>
-      <td>{{ prescription.end | date: 'EEEE, dd MMM yyyy' }}</td>
+      <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
+      <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
       <td>{{ prescription.quantityValue }}{{ prescription.quantityUnit }}</td>
       <td>{{ prescription.administrationMethod.description }}</td>
@@ -56,7 +87,30 @@ patient.prescriptionMedications.length === 0) {
         }
       </td>
     </tr>
-    }
+    @if (showAdministrations && prescription.administrations.length > 0) {
+    <tr class="administration-header">
+      <td colspan="2"></td>
+      <th>Administered</th>
+      <th>On</th>
+      <th>By</th>
+      <th>Success</th>
+      <th>Comments</th>
+      <td></td>
+    </tr>
+    @for (administration of prescription.administrations; track
+    administration.id) {
+    <tr>
+      <td colspan="2"></td>
+      <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>
+        {{ administration.administrator.firstName }} {{
+        administration.administrator.lastName }}
+      </td>
+      <td>{{ administration.success ? 'Yes' : 'No' }}</td>
+      <td>{{ administration.comments }}</td>
+      <td></td>
+    </tr>
+    } } }
   </tbody>
 </table>
 } @if (!(addingMedication || addingInstruction)) { @if (patient.status !=

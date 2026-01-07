@@ -22,6 +22,7 @@ import { HospitalPatientLocationComponent } from './location/component';
 import { HospitalPatientDietsComponent } from './diets/component';
 import { HospitalPatientTagsComponent } from './tags/component';
 import { HospitalPatientStatusComponent } from './status/component';
+import { HospitalPatientHomeCareComponent } from './home-care/component';
 
 @Component({
   selector: 'hospital-patient',
@@ -39,6 +40,7 @@ import { HospitalPatientStatusComponent } from './status/component';
     HospitalPatientLocationComponent,
     HospitalPatientDietsComponent,
     HospitalPatientTagsComponent,
+    HospitalPatientHomeCareComponent,
     HospitalPatientViewExamComponent,
     HospitalPatientNotesComponent,
     HospitalPatientRechecksComponent,

@@ -103,9 +103,6 @@
       <td>{{ patient.speciesVariant?.name }}</td>
       <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
-        {{ patient.homeCareRequests[0]?.requested | date: 'dd MMM yyyy HH:mm' }}
-      </td>
-      <td>
         {{ patient.homeCareRequests[0]?.pickup | date: 'dd MMM yyyy HH:mm' }}
       </td>
       <td>

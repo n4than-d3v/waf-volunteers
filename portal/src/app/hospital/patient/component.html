@@ -34,6 +34,7 @@ PatientStatus.PendingInitialExam) {
     <hospital-patient-status [patient]="patient.data"></hospital-patient-status>
   </section>
 </div>
+@if (patient.data.status != PatientStatus.ReceivingHomeCare) {
 <div class="sections">
   <section>
     <h3>Location</h3>
@@ -50,6 +51,14 @@ PatientStatus.PendingInitialExam) {
     <hospital-patient-tags [patient]="patient.data"></hospital-patient-tags>
   </section>
 </div>
+} @else {
+<section>
+  <h3>Home care</h3>
+  <hospital-patient-home-care
+    [patient]="patient.data"
+  ></hospital-patient-home-care>
+</section>
+}
 <section>
   <h3>Notes</h3>
   <hospital-patient-notes [patient]="patient.data"></hospital-patient-notes>

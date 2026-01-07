@@ -15,7 +15,7 @@
     <tbody>
       @for (recheck of patient.rechecks; track recheck.id) {
       <tr>
-        <td>{{ recheck.due | date: 'EEEE, dd MMM yyyy' }}</td>
+        <td>{{ recheck.due | date: 'dd MMM yyyy' }}</td>
         <td>{{ getRecheckRoles(recheck.roles) }}</td>
         <td>{{ recheck.description }}</td>
         <td>

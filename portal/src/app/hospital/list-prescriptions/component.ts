@@ -9,8 +9,12 @@ import {
   PrescriptionMedication,
   ReadOnlyWrapper,
   Species,
+  Task,
 } from '../state';
-import { selectListPrescriptions } from '../selectors';
+import {
+  selectAdministerPrescription,
+  selectListPrescriptions,
+} from '../selectors';
 import {
   administerPrescriptionInstruction,
   administerPrescriptionMedication,
@@ -39,7 +43,8 @@ export class HospitalListPrescriptions implements OnInit {
 
   listPrescriptions$: Observable<ReadOnlyWrapper<Prescription[]>>;
 
-  success: any = {};
+  task$: Observable<Task>;
+
   comments: any = {};
 
   isPrescriptionMedication(p: Prescription): p is PrescriptionMedication {
@@ -48,6 +53,7 @@ export class HospitalListPrescriptions implements OnInit {
 
   constructor(private store: Store) {
     this.listPrescriptions$ = this.store.select(selectListPrescriptions);
+    this.task$ = this.store.select(selectAdministerPrescription);
   }
 
   viewPatient(prescription: Prescription) {
@@ -103,26 +109,28 @@ export class HospitalListPrescriptions implements OnInit {
     return formatted || '0 minutes';
   }
 
-  administerInstruction(prescriptionInstructionId: number) {
+  administerInstruction(prescriptionInstructionId: number, success: boolean) {
     this.store.dispatch(
       administerPrescriptionInstruction({
         prescriptionInstructionId,
         date: this.viewingDate,
-        success: this.success['I' + prescriptionInstructionId],
         comments: this.comments['I' + prescriptionInstructionId],
+        success,
       })
     );
+    this.comments = {};
   }
 
-  administerMedication(prescriptionMedicationId: number) {
+  administerMedication(prescriptionMedicationId: number, success: boolean) {
     this.store.dispatch(
       administerPrescriptionMedication({
         prescriptionMedicationId,
         date: this.viewingDate,
-        success: this.success['M' + prescriptionMedicationId],
         comments: this.comments['M' + prescriptionMedicationId],
+        success,
       })
     );
+    this.comments = {};
   }
 
   ngOnInit() {

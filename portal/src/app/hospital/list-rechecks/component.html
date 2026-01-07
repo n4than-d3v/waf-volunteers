@@ -12,7 +12,12 @@
 <spinner></spinner>
 } @else if (rechecks.error) {
 <div class="error">Error occurred</div>
-} @else if (rechecks.data && rechecks.data.length > 0) {
+} @else if (rechecks.data && rechecks.data.length > 0) { @if (task$ | async; as
+task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }
 <div class="rechecks">
   @for (recheck of rechecks.data; track recheck.id) {
   <div class="recheck">
@@ -75,8 +80,4 @@
 </div>
 } @else {
 <p>There are no rechecks created for this date.</p>
-} } @if (task$ | async; as task) { @if (task.loading) {
-<spinner></spinner>
-} @else if (task.error) {
-<div class="error">Error occurred</div>
 } }

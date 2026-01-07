@@ -13,7 +13,12 @@
 <spinner></spinner>
 } @else if (prescriptions.error) {
 <div class="error">Error occurred</div>
-} @else if (prescriptions.data && prescriptions.data.length > 0) {
+} @else if (prescriptions.data && prescriptions.data.length > 0) { @if (task$ |
+async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }
 <div class="prescriptions">
   @for (prescription of prescriptions.data; track prescription.id) {
   <div class="prescription">
@@ -66,20 +71,20 @@
           rows="3"
         ></textarea>
       </div>
-      <div class="field">
-        <label for="success-m-{{ prescription.id }}">Success</label>
-        <input
-          type="checkbox"
-          id="success-m-{{ prescription.id }}"
-          [(ngModel)]="success['M'+prescription.id]"
-        />
+      <div class="buttons">
+        <button
+          (click)="administerMedication(prescription.id, true)"
+          class="button button--secondary-invert"
+        >
+          💉✅ Success
+        </button>
+        <button
+          (click)="administerMedication(prescription.id, false)"
+          class="button button--secondary-invert"
+        >
+          💉❌ Fail
+        </button>
       </div>
-      <button
-        (click)="administerMedication(prescription.id)"
-        class="button button--secondary-invert"
-      >
-        💉 Administer
-      </button>
       } @else {
       <div class="field">
         <label for="comments-m-{{ prescription.id }}">Comments</label>
@@ -89,20 +94,20 @@
           rows="3"
         ></textarea>
       </div>
-      <div class="field">
-        <label for="success-i-{{ prescription.id }}">Success</label>
-        <input
-          type="checkbox"
-          id="success-i-{{ prescription.id }}"
-          [(ngModel)]="success['I'+prescription.id]"
-        />
+      <div class="buttons">
+        <button
+          (click)="administerInstruction(prescription.id, true)"
+          class="button button--secondary-invert"
+        >
+          💉✅ Success
+        </button>
+        <button
+          (click)="administerInstruction(prescription.id, false)"
+          class="button button--secondary-invert"
+        >
+          💉❌ Fail
+        </button>
       </div>
-      <button
-        (click)="administerInstruction(prescription.id)"
-        class="button button--secondary-invert"
-      >
-        💉 Administer
-      </button>
       }
     </div>
   </div>

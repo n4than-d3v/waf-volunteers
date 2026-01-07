@@ -1,5 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Tag, Patient, PatientStatus, ReadOnlyWrapper } from '../../state';
+import {
+  Tag,
+  Patient,
+  PatientStatus,
+  ReadOnlyWrapper,
+  Task,
+} from '../../state';
 import { AsyncPipe } from '@angular/common';
 import {
   FormControl,
@@ -10,7 +16,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectTags } from '../../selectors';
+import { selectTags, selectUpdateTags } from '../../selectors';
 import { getTags, updatePatientBasicDetails } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { toHTML } from 'ngx-editor';
@@ -27,6 +33,8 @@ export class HospitalPatientTagsComponent implements OnInit {
 
   tags$: Observable<ReadOnlyWrapper<Tag[]>>;
 
+  task$: Observable<Task>;
+
   PatientStatus = PatientStatus;
 
   tagForm = new FormGroup({
@@ -37,10 +45,9 @@ export class HospitalPatientTagsComponent implements OnInit {
   attemptedSave = false;
   saving = false;
 
-  removing: number | null = null;
-
   constructor(private store: Store) {
     this.tags$ = this.store.select(selectTags);
+    this.task$ = this.store.select(selectUpdateTags);
   }
 
   ngOnInit() {
@@ -77,19 +84,22 @@ export class HospitalPatientTagsComponent implements OnInit {
     this.store.dispatch(
       updatePatientBasicDetails({
         ...update,
+        update: 'tags',
         tagIds: [...update.tagIds, Number(this.tagForm.value.tagId!)],
       })
     );
+    this.reset();
   }
 
   remove(id: number) {
-    this.removing = id;
     const update = this.getUpdateAction();
     this.store.dispatch(
       updatePatientBasicDetails({
         ...update,
+        update: 'tags',
         tagIds: update.tagIds.filter((x) => x != id),
       })
     );
+    this.reset();
   }
 }

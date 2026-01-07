@@ -4,6 +4,7 @@ import {
   Patient,
   PatientStatus,
   ReadOnlyWrapper,
+  Task,
 } from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import {
@@ -24,7 +25,11 @@ import {
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { HospitalPatientMedicationSelectorComponent } from '../medication-selector/component';
 import { Observable } from 'rxjs';
-import { selectAdministrationMethods } from '../../selectors';
+import {
+  selectAddPrescription,
+  selectAdministrationMethods,
+  selectRemovePrescription,
+} from '../../selectors';
 import { HospitalPatientPrescriptionsFrequencyComponent } from './frequency/component';
 
 @Component({
@@ -47,12 +52,17 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
 
+  addTask$: Observable<Task>;
+  removeTask$: Observable<Task>;
+
   PatientStatus = PatientStatus;
 
   constructor(private store: Store) {
     this.administrationMethods$ = this.store.select(
       selectAdministrationMethods
     );
+    this.addTask$ = this.store.select(selectAddPrescription);
+    this.removeTask$ = this.store.select(selectRemovePrescription);
   }
 
   ngOnInit() {
@@ -64,9 +74,6 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   saving = false;
   attemptedSave = false;
-
-  removingInstruction: number | null = null;
-  removingMedication: number | null = null;
 
   prescriptionInstructionForm = new FormGroup({
     start: new FormControl('', [Validators.required]),
@@ -87,10 +94,12 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
   });
 
   reset() {
-    this.prescriptionInstructionForm.reset();
-    this.prescriptionMedicationForm.reset();
+    this.saving = false;
     this.addingInstruction = false;
     this.addingMedication = false;
+    this.attemptedSave = false;
+    this.prescriptionInstructionForm.reset();
+    this.prescriptionMedicationForm.reset();
   }
 
   addMedication() {
@@ -117,6 +126,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
         comments: this.prescriptionMedicationForm.value.comments || '',
       })
     );
+    this.reset();
   }
 
   addInstruction() {
@@ -132,25 +142,26 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
         instructions: this.prescriptionInstructionForm.value.instructions || '',
       })
     );
+    this.reset();
   }
 
   removeInstruction(patientPrescriptionInstructionId: number) {
-    this.removingInstruction = patientPrescriptionInstructionId;
     this.store.dispatch(
       removePrescriptionInstruction({
         patientId: this.patient.id,
         patientPrescriptionInstructionId,
       })
     );
+    this.reset();
   }
 
   removeMedication(patientPrescriptionMedicationId: number) {
-    this.removingMedication = patientPrescriptionMedicationId;
     this.store.dispatch(
       removePrescriptionMedication({
         patientId: this.patient.id,
         patientPrescriptionMedicationId,
       })
     );
+    this.reset();
   }
 }

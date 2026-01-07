@@ -14,9 +14,6 @@ export interface HospitalState {
   mucousMembraneColours: ReadOnlyWrapper<MucousMembraneColour[]>;
   mucousMembraneTextures: ReadOnlyWrapper<MucousMembraneTexture[]>;
 
-  // Disposition
-  setDisposition: Task;
-
   // Tasks
   addNote: Task;
   addRecheck: Task;
@@ -24,6 +21,11 @@ export interface HospitalState {
   addPrescription: Task;
   removePrescription: Task;
   movePatient: Task;
+  setDisposition: Task;
+  requestHomeCare: Task;
+  updateBasicDetails: Task;
+  updateDiets: Task;
+  updateTags: Task;
 
   // Patient details
   tags: ReadOnlyWrapper<Tag[]>;
@@ -491,4 +493,8 @@ export const initialHospitalState: HospitalState = {
   addPrescription: createTask(),
   removePrescription: createTask(),
   movePatient: createTask(),
+  requestHomeCare: createTask(),
+  updateBasicDetails: createTask(),
+  updateDiets: createTask(),
+  updateTags: createTask(),
 };

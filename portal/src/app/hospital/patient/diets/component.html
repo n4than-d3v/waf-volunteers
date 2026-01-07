@@ -1,6 +1,5 @@
 <div class="wrapper">
-  <p>Species variant default:</p>
-  <div [innerHTML]="getHtml(patient.speciesVariant?.feedingGuidance)"></div>
+  <p>Diet, if different to default feeding guidance.</p>
   @if (patient.diets.length > 0) {
   <div class="row">
     <table>
@@ -17,9 +16,7 @@
           <td>{{ diet.name }}</td>
           <td [innerHTML]="getHtml(diet.description)"></td>
           <td>
-            @if (removing === diet.id) {
-            <spinner />
-            } @else if (patient.status != PatientStatus.Dispositioned) {
+            @if (patient.status != PatientStatus.Dispositioned) {
             <button (click)="remove(diet.id)" class="button button--none">
               🗑️
             </button>
@@ -54,9 +51,7 @@
         } }}
       </select>
     </div>
-    @if (saving) {
-    <spinner />
-    } @else { @if (attemptedSave && !dietForm.valid) {
+    @if (!saving) { @if (attemptedSave && !dietForm.valid) {
     <div class="error">Please fill in all required fields</div>
     }
     <div class="buttons">
@@ -67,3 +62,8 @@
   </form>
   }
 </div>
+@if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

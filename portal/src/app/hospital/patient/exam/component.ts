@@ -18,6 +18,7 @@ import {
   Outcome,
   ReadOnlyWrapper,
   Species,
+  Task,
 } from '../../../hospital/state';
 import { Store } from '@ngrx/store';
 import {
@@ -29,6 +30,7 @@ import {
   selectDispositionReasons,
   selectMucousMembraneColours,
   selectMucousMembraneTextures,
+  selectPerformExam,
   selectSpecies,
 } from '../../../hospital/selectors';
 import {
@@ -84,6 +86,8 @@ export class HospitalPatientExamComponent implements OnInit {
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
 
+  task$: Observable<Task>;
+
   areaId: string | null = null;
 
   attemptedSave = false;
@@ -138,6 +142,7 @@ export class HospitalPatientExamComponent implements OnInit {
       selectAdministrationMethods
     );
     this.areas$ = this.store.select(selectAreas);
+    this.task$ = this.store.select(selectPerformExam);
   }
 
   addTreatmentInstruction() {

@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { Observable } from 'rxjs';
 import { Patient, PatientStatus, ReadOnlyWrapper } from '../../hospital/state';
 import { Store } from '@ngrx/store';
@@ -21,6 +26,7 @@ import { HospitalPatientStatusComponent } from './status/component';
 @Component({
   selector: 'hospital-patient',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
   imports: [

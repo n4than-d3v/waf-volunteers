@@ -195,15 +195,15 @@
       <div class="buttons">
         <button
           (click)="addTreatmentMedication()"
-          class="button button--secondary"
+          class="button button--secondary-invert"
         >
-          Add medication
+          💊 Add medication
         </button>
         <button
           (click)="addTreatmentInstruction()"
-          class="button button--secondary"
+          class="button button--secondary-invert"
         >
-          Add other treatment
+          🛁 Add other treatment
         </button>
       </div>
       <div
@@ -276,9 +276,9 @@
           <div class="buttons">
             <button
               (click)="examForm.controls.treatmentMedications.controls.splice(i, 1)"
-              class="button button--warning"
+              class="button button--none"
             >
-              Remove
+              🗑️
             </button>
           </div>
         </div>
@@ -307,9 +307,9 @@
           <div class="buttons">
             <button
               (click)="examForm.controls.treatmentInstructions.controls.splice(i, 1)"
-              class="button button--warning"
+              class="button button--none"
             >
-              Remove
+              🗑️
             </button>
           </div>
         </div>
@@ -443,7 +443,10 @@
   <div class="buttons">
     <button (click)="performExam()" class="button button--primary">Save</button>
   </div>
-  } @else {
-  <spinner></spinner>
   }
 </form>
+@if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

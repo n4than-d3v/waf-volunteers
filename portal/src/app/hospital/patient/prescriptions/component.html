@@ -25,14 +25,12 @@ patient.prescriptionMedications.length === 0) {
       <td colspan="3"></td>
       <td>{{ prescription.instructions }}</td>
       <td>
-        @if (removingInstruction === prescription.id) {
-        <spinner />
-        } @else {
+        @if (patient.status != PatientStatus.Dispositioned) {
         <button
           (click)="removeInstruction(prescription.id)"
-          class="button button--warning"
+          class="button button--none"
         >
-          Delete
+          🗑️
         </button>
         }
       </td>
@@ -48,12 +46,10 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.medication.name }}</td>
       <td>{{ prescription.comments }}</td>
       <td>
-        @if (removingMedication === prescription.id) {
-        <spinner />
-        } @else if (patient.status != PatientStatus.Dispositioned) {
+        @if (patient.status != PatientStatus.Dispositioned) {
         <button
           (click)="removeMedication(prescription.id)"
-          class="button button--warning"
+          class="button button--none"
         >
           🗑️
         </button>
@@ -168,9 +164,7 @@ PatientStatus.Dispositioned) {
       rows="3"
     ></textarea>
   </div>
-  @if (saving) {
-  <spinner />
-  } @else { @if (attemptedSave && !prescriptionMedicationForm.valid) {
+  @if (!saving) { @if (attemptedSave && !prescriptionMedicationForm.valid) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">
@@ -223,9 +217,7 @@ PatientStatus.Dispositioned) {
       rows="3"
     ></textarea>
   </div>
-  @if (saving) {
-  <spinner />
-  } @else { @if (attemptedSave && !prescriptionInstructionForm.valid) {
+  @if (!saving) { @if (attemptedSave && !prescriptionInstructionForm.valid) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">
@@ -236,4 +228,12 @@ PatientStatus.Dispositioned) {
   </div>
   }
 </form>
-}
+} @if (addTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} } @if (removeTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

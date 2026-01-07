@@ -1,5 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Diet, Patient, PatientStatus, ReadOnlyWrapper } from '../../state';
+import {
+  Diet,
+  Patient,
+  PatientStatus,
+  ReadOnlyWrapper,
+  Task,
+} from '../../state';
 import { AsyncPipe } from '@angular/common';
 import {
   FormControl,
@@ -10,7 +16,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectDiets } from '../../selectors';
+import { selectDiets, selectUpdateDiets } from '../../selectors';
 import { getDiets, updatePatientBasicDetails } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { toHTML } from 'ngx-editor';
@@ -27,6 +33,8 @@ export class HospitalPatientDietsComponent implements OnInit {
 
   diets$: Observable<ReadOnlyWrapper<Diet[]>>;
 
+  task$: Observable<Task>;
+
   PatientStatus = PatientStatus;
 
   dietForm = new FormGroup({
@@ -37,10 +45,9 @@ export class HospitalPatientDietsComponent implements OnInit {
   attemptedSave = false;
   saving = false;
 
-  removing: number | null = null;
-
   constructor(private store: Store) {
     this.diets$ = this.store.select(selectDiets);
+    this.task$ = this.store.select(selectUpdateDiets);
   }
 
   ngOnInit() {
@@ -48,6 +55,7 @@ export class HospitalPatientDietsComponent implements OnInit {
   }
 
   reset() {
+    this.saving = false;
     this.adding = false;
     this.attemptedSave = false;
     this.dietForm.reset();
@@ -77,19 +85,22 @@ export class HospitalPatientDietsComponent implements OnInit {
     this.store.dispatch(
       updatePatientBasicDetails({
         ...update,
+        update: 'diets',
         dietIds: [...update.dietIds, Number(this.dietForm.value.dietId!)],
       })
     );
+    this.reset();
   }
 
   remove(id: number) {
-    this.removing = id;
     const update = this.getUpdateAction();
     this.store.dispatch(
       updatePatientBasicDetails({
         ...update,
+        update: 'diets',
         dietIds: update.dietIds.filter((x) => x != id),
       })
     );
+    this.reset();
   }
 }

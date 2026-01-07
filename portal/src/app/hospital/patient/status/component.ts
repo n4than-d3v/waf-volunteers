@@ -12,6 +12,7 @@ import {
   ReadOnlyWrapper,
   ReleaseType,
   Species,
+  Task,
   TransferLocation,
 } from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -21,6 +22,8 @@ import { Store } from '@ngrx/store';
 import {
   selectDispositionReasons,
   selectReleaseTypes,
+  selectRequestHomeCare,
+  selectSetDisposition,
   selectSpecies,
   selectTransferLocations,
 } from '../../selectors';
@@ -33,6 +36,7 @@ import {
   markPatientReadyForRelease,
   markPatientReleased,
   markPatientTransferred,
+  requestHomeCare,
   updatePatientBasicDetails,
 } from '../../actions';
 import {
@@ -57,6 +61,9 @@ export class HospitalPatientStatusComponent implements OnInit {
   releaseTypes$: Observable<ReadOnlyWrapper<ReleaseType[]>>;
   transferLocations$: Observable<ReadOnlyWrapper<TransferLocation[]>>;
 
+  setDispositionTask$: Observable<Task>;
+  requestHomeCareTask$: Observable<Task>;
+
   PatientStatus = PatientStatus;
   getDisposition = getDisposition;
 
@@ -77,7 +84,14 @@ export class HospitalPatientStatusComponent implements OnInit {
     notes: new FormControl(''),
   });
 
-  updating: '' | 'release' | 'readyToRelease' | 'die' | 'pts' | 'transfer' = '';
+  updating:
+    | ''
+    | 'release'
+    | 'readyToRelease'
+    | 'die'
+    | 'pts'
+    | 'transfer'
+    | 'requestHomeCare' = '';
   attemptedSave = false;
   saving = false;
 
@@ -85,6 +99,8 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.dispositionReasons$ = this.store.select(selectDispositionReasons);
     this.releaseTypes$ = this.store.select(selectReleaseTypes);
     this.transferLocations$ = this.store.select(selectTransferLocations);
+    this.setDispositionTask$ = this.store.select(selectSetDisposition);
+    this.requestHomeCareTask$ = this.store.select(selectRequestHomeCare);
   }
 
   ngOnInit() {
@@ -113,7 +129,9 @@ export class HospitalPatientStatusComponent implements OnInit {
   }
 
   reset() {
+    this.saving = false;
     this.updating = '';
+    this.attemptedSave = false;
     this.deadForm.reset();
     this.releaseForm.reset();
     this.transferForm.reset();
@@ -127,6 +145,7 @@ export class HospitalPatientStatusComponent implements OnInit {
         patientId: this.patient.id,
       })
     );
+    this.reset();
   }
 
   release() {
@@ -139,6 +158,7 @@ export class HospitalPatientStatusComponent implements OnInit {
         releaseTypeId: Number(this.releaseForm.value.releaseTypeId!),
       })
     );
+    this.reset();
   }
 
   transfer() {
@@ -151,6 +171,7 @@ export class HospitalPatientStatusComponent implements OnInit {
         transferLocationId: Number(this.transferForm.value.transferLocationId!),
       })
     );
+    this.reset();
   }
 
   die() {
@@ -165,5 +186,19 @@ export class HospitalPatientStatusComponent implements OnInit {
         putToSleep: this.updating === 'pts',
       })
     );
+    this.reset();
+  }
+
+  requestHomeCare() {
+    this.attemptedSave = true;
+    if (!this.homeCareForm.valid) return;
+    this.saving = true;
+    this.store.dispatch(
+      requestHomeCare({
+        patientId: this.patient.id,
+        notes: this.homeCareForm.value.notes || '',
+      })
+    );
+    this.reset();
   }
 }

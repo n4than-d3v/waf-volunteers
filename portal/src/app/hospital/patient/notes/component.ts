@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { getWeightUnit, Patient, PatientStatus } from '../../state';
-import { DatePipe } from '@angular/common';
+import { getWeightUnit, Patient, PatientStatus, Task } from '../../state';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import {
   FormControl,
   FormGroup,
@@ -10,18 +10,30 @@ import {
 import { Store } from '@ngrx/store';
 import { addNote } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
+import { Observable } from 'rxjs';
+import { selectAddNote } from '../../selectors';
 
 @Component({
   selector: 'hospital-patient-notes',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [DatePipe, SpinnerComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    SpinnerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class HospitalPatientNotesComponent {
   @Input({ required: true }) patient!: Patient;
 
-  constructor(private store: Store) {}
+  task$: Observable<Task>;
+
+  constructor(private store: Store) {
+    this.task$ = this.store.select(selectAddNote);
+  }
 
   PatientStatus = PatientStatus;
 
@@ -48,11 +60,13 @@ export class HospitalPatientNotesComponent {
         comments: this.noteForm.value.comments || '',
       })
     );
+    this.reset();
   }
 
   reset() {
-    this.noteForm.reset();
+    this.saving = false;
     this.adding = false;
+    this.noteForm.reset();
   }
 
   getWeightUnit = getWeightUnit;

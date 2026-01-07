@@ -4,12 +4,18 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { Patient, PatientStatus, ReadOnlyWrapper, Species } from '../../state';
+import {
+  Patient,
+  PatientStatus,
+  ReadOnlyWrapper,
+  Species,
+  Task,
+} from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectSpecies } from '../../selectors';
+import { selectSpecies, selectUpdateBasicDetails } from '../../selectors';
 import { getSpecies, updatePatientBasicDetails } from '../../actions';
 import {
   FormControl,
@@ -30,6 +36,8 @@ import {
 export class HospitalPatientDetailsComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
 
+  task$: Observable<Task>;
+
   species$: Observable<ReadOnlyWrapper<Species[]>>;
 
   PatientStatus = PatientStatus;
@@ -47,6 +55,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
 
   constructor(private store: Store) {
     this.species$ = this.store.select(selectSpecies);
+    this.task$ = this.store.select(selectUpdateBasicDetails);
   }
 
   ngOnInit() {
@@ -73,7 +82,9 @@ export class HospitalPatientDetailsComponent implements OnInit {
   }
 
   reset() {
+    this.saving = false;
     this.updating = false;
+    this.attemptedSave = false;
     this.detailsForm.reset();
   }
 
@@ -93,6 +104,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
     this.saving = true;
     this.store.dispatch(
       updatePatientBasicDetails({
+        update: 'details',
         patientId: this.patient.id,
         name: this.detailsForm.value.name || '',
         uniqueIdentifier: this.detailsForm.value.uniqueIdentifier || '',
@@ -103,5 +115,6 @@ export class HospitalPatientDetailsComponent implements OnInit {
         dietIds: this.patient.diets.map((x) => x.id),
       })
     );
+    this.reset();
   }
 }

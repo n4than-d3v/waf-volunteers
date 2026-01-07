@@ -4,8 +4,9 @@ import {
   getWeightUnit,
   Patient,
   PatientStatus,
+  Task,
 } from '../../state';
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import {
   FormControl,
   FormGroup,
@@ -16,18 +17,32 @@ import {
 import { Store } from '@ngrx/store';
 import { addNote, addRecheck, removeRecheck } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
+import { Observable } from 'rxjs';
+import { selectAddRecheck, selectRemoveRecheck } from '../../selectors';
 
 @Component({
   selector: 'hospital-patient-rechecks',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [DatePipe, SpinnerComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    SpinnerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class HospitalPatientRechecksComponent {
   @Input({ required: true }) patient!: Patient;
 
-  constructor(private store: Store) {}
+  addTask$: Observable<Task>;
+  removeTask$: Observable<Task>;
+
+  constructor(private store: Store) {
+    this.addTask$ = this.store.select(selectAddRecheck);
+    this.removeTask$ = this.store.select(selectRemoveRecheck);
+  }
 
   PatientStatus = PatientStatus;
 
@@ -55,11 +70,14 @@ export class HospitalPatientRechecksComponent {
         due: this.recheckForm.value.due!,
       })
     );
+    this.reset();
   }
 
   reset() {
-    this.recheckForm.reset();
     this.adding = false;
+    this.attemptedSave = false;
+    this.removing = null;
+    this.recheckForm.reset();
   }
 
   remove(patientRecheckId: number) {
@@ -70,6 +88,7 @@ export class HospitalPatientRechecksComponent {
         patientRecheckId,
       })
     );
+    this.reset();
   }
 
   getRecheckRoles = getRecheckRoles;

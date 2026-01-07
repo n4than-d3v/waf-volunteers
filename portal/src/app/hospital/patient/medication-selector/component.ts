@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {
   ControlContainer,
   FormGroup,
@@ -17,6 +17,7 @@ import { AsyncPipe } from '@angular/common';
 @Component({
   selector: 'hospital-patient-medication-selector',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
   imports: [AsyncPipe, SpinnerComponent, FormsModule, ReactiveFormsModule],
@@ -40,21 +41,37 @@ export class HospitalPatientMedicationSelectorComponent {
     this.medications$ = this.store.select(selectMedications);
   }
 
-  debounceTimer: any;
+  private getFirstInList() {
+    const first = document.querySelector(
+      '#medication-selector ul li:first-child'
+    ) as any;
+    return first;
+  }
 
-  onInput(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
+  onKeyDown(event: KeyboardEvent) {
+    if (event.keyCode) {
+      if (event.keyCode == 13 /* Enter */) {
+        this.getFirstInList()?.click();
+        event.preventDefault();
+        return;
+      } else if (
+        event.keyCode == 40 /* Down */ ||
+        event.keyCode == 9 /* Tab */
+      ) {
+        this.getFirstInList()?.focus();
+        event.preventDefault();
+        return;
+      }
+    }
+  }
 
-    clearTimeout(this.debounceTimer);
-    this.debounceTimer = setTimeout(() => {
-      this.performSearch(value);
-    }, 300);
+  onKeyUp(event: KeyboardEvent) {
+    this.performSearch((event.target as any).value);
   }
 
   performSearch(search: string) {
+    this.open = !!search;
     if (!search) return;
-    console.log(`Searching for medication: ${search}`);
-    this.open = true;
     this.store.dispatch(getMedications({ search }));
   }
 

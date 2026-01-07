@@ -92,6 +92,12 @@ import {
   markPatientTransferredSuccess,
   markPatientReleasedError,
   markPatientTransferredError,
+  requestHomeCare,
+  requestHomeCareSuccess,
+  requestHomeCareError,
+  updatePatientBasicDetails,
+  updatePatientBasicDetailsSuccess,
+  updatePatientBasicDetailsError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -151,11 +157,11 @@ export const hospitalReducer = createReducer<HospitalState>(
     },
   })),
   // Patient
-  on(getPatient, (state) => ({
+  on(getPatient, (state, action) => ({
     ...state,
     patient: {
       ...state.patient,
-      loading: true,
+      loading: action.silent ? false : true,
       error: false,
     },
   })),
@@ -785,5 +791,89 @@ export const hospitalReducer = createReducer<HospitalState>(
         error: true,
       },
     })
-  )
+  ),
+  // Update patient basic details
+  on(updatePatientBasicDetails, (state, { update }) => ({
+    ...state,
+    updateBasicDetails: {
+      ...state.updateBasicDetails,
+      loading: update === 'details',
+      success: false,
+      error: false,
+    },
+    updateDiets: {
+      ...state.updateDiets,
+      loading: update === 'diets',
+      success: false,
+      error: false,
+    },
+    updateTags: {
+      ...state.updateTags,
+      loading: update === 'tags',
+      success: false,
+      error: false,
+    },
+  })),
+  on(updatePatientBasicDetailsSuccess, (state, { update }) => ({
+    ...state,
+    updateBasicDetails: {
+      ...state.updateBasicDetails,
+      loading: false,
+      success: update === 'details',
+    },
+    updateDiets: {
+      ...state.updateDiets,
+      loading: false,
+      success: update === 'diets',
+    },
+    updateTags: {
+      ...state.updateTags,
+      loading: false,
+      success: update === 'tags',
+    },
+  })),
+  on(updatePatientBasicDetailsError, (state, { update }) => ({
+    ...state,
+    updateBasicDetails: {
+      ...state.updateBasicDetails,
+      loading: false,
+      error: update === 'details',
+    },
+    updateDiets: {
+      ...state.updateDiets,
+      loading: false,
+      error: update === 'diets',
+    },
+    updateTags: {
+      ...state.updateTags,
+      loading: false,
+      error: update === 'tags',
+    },
+  })),
+  // Request home care
+  on(requestHomeCare, (state) => ({
+    ...state,
+    requestHomeCare: {
+      ...state.requestHomeCare,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(requestHomeCareSuccess, (state) => ({
+    ...state,
+    requestHomeCare: {
+      ...state.requestHomeCare,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(requestHomeCareError, (state) => ({
+    ...state,
+    requestHomeCare: {
+      ...state.requestHomeCare,
+      loading: false,
+      error: true,
+    },
+  }))
 );

@@ -69,9 +69,7 @@
       } } } }}
     </select>
   </div>
-  @if (saving) {
-  <spinner />
-  } @else { @if (attemptedSave && !moveForm.valid) {
+  @if (!saving) { @if (attemptedSave && !moveForm.valid) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">
@@ -80,4 +78,8 @@
   </div>
   }
 </form>
-}
+} @if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

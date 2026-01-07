@@ -19,22 +19,10 @@ table {
   }
 }
 
-.input-with-units {
-  display: flex;
-
-  input {
-    max-width: 6ch;
-    text-align: right;
-    border-top-right-radius: 0rem;
-    border-bottom-right-radius: 0rem;
-    border-right: none;
-  }
-
-  select {
-    max-width: 5rem;
-    border-top-left-radius: 0rem;
-    border-bottom-left-radius: 0rem;
-  }
+input,
+select {
+  padding: 0.25rem 0.5rem;
+  max-width: max-content;
 }
 
 .flex {
@@ -57,9 +45,4 @@ table {
 .buttons {
   display: flex;
   gap: 0.5rem;
-}
-
-.button--warning {
-  padding: 0rem;
-  background-color: transparent;
 }

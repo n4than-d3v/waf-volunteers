@@ -1,5 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Area, Patient, PatientStatus, ReadOnlyWrapper } from '../../state';
+import {
+  Area,
+  Patient,
+  PatientStatus,
+  ReadOnlyWrapper,
+  Task,
+} from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import {
   FormControl,
@@ -10,7 +16,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectAreas } from '../../selectors';
+import { selectAreas, selectMovePatient } from '../../selectors';
 import { getAreas, movePatient } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 
@@ -32,6 +38,8 @@ export class HospitalPatientLocationComponent implements OnInit {
 
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
 
+  task$: Observable<Task>;
+
   PatientStatus = PatientStatus;
 
   moveForm = new FormGroup({
@@ -45,6 +53,7 @@ export class HospitalPatientLocationComponent implements OnInit {
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
+    this.task$ = this.store.select(selectMovePatient);
   }
 
   ngOnInit() {
@@ -52,6 +61,7 @@ export class HospitalPatientLocationComponent implements OnInit {
   }
 
   reset() {
+    this.saving = false;
     this.moving = false;
     this.attemptedSave = false;
     this.moveForm.reset();
@@ -67,5 +77,6 @@ export class HospitalPatientLocationComponent implements OnInit {
         penId: Number(this.moveForm.value.penId),
       })
     );
+    this.reset();
   }
 }

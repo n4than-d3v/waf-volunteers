@@ -24,10 +24,8 @@
         <td>{{ recheck.rechecked | date: 'dd MMM yyyy HH:mm' }}</td>
         <td>{{ recheck.comments }}</td>
         <td>
-          @if (removing === recheck.id) {
-          <spinner />
-          } @else if (patient.status != PatientStatus.Dispositioned) {
-          <button (click)="remove(recheck.id)" class="button button--warning">
+          @if (patient.status != PatientStatus.Dispositioned) {
+          <button (click)="remove(recheck.id)" class="button button--none">
             🗑️
           </button>
           }
@@ -75,9 +73,7 @@
         rows="3"
       ></textarea>
     </div>
-    @if (saving) {
-    <spinner />
-    } @else { @if (attemptedSave && !recheckForm.valid) {
+    @if (!saving) { @if (attemptedSave && !recheckForm.valid) {
     <div class="error">Please fill in all required fields</div>
     }
     <div class="buttons">
@@ -87,3 +83,12 @@
     } }
   </div>
 </form>
+@if (addTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} } @if (removeTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

@@ -133,3 +133,23 @@ export const selectRemovePrescription = createSelector(
   selectHospitalState,
   (state) => state.removePrescription
 );
+
+export const selectRequestHomeCare = createSelector(
+  selectHospitalState,
+  (state) => state.requestHomeCare
+);
+
+export const selectUpdateBasicDetails = createSelector(
+  selectHospitalState,
+  (state) => state.updateBasicDetails
+);
+
+export const selectUpdateDiets = createSelector(
+  selectHospitalState,
+  (state) => state.updateDiets
+);
+
+export const selectUpdateTags = createSelector(
+  selectHospitalState,
+  (state) => state.updateTags
+);

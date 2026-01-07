@@ -48,7 +48,7 @@ export const getPatientsByStatusError = createAction(
 
 export const getPatient = createAction(
   '[HMS-V] Get patient',
-  props<{ id: number }>()
+  props<{ id: number; silent?: boolean }>()
 );
 export const getPatientSuccess = createAction(
   '[HMS-V] Get patient: success',
@@ -413,9 +413,12 @@ export const removePrescriptionInstructionError = createAction(
 
 // Update basic details
 
+export type UpdatePatientBasicDetailsType = 'details' | 'diets' | 'tags';
+
 export const updatePatientBasicDetails = createAction(
   '[HMS-V] Update patient basic details',
   props<{
+    update: UpdatePatientBasicDetailsType;
     patientId: number;
     name: string;
     uniqueIdentifier: string;
@@ -427,8 +430,26 @@ export const updatePatientBasicDetails = createAction(
 );
 export const updatePatientBasicDetailsSuccess = createAction(
   '[HMS-V] Update patient basic details: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number; update: UpdatePatientBasicDetailsType }>()
 );
 export const updatePatientBasicDetailsError = createAction(
-  '[HMS-V] Update patient basic details: error'
+  '[HMS-V] Update patient basic details: error',
+  props<{ update: UpdatePatientBasicDetailsType }>()
+);
+
+// Request home care
+
+export const requestHomeCare = createAction(
+  '[HMS-V] Request home care',
+  props<{
+    patientId: number;
+    notes: string;
+  }>()
+);
+export const requestHomeCareSuccess = createAction(
+  '[HMS-V] Request home care: success',
+  props<{ patientId: number }>()
+);
+export const requestHomeCareError = createAction(
+  '[HMS-V] Request home care: error'
 );

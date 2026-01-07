@@ -20,10 +20,12 @@
     type="text"
     [(ngModel)]="search"
     [ngModelOptions]="{standalone: true}"
-    (input)="onInput($event)"
+    (keydown)="onKeyDown($event)"
+    (keyup)="onKeyUp($event)"
+    autocomplete="off"
   />
   } @if (open) {
-  <div class="selector">
+  <div id="medication-selector" class="selector">
     <ul>
       @if (medications$ | async; as medications) { @if (medications.loading) {
       <spinner />

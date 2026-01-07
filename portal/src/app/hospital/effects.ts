@@ -115,6 +115,9 @@ import {
   markPatientTransferred,
   markPatientTransferredSuccess,
   markPatientTransferredError,
+  requestHomeCare,
+  requestHomeCareSuccess,
+  requestHomeCareError,
 } from './actions';
 
 @Injectable()
@@ -467,7 +470,9 @@ export class HospitalEffects {
   markPatientDeadSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientDeadSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -493,7 +498,9 @@ export class HospitalEffects {
   markPatientReadyForReleaseSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientReadyForReleaseSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -516,7 +523,9 @@ export class HospitalEffects {
   markPatientReleasedSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientReleasedSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -539,7 +548,9 @@ export class HospitalEffects {
   markPatientTransferredSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientTransferredSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -562,7 +573,9 @@ export class HospitalEffects {
   movePatientSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(movePatientSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -585,7 +598,9 @@ export class HospitalEffects {
   addNoteSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addNoteSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -608,7 +623,9 @@ export class HospitalEffects {
   addRecheckSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addRecheckSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -636,7 +653,9 @@ export class HospitalEffects {
   addPrescriptionInstructionSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addPrescriptionInstructionSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -664,7 +683,9 @@ export class HospitalEffects {
   addPrescriptionMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addPrescriptionMedicationSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -687,7 +708,9 @@ export class HospitalEffects {
   removeRecheckSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeRecheckSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -716,7 +739,9 @@ export class HospitalEffects {
   removePrescriptionInstructionSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removePrescriptionInstructionSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -745,7 +770,9 @@ export class HospitalEffects {
   removePrescriptionMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removePrescriptionMedicationSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 
@@ -759,9 +786,14 @@ export class HospitalEffects {
           .put(`hospital/patients/${action.patientId}/basic-details`, action)
           .pipe(
             map(() =>
-              updatePatientBasicDetailsSuccess({ patientId: action.patientId })
+              updatePatientBasicDetailsSuccess({
+                patientId: action.patientId,
+                update: action.update,
+              })
             ),
-            catchError(() => of(updatePatientBasicDetailsError()))
+            catchError(() =>
+              of(updatePatientBasicDetailsError({ update: action.update }))
+            )
           )
       )
     )
@@ -770,7 +802,37 @@ export class HospitalEffects {
   updatePatientBasicDetailsSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updatePatientBasicDetailsSuccess),
-      switchMap((action) => of(getPatient({ id: action.patientId })))
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  // Request home care
+
+  requestHomeCare$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestHomeCare),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/patients/${action.patientId}/request-home-care`,
+            action
+          )
+          .pipe(
+            map(() => requestHomeCareSuccess({ patientId: action.patientId })),
+            catchError(() => of(requestHomeCareError()))
+          )
+      )
+    )
+  );
+
+  requestHomeCareSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(requestHomeCareSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
     )
   );
 }

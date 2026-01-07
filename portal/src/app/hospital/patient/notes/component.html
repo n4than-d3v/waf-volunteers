@@ -59,9 +59,7 @@
         </select>
       </div>
     </div>
-    @if (saving) {
-    <spinner />
-    } @else {
+    @if (!saving) {
     <div class="buttons">
       <button (click)="add()" class="button button--primary">Save</button>
       <button (click)="reset()" class="button button--secondary">Back</button>
@@ -69,3 +67,8 @@
     } }
   </div>
 </form>
+@if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

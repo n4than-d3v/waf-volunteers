@@ -3,6 +3,8 @@ using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Medications;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
+using Api.Handlers.Hospital.Patients;
+using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +18,12 @@ public class ViewPrescriptions : IRequest<IResult>
 public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IEncryptionService _encryptionService;
 
-    public ViewPrescriptionsHandler(IDatabaseRepository repository)
+    public ViewPrescriptionsHandler(IDatabaseRepository repository, IEncryptionService encryptionService)
     {
         _repository = repository;
+        _encryptionService = encryptionService;
     }
 
     public async Task<IResult> Handle(ViewPrescriptions request, CancellationToken cancellationToken)
@@ -30,6 +34,18 @@ public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResu
         var medications = await _repository.GetAll<PatientPrescriptionMedication>(x =>
             (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
                 x.Start <= request.Date && request.Date <= x.End, tracking: false, Action);
+
+        foreach (var instruction in instructions)
+        {
+            if (instruction.Administrations?.Any() ?? false)
+            {
+                foreach (var administration in instruction.Administrations)
+                {
+                    administration.Administrator?.CleanUser(_encryptionService);
+                }
+            }
+        }
+
         return Results.Ok(new { instructions, medications });
     }
 

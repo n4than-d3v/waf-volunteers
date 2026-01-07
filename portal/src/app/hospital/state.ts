@@ -44,9 +44,17 @@ export interface HospitalState {
   // Medications
   medications: ReadOnlyWrapper<Medication[]>;
   administrationMethods: ReadOnlyWrapper<AdministrationMethod[]>;
+
+  // List rechecks
+  listRechecks: ReadOnlyWrapper<ListRecheck[]>;
+  performRecheck: Task;
 }
 
-export type TabCode = 'DASHBOARD' | 'LIST_PATIENTS_BY_STATUS' | 'VIEW_PATIENT';
+export type TabCode =
+  | 'DASHBOARD'
+  | 'LIST_PATIENTS_BY_STATUS'
+  | 'VIEW_PATIENT'
+  | 'LIST_RECHECKS';
 
 export interface Tab {
   code: TabCode;
@@ -220,6 +228,13 @@ export interface ListRecheck {
   rechecker: { firstName: string; lastName: string } | null;
   rechecked: string | null;
   comments: string | null;
+
+  viewPatientId: number;
+  reference: string;
+  species: Species;
+  variant: SpeciesVariant;
+  pen: Pen;
+  uniqueIdentifier: string;
 }
 
 export interface ListNote {
@@ -508,4 +523,6 @@ export const initialHospitalState: HospitalState = {
   updateBasicDetails: createTask(),
   updateDiets: createTask(),
   updateTags: createTask(),
+  listRechecks: createReadOnlyWrapper<ListRecheck[]>(),
+  performRecheck: createTask(),
 };

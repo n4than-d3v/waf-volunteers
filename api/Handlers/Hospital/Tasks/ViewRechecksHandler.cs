@@ -2,6 +2,8 @@
 using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Handlers.Hospital.Patients;
+using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +17,12 @@ public class ViewRechecks : IRequest<IResult>
 public class ViewRechecksHandler : IRequestHandler<ViewRechecks, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IEncryptionService _encryptionService;
 
-    public ViewRechecksHandler(IDatabaseRepository repository)
+    public ViewRechecksHandler(IDatabaseRepository repository, IEncryptionService encryptionService)
     {
         _repository = repository;
+        _encryptionService = encryptionService;
     }
 
     public async Task<IResult> Handle(ViewRechecks request, CancellationToken cancellationToken)
@@ -29,7 +33,17 @@ public class ViewRechecksHandler : IRequestHandler<ViewRechecks, IResult>
         var due = await _repository.GetAll<PatientRecheck>(x =>
             (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
                 x.Due == request.Date, tracking: false, Action);
-        return Results.Ok(new { overdue, due, });
+
+        var rechecks = new List<PatientRecheck>();
+        rechecks.AddRange(overdue);
+        rechecks.AddRange(due);
+
+        foreach (var recheck in rechecks)
+        {
+            recheck.Rechecker?.CleanUser(_encryptionService);
+        }
+
+        return Results.Ok(rechecks);
     }
 
     static IQueryable<PatientRecheck> Action(DbSet<PatientRecheck> x)

@@ -76,6 +76,14 @@ public static class ViewPatientExtensions
             }
         }
 
+        if (patient.Rechecks?.Any() ?? false)
+        {
+            foreach (var recheck in patient.Rechecks)
+            {
+                recheck.Rechecker?.CleanUser(encryptionService);
+            }
+        }
+
         if (patient.PrescriptionInstructions?.Any() ?? false)
         {
             foreach (var prescription in patient.PrescriptionInstructions)

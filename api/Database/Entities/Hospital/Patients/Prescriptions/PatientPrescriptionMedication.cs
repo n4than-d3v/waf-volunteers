@@ -25,9 +25,15 @@ public class PatientPrescriptionMedication : Entity
     public List<PatientPrescriptionMedicationAdministration> Administrations { get; set; }
 
     [NotMapped]
+    public int ViewPatientId => Patient.Id;
+    [NotMapped]
+    public string Reference => Patient.Reference;
+    [NotMapped]
+    public string UniqueIdentifier => Patient.UniqueIdentifier;
+    [NotMapped]
     public Species Species => Patient.Species;
     [NotMapped]
-    public SpeciesVariant SpeciesVariant => Patient.SpeciesVariant;
+    public SpeciesVariant Variant => Patient.SpeciesVariant;
     [NotMapped]
     public Pen Pen => Patient.Pen;
 }

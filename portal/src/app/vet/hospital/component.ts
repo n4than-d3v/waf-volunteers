@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, timeInterval } from 'rxjs';
 import { Tab } from '../../hospital/state';
 import { Store } from '@ngrx/store';
 import { selectTab } from '../../hospital/selectors';
@@ -8,6 +8,8 @@ import { AsyncPipe } from '@angular/common';
 import { HospitalListPatientByStatusComponent } from '../../hospital/list-patients-by-status/component';
 import { HospitalPatientComponent } from '../../hospital/patient/component';
 import { HospitalPatientSearchComponent } from '../../hospital/patient-search/component';
+import { HospitalListRechecks } from '../../hospital/list-rechecks/component';
+import { setTab } from '../../hospital/actions';
 
 @Component({
   selector: 'vet-hospital',
@@ -20,6 +22,7 @@ import { HospitalPatientSearchComponent } from '../../hospital/patient-search/co
     HospitalListPatientByStatusComponent,
     HospitalPatientComponent,
     HospitalPatientSearchComponent,
+    HospitalListRechecks,
   ],
 })
 export class VetHospitalComponent {
@@ -28,4 +31,17 @@ export class VetHospitalComponent {
   constructor(private store: Store) {
     this.tab$ = this.store.select(selectTab);
   }
+
+  viewRechecks() {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'LIST_RECHECKS',
+          title: 'View rechecks',
+        },
+      })
+    );
+  }
+
+  viewPrescriptions() {}
 }

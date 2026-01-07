@@ -6,8 +6,8 @@
         <th>Due</th>
         <th>For</th>
         <th>Description</th>
-        <th>Performed on</th>
-        <th>Performed by</th>
+        <th>Done at</th>
+        <th>Done by</th>
         <th>Comments</th>
         <th></th>
       </tr>
@@ -19,9 +19,13 @@
         <td>{{ getRecheckRoles(recheck.roles) }}</td>
         <td>{{ recheck.description }}</td>
         <td>
+          @if (recheck.rechecked && recheck.rechecked.includes(recheck.due)) {
+          {{ recheck.rechecked | date: 'HH:mm' }} } @else { {{ recheck.rechecked
+          | date: 'dd MMM yyyy HH:mm' }} }
+        </td>
+        <td>
           {{ recheck.rechecker?.firstName }} {{ recheck.rechecker?.lastName }}
         </td>
-        <td>{{ recheck.rechecked | date: 'dd MMM yyyy HH:mm' }}</td>
         <td>{{ recheck.comments }}</td>
         <td>
           @if (patient.status != PatientStatus.Dispositioned) {

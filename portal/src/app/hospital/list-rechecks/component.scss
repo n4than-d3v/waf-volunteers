@@ -1,0 +1,70 @@
+input[type="date"] {
+  max-width: max-content;
+}
+
+table {
+  max-width: min(100%, max-content);
+}
+
+.input-button {
+  display: flex;
+  margin-bottom: 0.5rem;
+
+  input {
+    padding: 0.25rem 0.5rem;
+  }
+
+  button {
+    margin-left: -2px;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+.recheck {
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.5);
+  border: solid 1px rgb(153, 153, 153);
+  max-width: max-content;
+  padding: 0.5rem 0.75rem 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.due {
+  font-weight: bold;
+  color: var(--theme-color-1);
+}
+
+.overdue {
+  font-weight: bold;
+  color: var(--theme-color-2);
+}
+
+textarea {
+  font-size: 1rem;
+  width: 100%;
+}
+
+a {
+  color: var(--theme-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.perform {
+  width: 100%;
+
+  button {
+    padding: 0.25rem 0.5rem;
+    margin-top: 0.75rem;
+  }
+}
+
+.done {
+  color: var(--theme-color-4);
+  font-weight: bold;
+}

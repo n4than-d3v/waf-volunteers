@@ -1,0 +1,64 @@
+<div class="field">
+  <label for="date">Date</label>
+  <div class="input-button">
+    <input type="date" id="date" [(ngModel)]="date" />
+    <button (click)="view()" class="button button--secondary-invert">
+      📋 View
+    </button>
+  </div>
+</div>
+
+@if (listRechecks$ | async; as rechecks) { @if (rechecks.loading) {
+<spinner></spinner>
+} @else if (rechecks.error) {
+<div class="error">Error occurred</div>
+} @else if (rechecks.data && rechecks.data.length > 0) { @for (recheck of
+rechecks.data; track recheck.id) {
+<div class="recheck">
+  <div class="date">
+    @if (recheck.due == viewingDate) { @if (recheck.rechecked) {
+    <span class="done">Done</span>
+    } @else {
+    <span class="due">Due</span>
+    } } @else {
+    <span class="overdue">
+      Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
+    </span>
+    }
+  </div>
+  <div class="patient">
+    <a (click)="viewPatient(recheck)">{{ recheck.reference }}</a>
+    <p>{{ recheck.species.name }} ({{ recheck.variant.name }})</p>
+    <p>
+      {{ recheck.pen.reference }} @if (recheck.uniqueIdentifier) { ({{
+      recheck.uniqueIdentifier }}) }
+    </p>
+    <p>{{ getRecheckRoles(recheck.roles) }}</p>
+  </div>
+  <div class="description">
+    <p>{{ recheck.description }}</p>
+  </div>
+  @if (!recheck.rechecked) {
+  <div class="perform">
+    <div class="field">
+      <label for="comments">Comments</label>
+      <textarea
+        id="comments"
+        [(ngModel)]="comments[recheck.id]"
+        rows="3"
+      ></textarea>
+    </div>
+    <button (click)="perform(recheck)" class="button button--secondary-invert">
+      ✔️ Perform
+    </button>
+  </div>
+  } @else {
+  <div class="performed">
+    {{ recheck.rechecker?.firstName }} {{ recheck.rechecker?.lastName }}<br />
+    {{ recheck.comments }}
+  </div>
+  }
+</div>
+} } @else {
+<p>There are no rechecks created for this date.</p>
+} }

@@ -21,6 +21,7 @@ import {
   Species,
   Exam,
   Outcome,
+  ListRecheck,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -496,3 +497,29 @@ export const searchPatientSuccess = createAction(
   props<{ patientId: number; reference: string; species: string }>()
 );
 export const searchPatientError = createAction('[HMS-V] Search patient: error');
+
+// List rechecks
+
+export const listRechecks = createAction(
+  '[HMS-V] List rechecks',
+  props<{ date: string }>()
+);
+export const listRechecksSuccess = createAction(
+  '[HMS-V] List rechecks: success',
+  props<{ rechecks: ListRecheck[] }>()
+);
+export const listRechecksError = createAction('[HMS-V] List rechecks: error');
+
+// Perform recheck
+
+export const performRecheck = createAction(
+  '[HMS-V] Perform recheck',
+  props<{ date: string; recheckId: number; comments: string }>()
+);
+export const performRecheckSuccess = createAction(
+  '[HMS-V] Perform recheck: success',
+  props<{ date: string }>()
+);
+export const performRecheckError = createAction(
+  '[HMS-V] Perform recheck: error'
+);

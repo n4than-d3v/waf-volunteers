@@ -168,3 +168,13 @@ export const selectSearchPatient = createSelector(
   selectHospitalState,
   (state) => state.searchPatient
 );
+
+export const selectListRechecks = createSelector(
+  selectHospitalState,
+  (state) => state.listRechecks
+);
+
+export const selectPerformRecheck = createSelector(
+  selectHospitalState,
+  (state) => state.performRecheck
+);

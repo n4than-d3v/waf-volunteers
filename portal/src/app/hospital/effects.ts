@@ -19,6 +19,7 @@ import {
   Medication,
   Area,
   Species,
+  ListRecheck,
 } from './state';
 import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -128,6 +129,12 @@ import {
   searchPatientSuccess,
   searchPatientError,
   setTab,
+  listRechecks,
+  listRechecksSuccess,
+  listRechecksError,
+  performRecheck,
+  performRecheckSuccess,
+  performRecheckError,
 } from './actions';
 
 @Injectable()
@@ -945,6 +952,45 @@ export class HospitalEffects {
           })
         )
       )
+    )
+  );
+
+  // List rechecks
+
+  listRechecks$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(listRechecks),
+      switchMap((action) =>
+        this.http
+          .get<ListRecheck[]>(`hospital/tasks/rechecks?on=${action.date}`)
+          .pipe(
+            map((rechecks) => listRechecksSuccess({ rechecks })),
+            catchError(() => of(listRechecksError()))
+          )
+      )
+    )
+  );
+
+  // Perform recheck
+
+  performRecheck$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(performRecheck),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/recheck/${action.recheckId}/perform`, action)
+          .pipe(
+            map(() => performRecheckSuccess({ date: action.date })),
+            catchError(() => of(performRecheckError()))
+          )
+      )
+    )
+  );
+
+  performRecheckSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(performRecheckSuccess),
+      switchMap((action) => of(listRechecks({ date: action.date })))
     )
   );
 }

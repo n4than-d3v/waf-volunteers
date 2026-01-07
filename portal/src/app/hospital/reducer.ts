@@ -104,6 +104,12 @@ import {
   searchPatient,
   searchPatientSuccess,
   searchPatientError,
+  listRechecks,
+  listRechecksSuccess,
+  listRechecksError,
+  performRecheck,
+  performRecheckSuccess,
+  performRecheckError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -931,6 +937,57 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     searchPatient: {
       ...state.searchPatient,
+      loading: false,
+      error: true,
+    },
+  })),
+  // List rechecks
+  on(listRechecks, (state) => ({
+    ...state,
+    listRechecks: {
+      ...state.listRechecks,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(listRechecksSuccess, (state, { rechecks }) => ({
+    ...state,
+    listRechecks: {
+      ...state.listRechecks,
+      data: rechecks,
+      loading: false,
+    },
+  })),
+  on(listRechecksError, (state) => ({
+    ...state,
+    listRechecks: {
+      ...state.listRechecks,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Perform recheck
+  on(performRecheck, (state) => ({
+    ...state,
+    performRecheck: {
+      ...state.performRecheck,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(performRecheckSuccess, (state) => ({
+    ...state,
+    performRecheck: {
+      ...state.performRecheck,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(performRecheckError, (state) => ({
+    ...state,
+    performRecheck: {
+      ...state.performRecheck,
       loading: false,
       error: true,
     },

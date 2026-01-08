@@ -84,9 +84,10 @@ public partial class BeaconService : IBeaconService
             var response = await _client.GetAsync($"entities/c_patient_admissions?page={page}&per_page=200&sort_by=created_at&sort_direction=desc");
             var results = await response.Content.ReadFromJsonAsync<BeaconPatientAdmissionsFilterResults>();
             var relevant = results.results.Where(x =>
+                after <= x.entity.created_at && (
                 (!string.IsNullOrWhiteSpace(x.entity.c_specific_animal)) ||
                 (!string.IsNullOrWhiteSpace(x.entity.c_other_animal)) ||
-                x.entity.c_animal.Any(y => y != "N/A")
+                x.entity.c_animal.Any(y => y != "N/A"))
             ).ToList();
             running = !(results.results.Any(x => x.entity.created_at < after) || results.results.Count == 0);
             allResults.total += relevant.Count;

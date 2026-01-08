@@ -205,6 +205,27 @@ export const denyShiftSuccess = createAction(
 );
 export const denyShiftError = createAction('[Rota] Admin Deny Shift: Error');
 
+export const addNewbie = createAction(
+  '[Rota] Admin adds newbie',
+  props<{
+    name: string;
+    date: string;
+    timeId: number;
+    jobId: number;
+
+    start: string;
+    end: string;
+  }>()
+);
+export const addNewbieSuccess = createAction(
+  '[Rota] Admin adds newbie: Success',
+  props<{
+    start: string;
+    end: string;
+  }>()
+);
+export const addNewbieError = createAction('[Rota] Admin adds newbie: Error');
+
 export const getReports = createAction(
   '[Rota] Get Reports',
   props<{

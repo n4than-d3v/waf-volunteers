@@ -33,6 +33,7 @@ public class DatabaseContext : DbContext
     public DbSet<AssignableArea> AssignableAreas { get; set; }
     public DbSet<AssignableShift> AssignableShifts { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
+    public DbSet<Newbie> Newbies { get; set; }
 
     // Notices
     public DbSet<Notice> Notices { get; set; }

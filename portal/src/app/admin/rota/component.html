@@ -40,10 +40,79 @@
 <spinner></spinner>
 } @else if (rota.error) {
 <div class="error">Error occurred</div>
-}@else if (rota.data) {
-<button class="button button--primary expand-all" (click)="toggleAll()">
-  {{ expandAll ? 'Hide' : 'Show' }} all
-</button>
+} @else if (rota.data) { @if (!(addingExtra || addingNewbie)) {
+<div class="top-buttons">
+  <button class="button button--primary expand-all" (click)="toggleAll()">
+    {{ expandAll ? 'Hide' : 'Show' }} all
+  </button>
+  <button class="button button--secondary" (click)="addingExtra = true">
+    Add extra shift
+  </button>
+  <button class="button button--secondary" (click)="addingNewbie = true">
+    Add newbie
+  </button>
+</div>
+} @else {
+<div class="add-extra">
+  @if (addingExtra) {
+  <div class="field">
+    <label for="accountId">Volunteer</label>
+    <select id="accountId" [(ngModel)]="accountId">
+      @if (accounts$ | async; as accounts) { @if (accounts) { @for (account of
+      accounts; track account.id) {
+      <option [value]="account.id">
+        {{ account.firstName }} {{ account.lastName}}
+      </option>
+      } } }
+    </select>
+  </div>
+  } @else if (addingNewbie) {
+  <div class="field">
+    <label for="newbieName">Name</label>
+    <input type="text" id="newbieName" [(ngModel)]="newbieName" />
+  </div>
+  }
+  <div class="field">
+    <label for="date">Date</label>
+    <input type="date" id="date" [(ngModel)]="date" />
+  </div>
+  <div class="field">
+    <label for="timeId">Time</label>
+    <select id="timeId" [(ngModel)]="timeId">
+      @if (times$ | async; as times) { @if (times.data) { @for (time of
+      times.data; track time.id) {
+      <option [value]="time.id">{{ time.name }}</option>
+      } } }
+    </select>
+  </div>
+  <div class="field">
+    <label for="jobId">Job</label>
+    <select id="jobId" [(ngModel)]="jobId">
+      @if (jobs$ | async; as jobs) { @if (jobs.data) { @for (job of jobs.data;
+      track job.id) {
+      <option [value]="job.id">{{ job.name }}</option>
+      } } }
+    </select>
+  </div>
+  <div class="buttons">
+    @if (addingExtra) {
+    <button (click)="addExtraShift()" class="button button--primary">
+      Add extra shift
+    </button>
+    <button (click)="addingExtra = false" class="button button--secondary">
+      Cancel
+    </button>
+    } @else {
+    <button (click)="addNewbie()" class="button button--primary">
+      Add newbie
+    </button>
+    <button (click)="addingNewbie = false" class="button button--secondary">
+      Cancel
+    </button>
+    }
+  </div>
+</div>
+}
 <div class="days">
   @for (day of rota.data; track day.date) {
   <div class="day">
@@ -194,6 +263,13 @@
               </div>
               } }
             </div>
+            @if (job.newbies.length > 0) {
+            <div class="newbies">
+              @for (newbie of job.newbies; track newbie.name) {
+              <div class="newbie">{{ newbie.name }}</div>
+              }
+            </div>
+            }
           </div>
           } }
         </div>

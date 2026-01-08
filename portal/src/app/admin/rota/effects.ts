@@ -2,6 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import {
+  addNewbie,
+  addNewbieError,
+  addNewbieSuccess,
   addRegularShift,
   addRegularShiftError,
   addRegularShiftSuccess,
@@ -423,6 +426,33 @@ export class RotaManagementEffects {
   denyShiftSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(denyShiftSuccess),
+      switchMap((action) =>
+        of(
+          getAdminRota({
+            start: action.start,
+            end: action.end,
+            silent: true,
+          })
+        )
+      )
+    )
+  );
+
+  addNewbie$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addNewbie),
+      switchMap((action) =>
+        this.http.post(`rota/add-newbie`, action).pipe(
+          map(() => addNewbieSuccess({ start: action.start, end: action.end })),
+          catchError(() => of(addNewbieError()))
+        )
+      )
+    )
+  );
+
+  addNewbieSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addNewbieSuccess),
       switchMap((action) =>
         of(
           getAdminRota({

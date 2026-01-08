@@ -107,6 +107,10 @@
           {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
           shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
         </p>
+        @if (shift.newbies.length > 0) {
+        <strong>Newbies</strong>
+        <p class="newbies">{{ formatNewbies(shift) }}</p>
+        }
       </div>
       } @if (shift.area) {
       <div class="shift-assign">
@@ -246,6 +250,10 @@
           {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
           shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
         </p>
+        @if (shift.newbies.length > 0) {
+        <strong>Newbies</strong>
+        <p class="newbies">{{ formatNewbies(shift) }}</p>
+        }
       </div>
       } @if (shift.area) {
       <div class="shift-assign">
@@ -339,6 +347,10 @@
           {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
           shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
         </p>
+        @if (shift.newbies.length > 0) {
+        <strong>Newbies</strong>
+        <p class="newbies">{{ formatNewbies(shift) }}</p>
+        }
       </div>
       } @if (shift.area) {
       <div class="shift-assign">

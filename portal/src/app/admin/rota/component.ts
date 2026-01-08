@@ -2,11 +2,14 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
+  addNewbie,
   assignArea,
   confirmShift,
   denyShift,
   getAdminRota,
   getAssignableAreas,
+  getJobs,
+  getTimes,
 } from './actions';
 import moment, { Moment } from 'moment';
 import { Observable, Subscription } from 'rxjs';
@@ -16,14 +19,24 @@ import {
   AdminRotaShiftJob,
   AdminRotaShiftJobVolunteer,
   AssignableArea,
+  Job,
+  Time,
   Wrapper,
 } from './state';
-import { selectAdminRota, selectAssignableAreas } from './selectors';
+import {
+  selectAdminRota,
+  selectAssignableAreas,
+  selectJobs,
+  selectTimes,
+} from './selectors';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { DayPipe } from '../../volunteer/rota/day.pipe';
 import { FormsModule } from '@angular/forms';
 import { ShiftType } from '../../volunteer/rota/state';
+import { ProfileSummary } from '../users/state';
+import { selectProfiles } from '../users/selectors';
+import { getUsers } from '../users/actions';
 
 @Component({
   selector: 'admin-rota',
@@ -55,11 +68,26 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
   updatingShift: AdminRotaShiftJobVolunteer | null = null;
   updatingAssignableArea: { [attendanceId: number]: string } = {};
 
+  accounts$: Observable<ProfileSummary[] | null>;
+  times$: Observable<Wrapper<Time>>;
+  jobs$: Observable<Wrapper<Job>>;
+  accountId: number | null = null;
+  newbieName = '';
+  date = '';
+  timeId: number | null = null;
+  jobId: number | null = null;
+
+  addingExtra = false;
+  addingNewbie = false;
+
   subscription: Subscription;
 
   constructor(private store: Store) {
     this.rota$ = this.store.select(selectAdminRota);
     this.assignableAreas$ = this.store.select(selectAssignableAreas);
+    this.accounts$ = this.store.select(selectProfiles);
+    this.times$ = this.store.select(selectTimes);
+    this.jobs$ = this.store.select(selectJobs);
     this.subscription = this.rota$.subscribe((rota) => {
       if (!rota.data) return;
       for (const day of rota.data) {
@@ -148,6 +176,45 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
     shiftType: volunteer.type,
   });
 
+  private resetForm() {
+    this.addingExtra = false;
+    this.addingNewbie = false;
+    this.accountId = null;
+    this.newbieName = '';
+    this.date = '';
+    this.timeId = null;
+    this.jobId = null;
+  }
+
+  addExtraShift() {
+    this.store.dispatch(
+      confirmShift({
+        userId: Number(this.accountId),
+        date: this.date,
+        timeId: Number(this.timeId),
+        jobId: Number(this.jobId),
+        start: this._start.format('YYYY-MM-DD'),
+        end: this._end.format('YYYY-MM-DD'),
+        shiftType: ShiftType.Extra,
+      })
+    );
+    this.resetForm();
+  }
+
+  addNewbie() {
+    this.store.dispatch(
+      addNewbie({
+        name: this.newbieName,
+        date: this.date,
+        timeId: Number(this.timeId),
+        jobId: Number(this.jobId),
+        start: this._start.format('YYYY-MM-DD'),
+        end: this._end.format('YYYY-MM-DD'),
+      })
+    );
+    this.resetForm();
+  }
+
   setComing(
     day: AdminRota,
     shift: AdminRotaShift,
@@ -184,6 +251,9 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
     this._end = moment(this._start).add(6, 'days');
     this.update();
     this.store.dispatch(getAssignableAreas());
+    this.store.dispatch(getUsers());
+    this.store.dispatch(getTimes());
+    this.store.dispatch(getJobs());
   }
 
   ngOnDestroy() {

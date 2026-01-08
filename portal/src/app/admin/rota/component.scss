@@ -23,8 +23,27 @@ a {
   justify-content: space-between;
 }
 
-.expand-all {
+.top-buttons {
   margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.add-extra {
+  margin-bottom: 1.25rem;
+
+  .field {
+    margin-bottom: 0.5rem;
+
+    input,
+    select {
+      max-width: max-content;
+    }
+  }
+
+  .buttons {
+    gap: 0.5rem;
+  }
 }
 
 .key {
@@ -267,6 +286,18 @@ a {
                   font-size: 0.75em;
                   text-decoration: none;
                 }
+              }
+            }
+
+            .newbies {
+              display: flex;
+              flex-direction: column;
+              gap: 0.125rem;
+
+              .newbie {
+                font-size: 0.9rem;
+                background-color: pink;
+                padding: 0.125rem 0.25rem;
               }
             }
           }

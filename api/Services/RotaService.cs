@@ -80,6 +80,7 @@ public class RotaService : IRotaService
         var requirements = await _repository.GetAll<Requirement>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
         var assignableShifts = await _repository.GetAll<AssignableShift>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
         var assignments = await _repository.GetAll<Assignment>(x => start <= x.Attendance.Date && x.Attendance.Date <= end, tracking: false, action: x => x.Include(y => y.Attendance).Include(y => y.Area));
+        var newbies = await _repository.GetAll<Newbie>(x => start <= x.Date && x.Date <= end, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
 
         var days = new List<Day>();
 
@@ -102,6 +103,14 @@ public class RotaService : IRotaService
 
             UpdateDayShiftJobVolunteer(regular, confirmation);
             return true;
+        }
+
+        Day.DayShift.DayShiftJob.DayShiftJobNewbie GetDayShiftJobNewbie(Newbie newbie)
+        {
+            return new Day.DayShift.DayShiftJob.DayShiftJobNewbie
+            {
+                Name = newbie.Name
+            };
         }
 
         Day.DayShift.DayShiftJob.DayShiftJobVolunteer GetDayShiftJobVolunteer(Account account, AttendanceType type)
@@ -128,6 +137,7 @@ public class RotaService : IRotaService
             var isAssignable = assignableShifts.Any(x => date.IsOn(x.Day) && x.Time.Id == time.Id && x.Job.Id == job.Id);
 
             var volunteers = regulars.Select(x => GetDayShiftJobVolunteer(x.Account, AttendanceType.Regular)).ToList();
+            var shiftNewbies = newbies.Where(x => x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id);
 
             foreach (var confirmation in shiftAttendances)
             {
@@ -142,6 +152,7 @@ public class RotaService : IRotaService
             {
                 Job = job,
                 Volunteers = volunteers,
+                Newbies = shiftNewbies.Select(GetDayShiftJobNewbie).ToList(),
                 Required = requirement?.Minimum ?? 0,
                 IsAssignable = isAssignable
             };
@@ -232,6 +243,9 @@ public class RotaService : IRotaService
             Type = volunteer.Type,
             MissingReason = volunteer.MissingReason,
             CustomMissingReason = volunteer.CustomMissingReason,
+            Newbies = job.Newbies
+                .Select(x => new ShiftNewbie { Name = x.Name })
+                .ToArray(),
             Others = shift.Jobs
                 .Where(j => j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id))
                 .SelectMany(j => j.Volunteers)
@@ -257,6 +271,9 @@ public class RotaService : IRotaService
                 Coming = job.Volunteers.Count(v => v.Confirmed == true),
                 Confirmed = volunteer?.Confirmed,
                 Type = volunteer?.Type ?? AttendanceType.Urgent,
+                Newbies = job.Newbies
+                .Select(x => new ShiftNewbie { Name = x.Name })
+                .ToArray(),
                 Others = shift.Jobs
                     .Where(j => j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id))
                     .SelectMany(j => j.Volunteers)
@@ -373,6 +390,7 @@ public class Day
         {
             public Job Job { get; set; }
             public IReadOnlyList<DayShiftJobVolunteer> Volunteers { get; set; }
+            public IReadOnlyList<DayShiftJobNewbie> Newbies { get; set; }
             public int Required { get; set; }
             public int Unconfirmed => Volunteers.Count(x => x.Confirmed == null);
             public int NotComing => Volunteers.Count(x => x.Confirmed == false);
@@ -394,6 +412,11 @@ public class Day
                 public string? CustomMissingReason { get; set; }
                 public int? AreaId { get; set; }
                 public AttendanceType Type { get; set; }
+            }
+
+            public class DayShiftJobNewbie
+            {
+                public string Name { get; set; }
             }
         }
     }
@@ -429,12 +452,18 @@ public class UserRota
         public bool? Confirmed { get; set; }
         public AttendanceType Type { get; set; }
         public IReadOnlyList<ShiftOther> Others { get; set; }
+        public IReadOnlyList<ShiftNewbie> Newbies { get; set; }
         public AssignableArea? Area { get; set; }
 
         public class ShiftOther
         {
             public string Name { get; set; }
             public AssignableArea? Area { get; set; }
+        }
+
+        public class ShiftNewbie
+        {
+            public string Name { get; set; }
         }
     }
 

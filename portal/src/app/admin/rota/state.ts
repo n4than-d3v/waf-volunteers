@@ -137,6 +137,7 @@ export interface AdminRotaShift {
 export interface AdminRotaShiftJob {
   job: Job;
   volunteers: AdminRotaShiftJobVolunteer[];
+  newbies: AdminRotaShiftJobNewbie[];
   required: number;
   coming: number;
   notComing: number;
@@ -157,6 +158,10 @@ export interface AdminRotaShiftJobVolunteer {
   attendanceId?: number;
   areaId?: number;
   type: ShiftType;
+}
+
+export interface AdminRotaShiftJobNewbie {
+  name: string;
 }
 
 export const initialRotaManagementState: RotaManagementState = {

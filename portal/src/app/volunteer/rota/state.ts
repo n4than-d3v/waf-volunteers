@@ -30,6 +30,7 @@ export interface Shift {
   missingReason?: MissingReason;
   customMissingReason?: string;
   others: { name: string; area?: AssignableArea }[];
+  newbies: { name: string }[];
   area?: AssignableArea;
   type: ShiftType;
 }
@@ -48,6 +49,7 @@ export interface UrgentShift {
   coming: number;
   required: number;
   others: { name: string; area?: AssignableArea }[];
+  newbies: { name: string }[];
   area?: AssignableArea;
   type: ShiftType;
 }

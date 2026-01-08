@@ -55,6 +55,7 @@ export class HospitalPatientTagsComponent implements OnInit {
   }
 
   reset() {
+    this.saving = false;
     this.adding = false;
     this.attemptedSave = false;
     this.tagForm.reset();

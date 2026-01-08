@@ -3,18 +3,10 @@
   @if (patient.diets.length > 0) {
   <div class="row">
     <table>
-      <thead>
-        <tr>
-          <th>Diet</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         @for (diet of patient.diets; track diet.id) {
         <tr>
           <td>{{ diet.name }}</td>
-          <td [innerHTML]="getHtml(diet.description)"></td>
           <td>
             @if (patient.status != PatientStatus.Dispositioned) {
             <button (click)="remove(diet.id)" class="button button--none">

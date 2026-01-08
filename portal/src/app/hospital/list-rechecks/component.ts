@@ -69,7 +69,7 @@ export class HospitalListRechecks implements OnInit {
       performRecheck({
         recheckId: recheck.id,
         date: this.viewingDate,
-        comments: this.comments[recheck.id],
+        comments: this.comments[recheck.id] || '',
       })
     );
   }

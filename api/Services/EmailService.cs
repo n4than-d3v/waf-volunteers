@@ -64,14 +64,22 @@ public class EmailService : IEmailService
 
         if (email.Draft)
         {
-            return;
-
+            message.ToRecipients = [new Recipient
+            {
+                EmailAddress = new EmailAddress
+                {
+                    Address = $"alice@{HostConstants.Domain}",
+                    Name = "Alice"
+                }
+            }];
+            /*
             message.IsDraft = true;
             await client.Users[_settings.Sender.Email]
                 .Messages
                 .PostAsync(message);
+            */
         }
-        else
+        //else
         {
             await client.Users[_settings.Sender.Email]
                 .SendMail

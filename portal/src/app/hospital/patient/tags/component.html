@@ -3,18 +3,10 @@
   @if (patient.tags.length > 0) {
   <div class="row">
     <table>
-      <thead>
-        <tr>
-          <th>Tag</th>
-          <th>Description</th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         @for (tag of patient.tags; track tag.id) {
         <tr>
           <td>{{ tag.name }}</td>
-          <td [innerHTML]="getHtml(tag.description)"></td>
           <td>
             @if (patient.status != PatientStatus.Dispositioned) {
             <button (click)="remove(tag.id)" class="button button--none">

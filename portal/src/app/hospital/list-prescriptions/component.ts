@@ -114,7 +114,7 @@ export class HospitalListPrescriptions implements OnInit {
       administerPrescriptionInstruction({
         prescriptionInstructionId,
         date: this.viewingDate,
-        comments: this.comments['I' + prescriptionInstructionId],
+        comments: this.comments['I' + prescriptionInstructionId] || '',
         success,
       })
     );
@@ -126,7 +126,7 @@ export class HospitalListPrescriptions implements OnInit {
       administerPrescriptionMedication({
         prescriptionMedicationId,
         date: this.viewingDate,
-        comments: this.comments['M' + prescriptionMedicationId],
+        comments: this.comments['M' + prescriptionMedicationId] || '',
         success,
       })
     );

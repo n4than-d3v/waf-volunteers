@@ -57,6 +57,7 @@ export class AdminUsersCreateComponent {
       BEACON_OFFICE_ADMIN: new FormControl(false),
       APP_ADMIN: new FormControl(false),
       APP_CLOCKING: new FormControl(false),
+      APP_BOARDS: new FormControl(false),
     }),
   });
 
@@ -117,6 +118,9 @@ export class AdminUsersCreateComponent {
               : 0) |
             (this.form.controls.roles.controls.APP_CLOCKING.value
               ? Roles.APP_CLOCKING
+              : 0) |
+            (this.form.controls.roles.controls.APP_BOARDS.value
+              ? Roles.APP_BOARDS
               : 0),
         },
       })

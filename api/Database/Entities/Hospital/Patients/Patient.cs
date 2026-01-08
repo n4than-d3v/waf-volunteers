@@ -5,6 +5,7 @@ using Api.Database.Entities.Hospital.Patients.HomeCare;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
+using System.ComponentModel.DataAnnotations.Schema;
 using Dispositioner = Api.Database.Entities.Account.Account;
 
 namespace Api.Database.Entities.Hospital.Patients;
@@ -37,6 +38,8 @@ public class Patient : Entity
 
     public PatientStatus Status { get; set; }
     public Pen? Pen { get; set; }
+    [NotMapped]
+    public Area? Area => Pen?.Area;
 
     public List<Exam> Exams { get; set; }
     public List<PatientRecheck> Rechecks { get; set; }

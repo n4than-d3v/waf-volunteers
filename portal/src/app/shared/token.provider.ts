@@ -17,6 +17,7 @@ export enum Roles {
 
   APP_ADMIN = 2048,
   APP_CLOCKING = 4096,
+  APP_BOARDS = 8192,
 }
 
 export enum Status {
@@ -101,6 +102,13 @@ export class TokenProvider {
     if (!session) return false;
 
     return !!(Number(session.roles) & Roles.APP_CLOCKING);
+  }
+
+  public isBoards() {
+    const session = this.getSession();
+    if (!session) return false;
+
+    return !!(Number(session.roles) & Roles.APP_BOARDS);
   }
 
   public isVet() {

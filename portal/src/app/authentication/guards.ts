@@ -17,6 +17,11 @@ export const isClocking: CanActivateFn = () => {
   return tokenProvider.isClocking();
 };
 
+export const isBoards: CanActivateFn = () => {
+  const tokenProvider = inject(TokenProvider);
+  return tokenProvider.isBoards();
+};
+
 export const isVet: CanActivateFn = () => {
   const tokenProvider = inject(TokenProvider);
   return tokenProvider.isVet() || tokenProvider.isAdmin();

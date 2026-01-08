@@ -42,6 +42,8 @@ export class LoginEffects {
             this.router.navigateByUrl('/admin/dashboard');
           } else if (this.tokenProvider.isClocking()) {
             this.router.navigateByUrl('/clocking/dashboard');
+          } else if (this.tokenProvider.isBoards()) {
+            this.router.navigateByUrl('/boards');
           } else if (this.tokenProvider.isVet()) {
             this.router.navigateByUrl('/vet/dashboard');
           } else {

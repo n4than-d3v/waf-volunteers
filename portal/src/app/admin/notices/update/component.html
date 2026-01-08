@@ -41,7 +41,7 @@
     </p>
     <div class="roles-container" formGroupName="roles">
       @for (role of roles; track role.value) { @if (role.value && role.name !=
-      'APP_CLOCKING') {
+      'APP_CLOCKING' && role.name != 'APP_BOARDS') {
       <div class="field">
         <label for="role-{{ role.name }}">{{ role.display }}</label>
         <input

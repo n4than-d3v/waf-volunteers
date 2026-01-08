@@ -26,3 +26,12 @@ table:not(:has(thead)) tbody {
     background-color: transparent !important;
   }
 }
+
+.buttons {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+
+  .button {
+    padding: 0.25rem 0.5rem;
+  }
+}

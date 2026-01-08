@@ -78,6 +78,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
       BEACON_OFFICE_ADMIN: new FormControl(false),
       APP_ADMIN: new FormControl(false),
       APP_CLOCKING: new FormControl(false),
+      APP_BOARDS: new FormControl(false),
     }),
   });
 
@@ -132,6 +133,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
             BEACON_OFFICE_ADMIN: !!(profile.roles & Roles.BEACON_OFFICE_ADMIN),
             APP_ADMIN: !!(profile.roles & Roles.APP_ADMIN),
             APP_CLOCKING: !!(profile.roles & Roles.APP_CLOCKING),
+            APP_BOARDS: !!(profile.roles & Roles.APP_BOARDS),
           },
         });
       });
@@ -200,6 +202,9 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
               : 0) |
             (this.form.controls.roles.controls.APP_CLOCKING.value
               ? Roles.APP_CLOCKING
+              : 0) |
+            (this.form.controls.roles.controls.APP_BOARDS.value
+              ? Roles.APP_BOARDS
               : 0),
         },
       })

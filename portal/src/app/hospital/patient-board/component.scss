@@ -1,0 +1,86 @@
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+.edit {
+  margin-top: 0.75rem;
+  max-width: max-content;
+
+  .field {
+    margin-bottom: 0.5rem;
+
+    select {
+      max-width: max-content;
+    }
+  }
+}
+
+.areas {
+  display: flex;
+  flex-direction: column;
+
+  .area {
+    margin-bottom: 0.5rem;
+
+    .name {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .pens {
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
+      flex-wrap: wrap;
+      background: rgb(72, 72, 72);
+      max-width: max-content;
+
+      .pen {
+        background: white;
+        margin-top: 2px;
+
+        .reference {
+          font-weight: bold;
+          border-bottom: solid 2px rgb(72, 72, 72);
+          padding: 0.25rem 0.5rem;
+        }
+
+        .patients {
+          .patient {
+            padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+
+            .diets,
+            .tags {
+              display: flex;
+              gap: 0.25rem;
+              margin-top: 0.25rem;
+              flex-direction: row;
+              flex-wrap: wrap;
+
+              .diet,
+              .tag {
+                font-size: 1rem;
+                color: white;
+                padding: 0.125rem 0.25rem;
+                max-width: max-content;
+              }
+
+              .diet {
+                background-color: var(--theme-color-5);
+              }
+
+              .tag {
+                background-color: var(--theme-color-2);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

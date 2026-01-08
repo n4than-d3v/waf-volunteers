@@ -1,0 +1,80 @@
+@if (areas$ | async; as areas) { @if (patients$ | async; as patients) { @if
+(areas.loading || patients.loading) {
+<spinner></spinner>
+} @else if (areas.error || patients.error) {
+<div class="error">Error occurred</div>
+} @else if (areas.data && patients.data) {
+<div class="areas">
+  @for (area of areas.data; track area.id) { @if (settings[area.id] !== 'hidden'
+  && getPatientsInArea(patients.data, area).length > 0) {
+  <div class="area">
+    <div class="name">{{ area.name }}</div>
+    @if (settings[area.id] === 'all') {
+    <div class="pens">
+      @for (pen of area.pens; track pen.id) { @if
+      (getPatientsInPen(patients.data, pen).length > 0) {
+      <div class="pen">
+        <div class="reference">{{ pen.reference }}</div>
+        <div class="patients">
+          @for (patient of getPatientsInPen(patients.data, pen); track
+          patient.id) {
+          <div class="patient">
+            <div class="species">{{ patient.speciesVariant?.name }}</div>
+            @if (patient.diets.length > 0) {
+            <div class="diets">
+              @for (diet of patient.diets; track diet.id) {
+              <div class="diet">{{ diet.name }}</div>
+              }
+            </div>
+            } @if (patient.tags.length > 0) {
+            <div class="tags">
+              @for (tag of patient.tags; track tag.id) {
+              <div class="tag">{{ tag.name }}</div>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      } }
+    </div>
+    } @else {
+    <div class="summary">
+      @for (patient of getPatientsInArea(patients.data!, area); track patient) {
+      <div class="patient">{{ patient }}</div>
+      }
+    </div>
+    }
+  </div>
+  } }
+</div>
+} } }
+<div class="edit">
+  @if (!editSettings) {
+  <div class="buttons">
+    <button (click)="editSettings = true" class="button button--secondary">
+      Settings
+    </button>
+  </div>
+  } @else { @if (areas$ | async;as areas) { @for (area of areas.data; track
+  area.id) {
+  <div class="field">
+    <label for="area-{{ area.id }}">{{ area.name }}</label>
+    <select id="area-{{ area.id }}" [(ngModel)]="copySettings[area.id]">
+      <option value="all">Show patients in each pen</option>
+      <option value="summary">Summarise patients in area</option>
+      <option value="hidden">Hide area from board</option>
+    </select>
+  </div>
+  } }
+  <div class="buttons">
+    <button (click)="setConfiguration()" class="button button--primary">
+      Save
+    </button>
+    <button (click)="editSettings = false" class="button button--secondary">
+      Back
+    </button>
+  </div>
+  }
+</div>

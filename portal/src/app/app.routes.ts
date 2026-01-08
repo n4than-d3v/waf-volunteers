@@ -5,11 +5,13 @@ import { ResetPasswordComponent } from './authentication/reset-password/componen
 import {
   isAdmin,
   isAuthenticated,
+  isBoards,
   isClocking,
   isVet,
 } from './authentication/guards';
 import { InstallationComponent } from './installation/component';
 import { ClockingComponent } from './clocking/component';
+import { HospitalPatientBoardComponent } from './hospital/patient-board/component';
 
 export const routes: Routes = [
   {
@@ -45,6 +47,11 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       { path: 'dashboard', component: ClockingComponent },
     ],
+  },
+  {
+    path: 'boards',
+    canActivate: [isAuthenticated, isBoards],
+    component: HospitalPatientBoardComponent,
   },
   {
     path: 'admin',

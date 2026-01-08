@@ -127,6 +127,7 @@ export interface ListPatient {
   speciesVariant: SpeciesVariant | null;
   status: PatientStatus;
   pen: Pen | null;
+  area: Area | null;
   tags: Tag[];
   diets: Diet[];
   disposition: Disposition | null;

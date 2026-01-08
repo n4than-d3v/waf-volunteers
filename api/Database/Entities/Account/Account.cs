@@ -141,5 +141,6 @@ public enum AccountRoles
     BEACON_OFFICE_ADMIN = 1024,
 
     APP_ADMIN = 2048,
-    APP_CLOCKING = 4096
+    APP_CLOCKING = 4096,
+    APP_BOARDS = 8192
 }

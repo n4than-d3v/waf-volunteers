@@ -8,7 +8,7 @@ namespace Api.Handlers.Hospital.Admission;
 
 public class CheckPatientAdmissions : IRequest<IResult>
 {
-    public DateTime Since { get; set; }
+    public DateTime? Since { get; set; }
 }
 
 public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissions, IResult>
@@ -28,7 +28,8 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
     {
         try
         {
-            var beaconAdmissions = await _beaconService.GetPatientAdmissionsAsync(request.Since);
+            var since = request.Since ?? DateTime.UtcNow.AddDays(-1);
+            var beaconAdmissions = await _beaconService.GetPatientAdmissionsAsync(since);
             var beaconAdmissionsIds = beaconAdmissions.results.Select(x => x.entity.id).ToList();
 
             var patients = await _repository.GetAll<Patient>(x => beaconAdmissionsIds.Contains(x.BeaconId), tracking: false);

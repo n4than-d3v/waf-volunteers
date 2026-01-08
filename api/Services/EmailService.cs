@@ -64,6 +64,8 @@ public class EmailService : IEmailService
 
         if (email.Draft)
         {
+            return;
+
             message.IsDraft = true;
             await client.Users[_settings.Sender.Email]
                 .Messages

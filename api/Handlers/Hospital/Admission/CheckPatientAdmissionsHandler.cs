@@ -37,7 +37,10 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             if (beaconAdmissionsIds.Count == patients.Count) return Results.NoContent();
 
             var year = DateTime.UtcNow.Year;
-            var admittedThisYear = patients.Count(x => x.Admitted.Year == year);
+            var yearStart = new DateTime(year, 1, 1, 0, 0, 0);
+            var yearEnd = yearStart.AddYears(1).AddSeconds(-1);
+            var allPatientsAdmittedThisYear = await _repository.GetAll<Patient>(x => yearStart <= x.Admitted && x.Admitted <= yearEnd, tracking: false);
+            var admittedThisYear = allPatientsAdmittedThisYear.Count;
 
             foreach (var admission in beaconAdmissions.results.OrderBy(x => x.entity.created_at))
             {
@@ -99,7 +102,8 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                     patientAdmissionReasons.Add(admissionReason);
                 }
 
-                var reference = $"{year - 2000}-{++admittedThisYear}";
+                admittedThisYear++;
+                var reference = $"{year - 2000}-{admittedThisYear}";
 
                 var foundAt = admission.entity.c_animal_found_at_different_address.Any(x => x == "Yes") ? (admission.entity.c_alternative_address ?? "Unknown") : "Address";
                 var patientSalt = _encryptionService.GenerateSalt();

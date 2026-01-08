@@ -29,7 +29,7 @@ export interface Shift {
   confirmed: boolean | null;
   missingReason?: MissingReason;
   customMissingReason?: string;
-  others: string[];
+  others: { name: string; area?: AssignableArea }[];
   area?: AssignableArea;
   type: ShiftType;
 }
@@ -47,7 +47,7 @@ export interface UrgentShift {
   confirmed: boolean | null;
   coming: number;
   required: number;
-  others: string[];
+  others: { name: string; area?: AssignableArea }[];
   area?: AssignableArea;
   type: ShiftType;
 }

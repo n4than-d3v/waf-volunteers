@@ -24,15 +24,26 @@
   <thead>
     <tr>
       <th></th>
-      <th colspan="3">Regular shifts</th>
-      <th colspan="1">Urgent shifts</th>
+      <th colspan="6">Regular shifts</th>
+      <th colspan="4">Urgent shifts</th>
+      <th colspan="4">Extra shifts</th>
     </tr>
     <tr>
       <th>Volunteer</th>
       <th>-</th>
       <th>Yes</th>
       <th>No</th>
+      <th>Total</th>
+      <th>Came in</th>
+      <th>No shows</th>
       <th>Yes</th>
+      <th>No</th>
+      <th>Came in</th>
+      <th>No shows</th>
+      <th>Yes</th>
+      <th>No</th>
+      <th>Came in</th>
+      <th>No shows</th>
     </tr>
   </thead>
   <tbody>
@@ -42,7 +53,17 @@
       <td>{{ report.regularUnresponded }}</td>
       <td>{{ report.regularYes }}</td>
       <td>{{ report.regularNo }}</td>
+      <td>{{ report.regularTotal }}</td>
+      <td>{{ report.cameInRegular }}</td>
+      <td>{{ report.regularNoShows }}</td>
       <td>{{ report.urgentYes }}</td>
+      <td>{{ report.urgentNo }}</td>
+      <td>{{ report.cameInUrgent }}</td>
+      <td>{{ report.urgentNoShows }}</td>
+      <td>{{ report.extraYes }}</td>
+      <td>{{ report.extraNo }}</td>
+      <td>{{ report.cameInExtra }}</td>
+      <td>{{ report.extraNoShows }}</td>
     </tr>
     }
   </tbody>

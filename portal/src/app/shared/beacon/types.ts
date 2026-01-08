@@ -23,7 +23,6 @@ export interface BeaconInfoName {
   full: string;
   last: string;
   first: string;
-  middle: string;
   prefix: string;
 }
 
@@ -54,7 +53,6 @@ export type BeaconForm = FormGroup<{
     full: FormControl<string | null>;
     last: FormControl<string | null>;
     first: FormControl<string | null>;
-    middle: FormControl<string | null>;
     prefix: FormControl<string | null>;
   }>;
   phone_numbers: FormArray<
@@ -101,7 +99,6 @@ export const createBeaconForm = (): BeaconForm =>
       full: new FormControl(''),
       last: new FormControl(''),
       first: new FormControl(''),
-      middle: new FormControl(''),
       prefix: new FormControl(''),
     }),
     phone_numbers: new FormArray<
@@ -150,8 +147,6 @@ const getFullName = (form: BeaconForm) => {
     name += form.controls.c_preferred_name.value + ' ';
   else if (form.controls.name.controls.first.value)
     name += form.controls.name.controls.first.value + ' ';
-  if (form.controls.name.controls.middle.value)
-    name += form.controls.name.controls.middle.value + ' ';
   if (form.controls.name.controls.last.value)
     name += form.controls.name.controls.last.value + ' ';
   return name.trim();
@@ -162,7 +157,6 @@ export const getBeaconInfo = (form: BeaconForm): BeaconInfo => ({
     full: getFullName(form),
     last: form.controls.name.controls.last.value || '',
     first: form.controls.name.controls.first.value || '',
-    middle: form.controls.name.controls.middle.value || '',
     prefix: form.controls.name.controls.prefix.value || '',
   },
   phone_numbers: form.controls.phone_numbers.controls.map((x) => ({

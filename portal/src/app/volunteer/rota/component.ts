@@ -126,6 +126,16 @@ export class VolunteerRotaComponent implements OnInit {
     this.cancelSigningUpExtra();
   }
 
+  formatOthers(shift: Shift) {
+    if (shift.job.canAlsoDoJobIds.length) {
+      return shift.others
+        .map((x) => x.name + (x.area ? ' (' + x.area.name + ')' : ''))
+        .join(', ');
+    } else {
+      return shift.others.map((x) => x.name).join(', ');
+    }
+  }
+
   ngOnInit() {
     this.store.dispatch(getRota());
     this.store.dispatch(getTimes());

@@ -109,11 +109,22 @@ export interface Report {
   regularUnresponded: number;
   regularYes: number;
   regularNo: number;
+  regularTotal: number;
+  cameInRegular: number;
+  regularNoShows: number;
   urgentYes: number;
+  urgentNo: number;
+  cameInUrgent: number;
+  urgentNoShows: number;
+  extraYes: number;
+  extraNo: number;
+  cameInExtra: number;
+  extraNoShows: number;
 }
 
 export interface AdminRota {
   date: string;
+  week: number | null;
   shifts: AdminRotaShift[];
 }
 

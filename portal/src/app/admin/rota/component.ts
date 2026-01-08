@@ -45,6 +45,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
 
   start: string = '';
   end: string = '';
+  week = 0;
 
   ShiftType = ShiftType;
 
@@ -62,6 +63,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
     this.subscription = this.rota$.subscribe((rota) => {
       if (!rota.data) return;
       for (const day of rota.data) {
+        if (day.week) this.week = day.week;
         for (const shift of day.shifts) {
           for (const job of shift.jobs) {
             for (const volunteer of job.volunteers) {

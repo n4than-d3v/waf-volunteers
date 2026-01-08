@@ -5,6 +5,7 @@ using Api.Database.Entities.Rota;
 using Api.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using static Api.Services.UserRota.ShiftBase;
 
 namespace Api.Services;
 
@@ -33,20 +34,38 @@ public class RotaService : IRotaService
     {
         var days = await GetRotaAsync(start, end);
 
+        var clockings = await _repository.GetAll<AttendanceClocking>(
+            x => start <= x.Attendance.Date && x.Attendance.Date <= end, tracking: false,
+            action: x => x.Include(y => y.Attendance).ThenInclude(y => y.Account));
+
         return [.. days
             .SelectMany(d => d.Shifts)
             .SelectMany(s => s.Jobs)
             .SelectMany(j => j.Volunteers)
             .GroupBy(v => new { v.Id, v.FullName })
-            .Select(g => new Report
-            {
-                Id = g.Key.Id,
-                FullName = g.Key.FullName,
-                RegularUnresponded = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == null)),
-                RegularYes = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == true)),
-                RegularNo = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == false)),
-                UrgentYes = g.Count(v => (v.Type == AttendanceType.Urgent) && (v.Confirmed == true)),
-                ExtraYes = g.Count(v => (v.Type == AttendanceType.Extra) && (v.Confirmed == true))
+            .Select(g => {
+                var report = new Report
+                {
+                    Id = g.Key.Id,
+                    FullName = g.Key.FullName,
+                    RegularUnresponded = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == null)),
+                    RegularYes = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == true)),
+                    RegularNo = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == false)),
+                    RegularTotal = g.Count(v => v.Type == AttendanceType.Regular),
+                    CameInRegular = clockings.Count(v => v.Attendance.Type == AttendanceType.Regular && v.Attendance.Account.Id == g.Key.Id),
+                    UrgentYes = g.Count(v => (v.Type == AttendanceType.Urgent) && (v.Confirmed == true)),
+                    UrgentNo = g.Count(v => (v.Type == AttendanceType.Urgent) && (v.Confirmed == false)),
+                    CameInUrgent = clockings.Count(v => v.Attendance.Type == AttendanceType.Urgent && v.Attendance.Account.Id == g.Key.Id),
+                    ExtraYes = g.Count(v => (v.Type == AttendanceType.Extra) && (v.Confirmed == true)),
+                    ExtraNo = g.Count(v => (v.Type == AttendanceType.Extra) && (v.Confirmed == false)),
+                    CameInExtra = clockings.Count(v => v.Attendance.Type == AttendanceType.Extra && v.Attendance.Account.Id == g.Key.Id)
+                };
+
+                report.RegularNoShows = report.RegularYes - report.CameInRegular;
+                report.UrgentNoShows = report.UrgentYes - report.CameInUrgent;
+                report.ExtraNoShows = report.ExtraYes - report.CameInExtra;
+
+                return report;
             })
             .OrderBy(r => r.FullName)];
     }
@@ -54,7 +73,7 @@ public class RotaService : IRotaService
     public async Task<IReadOnlyList<Day>> GetRotaAsync(DateOnly start, DateOnly end)
     {
         var missingReasons = await _repository.GetAll<MissingReason>(x => true, tracking: false);
-        var regularShifts = await _repository.GetAll<RegularShift>(x => true, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job));
+        var regularShifts = await _repository.GetAll<RegularShift>(x => x.Account.Status == AccountStatus.Active, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job));
         var attendances = await _repository.GetAll<Attendance>(x => start <= x.Date && x.Date <= end, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job).Include(y => y.MissingReason));
         var times = await _repository.GetAll<TimeRange>(x => true, tracking: false);
         var jobs = await _repository.GetAll<Job>(x => true, tracking: false);
@@ -179,6 +198,12 @@ public class RotaService : IRotaService
             days.Add(new Day
             {
                 Date = date,
+                Week =
+                    date.IsOn(DayOfWeek.Saturday)
+                        ? (date.IsOn(DayOfWeek.Saturday, 1) ? 1 : 2)
+                        : (date.IsOn(DayOfWeek.Sunday)
+                            ? (date.IsOn(DayOfWeek.Sunday, 1) ? 1 : 2)
+                            : null),
                 Shifts = [.. times
                     .OrderBy(time => time.Id)
                     .Select(time => GetDayShift(date, time))
@@ -212,7 +237,11 @@ public class RotaService : IRotaService
                 .SelectMany(j => j.Volunteers)
                 .Where(IsOtherComing)
                 .OrderBy(v => v.Name)
-                .Select(v => v.Name)
+                .Select(v => new ShiftOther
+                {
+                    Name = v.Name,
+                    Area = assignableAreas.FirstOrDefault(x => x.Id == v.AreaId)
+                })
                 .ToArray(),
             Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer.AreaId)
         };
@@ -233,7 +262,11 @@ public class RotaService : IRotaService
                     .SelectMany(j => j.Volunteers)
                     .Where(IsOtherComing)
                     .OrderBy(v => v.Name)
-                    .Select(v => v.Name)
+                    .Select(v => new ShiftOther
+                    {
+                        Name = v.Name,
+                        Area = assignableAreas.FirstOrDefault(x => x.Id == v.AreaId)
+                    })
                     .ToArray(),
                 Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer?.AreaId)
             };
@@ -311,13 +344,23 @@ public class Report
     public int RegularUnresponded { get; set; }
     public int RegularYes { get; set; }
     public int RegularNo { get; set; }
+    public int RegularTotal { get; set; }
+    public int CameInRegular { get; set; }
+    public int RegularNoShows { get; set; }
     public int UrgentYes { get; set; }
-    public int ExtraYes { get; internal set; }
+    public int UrgentNo { get; set; }
+    public int CameInUrgent { get; set; }
+    public int UrgentNoShows { get; set; }
+    public int ExtraYes { get; set; }
+    public int ExtraNo { get; set; }
+    public int CameInExtra { get; set; }
+    public int ExtraNoShows { get; set; }
 }
 
 public class Day
 {
     public DateOnly Date { get; set; }
+    public int? Week { get; set; }
     public IReadOnlyList<DayShift> Shifts { get; set; }
 
     public class DayShift
@@ -385,8 +428,14 @@ public class UserRota
         public Job Job { get; set; }
         public bool? Confirmed { get; set; }
         public AttendanceType Type { get; set; }
-        public IReadOnlyList<string> Others { get; set; }
+        public IReadOnlyList<ShiftOther> Others { get; set; }
         public AssignableArea? Area { get; set; }
+
+        public class ShiftOther
+        {
+            public string Name { get; set; }
+            public AssignableArea? Area { get; set; }
+        }
     }
 
     public class UrgentShift : ShiftBase

@@ -70,7 +70,7 @@ public class AddPatientNoteHandler : IRequestHandler<AddPatientNote, IResult>
                         Data = ms.ToArray()
                     };
 
-                    _repository.Create(note);
+                    _repository.Create(noteFile);
                 }
 
                 await _repository.SaveChangesAsync();

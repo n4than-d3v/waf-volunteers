@@ -1,5 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { getWeightUnit, Patient, PatientStatus, Task } from '../../state';
+import {
+  getWeightUnit,
+  ListNote,
+  Patient,
+  PatientStatus,
+  Task,
+} from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import {
   FormControl,
@@ -8,7 +14,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { addNote } from '../../actions';
+import { addNote, downloadNoteAttachment } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { selectAddNote } from '../../selectors';
@@ -69,6 +75,16 @@ export class HospitalPatientNotesComponent {
       })
     );
     this.reset();
+  }
+
+  download(note: ListNote, attachment: { id: number; fileName: string }) {
+    this.store.dispatch(
+      downloadNoteAttachment({
+        patientId: this.patient.id,
+        noteId: note.id,
+        attachment,
+      })
+    );
   }
 
   reset() {

@@ -23,12 +23,12 @@
         <td>
           @if (note.attachments) { @for (attachment of note.attachments; track
           attachment.id) {
-          <a
-            href="/api/hospital/patients/{{ patient.id }}/notes/{{ note.id }}/attachments/{{ attachment.id }}"
-            target="_blank"
+          <button
+            (click)="download(note, attachment)"
+            class="button button--secondary-invert"
           >
             🔗 {{ attachment.fileName }}
-          </a>
+          </button>
           } }
         </td>
       </tr>

@@ -147,6 +147,7 @@ import {
   markPatientInCentre,
   markPatientInCentreError,
   markPatientInCentreSuccess,
+  downloadNoteAttachment,
 } from './actions';
 
 @Injectable()
@@ -664,6 +665,33 @@ export class HospitalEffects {
         of(getPatient({ id: action.patientId, silent: true }))
       )
     )
+  );
+
+  downloadNoteAttachment$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(downloadNoteAttachment),
+        switchMap((action) => {
+          this.http
+            .get(
+              `hospital/patients/${action.patientId}/notes/${action.noteId}/attachments/${action.attachment.id}`,
+              {
+                responseType: 'blob',
+              }
+            )
+            .subscribe((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = action.attachment.fileName;
+              a.click();
+
+              window.URL.revokeObjectURL(url);
+            });
+          return of();
+        })
+      ),
+    { dispatch: false }
   );
 
   // Add recheck

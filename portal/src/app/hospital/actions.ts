@@ -318,6 +318,18 @@ export const addNoteSuccess = createAction(
 );
 export const addNoteError = createAction('[HMS-V] Add note: error');
 
+export const downloadNoteAttachment = createAction(
+  '[HMS-V] Download note attachment',
+  props<{
+    patientId: number;
+    noteId: number;
+    attachment: {
+      id: number;
+      fileName: string;
+    };
+  }>()
+);
+
 // Add recheck
 
 export const addRecheck = createAction(

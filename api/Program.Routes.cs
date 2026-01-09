@@ -91,15 +91,15 @@ public partial class Program
 
         apiHospitalOptionsOutcome.MapPut("/disposition-reason", (IMediator mediator, UpsertDispositionReason request) => mediator.Send(request))
             .AddNote("Update or create disposition reason")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalOptionsOutcome.MapPut("/release-type", (IMediator mediator, UpsertReleaseType request) => mediator.Send(request))
             .AddNote("Update or create release type")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalOptionsOutcome.MapPut("/transfer-location", (IMediator mediator, UpsertTransferLocation request) => mediator.Send(request))
             .AddNote("Update or create transfer location")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         var apiHospitalPatient = apiHospital.MapGroup("/patients");
 
@@ -229,11 +229,11 @@ public partial class Program
 
         apiHospitalHusbandry.MapPut("/diet", (IMediator mediator, UpsertDiet request) => mediator.Send(request))
             .AddNote("Update or create diet")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalHusbandry.MapPut("/tag", (IMediator mediator, UpsertTag request) => mediator.Send(request))
             .AddNote("Update or create tag")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         var apiHospitalLocations = apiHospital.MapGroup("/locations");
 
@@ -243,11 +243,11 @@ public partial class Program
 
         apiHospitalLocations.MapPost("/area", (IMediator mediator, CreateArea request) => mediator.Send(request))
             .AddNote("Admin creates a new area")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalLocations.MapPost("/pen", (IMediator mediator, CreatePen request) => mediator.Send(request))
             .AddNote("Admin creates a new pen")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         var apiHospitalMedications = apiHospital.MapGroup("/medications");
 
@@ -261,15 +261,15 @@ public partial class Program
 
         apiHospitalMedications.MapPost("/{id:int}/enable", (IMediator mediator, int id) => mediator.Send(new SetMedicationUsage { Id = id, Used = true }))
             .AddNote("Enable usage of medication")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalMedications.MapPost("/{id:int}/disable", (IMediator mediator, int id) => mediator.Send(new SetMedicationUsage { Id = id, Used = false }))
             .AddNote("Disable usage of medication")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalMedications.MapPut("/administration-method", (IMediator mediator, UpsertAdministrationMethod request) => mediator.Send(request))
             .AddNote("Update or create administration method")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         var apiHospitalSpecies = apiHospital.MapGroup("/species");
 
@@ -279,15 +279,15 @@ public partial class Program
 
         apiHospitalSpecies.MapPut("/", (IMediator mediator, UpsertSpecies request) => mediator.Send(request))
             .AddNote("Update or create species")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalSpecies.MapPut("/age", (IMediator mediator, UpsertSpeciesAge request) => mediator.Send(request))
             .AddNote("Update or create species age")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalSpecies.MapPut("/variant", (IMediator mediator, UpsertSpeciesVariant request) => mediator.Send(request))
             .AddNote("Update or create species variant")
-            .RequireAuthorization(adminPolicy);
+            .RequireAuthorization(vetPolicy);
 
         var apiHospitalTasks = apiHospital.MapGroup("/tasks");
 

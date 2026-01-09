@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Patient, PatientStatus } from '../../state';
 import { DatePipe } from '@angular/common';
 
@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 })
 export class HospitalPatientAdmissionComponent {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   PatientStatus = PatientStatus;
 

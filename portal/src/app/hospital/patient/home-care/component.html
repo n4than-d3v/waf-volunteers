@@ -1,65 +1,96 @@
-<div class="buttons">
-  @for (request of patient.homeCareRequests; track request.id) { @if
-  (!request.dropoff) {
-  <button
-    (click)="homeCareDropOff(request.id)"
-    class="button button--secondary-invert"
-  >
-    🏠 Home carer returned patient
-  </button>
-  } }
-</div>
-<form [formGroup]="messageForm">
-  @if (patient.homeCareMessages.length > 0) {
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Author</th>
-        <th>Message</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (message of patient.homeCareMessages; track message.id) {
-      <tr>
-        <td>{{ message.date | date: 'dd MMM yyyy HH:mm' }}</td>
-        <td>{{ message.author.firstName }} {{ message.author.lastName }}</td>
-        <td>{{ message.message }}</td>
-      </tr>
-      }
-    </tbody>
-  </table>
-  } @else {
-  <p><em>No messages have been sent for this patient.</em></p>
-  }
-  <div class="flex">
-    @if (patient.status != PatientStatus.Dispositioned) {
-    <div class="field">
-      <label for="message">Message home carer</label>
-      <textarea
-        id="message"
-        type="text"
-        formControlName="message"
-        autocomplete="off"
-        rows="3"
-      ></textarea>
-    </div>
-    @if (!saving) {
+@for (request of patient.homeCareRequests; track request.id) {
+<div class="home-care-request">
+  @if (!request.pickup) {
+  <p>
+    <em
+      >Home care requested at {{ request.requested | date: 'dd MMM yyyy HH:mm'
+      }}</em
+    >
+  </p>
+  } @else if (request.pickup) {
+  <div class="row">
+    <table>
+      <tbody>
+        <tr>
+          <td>Home carer</td>
+          <td>
+            {{ request.responder?.firstName }} {{ request.responder?.lastName }}
+          </td>
+        </tr>
+        <tr>
+          <td>Pickup</td>
+          <td>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</td>
+        </tr>
+        @if (request.dropoff) {
+        <tr>
+          <td>Returned</td>
+          <td>{{ request.dropoff | date: 'dd MMM yyyy HH:mm' }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    @if (isVet && !request.dropoff) {
     <div class="buttons">
-      @for (request of patient.homeCareRequests; track request.id) { @if
-      (!request.dropoff) {
       <button
-        (click)="sendMessage(request.id)"
+        (click)="homeCareDropOff(request.id)"
         class="button button--secondary-invert"
       >
-        💬 Send
+        🏠 Home carer returned patient
       </button>
-      } }
     </div>
-    } }
+    }
   </div>
-</form>
-@if (dropOffTask$ | async; as task) { @if (task.loading) {
+  <form [formGroup]="messageForm">
+    @if (patient.homeCareMessages.length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Author</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (message of patient.homeCareMessages; track message.id) {
+        <tr>
+          <td>{{ message.date | date: 'dd MMM yyyy HH:mm' }}</td>
+          <td>{{ message.author.firstName }} {{ message.author.lastName }}</td>
+          <td>{{ message.message }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+    } @else {
+    <p><em>No messages have been sent for this patient.</em></p>
+    } @if (isVet && patient.status != PatientStatus.Dispositioned &&
+    !request.dropoff) {
+    <div class="flex">
+      <div class="field">
+        <label for="message">Message home carer</label>
+        <textarea
+          id="message"
+          type="text"
+          formControlName="message"
+          autocomplete="off"
+          rows="3"
+        ></textarea>
+      </div>
+      @if (!saving) {
+      <div class="buttons">
+        <button
+          (click)="sendMessage(request.id)"
+          class="button button--secondary-invert"
+        >
+          💬 Send
+        </button>
+      </div>
+      }
+    </div>
+    }
+  </form>
+  }
+</div>
+} @if (dropOffTask$ | async; as task) { @if (task.loading) {
 <spinner></spinner>
 } @else if (task.error) {
 <div class="error">Error occurred</div>

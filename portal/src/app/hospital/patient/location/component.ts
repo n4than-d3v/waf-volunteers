@@ -35,6 +35,7 @@ import { SpinnerComponent } from '../../../shared/spinner/component';
 })
 export class HospitalPatientLocationComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
 

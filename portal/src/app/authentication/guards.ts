@@ -27,6 +27,15 @@ export const isVet: CanActivateFn = () => {
   return tokenProvider.isVet() || tokenProvider.isAdmin();
 };
 
+export const isVetOrAux: CanActivateFn = () => {
+  const tokenProvider = inject(TokenProvider);
+  return (
+    tokenProvider.isVet() ||
+    tokenProvider.isAuxiliary() ||
+    tokenProvider.isAdmin()
+  );
+};
+
 export const isOrphanFeeder: CanActivateFn = () => {
   const tokenProvider = inject(TokenProvider);
   return tokenProvider.isOrphanFeeder();

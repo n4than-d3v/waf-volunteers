@@ -33,7 +33,7 @@ patient.prescriptionMedications.length === 0) {
       <td colspan="3"></td>
       <td>{{ prescription.instructions }}</td>
       <td>
-        @if (patient.status != PatientStatus.Dispositioned) {
+        @if (isVet && patient.status != PatientStatus.Dispositioned) {
         <button
           (click)="removeInstruction(prescription.id)"
           class="button button--none"
@@ -77,7 +77,7 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.medication.name }}</td>
       <td>{{ prescription.comments }}</td>
       <td>
-        @if (patient.status != PatientStatus.Dispositioned) {
+        @if (isVet && patient.status != PatientStatus.Dispositioned) {
         <button
           (click)="removeMedication(prescription.id)"
           class="button button--none"
@@ -113,8 +113,8 @@ patient.prescriptionMedications.length === 0) {
     } } }
   </tbody>
 </table>
-} @if (!(addingMedication || addingInstruction)) { @if (patient.status !=
-PatientStatus.Dispositioned) {
+} @if (!(addingMedication || addingInstruction)) { @if (isVet && patient.status
+!= PatientStatus.Dispositioned) {
 <div class="buttons">
   <button
     (click)="addingMedication = true"

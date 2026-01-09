@@ -8,7 +8,7 @@
         <tr>
           <td>{{ tag.name }}</td>
           <td>
-            @if (patient.status != PatientStatus.Dispositioned) {
+            @if (isVet && patient.status != PatientStatus.Dispositioned) {
             <button (click)="remove(tag.id)" class="button button--none">
               🗑️
             </button>
@@ -19,7 +19,8 @@
       </tbody>
     </table>
   </div>
-  } @if (!adding) { @if (patient.status != PatientStatus.Dispositioned) {
+  } @if (!adding) { @if (isVet && patient.status != PatientStatus.Dispositioned)
+  {
   <div class="buttons">
     <button (click)="adding = true" class="button button--secondary-invert">
       🏷️ Add tag

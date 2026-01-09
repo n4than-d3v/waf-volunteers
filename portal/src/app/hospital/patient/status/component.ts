@@ -47,6 +47,7 @@ import {
 })
 export class HospitalPatientStatusComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   dispositionReasons$: Observable<ReadOnlyWrapper<DispositionReason[]>>;
   releaseTypes$: Observable<ReadOnlyWrapper<ReleaseType[]>>;

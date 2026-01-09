@@ -49,6 +49,7 @@ import { HospitalPatientPrescriptionsFrequencyComponent } from './frequency/comp
 })
 export class HospitalPatientPrescriptionsComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
 

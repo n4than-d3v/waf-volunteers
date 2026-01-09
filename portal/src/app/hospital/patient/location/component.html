@@ -27,7 +27,7 @@
     }
   </tbody>
 </table>
-} @if (!moving) { @if (patient.status != PatientStatus.Dispositioned) {
+} @if (!moving) { @if (isVet && patient.status != PatientStatus.Dispositioned) {
 <div class="buttons">
   <button (click)="moving = true" class="button button--secondary-invert">
     📍 Move

@@ -24,7 +24,7 @@
     </tbody>
   </table>
 </div>
-@if (!updating) { @if (patient.status != PatientStatus.Dispositioned) {
+@if (!updating) { @if (isVet && patient.status != PatientStatus.Dispositioned) {
 <div class="buttons">
   <button
     (click)="beginUpdate(patient)"

@@ -23,6 +23,7 @@ import { HospitalPatientDietsComponent } from './diets/component';
 import { HospitalPatientTagsComponent } from './tags/component';
 import { HospitalPatientStatusComponent } from './status/component';
 import { HospitalPatientHomeCareComponent } from './home-care/component';
+import { TokenProvider } from '../../shared/token.provider';
 
 @Component({
   selector: 'hospital-patient',
@@ -55,13 +56,17 @@ export class HospitalPatientComponent implements OnInit {
 
   _id: number | null = null;
 
+  isVet = false;
+
   PatientStatus = PatientStatus;
 
   patient$: Observable<ReadOnlyWrapper<Patient>>;
 
-  constructor(private store: Store) {
+  constructor(private store: Store, private tokenProvider: TokenProvider) {
     this.patient$ = this.store.select(selectPatient);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isVet = this.tokenProvider.isVet();
+  }
 }

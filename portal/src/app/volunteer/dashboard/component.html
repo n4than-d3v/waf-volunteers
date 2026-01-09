@@ -34,5 +34,14 @@
     <img src="images/home-care.svg" alt="Notices icon" />
     <p>Home care</p>
   </a>
+  } @if (isAuxiliary) {
+  <a
+    [routerLink]="'../../vet/hospital'"
+    class="module"
+    style="--bg: var(--theme-color-2)"
+  >
+    <img src="images/hospital-vet.svg" alt="Notices icon" />
+    <p>Hospital</p>
+  </a>
   }
 </div>

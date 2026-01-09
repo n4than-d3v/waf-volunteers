@@ -33,6 +33,7 @@ import {
 })
 export class HospitalPatientHomeCareComponent {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   messageTask$: Observable<Task>;
   dropOffTask$: Observable<Task>;

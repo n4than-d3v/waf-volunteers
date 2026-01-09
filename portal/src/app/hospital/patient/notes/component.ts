@@ -28,6 +28,7 @@ import { selectAddNote } from '../../selectors';
 })
 export class HospitalPatientNotesComponent {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   task$: Observable<Task>;
 

@@ -8,6 +8,7 @@ import {
   isBoards,
   isClocking,
   isVet,
+  isVetOrAux,
 } from './authentication/guards';
 import { InstallationComponent } from './installation/component';
 import { ClockingComponent } from './clocking/component';
@@ -60,7 +61,7 @@ export const routes: Routes = [
   },
   {
     path: 'vet',
-    canActivate: [isAuthenticated, isVet],
+    canActivate: [isAuthenticated, isVetOrAux],
     loadChildren: () => import('./app.routes.vet').then((m) => m.routes),
   },
 ];

@@ -30,6 +30,7 @@ import { toHTML } from 'ngx-editor';
 })
 export class HospitalPatientTagsComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
+  @Input({ required: true }) isVet!: boolean;
 
   tags$: Observable<ReadOnlyWrapper<Tag[]>>;
 

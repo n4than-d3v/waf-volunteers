@@ -15,11 +15,13 @@ import { TokenProvider } from '../../shared/token.provider';
 })
 export class VolunteerDashboardComponent implements OnInit {
   isOrphanFeeder = false;
+  isAuxiliary = false;
 
   constructor(private store: Store, private tokenProvider: TokenProvider) {}
 
   ngOnInit() {
     this.store.dispatch(getCurrentProfile());
     this.isOrphanFeeder = this.tokenProvider.isOrphanFeeder();
+    this.isAuxiliary = this.tokenProvider.isAuxiliary();
   }
 }

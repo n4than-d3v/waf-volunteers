@@ -14,12 +14,15 @@ PatientStatus.PendingInitialExam) {
     <h3>Admission</h3>
     <hospital-patient-admission
       [patient]="patient.data"
+      [isVet]="isVet"
     ></hospital-patient-admission>
   </section>
+  @if (isVet) {
   <section>
     <h3>Intake exam</h3>
     <hospital-patient-exam [id]="patient.data.id"></hospital-patient-exam>
   </section>
+  }
 </div>
 } @else {
 <div class="sections">
@@ -27,11 +30,15 @@ PatientStatus.PendingInitialExam) {
     <h3>Details</h3>
     <hospital-patient-details
       [patient]="patient.data"
+      [isVet]="isVet"
     ></hospital-patient-details>
   </section>
   <section>
     <h3>Status</h3>
-    <hospital-patient-status [patient]="patient.data"></hospital-patient-status>
+    <hospital-patient-status
+      [patient]="patient.data"
+      [isVet]="isVet"
+    ></hospital-patient-status>
   </section>
 </div>
 @if (patient.data.status != PatientStatus.ReceivingHomeCare) {
@@ -40,51 +47,68 @@ PatientStatus.PendingInitialExam) {
     <h3>Location</h3>
     <hospital-patient-location
       [patient]="patient.data"
+      [isVet]="isVet"
     ></hospital-patient-location>
   </section>
   <section>
     <h3>Diet</h3>
-    <hospital-patient-diets [patient]="patient.data"></hospital-patient-diets>
+    <hospital-patient-diets
+      [patient]="patient.data"
+      [isVet]="isVet"
+    ></hospital-patient-diets>
   </section>
   <section>
     <h3>Tags</h3>
-    <hospital-patient-tags [patient]="patient.data"></hospital-patient-tags>
+    <hospital-patient-tags
+      [patient]="patient.data"
+      [isVet]="isVet"
+    ></hospital-patient-tags>
   </section>
 </div>
-} @else {
+} @if (patient.data.homeCareRequests.length > 0) {
 <section>
   <h3>Home care</h3>
   <hospital-patient-home-care
     [patient]="patient.data"
+    [isVet]="isVet"
   ></hospital-patient-home-care>
 </section>
 }
 <section>
   <h3>Notes</h3>
-  <hospital-patient-notes [patient]="patient.data"></hospital-patient-notes>
+  <hospital-patient-notes
+    [patient]="patient.data"
+    [isVet]="isVet"
+  ></hospital-patient-notes>
 </section>
 <section>
   <h3>Rechecks</h3>
   <hospital-patient-rechecks
     [patient]="patient.data"
+    [isVet]="isVet"
   ></hospital-patient-rechecks>
 </section>
 <section>
   <h3>Prescriptions</h3>
   <hospital-patient-prescriptions
     [patient]="patient.data"
+    [isVet]="isVet"
   ></hospital-patient-prescriptions>
 </section>
 @for (exam of patient.data.exams; track exam.id) {
 <section>
   <h3>{{ exam.type === 1 ? 'Intake exam' : 'Follow-up exam' }}</h3>
-  <hospital-patient-view-exam [exam]="exam"></hospital-patient-view-exam>
+  <hospital-patient-view-exam
+    [exam]="exam"
+    [isVet]="isVet"
+  ></hospital-patient-view-exam>
 </section>
 }
 <section>
   <h3>Admission</h3>
   <hospital-patient-admission
     [patient]="patient.data"
+    [isVet]="isVet"
   ></hospital-patient-admission>
 </section>
 } } }

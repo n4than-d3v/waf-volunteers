@@ -389,9 +389,9 @@ export function getDisposition(patient: ListPatient) {
     case 5:
       return 'Died after 24 hrs';
     case 6:
-      return 'Put to sleep before 24 hrs';
+      return 'Euthanised before 24 hrs';
     case 7:
-      return 'Put to sleep after 24 hrs';
+      return 'Euthanised after 24 hrs';
     default:
       return 'Unknown';
   }

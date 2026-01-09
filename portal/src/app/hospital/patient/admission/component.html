@@ -40,6 +40,7 @@
         <td>Found at</td>
         <td>{{ patient.foundAt }}</td>
       </tr>
+      @if (isVet) {
       <tr>
         <td>Admitted by</td>
         <td>{{ patient.admitter?.fullName || '(blank)' }}</td>
@@ -56,6 +57,7 @@
         <td>Telephone</td>
         <td>{{ patient.admitter?.telephone || '(blank)' }}</td>
       </tr>
+      }
     </tbody>
   </table>
 </div>

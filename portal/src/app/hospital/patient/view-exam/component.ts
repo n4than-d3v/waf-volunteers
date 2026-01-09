@@ -18,6 +18,7 @@ import { DatePipe } from '@angular/common';
 })
 export class HospitalPatientViewExamComponent {
   @Input({ required: true }) exam!: ListExam;
+  @Input({ required: true }) isVet!: boolean;
 
   getSex = getSex;
   getWeightUnit = getWeightUnit;

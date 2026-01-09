@@ -38,7 +38,8 @@
   </table>
   }
   <div>
-    @if (!updating) { @if (patient.status != PatientStatus.Dispositioned) {
+    @if (!updating) { @if (isVet && patient.status !=
+    PatientStatus.Dispositioned) {
     <div class="buttons">
       @if (patient.status == PatientStatus.ReadyForRelease) {
       <button
@@ -67,13 +68,13 @@
         (click)="updating = 'die'"
         class="button button--secondary-invert"
       >
-        🌹 Died
+        🥀 Died
       </button>
       <button
         (click)="updating = 'pts'"
         class="button button--secondary-invert"
       >
-        💝 Put to sleep
+        🌈 Euthanised
       </button>
     </div>
     @if (patient.status != PatientStatus.PendingHomeCare && patient.status !=
@@ -88,7 +89,7 @@
     </div>
     } } } @else if (updating === 'die' || updating === 'pts') {
     <form [formGroup]="deadForm">
-      <h4>{{ updating === 'die' ? 'Died' : 'Put to sleep' }}</h4>
+      <h4>{{ updating === 'die' ? 'Died' : 'Euthanised' }}</h4>
       <div class="fields">
         <div class="field">
           <label for="dispositionReasonId">

@@ -2,9 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, timer } from 'rxjs';
 import { Patient, PatientStatus, ReadOnlyWrapper } from '../../hospital/state';
 import { Store } from '@ngrx/store';
 import { selectPatient } from '../../hospital/selectors';
@@ -48,7 +49,7 @@ import { TokenProvider } from '../../shared/token.provider';
     HospitalPatientPrescriptionsComponent,
   ],
 })
-export class HospitalPatientComponent implements OnInit {
+export class HospitalPatientComponent implements OnInit, OnDestroy {
   @Input() set id(id: number) {
     this._id = id;
     this.store.dispatch(getPatient({ id }));
@@ -62,11 +63,27 @@ export class HospitalPatientComponent implements OnInit {
 
   patient$: Observable<ReadOnlyWrapper<Patient>>;
 
+  subscription: Subscription | null = null;
+
   constructor(private store: Store, private tokenProvider: TokenProvider) {
     this.patient$ = this.store.select(selectPatient);
   }
 
   ngOnInit() {
     this.isVet = this.tokenProvider.isVet() || this.tokenProvider.isAdmin();
+    // Every 10 seconds, update patient
+    this.subscription = timer(0, 1_000 * 10).subscribe(() => {
+      if (!this._id) return;
+      this.store.dispatch(
+        getPatient({
+          id: this._id,
+          silent: true,
+        })
+      );
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }

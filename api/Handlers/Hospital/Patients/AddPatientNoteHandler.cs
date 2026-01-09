@@ -53,28 +53,33 @@ public class AddPatientNoteHandler : IRequestHandler<AddPatientNote, IResult>
 
         _repository.Create(note);
         await _repository.SaveChangesAsync();
-
-        if (request.Files != null && request.Files.Count > 0)
+        try
         {
-            foreach (var file in request.Files)
+            if (request.Files != null && request.Files.Count > 0)
             {
-                using var ms = new MemoryStream();
-                await file.CopyToAsync(ms, cancellationToken);
-
-                var noteFile = new PatientNoteAttachment
+                foreach (var file in request.Files)
                 {
-                    PatientNote = note,
-                    FileName = file.FileName,
-                    ContentType = file.ContentType,
-                    Data = ms.ToArray()
-                };
+                    using var ms = new MemoryStream();
+                    await file.CopyToAsync(ms, cancellationToken);
 
-                _repository.Create(note);
+                    var noteFile = new PatientNoteAttachment
+                    {
+                        PatientNote = note,
+                        FileName = file.FileName,
+                        ContentType = file.ContentType,
+                        Data = ms.ToArray()
+                    };
+
+                    _repository.Create(note);
+                }
+
+                await _repository.SaveChangesAsync();
             }
-
-            await _repository.SaveChangesAsync();
         }
-
+        catch (Exception e)
+        {
+            return Results.BadRequest(e.ToString());
+        }
         return Results.Created();
     }
 }

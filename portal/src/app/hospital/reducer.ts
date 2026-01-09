@@ -117,6 +117,9 @@ import {
   administerPrescriptionMedication,
   administerPrescriptionSuccess,
   administerPrescriptionError,
+  markPatientInCentre,
+  markPatientInCentreSuccess,
+  markPatientInCentreError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -601,6 +604,7 @@ export const hospitalReducer = createReducer<HospitalState>(
     markPatientReadyForRelease,
     markPatientReleased,
     markPatientTransferred,
+    markPatientInCentre,
     (state) => ({
       ...state,
       setDisposition: {
@@ -616,6 +620,7 @@ export const hospitalReducer = createReducer<HospitalState>(
     markPatientReadyForReleaseSuccess,
     markPatientReleasedSuccess,
     markPatientTransferredSuccess,
+    markPatientInCentreSuccess,
     (state) => ({
       ...state,
       setDisposition: {
@@ -630,6 +635,7 @@ export const hospitalReducer = createReducer<HospitalState>(
     markPatientReadyForReleaseError,
     markPatientReleasedError,
     markPatientTransferredError,
+    markPatientInCentreError,
     (state) => ({
       ...state,
       setDisposition: {

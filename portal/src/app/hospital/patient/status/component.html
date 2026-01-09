@@ -38,10 +38,19 @@
   </table>
   }
   <div>
-    @if (!updating) { @if (isVet && patient.status !=
+    @if (!updating) { @if (isVet && patient.status ==
     PatientStatus.Dispositioned) {
     <div class="buttons">
+      <button (click)="resetStatus()" class="button button--secondary-invert">
+        🧟‍♂️ Resurrect
+      </button>
+    </div>
+    } @if (isVet && patient.status != PatientStatus.Dispositioned) {
+    <div class="buttons">
       @if (patient.status == PatientStatus.ReadyForRelease) {
+      <button (click)="resetStatus()" class="button button--secondary-invert">
+        ⛔ Not ready to release
+      </button>
       <button
         (click)="updating = 'release'"
         class="button button--secondary-invert"
@@ -77,7 +86,13 @@
         🌈 Euthanised
       </button>
     </div>
-    @if (patient.status != PatientStatus.PendingHomeCare && patient.status !=
+    @if (patient.status == PatientStatus.PendingHomeCare) {
+    <div class="buttons">
+      <button (click)="resetStatus()" class="button button--secondary-invert">
+        ⛔ Home care not needed
+      </button>
+    </div>
+    } @if (patient.status != PatientStatus.PendingHomeCare && patient.status !=
     PatientStatus.ReceivingHomeCare) {
     <div class="buttons">
       <button

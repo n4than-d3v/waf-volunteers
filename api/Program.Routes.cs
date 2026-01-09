@@ -111,6 +111,10 @@ public partial class Program
             .AddNote("Vet requests home care for patient")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalPatient.MapPost("/{id:int}/inpatient", (IMediator mediator, int id, MarkPatientInCentre request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet clears disposition details")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalPatient.MapPost("/{id:int}/ready-for-release", (IMediator mediator, int id, MarkPatientReadyForRelease request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet marks patient as ready for release")
             .RequireAuthorization(vetPolicy);

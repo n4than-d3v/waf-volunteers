@@ -25,6 +25,7 @@ import {
   getReleaseTypes,
   getTransferLocations,
   markPatientDead,
+  markPatientInCentre,
   markPatientReadyForRelease,
   markPatientReleased,
   markPatientTransferred,
@@ -127,6 +128,16 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.deadForm.reset();
     this.releaseForm.reset();
     this.transferForm.reset();
+  }
+
+  resetStatus() {
+    this.saving = true;
+    this.store.dispatch(
+      markPatientInCentre({
+        patientId: this.patient.id,
+      })
+    );
+    this.reset();
   }
 
   readyToRelease() {

@@ -144,6 +144,9 @@ import {
   administerPrescriptionSuccess,
   administerPrescriptionError,
   administerPrescriptionMedication,
+  markPatientInCentre,
+  markPatientInCentreError,
+  markPatientInCentreSuccess,
 } from './actions';
 
 @Injectable()
@@ -524,6 +527,31 @@ export class HospitalEffects {
   markPatientReadyForReleaseSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientReadyForReleaseSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  markPatientInCentre$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientInCentre),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/inpatient`, action)
+          .pipe(
+            map(() =>
+              markPatientInCentreSuccess({ patientId: action.patientId })
+            ),
+            catchError(() => of(markPatientInCentreError()))
+          )
+      )
+    )
+  );
+
+  markPatientInCentreSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPatientInCentreSuccess),
       switchMap((action) =>
         of(getPatient({ id: action.patientId, silent: true }))
       )

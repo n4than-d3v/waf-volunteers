@@ -37,7 +37,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             if (beaconAdmissionsIds.Count == patients.Count) return Results.NoContent();
 
             var year = DateTime.UtcNow.Year;
-            var yearStart = new DateTime(year, 1, 1, 0, 0, 0);
+            var yearStart = new DateTime(year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var yearEnd = yearStart.AddYears(1).AddSeconds(-1);
             var allPatientsAdmittedThisYear = await _repository.GetAll<Patient>(x => yearStart <= x.Admitted && x.Admitted <= yearEnd, tracking: false);
             var admittedThisYear = allPatientsAdmittedThisYear.Count;

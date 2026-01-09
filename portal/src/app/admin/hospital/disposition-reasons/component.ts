@@ -79,9 +79,7 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
     this.updating = true;
     this.updatingDispositionReason = dispositionReason;
     this.form.controls.description.setValue(dispositionReason.description);
-    this.form.controls.communication.setValue(
-      toHTML(JSON.parse(dispositionReason.communication))
-    );
+    this.form.controls.communication.setValue(dispositionReason.communication);
     this.editor = new Editor();
   }
 
@@ -94,18 +92,13 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
     this.editor = null;
   }
 
-  convertHtml(json: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(toHTML(JSON.parse(json)));
-  }
-
   create() {
     const htmlContent = this.form.controls.communication.value || '';
-    const jsonDoc = toDoc(htmlContent);
     this.store.dispatch(
       createDispositionReason({
         dispositionReason: {
           description: this.form.controls.description.value || '',
-          communication: JSON.stringify(jsonDoc),
+          communication: htmlContent,
         },
       })
     );
@@ -114,13 +107,12 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
 
   update() {
     const htmlContent = this.form.controls.communication.value || '';
-    const jsonDoc = toDoc(htmlContent);
     this.store.dispatch(
       updateDispositionReason({
         dispositionReason: {
           id: this.updatingDispositionReason!.id,
           description: this.form.controls.description.value || '',
-          communication: JSON.stringify(jsonDoc),
+          communication: htmlContent,
         },
       })
     );

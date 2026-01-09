@@ -101,7 +101,7 @@
     dispositionReason.id) {
     <tr>
       <td>{{ dispositionReason.description }}</td>
-      <td [innerHTML]="convertHtml(dispositionReason.communication)"></td>
+      <td [innerHTML]="dispositionReason.communication"></td>
       <td>
         <button
           (click)="beginUpdate(dispositionReason)"

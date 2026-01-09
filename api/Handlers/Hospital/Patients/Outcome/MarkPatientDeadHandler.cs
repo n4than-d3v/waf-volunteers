@@ -75,13 +75,14 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         var admitter = patient.Admitter;
         if (string.IsNullOrWhiteSpace(admitter.Email)) return Results.NoContent();
 
+        var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
+        var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
+
         var communication = dispositionReason.Communication
-            .Replace("%NAME%", admitter.FullName)
+            .Replace("%NAME%", admitterFullName)
             .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown")
             .Replace("%ADMITTED%", $"{patient.Admitted:dddd d MMMM}");
 
-        var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
-        var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
         var email = Email.External_PatientUpdate_Death(admitterFullName, admitterEmail, communication);
         await _emailService.SendEmailAsync(email);
 

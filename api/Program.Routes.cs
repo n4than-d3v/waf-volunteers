@@ -167,8 +167,30 @@ public partial class Program
             .AddNote("Perform recheck")
             .RequireAuthorization(vetOrAuxPolicy);
 
-        apiHospitalPatient.MapPost("/{id:int}/note", (IMediator mediator, int id, AddPatientNote request) => mediator.Send(request.WithId(id)))
+        apiHospitalPatient.MapPost("/{id:int}/note", async (IMediator mediator, HttpRequest httpReq) =>
+            {
+                var form = await httpReq.ReadFormAsync();
+                _ = int.TryParse(form["patientId"], out int patientId);
+                _ = int.TryParse(form["weightValue"], out int weightValue);
+                _ = int.TryParse(form["weightUnit"], out int weightUnit);
+
+                var request = new AddPatientNote
+                {
+                    PatientId = patientId,
+                    WeightValue = string.IsNullOrWhiteSpace(form["weightValue"]) ? null : weightValue,
+                    WeightUnit = string.IsNullOrWhiteSpace(form["weightUnit"]) ? null :
+                        (Api.Database.Entities.Hospital.Patients.Exams.WeightUnit)weightUnit,
+                    Comments = string.IsNullOrWhiteSpace(form["comments"]) ? string.Empty : form["comments"],
+                    Files = form.Files
+                };
+
+                return await mediator.Send(request);
+            })
             .AddNote("Vet or aux adds a note")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapGet("/{patientId:int}/notes/{noteId:int}/attachments/{attachmentId:int}", (IMediator mediator, int patientId, int noteId, int attachmentId) => mediator.Send(new DownloadNoteAttachment { PatientId = patientId, NoteId = noteId, AttachmentId = attachmentId }))
+            .AddNote("Vet or aux downloads note attachment")
             .RequireAuthorization(vetOrAuxPolicy);
 
         apiHospitalPatient.MapPost("/{id:int}/move", (IMediator mediator, int id, MovePatient request) => mediator.Send(request.WithId(id)))
@@ -201,7 +223,7 @@ public partial class Program
             .AddNote("Orphan feeder accepts home care request")
             .RequireAuthorization(orphanFeederPolicy);
 
-        apiHospitalHomeCare.MapPost("/{id:int}/drop-off", (IMediator mediator, int id) => mediator.Send(new DroppedOffHomeCare { HomeCareRequestId = id }))
+        apiHospitalHomeCare.MapPost("/{id:int}/drop-off", (IMediator mediator, int id, DroppedOffHomeCare request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet accepts patient back as an inpatient")
             .RequireAuthorization(vetPolicy);
 

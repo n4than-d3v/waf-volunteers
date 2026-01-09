@@ -232,6 +232,9 @@ export interface ListRecheck {
   rechecker: { firstName: string; lastName: string } | null;
   rechecked: string | null;
   comments: string | null;
+  requireWeight: boolean;
+  weightValue: number | null;
+  weightUnit: number | null;
 
   viewPatientId: number;
   reference: string;
@@ -248,6 +251,7 @@ export interface ListNote {
   weightValue: number | null;
   weightUnit: number | null;
   comments: string;
+  attachments: { id: number; fileName: string }[];
 }
 
 export enum ExamType {
@@ -440,6 +444,9 @@ export interface Pen {
   id: number;
   code: string;
   reference: string;
+
+  // Only available on getAreas()
+  empty: boolean;
 }
 
 export interface Area {
@@ -447,6 +454,9 @@ export interface Area {
   name: string;
   code: string;
   pens: Pen[];
+
+  // Only available on getAreas()
+  empty: boolean;
 }
 
 export interface SpeciesAge {

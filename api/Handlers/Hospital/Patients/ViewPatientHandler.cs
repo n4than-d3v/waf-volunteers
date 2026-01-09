@@ -206,6 +206,7 @@ public static class ViewPatientExtensions
     {
         return x
             .Include(y => y.Notes).ThenInclude(n => n.Noter)
+            .Include(y => y.Notes).ThenInclude(n => n.Attachments)
             .Include(y => y.Movements).ThenInclude(m => m.To).ThenInclude(p => p.Area)
             .Include(y => y.Movements).ThenInclude(m => m.From).ThenInclude(p => p.Area);
     }

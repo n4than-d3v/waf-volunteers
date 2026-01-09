@@ -628,7 +628,7 @@ export class HospitalEffects {
     this.actions$.pipe(
       ofType(movePatientSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
+        of(getPatient({ id: action.patientId, silent: true }), getAreas())
       )
     )
   );
@@ -638,14 +638,22 @@ export class HospitalEffects {
   addNote$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addNote),
-      switchMap((action) =>
-        this.http
-          .post(`hospital/patients/${action.patientId}/note`, action)
+      switchMap((action) => {
+        const formData = new FormData();
+        formData.append('patientId', String(action.patientId));
+        formData.append('weightValue', String(action.weightValue || ''));
+        formData.append('weightUnit', String(action.weightUnit || ''));
+        formData.append('comments', action.comments);
+        for (const file of action.files) {
+          formData.append('files', file);
+        }
+        return this.http
+          .post(`hospital/patients/${action.patientId}/note`, formData)
           .pipe(
             map(() => addNoteSuccess({ patientId: action.patientId })),
             catchError(() => of(addNoteError()))
-          )
-      )
+          );
+      })
     )
   );
 

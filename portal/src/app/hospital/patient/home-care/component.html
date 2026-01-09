@@ -1,16 +1,24 @@
-@for (request of patient.homeCareRequests; track request.id) {
+@for (request of patient.homeCareRequests; track request.id; let last = $last) {
 <div class="home-care-request">
   @if (!request.pickup) {
-  <p>
-    <em
-      >Home care requested at {{ request.requested | date: 'dd MMM yyyy HH:mm'
-      }}</em
-    >
-  </p>
+  <div class="row">
+    <table>
+      <tbody>
+        <tr>
+          <td>Requested</td>
+          <td>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   } @else if (request.pickup) {
   <div class="row">
     <table>
       <tbody>
+        <tr>
+          <td>Requested</td>
+          <td>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</td>
+        </tr>
         <tr>
           <td>Home carer</td>
           <td>
@@ -29,19 +37,75 @@
         }
       </tbody>
     </table>
-    @if (isVet && !request.dropoff) {
+    @if (!droppingOff) { @if (isVet && !request.dropoff) {
     <div class="buttons">
       <button
-        (click)="homeCareDropOff(request.id)"
+        (click)="droppingOff = request.id"
         class="button button--secondary-invert"
       >
         🏠 Home carer returned patient
       </button>
     </div>
+    } } @else if (droppingOff == request.id) {
+    <form [formGroup]="dropOffForm" class="drop-off">
+      <div class="field">
+        <label for="area">
+          Area
+          <span class="required">*</span>
+        </label>
+        <select id="area" formControlName="areaId">
+          <option value=""></option>
+          @if (areas$ | async; as areas) { @if (areas.loading) {
+          <spinner />
+          } @else if (areas.error) {
+          <div class="error">Error occurred</div>
+          } @else if (areas.data) { @for (area of areas.data; track area.id) {
+          <option [value]="area.id">
+            @if (area.empty) { 🟩 {{ area.name }} (Empty pens) } @else { 🟨 {{
+            area.name }} (All pens in use) }
+          </option>
+          } }}
+        </select>
+      </div>
+      <div class="field">
+        <label for="pen">
+          Pen
+          <span class="required">*</span>
+        </label>
+        <select id="pen" formControlName="penId">
+          <option value=""></option>
+          @if (areas$ | async; as areas) { @if (areas.loading) {
+          <spinner />
+          } @else if (areas.error) {
+          <div class="error">Error occurred</div>
+          } @else if (areas.data) { @for (area of areas.data; track area.id) {
+          @if (area.id.toString() == dropOffForm.value.areaId) { @for (pen of
+          area.pens; track pen.id) {
+          <option [value]="pen.id">
+            @if (pen.empty) { 🟩 {{ pen.reference }} (Empty) } @else { 🟨 {{
+            pen.reference }} (In use) }
+          </option>
+          } } } }}
+        </select>
+      </div>
+      @if (attemptedSave && !dropOffForm.valid) {
+      <div class="error">Please fill in all required fields</div>
+      } @if (!saving) {
+      <div class="buttons">
+        <button
+          (click)="homeCareDropOff(request.id)"
+          class="button button--primary"
+        >
+          Save
+        </button>
+        <button (click)="reset()" class="button button--secondary">Back</button>
+      </div>
+      }
+    </form>
     }
   </div>
   <form [formGroup]="messageForm">
-    @if (patient.homeCareMessages.length > 0) {
+    @if (last && patient.homeCareMessages.length > 0) {
     <table>
       <thead>
         <tr>
@@ -60,7 +124,7 @@
         }
       </tbody>
     </table>
-    } @else {
+    } @else if (last) {
     <p><em>No messages have been sent for this patient.</em></p>
     } @if (isVet && patient.status != PatientStatus.Dispositioned &&
     !request.dropoff) {

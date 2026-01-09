@@ -71,6 +71,7 @@ public class DatabaseContext : DbContext
     public DbSet<Patient> Patients { get; set; }
     public DbSet<PatientMovement> PatientMovements { get; set; }
     public DbSet<PatientNote> PatientNotes { get; set; }
+    public DbSet<PatientNoteAttachment> PatientNoteAttachments { get; set; }
     public DbSet<PatientPrescriptionInstruction> PatientPrescriptionInstructions { get; set; }
     public DbSet<PatientPrescriptionInstructionAdministration> PatientPrescriptionInstructionAdministrations { get; set; }
     public DbSet<PatientPrescriptionMedication> PatientPrescriptionMedications { get; set; }

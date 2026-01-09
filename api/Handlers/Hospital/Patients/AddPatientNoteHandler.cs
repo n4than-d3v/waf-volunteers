@@ -13,6 +13,7 @@ public class AddPatientNote : IRequest<IResult>
     public decimal? WeightValue { get; set; }
     public WeightUnit? WeightUnit { get; set; }
     public string Comments { get; set; }
+    public IFormFileCollection Files { get; set; }
 
     public AddPatientNote WithId(int id)
     {
@@ -52,6 +53,28 @@ public class AddPatientNoteHandler : IRequestHandler<AddPatientNote, IResult>
 
         _repository.Create(note);
         await _repository.SaveChangesAsync();
+
+        if (request.Files != null && request.Files.Count > 0)
+        {
+            foreach (var file in request.Files)
+            {
+                using var ms = new MemoryStream();
+                await file.CopyToAsync(ms, cancellationToken);
+
+                var noteFile = new PatientNoteAttachment
+                {
+                    PatientNote = note,
+                    FileName = file.FileName,
+                    ContentType = file.ContentType,
+                    Data = ms.ToArray()
+                };
+
+                _repository.Create(note);
+            }
+
+            await _repository.SaveChangesAsync();
+        }
+
         return Results.Created();
     }
 }

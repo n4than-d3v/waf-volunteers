@@ -14,4 +14,6 @@ public class PatientNote : Entity
     public decimal? WeightValue { get; set; }
     public WeightUnit? WeightUnit { get; set; }
     public string Comments { get; set; }
+
+    public List<PatientNoteAttachment> Attachments { get; set; }
 }

@@ -58,10 +58,35 @@ task) { @if (task.loading) {
           rows="3"
         ></textarea>
       </div>
+      @if (recheck.requireWeight) {
+      <div class="field require-weight">
+        <label for="weight">
+          Weight
+          <span class="required">*</span>
+        </label>
+        <div class="input-with-units">
+          <input
+            id="weight"
+            type="number"
+            [(ngModel)]="weightValue[recheck.id]"
+            autocomplete="off"
+          />
+          <select id="weightUnit" [(ngModel)]="weightUnit[recheck.id]">
+            <option value="1">g</option>
+            <option value="2">kg</option>
+            <option value="3">oz</option>
+            <option value="4">lbs</option>
+          </select>
+        </div>
+      </div>
+      }
       <div class="hint">
         If you are using a shared device, please add your initials in the
         comment.
       </div>
+      @if (invalid == recheck.id) {
+      <div class="error">Please fill all required fields.</div>
+      }
       <button
         (click)="perform(recheck)"
         class="button button--secondary-invert"
@@ -76,6 +101,8 @@ task) { @if (task.loading) {
       </p>
       @if (recheck.comments) {
       <p>✏️ {{ recheck.comments }}</p>
+      } @if (recheck.weightValue && recheck.weightUnit) {
+      <p>⚖️ {{ recheck.weightValue }}{{ getWeightUnit(recheck.weightUnit) }}</p>
       }
     </div>
     }

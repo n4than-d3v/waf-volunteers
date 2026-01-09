@@ -20,7 +20,8 @@ public class GetAreasHandler : IRequestHandler<GetAreas, IResult>
 
     public async Task<IResult> Handle(GetAreas request, CancellationToken cancellationToken)
     {
-        var areas = await _repository.GetAll<Area>(x => true, tracking: false, x => x.Include(y => y.Pens));
+        var areas = await _repository.GetAll<Area>(x => true, tracking: false,
+            x => x.Include(y => y.Pens).ThenInclude(y => y.Patients));
         return Results.Ok(areas);
     }
 }

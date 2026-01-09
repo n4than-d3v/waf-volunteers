@@ -1,5 +1,6 @@
 ﻿using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Locations;
+using Api.Database.Entities.Hospital.Patients.Exams;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Rechecker = Api.Database.Entities.Account.Account;
@@ -14,10 +15,13 @@ public class PatientRecheck : Entity
     public DateOnly Due { get; set; }
     public string Description { get; set; }
     public RecheckRoles Roles { get; set; }
+    public bool RequireWeight { get; set; }
 
     public Rechecker? Rechecker { get; set; }
     public DateTime? Rechecked { get; set; }
     public string? Comments { get; set; }
+    public decimal? WeightValue { get; set; }
+    public WeightUnit? WeightUnit { get; set; }
 
     [NotMapped]
     public int ViewPatientId => Patient.Id;

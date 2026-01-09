@@ -7,6 +7,7 @@
         <th>Author</th>
         <th>Weight</th>
         <th>Note</th>
+        <th>Attachment</th>
       </tr>
     </thead>
     <tbody>
@@ -19,6 +20,17 @@
           getWeightUnit(note.weightUnit) : '' }}
         </td>
         <td>{{ note.comments }}</td>
+        <td>
+          @if (note.attachments) { @for (attachment of note.attachments; track
+          attachment.id) {
+          <a
+            href="/api/hospital/patients/{{ patient.id }}/notes/{{ note.id }}/attachments/{{ attachment.id }}"
+            target="_blank"
+          >
+            🔗 {{ attachment.fileName }}
+          </a>
+          } }
+        </td>
       </tr>
       }
     </tbody>
@@ -58,6 +70,10 @@
           <option value="4">lbs</option>
         </select>
       </div>
+    </div>
+    <div class="field">
+      <label for="files">Attachment</label>
+      <input id="files" type="file" (change)="onFileChange($event)" />
     </div>
     @if (!saving) {
     <div class="buttons">

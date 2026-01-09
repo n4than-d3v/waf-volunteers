@@ -1,5 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { getWeightUnit, Patient, PatientStatus, Task } from '../../state';
+import { Component, Input, OnInit } from '@angular/core';
+import {
+  Area,
+  getWeightUnit,
+  Patient,
+  PatientStatus,
+  ReadOnlyWrapper,
+  Task,
+} from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import {
   FormControl,
@@ -9,11 +16,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { addNote, homeCarerDropOff, sendHomeCareMessage } from '../../actions';
+import {
+  addNote,
+  getAreas,
+  homeCarerDropOff,
+  sendHomeCareMessage,
+} from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import {
   selectAddNote,
+  selectAreas,
   selectDropOffHomeCare,
   selectMessageHomeCare,
 } from '../../selectors';
@@ -31,18 +44,29 @@ import {
     ReactiveFormsModule,
   ],
 })
-export class HospitalPatientHomeCareComponent {
+export class HospitalPatientHomeCareComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
+
+  areas$: Observable<ReadOnlyWrapper<Area[]>>;
+
+  dropOffAreaId = '';
+  dropOffPenId = '';
 
   messageTask$: Observable<Task>;
   dropOffTask$: Observable<Task>;
 
   constructor(private store: Store) {
+    this.areas$ = this.store.select(selectAreas);
     this.messageTask$ = this.store.select(selectMessageHomeCare);
     this.dropOffTask$ = this.store.select(selectDropOffHomeCare);
   }
 
+  ngOnInit() {
+    this.store.dispatch(getAreas());
+  }
+
+  droppingOff: number | null = null;
   saving = false;
   attemptedSave = false;
 
@@ -52,13 +76,23 @@ export class HospitalPatientHomeCareComponent {
     message: new FormControl('', [Validators.required]),
   });
 
+  dropOffForm = new FormGroup({
+    areaId: new FormControl('', [Validators.required]),
+    penId: new FormControl('', [Validators.required]),
+  });
+
   homeCareDropOff(homeCareRequestId: number) {
+    this.attemptedSave = true;
+    if (!this.dropOffForm.valid) return;
+    this.saving = true;
     this.store.dispatch(
       homeCarerDropOff({
         patientId: this.patient.id,
         homeCareRequestId,
+        penId: Number(this.dropOffForm.value.penId),
       })
     );
+    this.reset();
   }
 
   sendMessage(homeCareRequestId: number) {
@@ -76,8 +110,10 @@ export class HospitalPatientHomeCareComponent {
   }
 
   reset() {
+    this.droppingOff = null;
     this.attemptedSave = false;
     this.saving = false;
     this.messageForm.reset();
+    this.dropOffForm.reset();
   }
 }

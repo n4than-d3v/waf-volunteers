@@ -52,6 +52,12 @@
             <option value="3">Unknown</option>
           </select>
         </div>
+        @if (examForm.value.sex?.toString() == '3') {
+        <div class="hint">
+          Only provide an unknown sex if it's not possible to determine the sex
+          at this time
+        </div>
+        }
       </div>
     </div>
     <div class="exam-section">
@@ -391,7 +397,10 @@
             } @else if (areas.error) {
             <div class="error">Error occurred</div>
             } @else if (areas.data) { @for (area of areas.data; track area.id) {
-            <option [value]="area.id">{{ area.name }}</option>
+            <option [value]="area.id">
+              @if (area.empty) { 🟩 {{ area.name }} (Empty pens) } @else { 🟨 {{
+              area.name }} (All pens in use) }
+            </option>
             } }}
           </select>
         </div>
@@ -409,7 +418,10 @@
             } @else if (areas.data) { @for (area of areas.data; track area.id) {
             @if (area.id.toString() == areaId) { @for (pen of area.pens; track
             pen.id) {
-            <option [value]="pen.id">{{ pen.code }}</option>
+            <option [value]="pen.id">
+              @if (pen.empty) { 🟩 {{ pen.reference }} (Empty) } @else { 🟨 {{
+              pen.reference }} (In use) }
+            </option>
             } } } }}
           </select>
         </div>

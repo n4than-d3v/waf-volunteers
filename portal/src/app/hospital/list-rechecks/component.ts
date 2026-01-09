@@ -8,7 +8,13 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { getRecheckRoles, ListRecheck, ReadOnlyWrapper, Task } from '../state';
+import {
+  getRecheckRoles,
+  getWeightUnit,
+  ListRecheck,
+  ReadOnlyWrapper,
+  Task,
+} from '../state';
 import { selectListRechecks, selectPerformRecheck } from '../selectors';
 import { listRechecks, performRecheck, setTab } from '../actions';
 import { SpinnerComponent } from '../../shared/spinner/component';
@@ -34,7 +40,11 @@ export class HospitalListRechecks implements OnInit {
 
   task$: Observable<Task>;
 
+  invalid: number | null = null;
+
   comments: any = {};
+  weightValue: any = {};
+  weightUnit: any = {};
 
   constructor(private store: Store) {
     this.listRechecks$ = this.store.select(selectListRechecks);
@@ -65,11 +75,25 @@ export class HospitalListRechecks implements OnInit {
   }
 
   perform(recheck: ListRecheck) {
+    this.invalid = null;
+    if (
+      recheck.requireWeight &&
+      !(this.weightUnit[recheck.id] && this.weightValue[recheck.id])
+    ) {
+      this.invalid = recheck.id;
+      return;
+    }
     this.store.dispatch(
       performRecheck({
         recheckId: recheck.id,
         date: this.viewingDate,
         comments: this.comments[recheck.id] || '',
+        weightUnit: this.weightUnit[recheck.id]
+          ? Number(this.weightUnit[recheck.id])
+          : null,
+        weightValue: this.weightValue[recheck.id]
+          ? Number(this.weightValue[recheck.id])
+          : null,
       })
     );
   }
@@ -78,4 +102,6 @@ export class HospitalListRechecks implements OnInit {
     this.date = new Date().toISOString().split('T')[0];
     this.view();
   }
+
+  getWeightUnit = getWeightUnit;
 }

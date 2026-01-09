@@ -72,7 +72,7 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.isVet = this.tokenProvider.isVet() || this.tokenProvider.isAdmin();
     // Every 10 seconds, update patient
-    this.subscription = timer(0, 1_000 * 10).subscribe(() => {
+    this.subscription = timer(10_000, 10_000).subscribe(() => {
       if (!this._id) return;
       this.store.dispatch(
         getPatient({

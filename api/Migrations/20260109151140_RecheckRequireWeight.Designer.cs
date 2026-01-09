@@ -3,6 +3,7 @@ using System;
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260109151140_RecheckRequireWeight")]
+    partial class RecheckRequireWeight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -979,36 +982,6 @@ namespace Api.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("PatientNotes");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.PatientNoteAttachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<byte[]>("Data")
-                        .IsRequired()
-                        .HasColumnType("bytea");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("PatientNoteId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PatientNoteId");
-
-                    b.ToTable("PatientNoteAttachments");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.PatientRecheck", b =>
@@ -2041,17 +2014,6 @@ namespace Api.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.PatientNoteAttachment", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.PatientNote", "PatientNote")
-                        .WithMany("Attachments")
-                        .HasForeignKey("PatientNoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("PatientNote");
-                });
-
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.PatientRecheck", b =>
                 {
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Patient", "Patient")
@@ -2431,11 +2393,6 @@ namespace Api.Migrations
                     b.Navigation("PrescriptionMedications");
 
                     b.Navigation("Rechecks");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.PatientNote", b =>
-                {
-                    b.Navigation("Attachments");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Prescriptions.PatientPrescriptionInstruction", b =>

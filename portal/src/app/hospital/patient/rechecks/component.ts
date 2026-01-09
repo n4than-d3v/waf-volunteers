@@ -57,6 +57,7 @@ export class HospitalPatientRechecksComponent {
     roles: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     due: new FormControl('', [Validators.required]),
+    requireWeight: new FormControl(false, [Validators.required]),
   });
 
   add() {
@@ -69,6 +70,7 @@ export class HospitalPatientRechecksComponent {
         roles: Number(this.recheckForm.value.roles),
         description: this.recheckForm.value.description!,
         due: this.recheckForm.value.due!,
+        requireWeight: this.recheckForm.value.requireWeight!,
       })
     );
     this.reset();
@@ -78,6 +80,7 @@ export class HospitalPatientRechecksComponent {
     this.adding = false;
     this.attemptedSave = false;
     this.removing = null;
+    this.saving = false;
     this.recheckForm.reset();
   }
 
@@ -93,4 +96,5 @@ export class HospitalPatientRechecksComponent {
   }
 
   getRecheckRoles = getRecheckRoles;
+  getWeightUnit = getWeightUnit;
 }

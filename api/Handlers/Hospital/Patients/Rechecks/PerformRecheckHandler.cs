@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Services;
 using MediatR;
 
@@ -10,6 +11,8 @@ public class PerformRecheck : IRequest<IResult>
 {
     public int RecheckId { get; set; }
     public string Comments { get; set; }
+    public int? WeightValue { get; set; }
+    public WeightUnit? WeightUnit { get; set; }
 
     public PerformRecheck WithId(int id)
     {
@@ -40,6 +43,8 @@ public class PerformRecheckHandler : IRequestHandler<PerformRecheck, IResult>
         recheck.Rechecker = rechecker;
         recheck.Rechecked = DateTime.UtcNow;
         recheck.Comments = request.Comments;
+        recheck.WeightValue = request.WeightValue;
+        recheck.WeightUnit = request.WeightUnit;
 
         await _repository.SaveChangesAsync();
         return Results.Created();

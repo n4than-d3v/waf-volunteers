@@ -309,6 +309,7 @@ export const addNote = createAction(
     weightValue: number | null;
     weightUnit: number | null;
     comments: string;
+    files: File[];
   }>()
 );
 export const addNoteSuccess = createAction(
@@ -326,6 +327,7 @@ export const addRecheck = createAction(
     roles: number;
     description: string;
     due: string;
+    requireWeight: boolean;
   }>()
 );
 export const addRecheckSuccess = createAction(
@@ -477,6 +479,7 @@ export const homeCarerDropOff = createAction(
   props<{
     patientId: number;
     homeCareRequestId: number;
+    penId: number;
   }>()
 );
 export const homeCarerDropOffSuccess = createAction(
@@ -529,7 +532,13 @@ export const listRechecksError = createAction('[HMS-V] List rechecks: error');
 
 export const performRecheck = createAction(
   '[HMS-V] Perform recheck',
-  props<{ date: string; recheckId: number; comments: string }>()
+  props<{
+    date: string;
+    recheckId: number;
+    comments: string;
+    weightUnit: number | null;
+    weightValue: number | null;
+  }>()
 );
 export const performRecheckSuccess = createAction(
   '[HMS-V] Perform recheck: success',

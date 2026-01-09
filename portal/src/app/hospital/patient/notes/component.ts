@@ -45,7 +45,13 @@ export class HospitalPatientNotesComponent {
     weightValue: new FormControl(''),
     weightUnit: new FormControl(''),
     comments: new FormControl(''),
+    files: new FormControl<File[] | null>(null),
   });
+
+  onFileChange(event: any) {
+    const files = event.target.files as FileList;
+    this.noteForm.controls.files.setValue(Array.from(files));
+  }
 
   add() {
     this.saving = true;
@@ -59,6 +65,7 @@ export class HospitalPatientNotesComponent {
           ? Number(this.noteForm.value.weightUnit)
           : null,
         comments: this.noteForm.value.comments || '',
+        files: this.noteForm.value.files || [],
       })
     );
     this.reset();

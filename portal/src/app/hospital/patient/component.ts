@@ -67,6 +67,6 @@ export class HospitalPatientComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.isVet = this.tokenProvider.isVet();
+    this.isVet = this.tokenProvider.isVet() || this.tokenProvider.isAdmin();
   }
 }

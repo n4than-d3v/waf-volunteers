@@ -8,6 +8,11 @@ table {
     border-left: none;
     border-right: none;
     align-content: flex-start;
+
+    .button--none {
+      font-size: 1rem;
+      color: var(--theme-color-5);
+    }
   }
 
   th {

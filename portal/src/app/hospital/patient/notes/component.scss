@@ -12,6 +12,10 @@ table {
     .button--none {
       font-size: 1rem;
       color: var(--theme-color-5);
+      text-overflow: ellipsis;
+      max-width: 15rem;
+      overflow: hidden;
+      text-wrap-mode: nowrap;
     }
   }
 

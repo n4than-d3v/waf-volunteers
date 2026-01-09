@@ -194,12 +194,14 @@
       </p>
       <div class="buttons">
         <button
+          type="button"
           (click)="addTreatmentMedication()"
           class="button button--secondary-invert"
         >
           💊 Add medication
         </button>
         <button
+          type="button"
           (click)="addTreatmentInstruction()"
           class="button button--secondary-invert"
         >
@@ -275,7 +277,8 @@
           </div>
           <div class="buttons">
             <button
-              (click)="examForm.controls.treatmentMedications.controls.splice(i, 1)"
+              type="button"
+              (click)="removeTreatmentMedication(i)"
               class="button button--none"
             >
               🗑️
@@ -306,7 +309,8 @@
           </div>
           <div class="buttons">
             <button
-              (click)="examForm.controls.treatmentInstructions.controls.splice(i, 1)"
+              type="button"
+              (click)="removeTreatmentInstruction(i)"
               class="button button--none"
             >
               🗑️

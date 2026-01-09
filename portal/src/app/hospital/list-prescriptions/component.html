@@ -71,6 +71,10 @@ async; as task) { @if (task.loading) {
           rows="3"
         ></textarea>
       </div>
+      <div class="hint">
+        If you are using a shared device, please add your initials in the
+        comment.
+      </div>
       <div class="buttons">
         <button
           (click)="administerMedication(prescription.id, true)"
@@ -93,6 +97,10 @@ async; as task) { @if (task.loading) {
           [(ngModel)]="comments['I'+prescription.id]"
           rows="3"
         ></textarea>
+      </div>
+      <div class="hint">
+        If you are using a shared device, please add your initials in the
+        comment.
       </div>
       <div class="buttons">
         <button

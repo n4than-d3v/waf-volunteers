@@ -172,6 +172,16 @@ export class HospitalPatientExamComponent implements OnInit {
     );
   }
 
+  removeTreatmentMedication(index: number) {
+    this.examForm.controls.treatmentMedications.removeAt(index);
+    this.examForm.controls.treatmentMedications.updateValueAndValidity();
+  }
+
+  removeTreatmentInstruction(index: number) {
+    this.examForm.controls.treatmentInstructions.removeAt(index);
+    this.examForm.controls.treatmentInstructions.updateValueAndValidity();
+  }
+
   performExam() {
     this.attemptedSave = true;
     this.examForm.controls.penId.clearValidators();

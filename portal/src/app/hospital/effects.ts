@@ -148,6 +148,13 @@ import {
   markPatientInCentreError,
   markPatientInCentreSuccess,
   downloadNoteAttachment,
+  addBloodTest,
+  addBloodTestSuccess,
+  addBloodTestError,
+  downloadBloodTestAttachment,
+  addFaecalTest,
+  addFaecalTestSuccess,
+  addFaecalTestError,
 } from './actions';
 
 @Injectable()
@@ -675,6 +682,89 @@ export class HospitalEffects {
           this.http
             .get(
               `hospital/patients/${action.patientId}/notes/${action.noteId}/attachments/${action.attachment.id}`,
+              {
+                responseType: 'blob',
+              }
+            )
+            .subscribe((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = action.attachment.fileName;
+              a.click();
+
+              window.URL.revokeObjectURL(url);
+            });
+          return of();
+        })
+      ),
+    { dispatch: false }
+  );
+
+  // Add faecal test
+
+  addFaecalTest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addFaecalTest),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/faecal-test`, action)
+          .pipe(
+            map(() => addFaecalTestSuccess({ patientId: action.patientId })),
+            catchError(() => of(addFaecalTestError()))
+          )
+      )
+    )
+  );
+
+  addFaecalTestSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addFaecalTestSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  // Add blood test
+
+  addBloodTest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addBloodTest),
+      switchMap((action) => {
+        const formData = new FormData();
+        formData.append('patientId', String(action.patientId));
+        formData.append('comments', action.comments);
+        for (const file of action.files) {
+          formData.append('files', file);
+        }
+        return this.http
+          .post(`hospital/patients/${action.patientId}/blood-test`, formData)
+          .pipe(
+            map(() => addBloodTestSuccess({ patientId: action.patientId })),
+            catchError(() => of(addBloodTestError()))
+          );
+      })
+    )
+  );
+
+  addBloodTestSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addBloodTestSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true }))
+      )
+    )
+  );
+
+  downloadBloodTestAttachment$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(downloadBloodTestAttachment),
+        switchMap((action) => {
+          this.http
+            .get(
+              `hospital/patients/${action.patientId}/blood-tests/${action.bloodTestId}/attachments/${action.attachment.id}`,
               {
                 responseType: 'blob',
               }

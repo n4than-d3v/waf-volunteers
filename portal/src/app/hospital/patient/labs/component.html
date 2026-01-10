@@ -1,0 +1,139 @@
+@if ((patient.faecalTests.length + patient.bloodTests.length) === 0) {
+<p><em>No tests have been carried out for this patient.</em></p>
+} @if (patient.bloodTests.length > 0) {
+<h4>Blood tests</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Tester</th>
+      <th>Comments</th>
+      <th>Attachment</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (test of patient.bloodTests; track test.id) {
+    <tr>
+      <td>{{ test.tested | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ test.tester.firstName }} {{ test.tester.lastName }}</td>
+      <td>{{ test.comments }}</td>
+      <td>
+        @if (test.attachments) { @for (attachment of test.attachments; track
+        attachment.id) {
+        <button
+          (click)="download(test, attachment)"
+          class="button button--none"
+        >
+          🔗 {{ attachment.fileName }}
+        </button>
+        } }
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @if (patient.faecalTests.length > 0) {
+<h4>Faecal tests</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Tester</th>
+      <th>Float</th>
+      <th>Direct</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (test of patient.faecalTests; track test.id) {
+    <tr>
+      <td>{{ test.tested | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ test.tester.firstName }} {{ test.tester.lastName }}</td>
+      <td>{{ formatPosNeg(test.float) }}</td>
+      <td>{{ formatPosNeg(test.direct) }}</td>
+      <td>{{ test.comments }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @if (!(addingBlood || addingFaecal)) { @if (isVet && patient.status !=
+PatientStatus.Dispositioned) {
+<div class="buttons">
+  <button (click)="addingBlood = true" class="button button--secondary-invert">
+    🩸 Add blood test
+  </button>
+  <button (click)="addingFaecal = true" class="button button--secondary-invert">
+    💩 Add faecal test
+  </button>
+</div>
+} } @else if (addingBlood) {
+<form [formGroup]="bloodForm">
+  <div class="flex">
+    <div class="field">
+      <label for="comments">Comments</label>
+      <textarea
+        id="comments"
+        type="text"
+        formControlName="comments"
+        autocomplete="off"
+        rows="3"
+      ></textarea>
+    </div>
+    <div class="field">
+      <label for="files">Attachment</label>
+      <input id="files" type="file" (change)="onFileChange($event)" />
+    </div>
+    @if (!saving) {
+    <div class="buttons">
+      <button (click)="addBloodTest()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="reset()" class="button button--secondary">Back</button>
+    </div>
+    }
+  </div>
+</form>
+} @else if (addingFaecal) {
+<form [formGroup]="faecalForm">
+  <div class="flex">
+    <div class="field">
+      <label for="comments">Comments</label>
+      <textarea
+        id="comments"
+        type="text"
+        formControlName="comments"
+        autocomplete="off"
+        rows="3"
+      ></textarea>
+    </div>
+    <div class="field">
+      <label for="float">Float</label>
+      <select id="float" formControlName="float">
+        <option value=""></option>
+        <option value="P">Positive</option>
+        <option value="N">Negative</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="direct">Direct</label>
+      <select id="direct" formControlName="direct">
+        <option value=""></option>
+        <option value="P">Positive</option>
+        <option value="N">Negative</option>
+      </select>
+    </div>
+    @if (!saving) {
+    <div class="buttons">
+      <button (click)="addFaecalTest()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="reset()" class="button button--secondary">Back</button>
+    </div>
+    }
+  </div>
+</form>
+} @if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

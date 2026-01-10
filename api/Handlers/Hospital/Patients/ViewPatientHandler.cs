@@ -37,7 +37,8 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
             .IncludePrescriptions()
             .IncludeNotes()
             .IncludeHomeCare()
-            .IncludeOutcome());
+            .IncludeOutcome()
+            .IncludeLabs());
         if (patient == null) return Results.NotFound();
 
         patient.DecryptProperties(_encryptionService);
@@ -128,6 +129,21 @@ public static class ViewPatientExtensions
             foreach (var note in patient.Notes)
             {
                 note.Noter?.CleanUser(encryptionService);
+            }
+        }
+
+        if (patient.FaecalTests?.Any() ?? false)
+        {
+            foreach (var test in patient.FaecalTests)
+            {
+                test.Tester?.CleanUser(encryptionService);
+            }
+        }
+        if (patient.BloodTests?.Any() ?? false)
+        {
+            foreach (var test in patient.BloodTests)
+            {
+                test.Tester?.CleanUser(encryptionService);
             }
         }
     }
@@ -228,4 +244,11 @@ public static class ViewPatientExtensions
             .Include(y => y.Dispositioner);
     }
 
+    public static IQueryable<Patient> IncludeLabs(this IQueryable<Patient> x)
+    {
+        return x
+            .Include(y => y.FaecalTests).ThenInclude(y => y.Tester)
+            .Include(y => y.BloodTests).ThenInclude(y => y.Tester)
+            .Include(y => y.BloodTests).ThenInclude(y => y.Attachments);
+    }
 }

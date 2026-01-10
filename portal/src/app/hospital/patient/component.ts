@@ -25,6 +25,7 @@ import { HospitalPatientTagsComponent } from './tags/component';
 import { HospitalPatientStatusComponent } from './status/component';
 import { HospitalPatientHomeCareComponent } from './home-care/component';
 import { TokenProvider } from '../../shared/token.provider';
+import { HospitalPatientLabsComponent } from './labs/component';
 
 @Component({
   selector: 'hospital-patient',
@@ -45,6 +46,7 @@ import { TokenProvider } from '../../shared/token.provider';
     HospitalPatientHomeCareComponent,
     HospitalPatientViewExamComponent,
     HospitalPatientNotesComponent,
+    HospitalPatientLabsComponent,
     HospitalPatientRechecksComponent,
     HospitalPatientPrescriptionsComponent,
   ],

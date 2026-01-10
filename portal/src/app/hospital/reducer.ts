@@ -120,6 +120,11 @@ import {
   markPatientInCentre,
   markPatientInCentreSuccess,
   markPatientInCentreError,
+  addFaecalTest,
+  addBloodTest,
+  addFaecalTestSuccess,
+  addBloodTestSuccess,
+  addFaecalTestError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1056,6 +1061,32 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     administerPrescription: {
       ...state.administerPrescription,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Add faecal or blood tests
+  on(addFaecalTest, addBloodTest, (state) => ({
+    ...state,
+    addLabs: {
+      ...state.addLabs,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(addFaecalTestSuccess, addBloodTestSuccess, (state) => ({
+    ...state,
+    addLabs: {
+      ...state.addLabs,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(addFaecalTestError, addFaecalTestError, (state) => ({
+    ...state,
+    addLabs: {
+      ...state.addLabs,
       loading: false,
       error: true,
     },

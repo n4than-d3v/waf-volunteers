@@ -3,6 +3,7 @@ using Api.Database.Entities.Hospital.Patients.Admission;
 using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.HomeCare;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
+using Api.Database.Entities.Hospital.Patients.Labs;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -51,6 +52,8 @@ public class Patient : Entity
     public List<Diet> Diets { get; set; }
     public List<HomeCareRequest> HomeCareRequests { get; set; }
     public List<HomeCareMessage> HomeCareMessages { get; set; }
+    public List<PatientFaecalTest> FaecalTests { get; set; }
+    public List<PatientBloodTest> BloodTests { get; set; }
 
     #endregion
 

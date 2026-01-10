@@ -29,6 +29,7 @@ export interface HospitalState {
   updateBasicDetails: Task;
   updateDiets: Task;
   updateTags: Task;
+  addLabs: Task;
 
   // Patient details
   tags: ReadOnlyWrapper<Tag[]>;
@@ -172,6 +173,25 @@ export interface Patient extends ListPatient {
   notes: ListNote[];
   movements: Movement[];
   homeCareMessages: HomeCareMessage[];
+  faecalTests: ListFaecalTest[];
+  bloodTests: ListBloodTest[];
+}
+
+export interface ListFaecalTest {
+  id: number;
+  tester: { firstName: string; lastName: string };
+  tested: string;
+  float: boolean | null;
+  direct: boolean | null;
+  comments: string;
+}
+
+export interface ListBloodTest {
+  id: number;
+  tester: { firstName: string; lastName: string };
+  tested: string;
+  comments: string;
+  attachments: { id: number; fileName: string }[];
 }
 
 export interface Movement {
@@ -557,4 +577,5 @@ export const initialHospitalState: HospitalState = {
   performRecheck: createTask(),
   listPrescriptions: createReadOnlyWrapper<Prescription[]>(),
   administerPrescription: createTask(),
+  addLabs: createTask(),
 };

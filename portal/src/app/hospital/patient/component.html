@@ -82,6 +82,13 @@ PatientStatus.PendingInitialExam) {
   ></hospital-patient-notes>
 </section>
 <section>
+  <h3>Lab reports</h3>
+  <hospital-patient-labs
+    [patient]="patient.data"
+    [isVet]="isVet"
+  ></hospital-patient-labs>
+</section>
+<section>
   <h3>Rechecks</h3>
   <hospital-patient-rechecks
     [patient]="patient.data"

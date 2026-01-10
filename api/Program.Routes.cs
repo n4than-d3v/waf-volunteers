@@ -31,6 +31,8 @@ using Api.Handlers.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Handlers.Hospital.PatientTypes;
 using Api.Handlers.Hospital.Tasks;
+using Api.Handlers.Hospital.Patients.Labs.Blood;
+using Api.Handlers.Hospital.Patients.Labs.Faecal;
 
 public partial class Program
 {
@@ -191,6 +193,31 @@ public partial class Program
 
         apiHospitalPatient.MapGet("/{patientId:int}/notes/{noteId:int}/attachments/{attachmentId:int}", (IMediator mediator, int patientId, int noteId, int attachmentId) => mediator.Send(new DownloadNoteAttachment { PatientId = patientId, NoteId = noteId, AttachmentId = attachmentId }))
             .AddNote("Vet or aux downloads note attachment")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/faecal-test", (IMediator mediator, int id, AddFaecalTest request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet adds a faecal test")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPost("/{id:int}/blood-test", async (IMediator mediator, HttpRequest httpReq) =>
+        {
+            var form = await httpReq.ReadFormAsync();
+            _ = int.TryParse(form["patientId"], out int patientId);
+
+            var request = new AddBloodTest
+            {
+                PatientId = patientId,
+                Comments = string.IsNullOrWhiteSpace(form["comments"]) ? string.Empty : form["comments"],
+                Files = form.Files
+            };
+
+            return await mediator.Send(request);
+        })
+            .AddNote("Vet adds a blood test")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapGet("/{patientId:int}/blood-tests/{bloodTestId:int}/attachments/{attachmentId:int}", (IMediator mediator, int patientId, int bloodTestId, int attachmentId) => mediator.Send(new DownloadBloodTestAttachment { PatientId = patientId, BloodTestId = bloodTestId, AttachmentId = attachmentId }))
+            .AddNote("Vet or aux downloads blood tests attachment")
             .RequireAuthorization(vetOrAuxPolicy);
 
         apiHospitalPatient.MapPost("/{id:int}/move", (IMediator mediator, int id, MovePatient request) => mediator.Send(request.WithId(id)))

@@ -26,6 +26,7 @@ import {
   PrescriptionMedication,
   Prescription,
 } from './state';
+import { FormControl } from '@angular/forms';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
 
@@ -323,6 +324,53 @@ export const downloadNoteAttachment = createAction(
   props<{
     patientId: number;
     noteId: number;
+    attachment: {
+      id: number;
+      fileName: string;
+    };
+  }>()
+);
+
+// Add faecal test
+
+export const addFaecalTest = createAction(
+  '[HMS-V] Add faecal test',
+  props<{
+    patientId: number;
+    float: boolean | null;
+    direct: boolean | null;
+    comments: string;
+  }>()
+);
+export const addFaecalTestSuccess = createAction(
+  '[HMS-V] Add faecal test: success',
+  props<{ patientId: number }>()
+);
+export const addFaecalTestError = createAction(
+  '[HMS-V] Add faecal test: error'
+);
+
+// Add blood test
+
+export const addBloodTest = createAction(
+  '[HMS-V] Add blood test',
+  props<{
+    patientId: number;
+    comments: string;
+    files: File[];
+  }>()
+);
+export const addBloodTestSuccess = createAction(
+  '[HMS-V] Add blood test: success',
+  props<{ patientId: number }>()
+);
+export const addBloodTestError = createAction('[HMS-V] Add blood test: error');
+
+export const downloadBloodTestAttachment = createAction(
+  '[HMS-V] Download blood test attachment',
+  props<{
+    patientId: number;
+    bloodTestId: number;
     attachment: {
       id: number;
       fileName: string;

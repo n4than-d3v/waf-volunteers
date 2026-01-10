@@ -5,6 +5,7 @@ using Api.Database.Entities.Hospital.Patients.Admission;
 using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.HomeCare;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
+using Api.Database.Entities.Hospital.Patients.Labs;
 using Api.Database.Entities.Hospital.Patients.Medications;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
@@ -77,6 +78,9 @@ public class DatabaseContext : DbContext
     public DbSet<PatientPrescriptionMedication> PatientPrescriptionMedications { get; set; }
     public DbSet<PatientPrescriptionMedicationAdministration> PatientPrescriptionMedicationAdministrations { get; set; }
     public DbSet<PatientRecheck> PatientRechecks { get; set; }
+    public DbSet<PatientBloodTest> PatientBloodTests { get; set; }
+    public DbSet<PatientBloodTestAttachment> PatientBloodTestAttachments { get; set; }
+    public DbSet<PatientFaecalTest> PatientFaecalTests { get; set; }
     public DbSet<Species> Species { get; set; }
     public DbSet<SpeciesAge> SpeciesAges { get; set; }
     public DbSet<SpeciesVariant> SpeciesVariants { get; set; }

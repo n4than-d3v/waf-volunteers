@@ -188,3 +188,8 @@ export const selectAdministerPrescription = createSelector(
   selectHospitalState,
   (state) => state.administerPrescription
 );
+
+export const selectAddLabs = createSelector(
+  selectHospitalState,
+  (state) => state.addLabs
+);

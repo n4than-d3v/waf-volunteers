@@ -410,8 +410,9 @@
             <span class="required">*</span>
           </label>
           <select id="pen" formControlName="penId">
-            <option value=""></option>
-            @if (areas$ | async; as areas) { @if (areas.loading) {
+            @if (!areaId) {
+            <option value="">Select area</option>
+            } @if (areas$ | async; as areas) { @if (areas.loading) {
             <spinner />
             } @else if (areas.error) {
             <div class="error">Error occurred</div>

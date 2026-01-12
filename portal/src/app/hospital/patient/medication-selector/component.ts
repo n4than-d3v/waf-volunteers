@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   ControlContainer,
   FormGroup,
@@ -7,12 +15,28 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { getMedications } from '../../actions';
-import { Observable } from 'rxjs';
-import { Medication, ReadOnlyWrapper } from '../../state';
-import { selectMedications } from '../../selectors';
+import {
+  getAdministrationMethods,
+  getMedications,
+  getSpecies,
+} from '../../actions';
+import { Observable, Subscription } from 'rxjs';
+import {
+  AdministrationMethod,
+  Medication,
+  MedicationConcentrationSpeciesDose,
+  ReadOnlyWrapper,
+  Species,
+} from '../../state';
+import {
+  selectAdministrationMethods,
+  selectMedications,
+  selectSpecies,
+} from '../../selectors';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { AsyncPipe } from '@angular/common';
+import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
+import { getSpeciesType } from '../../../admin/hospital/state';
 
 @Component({
   selector: 'hospital-patient-medication-selector',
@@ -20,72 +44,125 @@ import { AsyncPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, SpinnerComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    AsyncPipe,
+    SpinnerComponent,
+    HospitalPatientAutocompleteComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   viewProviders: [
     { provide: ControlContainer, useExisting: FormGroupDirective },
   ],
 })
-export class HospitalPatientMedicationSelectorComponent {
-  @Input({ required: true }) id!: string;
-  @Input({ required: true }) control!: string;
+export class HospitalPatientMedicationSelectorComponent
+  implements OnInit, OnDestroy, OnChanges
+{
+  @Input({ required: true }) id!: number;
   @Input({ required: true }) formGroup!: FormGroup;
-
-  search = '';
-  open = false;
+  @Input() speciesId?: string | null | undefined;
+  @Input() weightValue?: string | null | undefined;
+  @Input() weightUnit?: string | null | undefined;
 
   medications$: Observable<ReadOnlyWrapper<Medication[]>>;
+  administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
 
-  medication: Medication | null = null;
+  species: Species[] = [];
+  defaultDose: MedicationConcentrationSpeciesDose | null = null;
+  subscription: Subscription;
+
+  medications: Medication[] = [];
 
   constructor(private store: Store) {
     this.medications$ = this.store.select(selectMedications);
+    this.administrationMethods$ = this.store.select(
+      selectAdministrationMethods
+    );
+    this.subscription = this.store
+      .select(selectSpecies)
+      .subscribe((species) => {
+        if (!species.data) return;
+        this.species = species.data;
+      });
   }
 
-  private getFirstInList() {
-    const first = document.querySelector(
-      '#medication-selector ul li:first-child'
-    ) as any;
-    return first;
+  ngOnInit() {
+    this.store.dispatch(getMedications());
+    this.store.dispatch(getAdministrationMethods());
+    this.store.dispatch(getSpecies());
   }
 
-  onKeyDown(event: KeyboardEvent) {
-    if (event.keyCode) {
-      if (event.keyCode == 13 /* Enter */) {
-        this.getFirstInList()?.click();
-        event.preventDefault();
-        return;
-      } else if (
-        event.keyCode == 40 /* Down */ ||
-        event.keyCode == 9 /* Tab */
-      ) {
-        this.getFirstInList()?.focus();
-        event.preventDefault();
-        return;
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['speciesId'] ||
+      changes['weightValue'] ||
+      changes['weightUnit']
+    ) {
+      this.updateDefaults(this.medications);
+    }
+  }
+
+  updateDefaults(medications: Medication[]) {
+    this.medications = medications;
+    this.defaultDose = null;
+    const medication = medications.find(
+      (x) => x.id === Number(this.formGroup.value.medicationId)
+    );
+    if (!medication) return;
+    const medicationConcentration = medication.concentrations.find(
+      (x) => x.id === Number(this.formGroup.value.medicationConcentrationId)
+    );
+    if (!medicationConcentration) return;
+    const species = this.species.find((x) => x.id == Number(this.speciesId));
+    if (!species) return;
+    // First try to match on species
+    for (const dose of medicationConcentration.speciesDoses) {
+      if (!dose.species) continue;
+      if (dose.species.id === species.id) {
+        this.updateDoseDefaults(dose);
+      }
+    }
+    if (this.defaultDose) return;
+    // Otherwise match on species type
+    for (const dose of medicationConcentration.speciesDoses) {
+      if (!dose.speciesType) continue;
+      if (dose.speciesType === species.speciesType) {
+        this.updateDoseDefaults(dose);
       }
     }
   }
 
-  onKeyUp(event: KeyboardEvent) {
-    this.performSearch((event.target as any).value);
+  private updateDoseDefaults(dose: MedicationConcentrationSpeciesDose) {
+    this.defaultDose = dose;
+    const weight = this.getWeightKg();
+    this.formGroup.controls['administrationMethodId'].setValue(
+      dose.administrationMethod.id
+    );
+    this.formGroup.controls['quantityValue'].setValue(
+      Math.round(dose.doseMlKg * weight * 100) / 100
+    );
+    this.formGroup.controls['quantityUnit'].setValue('ml');
+    if (this.formGroup.controls['frequency']) {
+      this.formGroup.controls['frequency'].setValue(dose.frequency);
+    }
   }
 
-  performSearch(search: string) {
-    this.open = !!search;
-    if (!search) return;
-    this.store.dispatch(getMedications({ search }));
+  getWeightKg() {
+    if (this.weightUnit == '1') {
+      return Number(this.weightValue) / 1000;
+    } else if (this.weightUnit == '2') {
+      return Number(this.weightValue);
+    }
+    return 0;
   }
 
-  clearSelection(event: any) {
-    if (event.keyCode && event.keyCode !== 13) return;
-    this.medication = null;
-    this.search = '';
-    this.formGroup.controls[this.control].setValue('');
+  convertMedications(medications: Medication[]) {
+    return medications.map((x) => ({ id: x.id, display: x.activeSubstance }));
   }
 
-  selectMedication(medication: Medication, event: any) {
-    if (event.keyCode && event.keyCode !== 13) return;
-    this.medication = medication;
-    this.open = false;
-    this.formGroup.controls[this.control].setValue(this.medication.id);
-  }
+  getSpeciesType = getSpeciesType;
 }

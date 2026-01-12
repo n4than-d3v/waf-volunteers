@@ -4,28 +4,27 @@
       <h4>Identification</h4>
       <div class="fields">
         <div class="field">
-          <label for="species">
+          <label for="speciesId">
             Species
             <span class="required">*</span>
           </label>
-          <select id="species" formControlName="speciesId">
-            <option value=""></option>
-            @if (species$ | async; as specieses) { @if (specieses.loading) {
-            <spinner />
-            } @else if (specieses.error) {
-            <div class="error">Error occurred</div>
-            } @else if (specieses.data) { @for (species of specieses.data; track
-            species.id) {
-            <option [value]="species.id">{{ species.name }}</option>
-            } }}
-          </select>
+          @if (species$ | async; as species) { @if (species.data) {
+          <hospital-patient-autocomplete
+            [id]="'speciesId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'speciesId'"
+            [formGroup]="examForm"
+            [items]="convertSpecies(species.data)"
+          ></hospital-patient-autocomplete>
+          } }
         </div>
         <div class="field">
-          <label for="age">
-            Age
+          <label for="variant">
+            Variant
             <span class="required">*</span>
           </label>
-          <select id="age" formControlName="speciesAgeId">
+          <select id="variant" formControlName="speciesVariantId">
             @if (species$ | async; as specieses) { @if (specieses.loading) {
             <spinner />
             } @else if (specieses.error) {
@@ -34,8 +33,8 @@
             <option value=""></option>
             @for (species of specieses.data; track species.id) { @if
             (species.id.toString() == examForm.controls.speciesId.value) { @for
-            (age of species.ages; track age.id) {
-            <option [value]="age.id">{{ age.name }}</option>
+            (variant of species.variants; track variant.id) {
+            <option [value]="variant.id">{{ variant.name }}</option>
             } }} } @else {
             <option value="">Select species</option>
             }}
@@ -75,24 +74,19 @@
             <select id="weightUnit" formControlName="weightUnit">
               <option value="1">g</option>
               <option value="2">kg</option>
-              <option value="3">oz</option>
-              <option value="4">lbs</option>
             </select>
           </div>
         </div>
         <div class="field">
           <label for="temperature">Temperature</label>
-          <div class="input-with-units">
+          <div class="input-with-text">
             <input
               id="temperature"
               type="number"
-              formControlName="temperatureValue"
+              formControlName="temperature"
               autocomplete="off"
             />
-            <select id="temperatureUnit" formControlName="temperatureUnit">
-              <option value="1">C</option>
-              <option value="2">F</option>
-            </select>
+            <span>C</span>
           </div>
         </div>
         <div class="field">
@@ -223,64 +217,13 @@
           "
       >
         <div [formGroupName]="i" class="fields fields--inline">
-          <div class="field">
-            <label for="quantity-{{ i }}">
-              Quantity
-              <span class="required">*</span>
-            </label>
-            <div class="input-with-units">
-              <input
-                id="quantity-{{ i }}"
-                type="number"
-                formControlName="quantityValue"
-                autocomplete="off"
-              />
-              <select id="quantityUnit-{{ i }}" formControlName="quantityUnit">
-                <option>ml</option>
-                <option>unit</option>
-              </select>
-            </div>
-          </div>
-          <div class="field">
-            <label for="administrationMethod-{{ i }}">
-              Administration
-              <span class="required">*</span>
-            </label>
-            <select
-              id="administrationMethod-{{ i }}"
-              formControlName="administrationMethodId"
-            >
-              <option value=""></option>
-              @if (administrationMethods$ | async; as administrationMethods) {
-              @if (administrationMethods.loading) {
-              <spinner />
-              } @else if (administrationMethods.error) {
-              <div class="error">Error occurred</div>
-              } @else if (administrationMethods.data) { @for
-              (administrationMethod of administrationMethods.data; track
-              administrationMethod.id) {
-              <option [value]="administrationMethod.id">
-                {{ administrationMethod.description }}
-              </option>
-              } }}
-            </select>
-          </div>
-          <div class="field">
-            <hospital-patient-medication-selector
-              [id]="'medications-' + i"
-              [control]="'medicationId'"
-              [formGroup]="treatmentMedication"
-            ></hospital-patient-medication-selector>
-          </div>
-          <div class="field">
-            <label for="comments-{{ i }}">Comments</label>
-            <input
-              id="comments-{{ i }}"
-              type="text"
-              formControlName="comments"
-              autocomplete="off"
-            />
-          </div>
+          <hospital-patient-medication-selector
+            [id]="i"
+            [speciesId]="examForm.value.speciesId"
+            [weightValue]="examForm.value.weightValue"
+            [weightUnit]="examForm.value.weightUnit"
+            [formGroup]="treatmentMedication"
+          ></hospital-patient-medication-selector>
           <div class="buttons">
             <button
               type="button"

@@ -403,13 +403,11 @@ export class HospitalEffects {
   getMedications$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getMedications),
-      switchMap((action) =>
-        this.http
-          .get<Medication[]>('hospital/medications?search=' + action.search)
-          .pipe(
-            map((medications) => getMedicationsSuccess({ medications })),
-            catchError(() => of(getMedicationsError()))
-          )
+      switchMap(() =>
+        this.http.get<Medication[]>('hospital/medications').pipe(
+          map((medications) => getMedicationsSuccess({ medications })),
+          catchError(() => of(getMedicationsError()))
+        )
       )
     )
   );
@@ -434,7 +432,14 @@ export class HospitalEffects {
       ofType(getSpecies),
       switchMap(() =>
         this.http.get<Species[]>('hospital/species').pipe(
-          map((species) => getSpeciesSuccess({ species })),
+          map((species) =>
+            getSpeciesSuccess({
+              species: species.map((s) => ({
+                ...s,
+                variants: s.variants.sort((a, b) => a.order - b.order),
+              })),
+            })
+          ),
           catchError(() => of(getSpeciesError()))
         )
       )

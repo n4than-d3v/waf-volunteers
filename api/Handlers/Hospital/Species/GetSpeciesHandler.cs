@@ -20,11 +20,7 @@ public class GetSpeciesHandler : IRequestHandler<GetSpecies, IResult>
 
     public async Task<IResult> Handle(GetSpecies request, CancellationToken cancellationToken)
     {
-        var species = await _repository.GetAll<Species>(x => true, tracking: false,
-            x => x
-                .Include(y => y.Variants)
-                .Include(y => y.Ages)
-                    .ThenInclude(y => y.AssociatedVariant));
-        return Results.Ok(species);
+        var species = await _repository.GetAll<Species>(x => true, tracking: false, x => x.Include(y => y.Variants));
+        return Results.Ok(species.OrderBy(x => x.Name));
     }
 }

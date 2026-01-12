@@ -1,0 +1,46 @@
+<div [formGroup]="formGroup" class="wrapper" [class.inline]="inline">
+  @if (label) {
+  <label for="{{ id }}">
+    {{ label }}
+    <span class="required">*</span>
+  </label>
+  } @if (item) {
+  <div class="clear-input">
+    <input type="text" [disabled]="true" [value]="item.display" />
+    <a
+      (keydown)="clearSelection($event)"
+      (click)="clearSelection($event)"
+      tabindex="0"
+    >
+      Clear
+    </a>
+  </div>
+  } @else {
+  <input
+    id="{{ id }}"
+    type="text"
+    [(ngModel)]="search"
+    [ngModelOptions]="{standalone: true}"
+    (keydown)="onKeyDown($event)"
+    (keyup)="onKeyUp($event)"
+    autocomplete="off"
+  />
+  } @if (open) {
+  <div id="{{ id }}-selector" class="selector">
+    <ul>
+      @if (searchResults.length === 0) {
+      <li tabindex="0">No search results</li>
+      } @for (searchResult of searchResults; track searchResult.id) {
+      <li
+        (keydown)="selectItem(searchResult, $event)"
+        (click)="selectItem(searchResult, $event)"
+        tabindex="0"
+      >
+        {{ searchResult.display }}
+      </li>
+      }
+    </ul>
+  </div>
+  }
+  <input type="hidden" [formControlName]="control" />
+</div>

@@ -3,9 +3,8 @@ import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import {
   Species,
-  SpeciesAge,
+  SpeciesType,
   SpeciesVariant,
-  UpdateSpeciesAgeCommand,
   UpdateSpeciesCommand,
   UpdateSpeciesVariantCommand,
   Wrapper,
@@ -14,11 +13,9 @@ import { Store } from '@ngrx/store';
 import { selectSpecies } from '../selectors';
 import {
   createSpecies,
-  createSpeciesAge,
   createSpeciesVariant,
   getSpecies,
   updateSpecies,
-  updateSpeciesAge,
   updateSpeciesVariant,
 } from '../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
@@ -58,25 +55,24 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   species$: Observable<Wrapper<Species>>;
 
   creatingSpecies = false;
-  creatingSpeciesAge: Species | null = null;
   creatingSpeciesVariant: Species | null = null;
   updatingSpecies: Species | null = null;
-  updatingSpeciesAge: SpeciesAge | null = null;
   updatingSpeciesVariant: SpeciesVariant | null = null;
   updatingSpeciesId: number | null = null;
-  selectableVariants: { id: number; name: string }[] = [];
 
   speciesForm = new FormGroup({
     name: new FormControl(''),
+    speciesType: new FormControl(''),
   });
-  speciesAgeForm = new FormGroup({
-    name: new FormControl(''),
-    associatedVariantId: new FormControl(''),
-  });
+
   speciesVariantForm = new FormGroup({
     name: new FormControl(''),
+    friendlyName: new FormControl(''),
+    order: new FormControl(''),
     feedingGuidance: new FormControl(''),
   });
+
+  previousScroll = 0;
 
   editor: Editor | null = null;
   toolbar: Toolbar = [
@@ -98,17 +94,12 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.editor = new Editor();
   }
 
-  beginCreateSpeciesAge(species: Species) {
-    this.cancel(false);
-    this.creatingSpeciesAge = species;
-    this.selectableVariants = species.variants;
-    this.editor = new Editor();
-  }
-
   beginCreateSpeciesVariant(species: Species) {
     this.cancel(false);
     this.creatingSpeciesVariant = species;
     this.editor = new Editor();
+    this.previousScroll = window.scrollY;
+    window.scroll(0, 0);
   }
 
   beginUpdateSpecies(species: Species) {
@@ -116,19 +107,12 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.updatingSpecies = species;
     this.updatingSpeciesId = species.id;
     this.speciesForm.controls.name.setValue(species.name);
-    this.editor = new Editor();
-  }
-
-  beginUpdateSpeciesAge(age: SpeciesAge, species: Species) {
-    this.cancel(false);
-    this.updatingSpeciesAge = age;
-    this.selectableVariants = species.variants;
-    this.updatingSpeciesId = species.id;
-    this.speciesAgeForm.controls.name.setValue(age.name);
-    this.speciesAgeForm.controls.associatedVariantId.setValue(
-      `${age.associatedVariant.id}`
+    this.speciesForm.controls.speciesType.setValue(
+      species.speciesType.toString()
     );
     this.editor = new Editor();
+    this.previousScroll = window.scrollY;
+    window.scroll(0, 0);
   }
 
   beginUpdateSpeciesVariant(variant: SpeciesVariant, species: Species) {
@@ -136,25 +120,29 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.updatingSpeciesVariant = variant;
     this.updatingSpeciesId = species.id;
     this.speciesVariantForm.controls.name.setValue(variant.name);
+    this.speciesVariantForm.controls.friendlyName.setValue(
+      variant.friendlyName
+    );
+    this.speciesVariantForm.controls.order.setValue(variant.order.toString());
     this.speciesVariantForm.controls.feedingGuidance.setValue(
       toHTML(JSON.parse(variant.feedingGuidance))
     );
     this.editor = new Editor();
+    this.previousScroll = window.scrollY;
+    window.scroll(0, 0);
   }
 
   cancel(fullReset = true) {
     this.creatingSpecies = false;
-    this.creatingSpeciesAge = null;
     this.creatingSpeciesVariant = null;
     this.updatingSpecies = null;
-    this.updatingSpeciesAge = null;
     this.updatingSpeciesVariant = null;
     if (fullReset) {
       this.speciesForm.reset();
-      this.speciesAgeForm.reset();
       this.speciesVariantForm.reset();
       this.editor?.destroy();
       this.editor = null;
+      window.scroll(0, this.previousScroll);
     }
   }
 
@@ -167,21 +155,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
       createSpecies({
         species: {
           name: this.speciesForm.controls.name.value || '',
-        },
-      })
-    );
-    this.cancel();
-  }
-
-  createSpeciesAge() {
-    this.store.dispatch(
-      createSpeciesAge({
-        age: {
-          speciesId: this.creatingSpeciesAge!.id,
-          name: this.speciesAgeForm.controls.name.value || '',
-          associatedVariantId: Number(
-            this.speciesAgeForm.controls.associatedVariantId.value
-          ),
+          speciesType: Number(this.speciesForm.controls.speciesType.value),
         },
       })
     );
@@ -197,10 +171,18 @@ export class AdminHospitalSpeciesComponent implements OnInit {
         variant: {
           speciesId: this.creatingSpeciesVariant!.id,
           name: this.speciesVariantForm.controls.name.value || '',
+          friendlyName:
+            this.speciesVariantForm.controls.friendlyName.value || '',
+          order: Number(this.speciesVariantForm.controls.order.value),
           feedingGuidance: JSON.stringify(jsonDoc),
         },
       })
     );
+    const pscroll = this.previousScroll;
+    setTimeout(() => {
+      window.scroll(0, pscroll);
+      this.previousScroll = pscroll;
+    }, 2000);
     this.cancel();
   }
 
@@ -210,25 +192,15 @@ export class AdminHospitalSpeciesComponent implements OnInit {
         species: {
           id: this.updatingSpecies!.id,
           name: this.speciesForm.controls.name.value || '',
+          speciesType: Number(this.speciesForm.controls.speciesType.value),
         },
       })
     );
-    this.cancel();
-  }
-
-  updateSpeciesAge() {
-    this.store.dispatch(
-      updateSpeciesAge({
-        age: {
-          id: this.updatingSpeciesAge!.id,
-          speciesId: this.updatingSpeciesId!,
-          name: this.speciesAgeForm.controls.name.value || '',
-          associatedVariantId: Number(
-            this.speciesAgeForm.controls.associatedVariantId.value
-          ),
-        },
-      })
-    );
+    const pscroll = this.previousScroll;
+    setTimeout(() => {
+      window.scroll(0, pscroll);
+      this.previousScroll = pscroll;
+    }, 2000);
     this.cancel();
   }
 
@@ -242,14 +214,24 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           id: this.updatingSpeciesVariant!.id,
           speciesId: this.updatingSpeciesId!,
           name: this.speciesVariantForm.controls.name.value || '',
+          friendlyName:
+            this.speciesVariantForm.controls.friendlyName.value || '',
+          order: Number(this.speciesVariantForm.controls.order.value),
           feedingGuidance: JSON.stringify(jsonDoc),
         },
       })
     );
+    const pscroll = this.previousScroll;
+    setTimeout(() => {
+      window.scroll(0, pscroll);
+      this.previousScroll = pscroll;
+    }, 2000);
     this.cancel();
   }
 
   ngOnInit() {
     this.store.dispatch(getSpecies());
   }
+
+  SpeciesType = SpeciesType;
 }

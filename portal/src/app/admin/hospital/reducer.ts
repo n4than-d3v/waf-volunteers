@@ -4,9 +4,9 @@ import {
   AdminHospitalManagementState,
 } from './state';
 import {
-  createAdministrationMethod,
-  createAdministrationMethodError,
-  createAdministrationMethodSuccess,
+  changePenStatus,
+  changePenStatusError,
+  changePenStatusSuccess,
   createArea,
   createAreaError,
   createAreaSuccess,
@@ -16,6 +16,15 @@ import {
   createDispositionReason,
   createDispositionReasonError,
   createDispositionReasonSuccess,
+  createMedication,
+  createMedicationConcentration,
+  createMedicationConcentrationError,
+  createMedicationConcentrationSpeciesDose,
+  createMedicationConcentrationSpeciesDoseError,
+  createMedicationConcentrationSpeciesDoseSuccess,
+  createMedicationConcentrationSuccess,
+  createMedicationError,
+  createMedicationSuccess,
   createPen,
   createPenError,
   createPenSuccess,
@@ -23,9 +32,6 @@ import {
   createReleaseTypeError,
   createReleaseTypeSuccess,
   createSpecies,
-  createSpeciesAge,
-  createSpeciesAgeError,
-  createSpeciesAgeSuccess,
   createSpeciesError,
   createSpeciesSuccess,
   createSpeciesVariant,
@@ -37,15 +43,6 @@ import {
   createTransferLocation,
   createTransferLocationError,
   createTransferLocationSuccess,
-  disableMedication,
-  disableMedicationError,
-  disableMedicationSuccess,
-  enableMedication,
-  enableMedicationError,
-  enableMedicationSuccess,
-  getAdministrationMethods,
-  getAdministrationMethodsError,
-  getAdministrationMethodsSuccess,
   getAreas,
   getAreasError,
   getAreasSuccess,
@@ -70,9 +67,9 @@ import {
   getTransferLocations,
   getTransferLocationsError,
   getTransferLocationsSuccess,
-  updateAdministrationMethod,
-  updateAdministrationMethodError,
-  updateAdministrationMethodSuccess,
+  movePen,
+  movePenError,
+  movePenSuccess,
   updateDiet,
   updateDietError,
   updateDietSuccess,
@@ -83,9 +80,6 @@ import {
   updateReleaseTypeError,
   updateReleaseTypeSuccess,
   updateSpecies,
-  updateSpeciesAge,
-  updateSpeciesAgeError,
-  updateSpeciesAgeSuccess,
   updateSpeciesError,
   updateSpeciesSuccess,
   updateSpeciesVariant,
@@ -497,85 +491,6 @@ export const adminHospitalManagementReducer =
         error: true,
       },
     })),
-    // Administration methods
-    on(getAdministrationMethods, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: true,
-        error: false,
-        created: false,
-        updated: false,
-      },
-    })),
-    on(getAdministrationMethodsSuccess, (state, { administrationMethods }) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        data: administrationMethods,
-        loading: false,
-      },
-    })),
-    on(getAdministrationMethodsError, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: false,
-        error: true,
-      },
-    })),
-    on(createAdministrationMethod, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: true,
-        error: false,
-        created: false,
-        updated: false,
-      },
-    })),
-    on(createAdministrationMethodSuccess, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: false,
-        created: true,
-      },
-    })),
-    on(createAdministrationMethodError, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: false,
-        error: true,
-      },
-    })),
-    on(updateAdministrationMethod, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: true,
-        error: false,
-        created: false,
-        updated: false,
-      },
-    })),
-    on(updateAdministrationMethodSuccess, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: false,
-        updated: true,
-      },
-    })),
-    on(updateAdministrationMethodError, (state) => ({
-      ...state,
-      administrationMethods: {
-        ...state.administrationMethods,
-        loading: false,
-        error: true,
-      },
-    })),
     // Medications
     on(getMedications, (state) => ({
       ...state,
@@ -602,54 +517,45 @@ export const adminHospitalManagementReducer =
         error: true,
       },
     })),
-    on(enableMedication, (state) => ({
-      ...state,
-      medications: {
-        ...state.medications,
-        loading: true,
-        error: false,
-      },
-    })),
-    on(enableMedicationSuccess, (state) => ({
-      ...state,
-      medications: {
-        ...state.medications,
-        loading: false,
-        updated: true,
-      },
-    })),
-    on(enableMedicationError, (state) => ({
-      ...state,
-      medications: {
-        ...state.medications,
-        loading: false,
-        error: true,
-      },
-    })),
-    on(disableMedication, (state) => ({
-      ...state,
-      medications: {
-        ...state.medications,
-        loading: true,
-        error: false,
-      },
-    })),
-    on(disableMedicationSuccess, (state) => ({
-      ...state,
-      medications: {
-        ...state.medications,
-        loading: false,
-        updated: true,
-      },
-    })),
-    on(disableMedicationError, (state) => ({
-      ...state,
-      medications: {
-        ...state.medications,
-        loading: false,
-        error: true,
-      },
-    })),
+    on(
+      createMedication,
+      createMedicationConcentration,
+      createMedicationConcentrationSpeciesDose,
+      (state) => ({
+        ...state,
+        medications: {
+          ...state.medications,
+          loading: true,
+          error: false,
+        },
+      })
+    ),
+    on(
+      createMedicationSuccess,
+      createMedicationConcentrationSuccess,
+      createMedicationConcentrationSpeciesDoseSuccess,
+      (state) => ({
+        ...state,
+        medications: {
+          ...state.medications,
+          loading: false,
+          updated: true,
+        },
+      })
+    ),
+    on(
+      createMedicationError,
+      createMedicationConcentrationError,
+      createMedicationConcentrationSpeciesDoseError,
+      (state) => ({
+        ...state,
+        medications: {
+          ...state.medications,
+          loading: false,
+          error: true,
+        },
+      })
+    ),
     // Areas
     on(getAreas, (state) => ({
       ...state,
@@ -700,7 +606,7 @@ export const adminHospitalManagementReducer =
         error: true,
       },
     })),
-    on(createPen, (state) => ({
+    on(createPen, movePen, changePenStatus, (state) => ({
       ...state,
       areas: {
         ...state.areas,
@@ -708,7 +614,7 @@ export const adminHospitalManagementReducer =
         error: false,
       },
     })),
-    on(createPenSuccess, (state) => ({
+    on(createPenSuccess, movePenSuccess, changePenStatusSuccess, (state) => ({
       ...state,
       areas: {
         ...state.areas,
@@ -716,7 +622,7 @@ export const adminHospitalManagementReducer =
         created: true,
       },
     })),
-    on(createPenError, (state) => ({
+    on(createPenError, movePenError, changePenStatusError, (state) => ({
       ...state,
       areas: {
         ...state.areas,
@@ -751,7 +657,7 @@ export const adminHospitalManagementReducer =
         error: true,
       },
     })),
-    on(createSpecies, createSpeciesAge, createSpeciesVariant, (state) => ({
+    on(createSpecies, createSpeciesVariant, (state) => ({
       ...state,
       species: {
         ...state.species,
@@ -759,33 +665,23 @@ export const adminHospitalManagementReducer =
         error: false,
       },
     })),
-    on(
-      createSpeciesSuccess,
-      createSpeciesAgeSuccess,
-      createSpeciesVariantSuccess,
-      (state) => ({
-        ...state,
-        species: {
-          ...state.species,
-          loading: false,
-          created: true,
-        },
-      })
-    ),
-    on(
-      createSpeciesError,
-      createSpeciesAgeError,
-      createSpeciesVariantError,
-      (state) => ({
-        ...state,
-        species: {
-          ...state.species,
-          loading: false,
-          error: true,
-        },
-      })
-    ),
-    on(updateSpecies, updateSpeciesAge, updateSpeciesVariant, (state) => ({
+    on(createSpeciesSuccess, createSpeciesVariantSuccess, (state) => ({
+      ...state,
+      species: {
+        ...state.species,
+        loading: false,
+        created: true,
+      },
+    })),
+    on(createSpeciesError, createSpeciesVariantError, (state) => ({
+      ...state,
+      species: {
+        ...state.species,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(updateSpecies, updateSpeciesVariant, (state) => ({
       ...state,
       species: {
         ...state.species,
@@ -793,30 +689,20 @@ export const adminHospitalManagementReducer =
         error: false,
       },
     })),
-    on(
-      updateSpeciesSuccess,
-      updateSpeciesAgeSuccess,
-      updateSpeciesVariantSuccess,
-      (state) => ({
-        ...state,
-        species: {
-          ...state.species,
-          loading: false,
-          updated: true,
-        },
-      })
-    ),
-    on(
-      updateSpeciesError,
-      updateSpeciesAgeError,
-      updateSpeciesVariantError,
-      (state) => ({
-        ...state,
-        species: {
-          ...state.species,
-          loading: false,
-          error: true,
-        },
-      })
-    )
+    on(updateSpeciesSuccess, updateSpeciesVariantSuccess, (state) => ({
+      ...state,
+      species: {
+        ...state.species,
+        loading: false,
+        updated: true,
+      },
+    })),
+    on(updateSpeciesError, updateSpeciesVariantError, (state) => ({
+      ...state,
+      species: {
+        ...state.species,
+        loading: false,
+        error: true,
+      },
+    }))
   );

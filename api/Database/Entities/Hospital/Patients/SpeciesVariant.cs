@@ -8,6 +8,8 @@ public class SpeciesVariant : Entity
     public Species Species { get; set; }
 
     public string Name { get; set; }
+    public string FriendlyName { get; set; }
+    public int Order { get; set; }
 
     public string FeedingGuidance { get; set; }
 }

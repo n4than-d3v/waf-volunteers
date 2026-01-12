@@ -69,7 +69,37 @@ public class Patient : Entity
     #endregion
 
     public string Salt { get; set; }
+
+    #region Helpers
+
+    public Weight? LatestWeight
+    {
+        get
+        {
+            var exams = (Exams ?? []).Where(x => x.WeightValue.HasValue)
+                .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var notes = (Notes ?? []).Where(x => x.WeightValue.HasValue)
+                .Select(x => new Weight { Date = x.Noted, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var rechecks = (Rechecks ?? []).Where(x => x.Rechecked.HasValue && x.WeightValue.HasValue)
+                .Select(x => new Weight { Date = x.Rechecked!.Value, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var weights = new List<Weight>();
+            weights.AddRange(exams);
+            weights.AddRange(notes);
+            weights.AddRange(rechecks);
+            return weights.OrderByDescending(x => x.Date).FirstOrDefault();
+        }
+    }
+
+    public class Weight
+    {
+        public DateTime Date { get; set; }
+        public decimal? WeightValue { get; set; }
+        public WeightUnit? WeightUnit { get; set; }
+    }
+
+    #endregion
 }
+
 
 public enum PatientStatus
 {

@@ -12,12 +12,11 @@ public class Exam : Entity
     public DateTime Date { get; set; }
     public ExamType Type { get; set; }
     public Species Species { get; set; }
-    public SpeciesAge SpeciesAge { get; set; }
+    public SpeciesVariant SpeciesVariant { get; set; }
     public Sex Sex { get; set; }
     public decimal? WeightValue { get; set; }
     public WeightUnit? WeightUnit { get; set; }
-    public decimal? TemperatureValue { get; set; }
-    public TemperatureUnit? TemperatureUnit { get; set; }
+    public decimal? Temperature { get; set; }
     public Attitude? Attitude { get; set; }
     public BodyCondition? BodyCondition { get; set; }
     public Dehydration? Dehydration { get; set; }
@@ -39,12 +38,6 @@ public enum Sex
     Male = 1,
     Female = 2,
     Unknown = 3
-}
-
-public enum TemperatureUnit
-{
-    C = 1,
-    F = 2
 }
 
 public enum WeightUnit

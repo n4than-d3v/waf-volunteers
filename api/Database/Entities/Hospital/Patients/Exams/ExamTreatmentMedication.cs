@@ -11,6 +11,7 @@ public class ExamTreatmentMedication : Entity
     public decimal QuantityValue { get; set; }
     public string QuantityUnit { get; set; }
     public Medication Medication { get; set; }
+    public MedicationConcentration MedicationConcentration { get; set; }
     public AdministrationMethod AdministrationMethod { get; set; }
 
     public string Comments { get; set; }

@@ -178,10 +178,7 @@ export const getAdministrationMethodsError = createAction(
 
 // Medications
 
-export const getMedications = createAction(
-  '[HMS-V] Get medications',
-  props<{ search: string }>()
-);
+export const getMedications = createAction('[HMS-V] Get medications');
 export const getMedicationsSuccess = createAction(
   '[HMS-V] Get medications: success',
   props<{ medications: Medication[] }>()
@@ -409,6 +406,7 @@ export const addPrescriptionMedication = createAction(
     quantityUnit: string;
     administrationMethodId: number;
     medicationId: number;
+    medicationConcentrationId: number;
     comments: string;
   }>()
 );

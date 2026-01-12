@@ -18,8 +18,8 @@
         <td>{{ exam.species.name }}</td>
       </tr>
       <tr>
-        <td>Age</td>
-        <td>{{ exam.speciesAge.name }}</td>
+        <td>Variant</td>
+        <td>{{ exam.speciesVariant.name }}</td>
       </tr>
       <tr>
         <td>Sex</td>
@@ -38,10 +38,7 @@
       </tr>
       <tr>
         <td>Temperature</td>
-        <td>
-          {{ exam.temperatureValue ? exam.temperatureValue +
-          getTemperatureUnit(exam.temperatureUnit) : '(blank)' }}
-        </td>
+        <td>@if (exam.temperature) { {{ exam.temperature }} C }</td>
       </tr>
     </tbody>
   </table>
@@ -92,6 +89,7 @@
       <th>Quantity</th>
       <th>Administration</th>
       <th>Medication</th>
+      <th>Concentration</th>
       <th>Comments</th>
     </tr>
   </thead>
@@ -99,8 +97,15 @@
     @for (medication of exam.treatmentMedications; track medication.id) {
     <tr>
       <td>{{ medication.quantityValue }}{{ medication.quantityUnit }}</td>
-      <td>{{ medication.administrationMethod.description }}</td>
-      <td>{{ medication.medication.name }}</td>
+      <td>
+        {{ medication.administrationMethod.description }} ({{
+        medication.administrationMethod.code }})
+      </td>
+      <td>{{ medication.medication.activeSubstance }}</td>
+      <td>
+        {{ medication.medicationConcentration.form }}, {{
+        medication.medicationConcentration.concentrationMgMl }} ml/kg
+      </td>
       <td>{{ medication.comments }}</td>
     </tr>
     }

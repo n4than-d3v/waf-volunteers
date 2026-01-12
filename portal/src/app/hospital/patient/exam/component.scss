@@ -62,6 +62,17 @@
       min-width: 10rem;
     }
 
+    .input-with-text {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      input {
+        max-width: 6ch;
+        text-align: right;
+      }
+    }
+
     .input-with-units {
       display: flex;
 

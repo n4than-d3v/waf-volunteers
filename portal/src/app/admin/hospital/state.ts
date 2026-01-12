@@ -4,7 +4,6 @@ export interface AdminHospitalManagementState {
   dispositionReasons: Wrapper<DispositionReason>;
   releaseTypes: Wrapper<ReleaseType>;
   transferLocations: Wrapper<TransferLocation>;
-  administrationMethods: Wrapper<AdministrationMethod>;
   medications: Wrapper<Medication>;
   areas: Wrapper<Area>;
   species: Wrapper<Species>;
@@ -61,31 +60,43 @@ export interface TransferLocation extends CreateTransferLocationCommand {
   id: number;
 }
 
-export interface CreateAdministrationMethodCommand {
+export interface Medication {
+  id: number;
+  activeSubstance: string;
+  brands: string[];
+  notes: string[];
+  concentrations: MedicationConcentration[];
+}
+
+export interface MedicationConcentration {
+  id: number;
+  form: string;
+  concentrationMgMl: number;
+  speciesDoses: MedicationConcentrationSpeciesDose[];
+}
+
+export interface MedicationConcentrationSpeciesDose {
+  id: number;
+  species: Species;
+  speciesType: SpeciesType;
+  doseMgKg: number;
+  doseMlKg: number;
+  administrationMethod: AdministrationMethod;
+  frequency: string;
+  notes: string;
+}
+
+export interface AdministrationMethod {
+  id: number;
+  code: string;
   description: string;
 }
 
-export interface AdministrationMethod
-  extends CreateAdministrationMethodCommand {
-  id: number;
-}
-
-export interface Medication {
-  id: number;
-  vmdProductNo: string;
-  name: string;
-  maHolder: string;
-  distributors: string;
-  vmNo: string;
-  controlledDrug: boolean;
-  activeSubstances: { name: string }[];
-  targetSpecies: { name: string }[];
-  pharmaceuticalForm: { name: string };
-  therapeuticGroup: { name: string };
-  spcLink: string;
-  ukparLink: string;
-  paarLink: string;
-  used: boolean;
+export enum SpeciesType {
+  Mammal = 1,
+  Bird = 2,
+  Amphibian = 3,
+  Reptile = 4,
 }
 
 export interface CreateAreaCommand {
@@ -100,30 +111,29 @@ export interface CreatePenCommand {
 
 export interface Area extends CreateAreaCommand {
   id: number;
-  pens: { code: string }[];
+  deleted: boolean;
+  pens: {
+    id: number;
+    code: string;
+    reference: string;
+    deleted: boolean;
+  }[];
 }
 
 export interface CreateSpeciesCommand {
   name: string;
-}
-
-export interface CreateSpeciesAgeCommand {
-  speciesId: number;
-  name: string;
-  associatedVariantId: number;
+  speciesType: SpeciesType;
 }
 
 export interface CreateSpeciesVariantCommand {
   speciesId: number;
   name: string;
+  friendlyName: string;
+  order: number;
   feedingGuidance: string;
 }
 
 export interface UpdateSpeciesCommand extends CreateSpeciesCommand {
-  id: number;
-}
-
-export interface UpdateSpeciesAgeCommand extends CreateSpeciesAgeCommand {
   id: number;
 }
 
@@ -132,21 +142,31 @@ export interface UpdateSpeciesVariantCommand
   id: number;
 }
 
-export interface SpeciesAge {
-  id: number;
-  name: string;
-  associatedVariant: { id: number; name: string };
-}
-
 export interface SpeciesVariant {
   id: number;
   name: string;
+  friendlyName: string;
   feedingGuidance: string;
+  order: number;
 }
 
 export interface Species extends UpdateSpeciesCommand {
-  ages: SpeciesAge[];
   variants: SpeciesVariant[];
+}
+
+export function getSpeciesType(type: SpeciesType) {
+  switch (type) {
+    case SpeciesType.Amphibian:
+      return 'Amphibian';
+    case SpeciesType.Bird:
+      return 'Bird';
+    case SpeciesType.Mammal:
+      return 'Mammal';
+    case SpeciesType.Reptile:
+      return 'Reptile';
+    default:
+      return 'Unknown';
+  }
 }
 
 const createWrapper = <T>(): Wrapper<T> => ({
@@ -164,7 +184,6 @@ export const initialAdminHospitalManagementState: AdminHospitalManagementState =
     dispositionReasons: createWrapper<DispositionReason>(),
     releaseTypes: createWrapper<ReleaseType>(),
     transferLocations: createWrapper<TransferLocation>(),
-    administrationMethods: createWrapper<AdministrationMethod>(),
     medications: createWrapper<Medication>(),
     areas: createWrapper<Area>(),
     species: createWrapper<Species>(),

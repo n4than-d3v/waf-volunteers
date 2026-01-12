@@ -302,27 +302,39 @@ public partial class Program
             .AddNote("Admin creates a new pen")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalLocations.MapPut("/area/{id:int}", (IMediator mediator, int id, SetAreaEnabled request) => mediator.Send(request.WithId(id)))
+            .AddNote("Admin marks an area as enabled or disabled")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalLocations.MapPut("/pen/{id:int}", (IMediator mediator, int id, SetPenEnabled request) => mediator.Send(request.WithId(id)))
+            .AddNote("Admin marks a pen as enabled or disabled")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalLocations.MapPut("/pen/{id:int}/area/{areaId:int}", (IMediator mediator, int id, int areaId) => mediator.Send(new MovePen { Id = id, AreaId = areaId }))
+            .AddNote("Admin moves a pen to another area")
+            .RequireAuthorization(vetPolicy);
+
         var apiHospitalMedications = apiHospital.MapGroup("/medications");
 
-        apiHospitalMedications.MapGet("/", (IMediator mediator, string search) => mediator.Send(new GetMedications { Search = search }))
+        apiHospitalMedications.MapGet("/", (IMediator mediator) => mediator.Send(new GetMedications()))
             .AddNote("View list of medications")
             .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalMedications.MapPost("/", (IMediator mediator, ManageMedication request) => mediator.Send(request))
+            .AddNote("Manage medication")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalMedications.MapPost("/concentration", (IMediator mediator, ManageMedicationConcentration request) => mediator.Send(request))
+            .AddNote("Manage medication concentration")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalMedications.MapPost("/species-dose", (IMediator mediator, ManageMedicationConcentrationSpeciesDose request) => mediator.Send(request))
+            .AddNote("Manage medication concentration species dose")
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalMedications.MapGet("/administration-methods", (IMediator mediator) => mediator.Send(new GetAdministrationMethods()))
             .AddNote("View list of administration methods")
             .RequireAuthorization(vetOrAuxPolicy);
-
-        apiHospitalMedications.MapPost("/{id:int}/enable", (IMediator mediator, int id) => mediator.Send(new SetMedicationUsage { Id = id, Used = true }))
-            .AddNote("Enable usage of medication")
-            .RequireAuthorization(vetPolicy);
-
-        apiHospitalMedications.MapPost("/{id:int}/disable", (IMediator mediator, int id) => mediator.Send(new SetMedicationUsage { Id = id, Used = false }))
-            .AddNote("Disable usage of medication")
-            .RequireAuthorization(vetPolicy);
-
-        apiHospitalMedications.MapPut("/administration-method", (IMediator mediator, UpsertAdministrationMethod request) => mediator.Send(request))
-            .AddNote("Update or create administration method")
-            .RequireAuthorization(vetPolicy);
 
         var apiHospitalSpecies = apiHospital.MapGroup("/species");
 
@@ -332,10 +344,6 @@ public partial class Program
 
         apiHospitalSpecies.MapPut("/", (IMediator mediator, UpsertSpecies request) => mediator.Send(request))
             .AddNote("Update or create species")
-            .RequireAuthorization(vetPolicy);
-
-        apiHospitalSpecies.MapPut("/age", (IMediator mediator, UpsertSpeciesAge request) => mediator.Send(request))
-            .AddNote("Update or create species age")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalSpecies.MapPut("/variant", (IMediator mediator, UpsertSpeciesVariant request) => mediator.Send(request))

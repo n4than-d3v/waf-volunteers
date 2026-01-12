@@ -42,3 +42,13 @@ section {
     gap: 0.5rem;
   }
 }
+
+.pen-code {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+
+  input {
+    max-width: 10rem;
+  }
+}

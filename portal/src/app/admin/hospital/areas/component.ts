@@ -4,7 +4,14 @@ import { Observable } from 'rxjs';
 import { Area, Wrapper } from '../state';
 import { Store } from '@ngrx/store';
 import { selectAreas } from '../selectors';
-import { createArea, createPen, getAreas } from '../actions';
+import {
+  changeAreaStatus,
+  changePenStatus,
+  createArea,
+  createPen,
+  getAreas,
+  movePen,
+} from '../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { AsyncPipe } from '@angular/common';
 import {
@@ -32,6 +39,7 @@ export class AdminHospitalAreasComponent implements OnInit {
 
   creatingArea = false;
   creatingPen = false;
+  movingPen: number | null = null;
   creatingPenForArea: Area | null = null;
 
   areaForm = new FormGroup({
@@ -44,12 +52,12 @@ export class AdminHospitalAreasComponent implements OnInit {
     code: new FormControl(''),
   });
 
+  movePenForm = new FormGroup({
+    areaId: new FormControl(''),
+  });
+
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
-  }
-
-  formatPens(area: Area) {
-    return area.pens.map((x) => area.code + '-' + x.code).join(', ');
   }
 
   beginCreateArea() {
@@ -63,11 +71,18 @@ export class AdminHospitalAreasComponent implements OnInit {
     this.creatingPenForArea = area;
   }
 
+  beginMovePen(id: number) {
+    this.movingPen = id;
+    window.scroll(0, 0);
+  }
+
   cancel() {
     this.creatingArea = false;
     this.creatingPen = false;
+    this.movingPen = null;
     this.areaForm.reset();
     this.penForm.reset();
+    this.movePenForm.reset();
   }
 
   createArea() {
@@ -92,6 +107,34 @@ export class AdminHospitalAreasComponent implements OnInit {
       })
     );
     this.cancel();
+  }
+
+  movePen() {
+    this.store.dispatch(
+      movePen({
+        penId: this.movingPen!,
+        areaId: Number(this.movePenForm.value.areaId),
+      })
+    );
+    this.cancel();
+  }
+
+  changePenStatus(id: number, enabled: boolean) {
+    this.store.dispatch(
+      changePenStatus({
+        penId: id,
+        enabled,
+      })
+    );
+  }
+
+  changeAreaStatus(id: number, enabled: boolean) {
+    this.store.dispatch(
+      changeAreaStatus({
+        areaId: id,
+        enabled,
+      })
+    );
   }
 
   ngOnInit() {

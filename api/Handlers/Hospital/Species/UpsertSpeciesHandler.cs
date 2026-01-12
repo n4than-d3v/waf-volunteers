@@ -8,6 +8,7 @@ public class UpsertSpecies : IRequest<IResult>
 {
     public int? Id { get; set; }
     public string Name { get; set; }
+    public SpeciesType SpeciesType { get; set; }
 }
 
 public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IResult>
@@ -28,12 +29,14 @@ public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IRe
             if (species == null) return Results.BadRequest();
 
             species.Name = request.Name;
+            species.SpeciesType = request.SpeciesType;
         }
         else
         {
             species = new Species
             {
-                Name = request.Name
+                Name = request.Name,
+                SpeciesType = request.SpeciesType
             };
             _repository.Create(species);
         }

@@ -175,6 +175,10 @@ export interface Patient extends ListPatient {
   homeCareMessages: HomeCareMessage[];
   faecalTests: ListFaecalTest[];
   bloodTests: ListBloodTest[];
+  latestWeight: {
+    weightUnit: string;
+    weightValue: number;
+  } | null;
 }
 
 export interface ListFaecalTest {
@@ -227,17 +231,6 @@ export function getWeightUnit(weightUnit: number | null): string {
   }
 }
 
-export function getTemperatureUnit(temperatureUnit: number | null): string {
-  switch (temperatureUnit) {
-    case 1:
-      return '°C';
-    case 2:
-      return '°F';
-    default:
-      return '';
-  }
-}
-
 export function getRecheckRoles(roles: number): string {
   if (roles === 1) return 'Veterinarian';
   if (roles === 2) return 'Technician';
@@ -285,12 +278,11 @@ export interface ListExam {
   examiner: { firstName: string; lastName: string };
   date: string;
   species: Species;
-  speciesAge: SpeciesAge;
+  speciesVariant: SpeciesVariant;
   sex: number;
   weightValue: number | null;
   weightUnit: number | null;
-  temperatureValue: number | null;
-  temperatureUnit: number | null;
+  temperature: number | null;
   attitude: Attitude | null;
   bodyCondition: BodyCondition | null;
   dehydration: Dehydration | null;
@@ -339,6 +331,7 @@ export interface TreatmentMedication {
   quantityValue: number;
   quantityUnit: string;
   medication: Medication;
+  medicationConcentration: MedicationConcentration;
   administrationMethod: AdministrationMethod;
   comments: string;
 }
@@ -440,24 +433,40 @@ export interface TransferLocation {
 export interface AdministrationMethod {
   id: number;
   description: string;
+  code: string;
 }
 
 export interface Medication {
   id: number;
-  vmdProductNo: string;
-  name: string;
-  maHolder: string;
-  distributors: string;
-  vmNo: string;
-  controlledDrug: boolean;
-  activeSubstances: { name: string }[];
-  targetSpecies: { name: string }[];
-  pharmaceuticalForm: { name: string };
-  therapeuticGroup: { name: string };
-  spcLink: string;
-  ukparLink: string;
-  paarLink: string;
-  used: boolean;
+  activeSubstance: string;
+  brands: string[];
+  notes: string[];
+  concentrations: MedicationConcentration[];
+}
+
+export interface MedicationConcentration {
+  id: number;
+  form: string;
+  concentrationMgMl: number;
+  speciesDoses: MedicationConcentrationSpeciesDose[];
+}
+
+export interface MedicationConcentrationSpeciesDose {
+  id: number;
+  species: Species;
+  speciesType: SpeciesType;
+  doseMgKg: number;
+  doseMlKg: number;
+  administrationMethod: AdministrationMethod;
+  frequency: string;
+  notes: string;
+}
+
+export enum SpeciesType {
+  Mammal = 1,
+  Bird = 2,
+  Amphibian = 3,
+  Reptile = 4,
 }
 
 export interface Pen {
@@ -479,34 +488,29 @@ export interface Area {
   empty: boolean;
 }
 
-export interface SpeciesAge {
-  id: number;
-  name: string;
-  associatedVariant: { id: number; name: string };
-}
-
 export interface SpeciesVariant {
   id: number;
   name: string;
+  friendlyName: string;
   feedingGuidance: string;
+  order: number;
 }
 
 export interface Species {
   id: number;
+  speciesType: SpeciesType;
   name: string;
-  ages: SpeciesAge[];
   variants: SpeciesVariant[];
 }
 
 export interface Exam {
   patientId: number;
   speciesId: number;
-  speciesAgeId: number;
+  speciesVariantId: number;
   sex: number;
   weightValue: number | null;
   weightUnit: number | null;
-  temperatureValue: number | null;
-  temperatureUnit: number | null;
+  temperature: number | null;
   attitudeId: number | null;
   bodyConditionId: number | null;
   dehydrationId: number | null;
@@ -519,6 +523,7 @@ export interface Exam {
     quantityValue: number;
     quantityUnit: string;
     medicationId: number;
+    medicationConcentrationId: number;
     administrationMethodId: number;
     comments: string;
   }[];

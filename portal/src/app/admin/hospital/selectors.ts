@@ -31,11 +31,6 @@ export const selectTransferLocations = createSelector(
   (state) => state.transferLocations
 );
 
-export const selectAdministrationMethods = createSelector(
-  selectAdminHospitalManagementState,
-  (state) => state.administrationMethods
-);
-
 export const selectMedications = createSelector(
   selectAdminHospitalManagementState,
   (state) => state.medications

@@ -9,6 +9,8 @@ public class UpsertSpeciesVariant : IRequest<IResult>
     public int? Id { get; set; }
     public int SpeciesId { get; set; }
     public string Name { get; set; }
+    public string FriendlyName { get; set; }
+    public int Order { get; set; }
     public string FeedingGuidance { get; set; }
 }
 
@@ -33,6 +35,8 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
             if (speciesVariant == null) return Results.BadRequest();
 
             speciesVariant.Name = request.Name;
+            speciesVariant.FriendlyName = request.FriendlyName;
+            speciesVariant.Order = request.Order;
             speciesVariant.Species = species;
             speciesVariant.FeedingGuidance = request.FeedingGuidance;
         }
@@ -41,6 +45,8 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
             speciesVariant = new SpeciesVariant
             {
                 Name = request.Name,
+                FriendlyName = request.FriendlyName,
+                Order = request.Order,
                 Species = species,
                 FeedingGuidance = request.FeedingGuidance
             };

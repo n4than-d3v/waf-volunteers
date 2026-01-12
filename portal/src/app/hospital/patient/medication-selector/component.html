@@ -1,48 +1,144 @@
-<div [formGroup]="formGroup" class="wrapper">
-  <label for="{{ id }}">
-    Medication
-    <span class="required">*</span>
-  </label>
-  @if (medication) {
-  <div class="clear-input">
-    <input type="text" [disabled]="true" [value]="medication.name" />
-    <a
-      (keydown)="clearSelection($event)"
-      (click)="clearSelection($event)"
-      tabindex="0"
-    >
-      Clear
-    </a>
-  </div>
-  } @else {
-  <input
-    id="{{ id }}"
-    type="text"
-    [(ngModel)]="search"
-    [ngModelOptions]="{standalone: true}"
-    (keydown)="onKeyDown($event)"
-    (keyup)="onKeyUp($event)"
-    autocomplete="off"
-  />
-  } @if (open) {
-  <div id="medication-selector" class="selector">
-    <ul>
-      @if (medications$ | async; as medications) { @if (medications.loading) {
-      <spinner />
-      } @else if (medications.error) {
-      <div class="error">Error occurred</div>
-      } @else if (medications.data) { @for (medication of medications.data;
-      track medication.id) {
-      <li
-        (keydown)="selectMedication(medication, $event)"
-        (click)="selectMedication(medication, $event)"
-        tabindex="0"
+<div class="medication">
+  @if (medications$ | async; as medications) { @if (medications.loading) {
+  <spinner />
+  } @else if (medications.error) {
+  <div class="error">Error occurred</div>
+  } @else if (medications.data) {
+  <div [formGroup]="formGroup" class="wrapper">
+    <div class="field">
+      <label for="medication-{{ id }}">
+        Medication
+        <span class="required">*</span>
+      </label>
+      @if (medications.data) {
+      <hospital-patient-autocomplete
+        [id]="'medication-' + id"
+        [inline]="true"
+        [label]="''"
+        [control]="'medicationId'"
+        [formGroup]="formGroup"
+        [items]="convertMedications(medications.data)"
+      ></hospital-patient-autocomplete>
+      }
+    </div>
+    @if (formGroup.value.medicationId) {
+    <div class="field">
+      <label for="concentration-{{ id }}">
+        Concentration
+        <span class="required">*</span>
+      </label>
+      <select
+        id="concentration-{{ id }}"
+        formControlName="medicationConcentrationId"
+        (change)="updateDefaults(medications.data)"
       >
-        {{ medication.name }}
-      </li>
-      } }}
-    </ul>
+        <option value=""></option>
+        @for (medication of medications.data; track medication.id) { @if
+        (medication.id.toString() == formGroup.value.medicationId) { @for
+        (concentration of medication.concentrations; track concentration.id) {
+        <option [value]="concentration.id">
+          {{ concentration.form }}, {{ concentration.concentrationMgMl }} mg/ml
+        </option>
+        } } }
+      </select>
+    </div>
+    }
   </div>
+  <div class="wrapper">
+    @if (formGroup.value.medicationConcentrationId) {
+    <div class="field">
+      <label for="administrationMethod-{{ id }}">
+        Method
+        <span class="required">*</span>
+      </label>
+      <select
+        id="administrationMethod-{{ id }}"
+        formControlName="administrationMethodId"
+      >
+        <option value=""></option>
+        @if (administrationMethods$ | async; as administrationMethods) { @for
+        (administrationMethod of administrationMethods.data; track
+        administrationMethod.id) {
+        <option [value]="administrationMethod.id">
+          {{ administrationMethod.description }} ({{ administrationMethod.code
+          }})
+        </option>
+        } }
+      </select>
+    </div>
+    <div class="field">
+      <label for="quantity-{{ id }}">
+        Quantity
+        <span class="required">*</span>
+      </label>
+      <div class="input-with-units">
+        <input
+          id="quantity-{{ id }}"
+          type="number"
+          formControlName="quantityValue"
+          autocomplete="off"
+        />
+        <select id="quantityUnit-{{ id }}" formControlName="quantityUnit">
+          <option>ml</option>
+          <option>cc</option>
+          <option>mg</option>
+          <option>g</option>
+          <option>drop</option>
+          <option>tab</option>
+          <option>cap</option>
+          <option>IU</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="comments-{{ id }}">Comments</label>
+      <input
+        id="comments-{{ id }}"
+        type="text"
+        formControlName="comments"
+        autocomplete="off"
+      />
+    </div>
+    }
+  </div>
+  @if (formGroup.value.medicationConcentrationId) { @for (medication of
+  medications.data; track medication.id) { @if (medication.id.toString() ==
+  formGroup.value.medicationId) { @for (concentration of
+  medication.concentrations; track concentration.id) { @if
+  (concentration.id.toString() == formGroup.value.medicationConcentrationId) {
+  <p class="notes">{{ medication.notes }}</p>
+  @if (!defaultDose) {
+  <p class="unknown">Default dosage has not been set for this species</p>
   }
-  <input type="hidden" [formControlName]="control" />
+  <table>
+    <thead>
+      <tr>
+        <th>Species</th>
+        <th>Dose (mg/kg)</th>
+        <th>Dose (ml/kg)</th>
+        <th>Method</th>
+        <th>Frequency</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (dose of concentration.speciesDoses; track dose.id) {
+      <tr [class.selected]="dose === defaultDose">
+        <td>
+          {{ dose.species ? dose.species.name : getSpeciesType(dose.speciesType)
+          }}
+        </td>
+        <td>{{ dose.doseMgKg }}</td>
+        <td>{{ dose.doseMlKg }}</td>
+        <td>
+          {{ dose.administrationMethod.description }} ({{
+          dose.administrationMethod.code }})
+        </td>
+        <td>{{ dose.frequency }}</td>
+        <td>{{ dose.notes }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  } } } } } } }
 </div>

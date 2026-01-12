@@ -14,12 +14,11 @@ public class PerformExam : IRequest<IResult>
 {
     public int PatientId { get; set; }
     public int SpeciesId { get; set; }
-    public int SpeciesAgeId { get; set; }
+    public int SpeciesVariantId { get; set; }
     public Sex Sex { get; set; }
     public decimal? WeightValue { get; set; }
     public WeightUnit? WeightUnit { get; set; }
-    public decimal? TemperatureValue { get; set; }
-    public TemperatureUnit? TemperatureUnit { get; set; }
+    public decimal? Temperature { get; set; }
     public int? AttitudeId { get; set; }
     public int? BodyConditionId { get; set; }
     public int? DehydrationId { get; set; }
@@ -45,6 +44,7 @@ public class PerformExam : IRequest<IResult>
         public decimal QuantityValue { get; set; }
         public string QuantityUnit { get; set; }
         public int MedicationId { get; set; }
+        public int MedicationConcentrationId { get; set; }
         public int AdministrationMethodId { get; set; }
 
         public string Comments { get; set; }
@@ -75,8 +75,8 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
         var species = await _repository.Get<Species>(request.SpeciesId);
         if (species == null) return Results.BadRequest();
 
-        var speciesAge = await _repository.Get<SpeciesAge>(request.SpeciesAgeId, action: x => x.Include(y => y.AssociatedVariant));
-        if (speciesAge == null) return Results.BadRequest();
+        var speciesVariant = await _repository.Get<SpeciesVariant>(request.SpeciesVariantId);
+        if (speciesVariant == null) return Results.BadRequest();
 
         Attitude? attitude = null;
         if (request.AttitudeId.HasValue)
@@ -120,12 +120,11 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
             Date = DateTime.UtcNow,
             Type = examType,
             Species = species,
-            SpeciesAge = speciesAge,
+            SpeciesVariant = speciesVariant,
             Sex = request.Sex,
             WeightValue = request.WeightValue,
             WeightUnit = request.WeightUnit,
-            TemperatureValue = request.TemperatureValue,
-            TemperatureUnit = request.TemperatureUnit,
+            Temperature = request.Temperature,
             Attitude = attitude,
             BodyCondition = bodyCondition,
             Dehydration = dehydration,
@@ -150,6 +149,9 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
             var medication = await _repository.Get<Medication>(treatmentMedication.MedicationId);
             if (medication == null) return Results.BadRequest();
 
+            var medicationConcentration = await _repository.Get<MedicationConcentration>(treatmentMedication.MedicationConcentrationId);
+            if (medicationConcentration == null) return Results.BadRequest();
+
             var administrationMethod = await _repository.Get<AdministrationMethod>(treatmentMedication.AdministrationMethodId);
             if (administrationMethod == null) return Results.BadRequest();
 
@@ -157,6 +159,7 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
             {
                 Exam = exam,
                 Medication = medication,
+                MedicationConcentration = medicationConcentration,
                 AdministrationMethod = administrationMethod,
                 QuantityUnit = treatmentMedication.QuantityUnit,
                 QuantityValue = treatmentMedication.QuantityValue,
@@ -168,7 +171,7 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
         {
             patient.Status = PatientStatus.Inpatient;
             patient.Species = species;
-            patient.SpeciesVariant = speciesAge.AssociatedVariant;
+            patient.SpeciesVariant = speciesVariant;
         }
 
         _repository.Create(exam);

@@ -7,14 +7,17 @@
   Patients are housed in pens, which are part of areas, e.g. area "DS / Deer
   sheds" containing pens "1", "2", and "3".<br />
   You don't need to include the area code as a prefix for the pen code, e.g.
-  area "DS" pen "1" is formatted as "DS-1".
+  area "DS" pen "1" is formatted as "DS-1".<br />
+  You can activate (✅) and de-activate (❌) pens and areas as required for
+  temporary structures.<br />
+  You can also move (🔀) pens between areas if incubators or carriers move.
 </p>
 
 @if (areas$ | async; as areas) { @if (areas.loading) {
 <spinner></spinner>
 } @else if (areas.error) {
 <div class="error">Error occurred</div>
-} @else if (areas.data) { @if (!creatingArea && !creatingPen) {
+} @else if (areas.data) { @if (!creatingArea && !creatingPen && !movingPen) {
 <button (click)="beginCreateArea()" class="button button--primary">
   Create new area
 </button>
@@ -55,10 +58,33 @@
     </div>
     <div class="field">
       <label for="code">Code</label>
-      <input id="code" type="text" formControlName="code" />
+      <div class="pen-code">
+        <span>{{ creatingPenForArea?.code }}-</span>
+        <input id="code" type="text" formControlName="code" />
+      </div>
     </div>
     <div class="buttons">
       <button (click)="createPen()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (movingPen) {
+<section>
+  <h2>Move pen to another area</h2>
+  <form [formGroup]="movePenForm">
+    <div class="field">
+      <label for="areaId">Area</label>
+      <select formControlName="areaId">
+        @for (area of areas.data; track area.id) {
+        <option [value]="area.id">{{ area.name }}</option>
+        }
+      </select>
+    </div>
+    <div class="buttons">
+      <button (click)="movePen()" class="button button--primary">Save</button>
       <button (click)="cancel()" class="button button--secondary">
         Cancel
       </button>
@@ -78,9 +104,46 @@
   <tbody>
     @for (area of areas.data; track area.id) {
     <tr>
-      <td>{{ area.code }}</td>
+      <td>
+        @if (area.deleted) {
+        <s> {{ area.code }} </s>
+        <button
+          class="button button--none"
+          (click)="changeAreaStatus(area.id, true)"
+        >
+          ✅
+        </button>
+        } @else { {{ area.code }}
+        <button
+          class="button button--none"
+          (click)="changeAreaStatus(area.id, false)"
+        >
+          ❌
+        </button>
+        }
+      </td>
       <td>{{ area.name }}</td>
-      <td>{{ formatPens(area) }}</td>
+      <td>
+        @for (pen of area.pens; track pen.id) { @if (pen.deleted) {
+        <s> {{ pen.reference }} </s>
+        <button
+          class="button button--none"
+          (click)="changePenStatus(pen.id, true)"
+        >
+          ✅
+        </button>
+        } @else { {{ pen.reference }}
+        <button
+          class="button button--none"
+          (click)="changePenStatus(pen.id, false)"
+        >
+          ❌
+        </button>
+        <button class="button button--none" (click)="beginMovePen(pen.id)">
+          🔀
+        </button>
+        } }
+      </td>
       <td>
         <button (click)="beginCreatePen(area)" class="button button--secondary">
           Add pen

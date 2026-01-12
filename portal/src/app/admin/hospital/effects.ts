@@ -14,9 +14,12 @@ import {
   TransferLocation,
 } from './state';
 import {
-  createAdministrationMethod,
-  createAdministrationMethodError,
-  createAdministrationMethodSuccess,
+  changeAreaStatus,
+  changeAreaStatusError,
+  changeAreaStatusSuccess,
+  changePenStatus,
+  changePenStatusError,
+  changePenStatusSuccess,
   createArea,
   createAreaError,
   createAreaSuccess,
@@ -26,6 +29,15 @@ import {
   createDispositionReason,
   createDispositionReasonError,
   createDispositionReasonSuccess,
+  createMedication,
+  createMedicationConcentration,
+  createMedicationConcentrationError,
+  createMedicationConcentrationSpeciesDose,
+  createMedicationConcentrationSpeciesDoseError,
+  createMedicationConcentrationSpeciesDoseSuccess,
+  createMedicationConcentrationSuccess,
+  createMedicationError,
+  createMedicationSuccess,
   createPen,
   createPenError,
   createPenSuccess,
@@ -33,9 +45,6 @@ import {
   createReleaseTypeError,
   createReleaseTypeSuccess,
   createSpecies,
-  createSpeciesAge,
-  createSpeciesAgeError,
-  createSpeciesAgeSuccess,
   createSpeciesError,
   createSpeciesSuccess,
   createSpeciesVariant,
@@ -47,15 +56,6 @@ import {
   createTransferLocation,
   createTransferLocationError,
   createTransferLocationSuccess,
-  disableMedication,
-  disableMedicationError,
-  disableMedicationSuccess,
-  enableMedication,
-  enableMedicationError,
-  enableMedicationSuccess,
-  getAdministrationMethods,
-  getAdministrationMethodsError,
-  getAdministrationMethodsSuccess,
   getAreas,
   getAreasError,
   getAreasSuccess,
@@ -80,9 +80,9 @@ import {
   getTransferLocations,
   getTransferLocationsError,
   getTransferLocationsSuccess,
-  updateAdministrationMethod,
-  updateAdministrationMethodError,
-  updateAdministrationMethodSuccess,
+  movePen,
+  movePenError,
+  movePenSuccess,
   updateDiet,
   updateDietError,
   updateDietSuccess,
@@ -93,9 +93,6 @@ import {
   updateReleaseTypeError,
   updateReleaseTypeSuccess,
   updateSpecies,
-  updateSpeciesAge,
-  updateSpeciesAgeError,
-  updateSpeciesAgeSuccess,
   updateSpeciesError,
   updateSpeciesSuccess,
   updateSpeciesVariant,
@@ -412,81 +409,13 @@ export class AdminHospitalManagementEffects {
     )
   );
 
-  // Administration methods
-
-  getAdministrationMethods$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getAdministrationMethods),
-      switchMap(() =>
-        this.http
-          .get<AdministrationMethod[]>(
-            'hospital/medications/administration-methods'
-          )
-          .pipe(
-            map((administrationMethods) =>
-              getAdministrationMethodsSuccess({ administrationMethods })
-            ),
-            catchError(() => of(getAdministrationMethodsError()))
-          )
-      )
-    )
-  );
-
-  createAdministrationMethod$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createAdministrationMethod),
-      switchMap((action) =>
-        this.http
-          .put(
-            'hospital/medications/administration-method',
-            action.administrationMethod
-          )
-          .pipe(
-            map((_) => createAdministrationMethodSuccess()),
-            catchError(() => of(createAdministrationMethodError()))
-          )
-      )
-    )
-  );
-
-  createAdministrationMethodSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createAdministrationMethodSuccess),
-      switchMap((_) => of(getAdministrationMethods()))
-    )
-  );
-
-  updateAdministrationMethod$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateAdministrationMethod),
-      switchMap((action) =>
-        this.http
-          .put(
-            'hospital/medications/administration-method',
-            action.administrationMethod
-          )
-          .pipe(
-            map((_) => updateAdministrationMethodSuccess()),
-            catchError(() => of(updateAdministrationMethodError()))
-          )
-      )
-    )
-  );
-
-  updateAdministrationMethodSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateAdministrationMethodSuccess),
-      switchMap((_) => of(getAdministrationMethods()))
-    )
-  );
-
   // Medications
 
   getMedications$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getMedications),
       switchMap(() =>
-        this.http.get<Medication[]>('hospital/medications?search=').pipe(
+        this.http.get<Medication[]>('hospital/medications').pipe(
           map((medications) => getMedicationsSuccess({ medications })),
           catchError(() => of(getMedicationsError()))
         )
@@ -494,44 +423,59 @@ export class AdminHospitalManagementEffects {
     )
   );
 
-  enableMedication$ = createEffect(() =>
+  createMedication$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(enableMedication),
+      ofType(createMedication),
       switchMap((action) =>
-        this.http
-          .post(`hospital/medications/${action.medicationId}/enable`, {})
-          .pipe(
-            map((_) => enableMedicationSuccess()),
-            catchError(() => of(enableMedicationError()))
-          )
+        this.http.post(`hospital/medications`, action).pipe(
+          map((_) => createMedicationSuccess()),
+          catchError(() => of(createMedicationError()))
+        )
       )
     )
   );
 
-  enableMedicationSuccess$ = createEffect(() =>
+  createMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(enableMedicationSuccess),
+      ofType(createMedicationSuccess),
       switchMap((_) => of(getMedications()))
     )
   );
 
-  disableMedication$ = createEffect(() =>
+  createMedicationConcentration$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(disableMedication),
+      ofType(createMedicationConcentration),
       switchMap((action) =>
-        this.http
-          .post(`hospital/medications/${action.medicationId}/disable`, {})
-          .pipe(
-            map((_) => disableMedicationSuccess()),
-            catchError(() => of(disableMedicationError()))
-          )
+        this.http.post(`hospital/medications/concentration`, action).pipe(
+          map((_) => createMedicationConcentrationSuccess()),
+          catchError(() => of(createMedicationConcentrationError()))
+        )
       )
     )
   );
 
-  disableMedicationSuccess$ = createEffect(() =>
+  createMedicationConcentrationSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(disableMedicationSuccess),
+      ofType(createMedicationConcentrationSuccess),
+      switchMap((_) => of(getMedications()))
+    )
+  );
+
+  createMedicationConcentrationSpeciesDose$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createMedicationConcentrationSpeciesDose),
+      switchMap((action) =>
+        this.http.post(`hospital/medications/species-dose`, action).pipe(
+          map((_) => createMedicationConcentrationSpeciesDoseSuccess()),
+          catchError(() => of(createMedicationConcentrationSpeciesDoseError()))
+        )
+      )
+    )
+  );
+
+  createMedicationConcentrationSpeciesDoseSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createMedicationConcentrationSpeciesDoseSuccess),
       switchMap((_) => of(getMedications()))
     )
   );
@@ -588,6 +532,68 @@ export class AdminHospitalManagementEffects {
     )
   );
 
+  movePen$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(movePen),
+      switchMap((action) =>
+        this.http
+          .put(
+            `hospital/locations/pen/${action.penId}/area/${action.areaId}`,
+            {}
+          )
+          .pipe(
+            map((_) => movePenSuccess()),
+            catchError(() => of(movePenError()))
+          )
+      )
+    )
+  );
+
+  movePenSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(movePenSuccess),
+      switchMap((_) => of(getAreas()))
+    )
+  );
+
+  changePenStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(changePenStatus),
+      switchMap((action) =>
+        this.http.put(`hospital/locations/pen/${action.penId}`, action).pipe(
+          map((_) => changePenStatusSuccess()),
+          catchError(() => of(changePenStatusError()))
+        )
+      )
+    )
+  );
+
+  changePenStatusSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(changePenStatusSuccess),
+      switchMap((_) => of(getAreas()))
+    )
+  );
+
+  changeAreaStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(changeAreaStatus),
+      switchMap((action) =>
+        this.http.put(`hospital/locations/area/${action.areaId}`, action).pipe(
+          map((_) => changeAreaStatusSuccess()),
+          catchError(() => of(changeAreaStatusError()))
+        )
+      )
+    )
+  );
+
+  changeAreaStatusSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(changeAreaStatusSuccess),
+      switchMap((_) => of(getAreas()))
+    )
+  );
+
   // Species
 
   getSpecies$ = createEffect(() =>
@@ -595,7 +601,14 @@ export class AdminHospitalManagementEffects {
       ofType(getSpecies),
       switchMap(() =>
         this.http.get<Species[]>('hospital/species').pipe(
-          map((species) => getSpeciesSuccess({ species })),
+          map((species) =>
+            getSpeciesSuccess({
+              species: species.map((s) => ({
+                ...s,
+                variants: s.variants.sort((a, b) => a.order - b.order),
+              })),
+            })
+          ),
           catchError(() => of(getSpeciesError()))
         )
       )
@@ -636,44 +649,6 @@ export class AdminHospitalManagementEffects {
   updateSpeciesSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateSpeciesSuccess),
-      switchMap((_) => of(getSpecies()))
-    )
-  );
-
-  createSpeciesAge$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createSpeciesAge),
-      switchMap((action) =>
-        this.http.put('hospital/species/age', action.age).pipe(
-          map((_) => createSpeciesAgeSuccess()),
-          catchError(() => of(createSpeciesAgeError()))
-        )
-      )
-    )
-  );
-
-  createSpeciesAgeSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createSpeciesAgeSuccess),
-      switchMap((_) => of(getSpecies()))
-    )
-  );
-
-  updateSpeciesAge$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateSpeciesAge),
-      switchMap((action) =>
-        this.http.put('hospital/species/age', action.age).pipe(
-          map((_) => updateSpeciesAgeSuccess()),
-          catchError(() => of(updateSpeciesAgeError()))
-        )
-      )
-    )
-  );
-
-  updateSpeciesAgeSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateSpeciesAgeSuccess),
       switchMap((_) => of(getSpecies()))
     )
   );

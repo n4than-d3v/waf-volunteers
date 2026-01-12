@@ -4,19 +4,16 @@
 
 <p>
   Species are unique species that are treated at WAF.<br />
-  Husbandry volunteers see "variants", which includes the feeding guidance.<br />
-  Whereas vets see the specific "ages". Each age has an associated variant.<br />
-  When a vet performs an initial exam, they provide the age, which automatically
-  sets the associated variant.
+  Each species has a number of variants, based on age. Husbandry volunteers only
+  see variant friendly names and feeding guidance.
 </p>
 
 @if (species$ | async; as species) { @if (species.loading) {
 <spinner></spinner>
 } @else if (species.error) {
 <div class="error">Error occurred</div>
-} @else if (species.data) { @if (!creatingSpecies && !creatingSpeciesAge &&
-!creatingSpeciesVariant && !updatingSpecies && !updatingSpeciesAge &&
-!updatingSpeciesVariant) {
+} @else if (species.data) { @if (!creatingSpecies && !creatingSpeciesVariant &&
+!updatingSpecies && !updatingSpeciesVariant) {
 <button (click)="beginCreateSpecies()" class="button button--primary">
   Create new species
 </button>
@@ -28,34 +25,17 @@
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name" />
     </div>
-    <div class="buttons">
-      <button (click)="createSpecies()" class="button button--primary">
-        Save
-      </button>
-      <button (click)="cancel()" class="button button--secondary">
-        Cancel
-      </button>
-    </div>
-  </form>
-</section>
-} @else if (creatingSpeciesAge && editor) {
-<section>
-  <h2>Create new age for {{ creatingSpeciesAge.name }}</h2>
-  <form [formGroup]="speciesAgeForm">
     <div class="field">
-      <label for="name">Name</label>
-      <input id="name" type="text" formControlName="name" />
-    </div>
-    <div class="field">
-      <label for="associatedVariantId">Associated variant</label>
-      <select id="associatedVariantId" formControlName="associatedVariantId">
-        @for (variant of selectableVariants; track variant.id) {
-        <option [value]="variant.id">{{ variant.name }}</option>
-        }
+      <label for="speciesType">Animal type</label>
+      <select id="speciesType" formControlName="speciesType">
+        <option [value]="SpeciesType.Mammal">Mammal</option>
+        <option [value]="SpeciesType.Bird">Bird</option>
+        <option [value]="SpeciesType.Amphibian">Amphibian</option>
+        <option [value]="SpeciesType.Reptile">Reptile</option>
       </select>
     </div>
     <div class="buttons">
-      <button (click)="createSpeciesAge()" class="button button--primary">
+      <button (click)="createSpecies()" class="button button--primary">
         Save
       </button>
       <button (click)="cancel()" class="button button--secondary">
@@ -71,6 +51,14 @@
     <div class="field">
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="friendlyName">Friendly name</label>
+      <input id="friendlyName" type="text" formControlName="friendlyName" />
+    </div>
+    <div class="field">
+      <label for="order">Age order</label>
+      <input id="order" type="number" formControlName="order" />
     </div>
     <div class="field">
       <label for="editor">Feeding guidance</label>
@@ -104,34 +92,17 @@
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name" />
     </div>
-    <div class="buttons">
-      <button (click)="updateSpecies()" class="button button--primary">
-        Save
-      </button>
-      <button (click)="cancel()" class="button button--secondary">
-        Cancel
-      </button>
-    </div>
-  </form>
-</section>
-} @else if (updatingSpeciesAge && editor) {
-<section>
-  <h2>Edit age for {{ updatingSpeciesAge.name }}</h2>
-  <form [formGroup]="speciesAgeForm">
     <div class="field">
-      <label for="name">Name</label>
-      <input id="name" type="text" formControlName="name" />
-    </div>
-    <div class="field">
-      <label for="associatedVariantId">Associated variant</label>
-      <select id="associatedVariantId" formControlName="associatedVariantId">
-        @for (variant of selectableVariants; track variant.id) {
-        <option [value]="variant.id">{{ variant.name }}</option>
-        }
+      <label for="speciesType">Animal type</label>
+      <select id="speciesType" formControlName="speciesType">
+        <option [value]="SpeciesType.Mammal">Mammal</option>
+        <option [value]="SpeciesType.Bird">Bird</option>
+        <option [value]="SpeciesType.Amphibian">Amphibian</option>
+        <option [value]="SpeciesType.Reptile">Reptile</option>
       </select>
     </div>
     <div class="buttons">
-      <button (click)="updateSpeciesAge()" class="button button--primary">
+      <button (click)="updateSpecies()" class="button button--primary">
         Save
       </button>
       <button (click)="cancel()" class="button button--secondary">
@@ -147,6 +118,14 @@
     <div class="field">
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="friendlyName">Friendly name</label>
+      <input id="friendlyName" type="text" formControlName="friendlyName" />
+    </div>
+    <div class="field">
+      <label for="order">Age order</label>
+      <input id="order" type="number" formControlName="order" />
     </div>
     <div class="field">
       <label for="editor">Feeding guidance</label>
@@ -176,86 +155,50 @@
 <div class="list">
   @for (s of species.data; track s.id) {
   <div class="item">
-    <h2>
-      {{ s.name }}
-      <button class="button button--secondary" (click)="beginUpdateSpecies(s)">
-        Edit species
-      </button>
-    </h2>
-    <div class="split">
-      <div class="split-item">
-        <h3>
-          Variants
+    <table>
+      <caption>
+        <div>{{ s.name }}</div>
+        <div class="buttons">
+          <button
+            class="button button--secondary"
+            (click)="beginUpdateSpecies(s)"
+          >
+            Edit species
+          </button>
           <button
             class="button button--primary"
             (click)="beginCreateSpeciesVariant(s)"
           >
             Create new variant
           </button>
-        </h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Feeding guidance</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (variant of s.variants; track variant.id) {
-            <tr>
-              <td>{{ variant.name }}</td>
-              <td [innerHTML]="convertHtml(variant.feedingGuidance)"></td>
-              <td>
-                <button
-                  class="button button--secondary"
-                  (click)="beginUpdateSpeciesVariant(variant, s)"
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-      <div class="split-item">
-        <h3>
-          Ages
-          <button
-            class="button button--primary"
-            (click)="beginCreateSpeciesAge(s)"
-          >
-            Create new age
-          </button>
-        </h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Associated variant</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (age of s.ages; track age.id) {
-            <tr>
-              <td>{{ age.name }}</td>
-              <td>{{ age.associatedVariant.name }}</td>
-              <td>
-                <button
-                  class="button button--secondary"
-                  (click)="beginUpdateSpeciesAge(age, s)"
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    </div>
+        </div>
+      </caption>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Friendly name</th>
+          <th>Feeding guidance</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (variant of s.variants; track variant.id) {
+        <tr>
+          <td>{{ variant.name }}</td>
+          <td>{{ variant.friendlyName }}</td>
+          <td [innerHTML]="convertHtml(variant.feedingGuidance)"></td>
+          <td>
+            <button
+              class="button button--secondary"
+              (click)="beginUpdateSpeciesVariant(variant, s)"
+            >
+              Edit
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
   </div>
   }
 </div>

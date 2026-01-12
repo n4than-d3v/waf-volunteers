@@ -22,21 +22,6 @@ namespace Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ActiveSubstanceMedication", b =>
-                {
-                    b.Property<int>("ActiveSubstancesId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("MedicationsId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ActiveSubstancesId", "MedicationsId");
-
-                    b.HasIndex("MedicationsId");
-
-                    b.ToTable("ActiveSubstanceMedication");
-                });
-
             modelBuilder.Entity("AdmissionReasonPatient", b =>
                 {
                     b.Property<int>("AdmissionReasonsId")
@@ -154,6 +139,9 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -177,6 +165,9 @@ namespace Api.Migrations
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -362,16 +353,13 @@ namespace Api.Migrations
                     b.Property<int>("Sex")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SpeciesAgeId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("SpeciesId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TemperatureUnit")
+                    b.Property<int>("SpeciesVariantId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("TemperatureValue")
+                    b.Property<decimal?>("Temperature")
                         .HasColumnType("numeric");
 
                     b.Property<int>("Type")
@@ -399,9 +387,9 @@ namespace Api.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.HasIndex("SpeciesAgeId");
-
                     b.HasIndex("SpeciesId");
+
+                    b.HasIndex("SpeciesVariantId");
 
                     b.ToTable("Exams");
                 });
@@ -446,6 +434,9 @@ namespace Api.Migrations
                     b.Property<int>("ExamId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("MedicationConcentrationId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("MedicationId")
                         .HasColumnType("integer");
 
@@ -461,6 +452,8 @@ namespace Api.Migrations
                     b.HasIndex("AdministrationMethodId");
 
                     b.HasIndex("ExamId");
+
+                    b.HasIndex("MedicationConcentrationId");
 
                     b.HasIndex("MedicationId");
 
@@ -713,23 +706,6 @@ namespace Api.Migrations
                     b.ToTable("PatientFaecalTests");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.ActiveSubstance", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ActiveSubstances");
-                });
-
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.AdministrationMethod", b =>
                 {
                     b.Property<int>("Id")
@@ -737,6 +713,10 @@ namespace Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -755,60 +735,24 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("ControlledDrug")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Distributors")
+                    b.Property<string>("ActiveSubstance")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("MAHolder")
+                    b.PrimitiveCollection<string[]>("Brands")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text[]");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PAARLink")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("PharmaceuticalFormId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SPCLink")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("TherapeuticGroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UKPARLink")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("Used")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("VMDProductNo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("VMNo")
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PharmaceuticalFormId");
-
-                    b.HasIndex("TherapeuticGroupId");
 
                     b.ToTable("Medications");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.PharmaceuticalForm", b =>
+            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentration", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -816,16 +760,24 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<double>("ConcentrationMgMl")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Form")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("MedicationId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("PharmaceuticalForms");
+                    b.HasIndex("MedicationId");
+
+                    b.ToTable("MedicationConcentrations");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.TargetSpecies", b =>
+            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentrationSpeciesDose", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -833,30 +785,40 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TargetSpecies");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.TherapeuticGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int?>("AdministrationMethodId")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<double>("DoseMgKg")
+                        .HasColumnType("double precision");
 
-                    b.Property<string>("Name")
+                    b.Property<double>("DoseMlKg")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Frequency")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MedicationConcentrationId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("SpeciesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SpeciesType")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("TherapeuticGroups");
+                    b.HasIndex("AdministrationMethodId");
+
+                    b.HasIndex("MedicationConcentrationId");
+
+                    b.HasIndex("SpeciesId");
+
+                    b.ToTable("MedicationConcentrationSpeciesDoses");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Outcome.DispositionReason", b =>
@@ -1242,6 +1204,9 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("MedicationConcentrationId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("MedicationId")
                         .HasColumnType("integer");
 
@@ -1261,6 +1226,8 @@ namespace Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AdministrationMethodId");
+
+                    b.HasIndex("MedicationConcentrationId");
 
                     b.HasIndex("MedicationId");
 
@@ -1314,36 +1281,12 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("SpeciesType")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Species");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.SpeciesAge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AssociatedVariantId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SpeciesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssociatedVariantId");
-
-                    b.HasIndex("SpeciesId");
-
-                    b.ToTable("SpeciesAges");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.SpeciesVariant", b =>
@@ -1358,9 +1301,16 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("FriendlyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
 
                     b.Property<int>("SpeciesId")
                         .HasColumnType("integer");
@@ -1776,21 +1726,6 @@ namespace Api.Migrations
                     b.ToTable("DietPatient");
                 });
 
-            modelBuilder.Entity("MedicationTargetSpecies", b =>
-                {
-                    b.Property<int>("MedicationsId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TargetSpeciesId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("MedicationsId", "TargetSpeciesId");
-
-                    b.HasIndex("TargetSpeciesId");
-
-                    b.ToTable("MedicationTargetSpecies");
-                });
-
             modelBuilder.Entity("PatientTag", b =>
                 {
                     b.Property<int>("PatientsId")
@@ -1804,21 +1739,6 @@ namespace Api.Migrations
                     b.HasIndex("TagsId");
 
                     b.ToTable("PatientTag");
-                });
-
-            modelBuilder.Entity("ActiveSubstanceMedication", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.ActiveSubstance", null)
-                        .WithMany()
-                        .HasForeignKey("ActiveSubstancesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.Medication", null)
-                        .WithMany()
-                        .HasForeignKey("MedicationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("AdmissionReasonPatient", b =>
@@ -1892,15 +1812,15 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.SpeciesAge", "SpeciesAge")
-                        .WithMany()
-                        .HasForeignKey("SpeciesAgeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Species", "Species")
                         .WithMany()
                         .HasForeignKey("SpeciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.SpeciesVariant", "SpeciesVariant")
+                        .WithMany()
+                        .HasForeignKey("SpeciesVariantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1920,7 +1840,7 @@ namespace Api.Migrations
 
                     b.Navigation("Species");
 
-                    b.Navigation("SpeciesAge");
+                    b.Navigation("SpeciesVariant");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Exams.ExamTreatmentInstruction", b =>
@@ -1948,6 +1868,12 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentration", "MedicationConcentration")
+                        .WithMany()
+                        .HasForeignKey("MedicationConcentrationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.Medication", "Medication")
                         .WithMany()
                         .HasForeignKey("MedicationId")
@@ -1959,6 +1885,8 @@ namespace Api.Migrations
                     b.Navigation("Exam");
 
                     b.Navigation("Medication");
+
+                    b.Navigation("MedicationConcentration");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.HomeCare.HomeCareMessage", b =>
@@ -2054,23 +1982,38 @@ namespace Api.Migrations
                     b.Navigation("Tester");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.Medication", b =>
+            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentration", b =>
                 {
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.PharmaceuticalForm", "PharmaceuticalForm")
-                        .WithMany()
-                        .HasForeignKey("PharmaceuticalFormId")
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.Medication", "Medication")
+                        .WithMany("Concentrations")
+                        .HasForeignKey("MedicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.TherapeuticGroup", "TherapeuticGroup")
+                    b.Navigation("Medication");
+                });
+
+            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentrationSpeciesDose", b =>
+                {
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.AdministrationMethod", "AdministrationMethod")
                         .WithMany()
-                        .HasForeignKey("TherapeuticGroupId")
+                        .HasForeignKey("AdministrationMethodId");
+
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentration", "MedicationConcentration")
+                        .WithMany("SpeciesDoses")
+                        .HasForeignKey("MedicationConcentrationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PharmaceuticalForm");
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.Species", "Species")
+                        .WithMany()
+                        .HasForeignKey("SpeciesId");
 
-                    b.Navigation("TherapeuticGroup");
+                    b.Navigation("AdministrationMethod");
+
+                    b.Navigation("MedicationConcentration");
+
+                    b.Navigation("Species");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Patient", b =>
@@ -2252,6 +2195,12 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentration", "MedicationConcentration")
+                        .WithMany()
+                        .HasForeignKey("MedicationConcentrationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.Medication", "Medication")
                         .WithMany()
                         .HasForeignKey("MedicationId")
@@ -2267,6 +2216,8 @@ namespace Api.Migrations
                     b.Navigation("AdministrationMethod");
 
                     b.Navigation("Medication");
+
+                    b.Navigation("MedicationConcentration");
 
                     b.Navigation("Patient");
                 });
@@ -2288,25 +2239,6 @@ namespace Api.Migrations
                     b.Navigation("Administrator");
 
                     b.Navigation("PatientPrescriptionMedication");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.SpeciesAge", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.SpeciesVariant", "AssociatedVariant")
-                        .WithMany()
-                        .HasForeignKey("AssociatedVariantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Species", "Species")
-                        .WithMany("Ages")
-                        .HasForeignKey("SpeciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssociatedVariant");
-
-                    b.Navigation("Species");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.SpeciesVariant", b =>
@@ -2512,21 +2444,6 @@ namespace Api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MedicationTargetSpecies", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.Medication", null)
-                        .WithMany()
-                        .HasForeignKey("MedicationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Api.Database.Entities.Hospital.Patients.Medications.TargetSpecies", null)
-                        .WithMany()
-                        .HasForeignKey("TargetSpeciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PatientTag", b =>
                 {
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Patient", null)
@@ -2562,6 +2479,16 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Labs.PatientBloodTest", b =>
                 {
                     b.Navigation("Attachments");
+                });
+
+            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.Medication", b =>
+                {
+                    b.Navigation("Concentrations");
+                });
+
+            modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Medications.MedicationConcentration", b =>
+                {
+                    b.Navigation("SpeciesDoses");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Patient", b =>
@@ -2604,8 +2531,6 @@ namespace Api.Migrations
 
             modelBuilder.Entity("Api.Database.Entities.Hospital.Patients.Species", b =>
                 {
-                    b.Navigation("Ages");
-
                     b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618

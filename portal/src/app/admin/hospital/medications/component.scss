@@ -7,33 +7,13 @@ h2 {
   margin-bottom: 1rem;
 }
 
-h3 {
-  margin-top: 1rem;
-}
-
 strong {
   margin-top: 0.75rem;
   display: block;
 }
 
-.filter {
-  display: flex;
-  gap: 2rem;
-
-  .filter-section:nth-child(1) {
-    min-width: 25rem;
-  }
-
-  .filter-section:nth-child(2) {
-    min-width: 10rem;
-  }
-}
-
-ul {
-  list-style-type: none;
-  display: flex;
-  column-gap: 2rem;
-  flex-wrap: wrap;
+p + .button--primary {
+  margin: 0.5rem 0rem;
 }
 
 section {

@@ -7,7 +7,6 @@ import { AdminHospitalTagsComponent } from './admin/hospital/tags/component';
 import { AdminHospitalDispositionReasonsComponent } from './admin/hospital/disposition-reasons/component';
 import { AdminHospitalReleaseTypesComponent } from './admin/hospital/release-types/component';
 import { AdminHospitalTransferLocationsComponent } from './admin/hospital/transfer-locations/component';
-import { AdminHospitalAdministrationMethodsComponent } from './admin/hospital/administration-methods/component';
 import { AdminHospitalMedicationsComponent } from './admin/hospital/medications/component';
 import { AdminHospitalAreasComponent } from './admin/hospital/areas/component';
 import { AdminHospitalSpeciesComponent } from './admin/hospital/species/component';
@@ -45,10 +44,6 @@ export const routes: Routes = [
       {
         path: 'transfer-locations',
         component: AdminHospitalTransferLocationsComponent,
-      },
-      {
-        path: 'administration-methods',
-        component: AdminHospitalAdministrationMethodsComponent,
       },
       {
         path: 'medications',

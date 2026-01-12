@@ -10,6 +10,7 @@ public class Pen : Entity
     public Area Area { get; set; }
 
     public string Code { get; set; }
+    public bool Deleted { get; set; }
 
     [JsonIgnore]
     public List<Patient> Patients { get; set; }

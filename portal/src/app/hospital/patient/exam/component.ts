@@ -57,6 +57,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { HospitalPatientMedicationSelectorComponent } from './../medication-selector/component';
+import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
 @Component({
   selector: 'hospital-patient-exam',
@@ -68,6 +69,7 @@ import { HospitalPatientMedicationSelectorComponent } from './../medication-sele
     AsyncPipe,
     SpinnerComponent,
     HospitalPatientMedicationSelectorComponent,
+    HospitalPatientAutocompleteComponent,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
@@ -97,12 +99,11 @@ export class HospitalPatientExamComponent implements OnInit {
 
   examForm = new FormGroup({
     speciesId: new FormControl('', [Validators.required]),
-    speciesAgeId: new FormControl('', [Validators.required]),
+    speciesVariantId: new FormControl('', [Validators.required]),
     sex: new FormControl('', [Validators.required]),
     weightValue: new FormControl(''),
     weightUnit: new FormControl(''),
-    temperatureValue: new FormControl(''),
-    temperatureUnit: new FormControl(''),
+    temperature: new FormControl(''),
     attitudeId: new FormControl(''),
     bodyConditionId: new FormControl(''),
     dehydrationId: new FormControl(''),
@@ -118,6 +119,7 @@ export class HospitalPatientExamComponent implements OnInit {
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
         medicationId: FormControl<string | null>;
+        medicationConcentrationId: FormControl<string | null>;
         administrationMethodId: FormControl<string | null>;
         comments: FormControl<string | null>;
       }>
@@ -148,6 +150,10 @@ export class HospitalPatientExamComponent implements OnInit {
     this.setDispositionTask$ = this.store.select(selectSetDisposition);
   }
 
+  convertSpecies(species: Species[]) {
+    return species.map((x) => ({ id: x.id, display: x.name }));
+  }
+
   addTreatmentInstruction() {
     this.examForm.controls.treatmentInstructions.push(
       new FormGroup({
@@ -164,6 +170,9 @@ export class HospitalPatientExamComponent implements OnInit {
         ]),
         quantityUnit: new FormControl<string | null>('', [Validators.required]),
         medicationId: new FormControl<string | null>('', [Validators.required]),
+        medicationConcentrationId: new FormControl<string | null>('', [
+          Validators.required,
+        ]),
         administrationMethodId: new FormControl<string | null>('', [
           Validators.required,
         ]),
@@ -215,7 +224,9 @@ export class HospitalPatientExamComponent implements OnInit {
         exam: {
           patientId: this.id,
           speciesId: Number(this.examForm.controls.speciesId.value),
-          speciesAgeId: Number(this.examForm.controls.speciesAgeId.value),
+          speciesVariantId: Number(
+            this.examForm.controls.speciesVariantId.value
+          ),
           sex: Number(this.examForm.controls.sex.value),
           weightValue: this.examForm.controls.weightValue.value
             ? Number(this.examForm.controls.weightValue.value)
@@ -223,11 +234,8 @@ export class HospitalPatientExamComponent implements OnInit {
           weightUnit: this.examForm.controls.weightUnit.value
             ? Number(this.examForm.controls.weightUnit.value)
             : null,
-          temperatureValue: this.examForm.controls.temperatureValue.value
-            ? Number(this.examForm.controls.temperatureValue.value)
-            : null,
-          temperatureUnit: this.examForm.controls.temperatureUnit.value
-            ? Number(this.examForm.controls.temperatureUnit.value)
+          temperature: this.examForm.controls.temperature.value
+            ? Number(this.examForm.controls.temperature.value)
             : null,
           attitudeId: this.examForm.controls.attitudeId.value
             ? Number(this.examForm.controls.attitudeId.value)
@@ -255,6 +263,7 @@ export class HospitalPatientExamComponent implements OnInit {
               quantityValue: Number(tm.quantityValue),
               quantityUnit: tm.quantityUnit || '',
               medicationId: Number(tm.medicationId),
+              medicationConcentrationId: Number(tm.medicationConcentrationId),
               administrationMethodId: Number(tm.administrationMethodId),
               comments: tm.comments || '',
             })),

@@ -60,12 +60,10 @@ public class DatabaseContext : DbContext
     public DbSet<HomeCareRequest> HomeCareRequests { get; set; }
     public DbSet<Diet> Diets { get; set; }
     public DbSet<Tag> Tags { get; set; }
-    public DbSet<ActiveSubstance> ActiveSubstances { get; set; }
     public DbSet<AdministrationMethod> AdministrationMethods { get; set; }
     public DbSet<Medication> Medications { get; set; }
-    public DbSet<PharmaceuticalForm> PharmaceuticalForms { get; set; }
-    public DbSet<TargetSpecies> TargetSpecies { get; set; }
-    public DbSet<TherapeuticGroup> TherapeuticGroups { get; set; }
+    public DbSet<MedicationConcentration> MedicationConcentrations { get; set; }
+    public DbSet<MedicationConcentrationSpeciesDose> MedicationConcentrationSpeciesDoses { get; set; }
     public DbSet<DispositionReason> DispositionReasons { get; set; }
     public DbSet<ReleaseType> ReleaseTypes { get; set; }
     public DbSet<TransferLocation> TransferLocations { get; set; }
@@ -82,7 +80,6 @@ public class DatabaseContext : DbContext
     public DbSet<PatientBloodTestAttachment> PatientBloodTestAttachments { get; set; }
     public DbSet<PatientFaecalTest> PatientFaecalTests { get; set; }
     public DbSet<Species> Species { get; set; }
-    public DbSet<SpeciesAge> SpeciesAges { get; set; }
     public DbSet<SpeciesVariant> SpeciesVariants { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }

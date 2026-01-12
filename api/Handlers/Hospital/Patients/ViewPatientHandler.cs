@@ -192,13 +192,12 @@ public static class ViewPatientExtensions
             .Include(y => y.Exams).ThenInclude(e => e.MucousMembraneTexture)
             .Include(y => y.Exams).ThenInclude(e => e.Examiner)
             .Include(y => y.Exams).ThenInclude(e => e.Species)
-            .Include(y => y.Exams).ThenInclude(e => e.SpeciesAge)
+            .Include(y => y.Exams).ThenInclude(e => e.SpeciesVariant)
             .Include(y => y.Exams).ThenInclude(e => e.TreatmentInstructions)
             .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.AdministrationMethod)
-            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.ActiveSubstances)
-            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.PharmaceuticalForm)
-            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.TargetSpecies)
-            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.TherapeuticGroup);
+            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.Concentrations).ThenInclude(m => m.SpeciesDoses).ThenInclude(m => m.Species)
+            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.Medication).ThenInclude(m => m.Concentrations).ThenInclude(m => m.SpeciesDoses).ThenInclude(m => m.AdministrationMethod)
+            .Include(y => y.Exams).ThenInclude(e => e.TreatmentMedications).ThenInclude(m => m.MedicationConcentration);
     }
 
     public static IQueryable<Patient> IncludePrescriptions(this IQueryable<Patient> x)
@@ -207,10 +206,9 @@ public static class ViewPatientExtensions
             .Include(y => y.PrescriptionInstructions).ThenInclude(p => p.Administrations).ThenInclude(a => a.Administrator)
             .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Administrations).ThenInclude(a => a.Administrator)
             .Include(y => y.PrescriptionMedications).ThenInclude(p => p.AdministrationMethod)
-            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.ActiveSubstances)
-            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.PharmaceuticalForm)
-            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.TargetSpecies)
-            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.TherapeuticGroup);
+            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.Concentrations).ThenInclude(m => m.SpeciesDoses).ThenInclude(m => m.Species)
+            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.Medication).ThenInclude(m => m.Concentrations).ThenInclude(m => m.SpeciesDoses).ThenInclude(m => m.AdministrationMethod)
+            .Include(y => y.PrescriptionMedications).ThenInclude(p => p.MedicationConcentration);
     }
 
     public static IQueryable<Patient> IncludeRechecks(this IQueryable<Patient> x)

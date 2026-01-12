@@ -15,6 +15,7 @@ public class AddMedicationPrescription : IRequest<IResult>
     public decimal QuantityValue { get; set; }
     public string QuantityUnit { get; set; }
     public int MedicationId { get; set; }
+    public int MedicationConcentrationId { get; set; }
     public int AdministrationMethodId { get; set; }
     public string Comments { get; set; }
     public string Frequency { get; set; }
@@ -43,6 +44,9 @@ public class AddMedicationPrescriptionHandler : IRequestHandler<AddMedicationPre
         var medication = await _repository.Get<Medication>(request.MedicationId);
         if (medication == null) return Results.BadRequest();
 
+        var medicationConcentration = await _repository.Get<MedicationConcentration>(request.MedicationConcentrationId);
+        if (medicationConcentration == null) return Results.BadRequest();
+
         var administrationMethod = await _repository.Get<AdministrationMethod>(request.AdministrationMethodId);
         if (administrationMethod == null) return Results.BadRequest();
 
@@ -52,6 +56,7 @@ public class AddMedicationPrescriptionHandler : IRequestHandler<AddMedicationPre
             Start = request.Start,
             End = request.End,
             Medication = medication,
+            MedicationConcentration = medicationConcentration,
             AdministrationMethod = administrationMethod,
             QuantityValue = request.QuantityValue,
             QuantityUnit = request.QuantityUnit,

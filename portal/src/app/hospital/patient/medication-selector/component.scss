@@ -1,53 +1,46 @@
-input[type="text"] {
-  padding: 0.25rem;
-  max-width: max-content;
-}
-
-a {
-  color: var(--theme-primary);
-  text-decoration: underline;
-  cursor: pointer;
+.medication {
+  border-left: solid 5px var(--theme-primary);
+  padding-left: 1rem;
 }
 
 .wrapper {
-  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
 
-  .selector {
-    position: absolute;
-    top: 4rem;
-    width: 30rem;
-    background-color: rgb(222, 222, 222);
-    border: solid 1px rgb(71, 71, 71);
+input,
+select {
+  padding: 0.25rem 0.5rem;
+}
 
-    ul {
-      list-style: none;
-      max-width: max-content;
+tr.selected {
+  font-weight: bold;
+}
 
-      li {
-        cursor: pointer;
-        padding: 0.125rem 0.25rem;
-      }
+.input-with-units {
+  display: flex;
 
-      li:focus,
-      li:hover,
-      li:active {
-        background-color: rgb(200, 200, 200);
-        outline: none;
-      }
+  input {
+    max-width: 6ch;
+    text-align: right;
+    border-top-right-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+    border-right: none;
+  }
 
-      li:not(:last-child) {
-        border-bottom: solid 1px rgb(150, 150, 150);
-      }
-    }
+  select {
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
   }
 }
 
-.clear-input {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+p.notes {
+  margin-bottom: 0.5rem;
+}
 
-  input {
-    cursor: not-allowed;
-  }
+p.unknown {
+  color: var(--theme-color-2);
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }

@@ -74,7 +74,7 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.frequency }}</td>
       <td>{{ prescription.quantityValue }}{{ prescription.quantityUnit }}</td>
       <td>{{ prescription.administrationMethod.description }}</td>
-      <td>{{ prescription.medication.name }}</td>
+      <td>{{ prescription.medication.activeSubstance }}</td>
       <td>{{ prescription.comments }}</td>
       <td>
         @if (isVet && patient.status != PatientStatus.Dispositioned) {
@@ -160,54 +160,13 @@ patient.prescriptionMedications.length === 0) {
     </div>
   </div>
   <div class="fields">
-    <div class="field">
-      <label for="quantity">
-        Quantity
-        <span class="required">*</span>
-      </label>
-      <div class="input-with-units">
-        <input
-          id="quantity"
-          type="number"
-          formControlName="quantityValue"
-          autocomplete="off"
-        />
-        <select id="quantityUnit" formControlName="quantityUnit">
-          <option>ml</option>
-          <option>unit</option>
-        </select>
-      </div>
-    </div>
-    <div class="field">
-      <label for="administrationMethod">
-        Administration
-        <span class="required">*</span>
-      </label>
-      <select
-        id="administrationMethod"
-        formControlName="administrationMethodId"
-      >
-        <option value=""></option>
-        @if (administrationMethods$ | async; as administrationMethods) { @if
-        (administrationMethods.loading) {
-        <spinner />
-        } @else if (administrationMethods.error) {
-        <div class="error">Error occurred</div>
-        } @else if (administrationMethods.data) { @for (administrationMethod of
-        administrationMethods.data; track administrationMethod.id) {
-        <option [value]="administrationMethod.id">
-          {{ administrationMethod.description }}
-        </option>
-        } }}
-      </select>
-    </div>
-    <div class="field">
-      <hospital-patient-medication-selector
-        [id]="'medications'"
-        [control]="'medicationId'"
-        [formGroup]="prescriptionMedicationForm"
-      ></hospital-patient-medication-selector>
-    </div>
+    <hospital-patient-medication-selector
+      [id]="0"
+      [speciesId]="patient.species?.id?.toString()"
+      [weightValue]="patient.latestWeight?.weightValue?.toString()"
+      [weightUnit]="patient.latestWeight?.weightUnit"
+      [formGroup]="prescriptionMedicationForm"
+    ></hospital-patient-medication-selector>
   </div>
   <div class="field">
     <label for="comments">Comments</label>

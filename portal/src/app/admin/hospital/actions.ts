@@ -10,19 +10,16 @@ import {
   CreateReleaseTypeCommand,
   TransferLocation,
   CreateTransferLocationCommand,
-  AdministrationMethod,
-  CreateAdministrationMethodCommand,
   Medication,
   Area,
   CreateAreaCommand,
   CreatePenCommand,
   CreateSpeciesCommand,
   Species,
-  CreateSpeciesAgeCommand,
   CreateSpeciesVariantCommand,
   UpdateSpeciesCommand,
-  UpdateSpeciesAgeCommand,
   UpdateSpeciesVariantCommand,
+  SpeciesType,
 } from './state';
 
 // Diets
@@ -174,41 +171,6 @@ export const updateTransferLocationError = createAction(
   '[HMS-A] Update transfer location: error'
 );
 
-// Administration methods
-
-export const getAdministrationMethods = createAction(
-  '[HMS-A] Get administration methods'
-);
-export const getAdministrationMethodsSuccess = createAction(
-  '[HMS-A] Get administration methods: success',
-  props<{ administrationMethods: AdministrationMethod[] }>()
-);
-export const getAdministrationMethodsError = createAction(
-  '[HMS-A] Get administration methods: error'
-);
-
-export const createAdministrationMethod = createAction(
-  '[HMS-A] Create administration method',
-  props<{ administrationMethod: CreateAdministrationMethodCommand }>()
-);
-export const createAdministrationMethodSuccess = createAction(
-  '[HMS-A] Create administration method: success'
-);
-export const createAdministrationMethodError = createAction(
-  '[HMS-A] Create administration method: error'
-);
-
-export const updateAdministrationMethod = createAction(
-  '[HMS-A] Update administration method',
-  props<{ administrationMethod: AdministrationMethod }>()
-);
-export const updateAdministrationMethodSuccess = createAction(
-  '[HMS-A] Update administration method: success'
-);
-export const updateAdministrationMethodError = createAction(
-  '[HMS-A] Update administration method: error'
-);
-
 // Medications
 
 export const getMedications = createAction('[HMS-A] Get medications');
@@ -220,26 +182,50 @@ export const getMedicationsError = createAction(
   '[HMS-A] Get medications: error'
 );
 
-export const enableMedication = createAction(
-  '[HMS-A] Enable medication',
-  props<{ medicationId: number }>()
+export const createMedication = createAction(
+  '[HMS-A] Create medication',
+  props<{ activeSubstance: string; brands: string[]; notes: string }>()
 );
-export const enableMedicationSuccess = createAction(
-  '[HMS-A] Enable medication: success'
+export const createMedicationSuccess = createAction(
+  '[HMS-A] Create medication: success'
 );
-export const enableMedicationError = createAction(
-  '[HMS-A] Enable medication: error'
+export const createMedicationError = createAction(
+  '[HMS-A] Create medication: error'
 );
 
-export const disableMedication = createAction(
-  '[HMS-A] Disable medication',
-  props<{ medicationId: number }>()
+export const createMedicationConcentration = createAction(
+  '[HMS-A] Create medication concentration',
+  props<{
+    medicationId: number;
+    form: string;
+    concentrationMgMl: number;
+  }>()
 );
-export const disableMedicationSuccess = createAction(
-  '[HMS-A] Disable medication: success'
+export const createMedicationConcentrationSuccess = createAction(
+  '[HMS-A] Create medication concentration: success'
 );
-export const disableMedicationError = createAction(
-  '[HMS-A] Disable medication: error'
+export const createMedicationConcentrationError = createAction(
+  '[HMS-A] Create medication concentration: error'
+);
+
+export const createMedicationConcentrationSpeciesDose = createAction(
+  '[HMS-A] Create medication concentration species dose',
+  props<{
+    medicationConcentrationId: number;
+    speciesId: number | null;
+    speciesType: SpeciesType | null;
+    doseMgKg: number;
+    doseMlKg: number;
+    administrationMethodId: number;
+    frequency: string;
+    notes: string;
+  }>()
+);
+export const createMedicationConcentrationSpeciesDoseSuccess = createAction(
+  '[HMS-A] Create medication concentration species dose: success'
+);
+export const createMedicationConcentrationSpeciesDoseError = createAction(
+  '[HMS-A] Create medication concentration species dose: error'
 );
 
 // Locations
@@ -265,6 +251,35 @@ export const createPen = createAction(
 export const createPenSuccess = createAction('[HMS-A] Create pen: success');
 export const createPenError = createAction('[HMS-A] Create pen: error');
 
+export const movePen = createAction(
+  '[HMS-A] Move pen',
+  props<{ penId: number; areaId: number }>()
+);
+export const movePenSuccess = createAction('[HMS-A] Move pen: success');
+export const movePenError = createAction('[HMS-A] Move pen: error');
+
+export const changePenStatus = createAction(
+  '[HMS-A] Change pen status',
+  props<{ penId: number; enabled: boolean }>()
+);
+export const changePenStatusSuccess = createAction(
+  '[HMS-A] Change pen status: success'
+);
+export const changePenStatusError = createAction(
+  '[HMS-A] Change pen status: error'
+);
+
+export const changeAreaStatus = createAction(
+  '[HMS-A] Change area status',
+  props<{ areaId: number; enabled: boolean }>()
+);
+export const changeAreaStatusSuccess = createAction(
+  '[HMS-A] Change area status: success'
+);
+export const changeAreaStatusError = createAction(
+  '[HMS-A] Change area status: error'
+);
+
 // Species
 
 export const getSpecies = createAction('[HMS-A] Get species');
@@ -282,17 +297,6 @@ export const createSpeciesSuccess = createAction(
   '[HMS-A] Create species: success'
 );
 export const createSpeciesError = createAction('[HMS-A] Create species: error');
-
-export const createSpeciesAge = createAction(
-  '[HMS-A] Create species age',
-  props<{ age: CreateSpeciesAgeCommand }>()
-);
-export const createSpeciesAgeSuccess = createAction(
-  '[HMS-A] Create species age: success'
-);
-export const createSpeciesAgeError = createAction(
-  '[HMS-A] Create species age: error'
-);
 
 export const createSpeciesVariant = createAction(
   '[HMS-A] Create species variant',
@@ -313,17 +317,6 @@ export const updateSpeciesSuccess = createAction(
   '[HMS-A] Update species: success'
 );
 export const updateSpeciesError = createAction('[HMS-A] Update species: error');
-
-export const updateSpeciesAge = createAction(
-  '[HMS-A] Update species age',
-  props<{ age: UpdateSpeciesAgeCommand }>()
-);
-export const updateSpeciesAgeSuccess = createAction(
-  '[HMS-A] Update species age: success'
-);
-export const updateSpeciesAgeError = createAction(
-  '[HMS-A] Update species age: error'
-);
 
 export const updateSpeciesVariant = createAction(
   '[HMS-A] Update species variant',

@@ -53,7 +53,6 @@ _ = Task.Run(async () =>
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-    await context.LoadMedications();
     await context.SetupHospitalReferenceData();
 });
 

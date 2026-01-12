@@ -54,7 +54,7 @@ async; as task) { @if (task.loading) {
       <p>
         💊 {{ prescription.quantityValue }}{{ prescription.quantityUnit }} ({{
         prescription.administrationMethod.description }}) {{
-        prescription.medication.name }}
+        prescription.medication.activeSubstance }}
       </p>
       <p>📋 {{ prescription.comments }}</p>
       } @else {

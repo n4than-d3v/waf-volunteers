@@ -1,7 +1,7 @@
 input[type="text"],
 input[type="number"],
 select {
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   max-width: max-content;
 }
 
@@ -11,20 +11,53 @@ select {
   gap: 1rem;
 }
 
-.input-with-units {
+.rate-split {
   display: flex;
   align-items: center;
 
   span {
     display: block;
-    margin-right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-top: solid 1px var(--theme-primary);
+    border-bottom: solid 1px var(--theme-primary);
   }
 
   input {
     max-width: 6ch;
-    text-align: right;
+    text-align: center;
     border-top-right-radius: 0rem;
     border-bottom-right-radius: 0rem;
+  }
+
+  select {
+    max-width: max-content;
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+    padding-top: 5px;
+  }
+}
+
+.interval-split {
+  display: flex;
+  align-items: center;
+
+  span {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    border-top: solid 1px var(--theme-primary);
+    border-bottom: solid 1px var(--theme-primary);
+    border-left: solid 1px var(--theme-primary);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  input {
+    max-width: 6ch;
+    text-align: center;
+    border-top-right-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
     border-right: none;
   }
 
@@ -32,5 +65,6 @@ select {
     max-width: max-content;
     border-top-left-radius: 0rem;
     border-bottom-left-radius: 0rem;
+    padding-top: 5px;
   }
 }

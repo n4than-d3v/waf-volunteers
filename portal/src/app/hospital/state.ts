@@ -176,7 +176,7 @@ export interface Patient extends ListPatient {
   faecalTests: ListFaecalTest[];
   bloodTests: ListBloodTest[];
   latestWeight: {
-    weightUnit: string;
+    weightUnit: number;
     weightValue: number;
   } | null;
 }

@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
-const BASE_URL = 'http://localhost:5201';
+const BASE_URL = '';
 
 export const baseUrlInterceptor: HttpInterceptorFn = (req, next) => {
   const apiReq = req.clone({

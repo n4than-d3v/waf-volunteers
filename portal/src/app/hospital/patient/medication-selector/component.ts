@@ -61,8 +61,8 @@ export class HospitalPatientMedicationSelectorComponent
   @Input({ required: true }) id!: number;
   @Input({ required: true }) formGroup!: FormGroup;
   @Input() speciesId?: string | null | undefined;
-  @Input() weightValue?: string | null | undefined;
-  @Input() weightUnit?: string | null | undefined;
+  @Input() weightValue?: string | number | null | undefined;
+  @Input() weightUnit?: string | number | null | undefined;
 
   medications$: Observable<ReadOnlyWrapper<Medication[]>>;
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
@@ -148,6 +148,16 @@ export class HospitalPatientMedicationSelectorComponent
     this.formGroup.controls['quantityUnit'].setValue('ml');
     if (this.formGroup.controls['frequency']) {
       this.formGroup.controls['frequency'].setValue(dose.frequency);
+      const frequencyType = dose.frequency.startsWith('Every')
+        ? 'interval'
+        : 'rate';
+      this.formGroup.controls['frequencyType'].setValue(frequencyType);
+      const split = dose.frequency
+        .replace('Every ', '')
+        .replace('times per ', '')
+        .split(' ');
+      this.formGroup.controls['frequencyX'].setValue(split[0]);
+      this.formGroup.controls['frequencyY'].setValue(split[1]);
     }
   }
 

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   DispositionReason,
   getDisposition,
+  getWeightUnit,
   Patient,
   PatientStatus,
   ReadOnlyWrapper,
@@ -204,4 +205,6 @@ export class HospitalPatientStatusComponent implements OnInit {
     );
     this.reset();
   }
+
+  getWeightUnit = getWeightUnit;
 }

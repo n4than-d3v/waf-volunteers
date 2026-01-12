@@ -16,9 +16,10 @@ patient.prescriptionMedications.length === 0) {
       <th>Start</th>
       <th>End</th>
       <th>Frequency</th>
-      <th>Quantity</th>
-      <th>Administration</th>
       <th>Medication</th>
+      <th>Concentration</th>
+      <th>Administration</th>
+      <th>Dose</th>
       <th>Comments</th>
       <th colspan="5"></th>
     </tr>
@@ -30,7 +31,7 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
-      <td colspan="3"></td>
+      <td colspan="4"></td>
       <td>{{ prescription.instructions }}</td>
       <td>
         @if (isVet && patient.status != PatientStatus.Dispositioned) {
@@ -45,7 +46,7 @@ patient.prescriptionMedications.length === 0) {
     </tr>
     @if (showAdministrations && prescription.administrations.length > 0) {
     <tr class="administration-header">
-      <td colspan="2"></td>
+      <td colspan="3"></td>
       <th>Administered</th>
       <th>On</th>
       <th>By</th>
@@ -56,7 +57,7 @@ patient.prescriptionMedications.length === 0) {
     @for (administration of prescription.administrations; track
     administration.id) {
     <tr>
-      <td colspan="3"></td>
+      <td colspan="4"></td>
       <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
         {{ administration.administrator.firstName }} {{
@@ -72,9 +73,16 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
-      <td>{{ prescription.quantityValue }}{{ prescription.quantityUnit }}</td>
-      <td>{{ prescription.administrationMethod.description }}</td>
       <td>{{ prescription.medication.activeSubstance }}</td>
+      <td>
+        {{ prescription.medicationConcentration.form }}, {{
+        prescription.medicationConcentration.concentrationMgMl }} mg/ml
+      </td>
+      <td>
+        {{ prescription.administrationMethod.description }} ({{
+        prescription.administrationMethod.code }})
+      </td>
+      <td>{{ prescription.quantityValue }} {{ prescription.quantityUnit }}</td>
       <td>{{ prescription.comments }}</td>
       <td>
         @if (isVet && patient.status != PatientStatus.Dispositioned) {
@@ -89,7 +97,7 @@ patient.prescriptionMedications.length === 0) {
     </tr>
     @if (showAdministrations && prescription.administrations.length > 0) {
     <tr class="administration-header">
-      <td colspan="2"></td>
+      <td colspan="3"></td>
       <th>Administered</th>
       <th>On</th>
       <th>By</th>
@@ -100,7 +108,7 @@ patient.prescriptionMedications.length === 0) {
     @for (administration of prescription.administrations; track
     administration.id) {
     <tr>
-      <td colspan="3"></td>
+      <td colspan="4"></td>
       <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
         {{ administration.administrator.firstName }} {{
@@ -154,28 +162,18 @@ patient.prescriptionMedications.length === 0) {
     <div class="field">
       <hospital-patient-prescriptions-frequency
         [id]="'frequency'"
-        [control]="'frequency'"
         [formGroup]="prescriptionMedicationForm"
       ></hospital-patient-prescriptions-frequency>
     </div>
   </div>
   <div class="fields">
     <hospital-patient-medication-selector
-      [id]="0"
+      [id]="-1"
       [speciesId]="patient.species?.id?.toString()"
       [weightValue]="patient.latestWeight?.weightValue?.toString()"
       [weightUnit]="patient.latestWeight?.weightUnit"
       [formGroup]="prescriptionMedicationForm"
     ></hospital-patient-medication-selector>
-  </div>
-  <div class="field">
-    <label for="comments">Comments</label>
-    <textarea
-      id="comments"
-      formControlName="comments"
-      autocomplete="off"
-      rows="3"
-    ></textarea>
   </div>
   @if (!saving) { @if (attemptedSave && !prescriptionMedicationForm.valid) {
   <div class="error">Please fill in all required fields</div>
@@ -213,7 +211,6 @@ patient.prescriptionMedications.length === 0) {
     <div class="field">
       <hospital-patient-prescriptions-frequency
         [id]="'frequency'"
-        [control]="'frequency'"
         [formGroup]="prescriptionInstructionForm"
       ></hospital-patient-prescriptions-frequency>
     </div>

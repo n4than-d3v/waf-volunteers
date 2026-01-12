@@ -19,21 +19,16 @@ import {
 })
 export class HospitalPatientPrescriptionsFrequencyComponent {
   @Input({ required: true }) id!: string;
-  @Input({ required: true }) control!: string;
   @Input({ required: true }) formGroup!: FormGroup;
 
-  frequencyType: '' | 'rate' | 'interval' = '';
-
-  x: number | null = null;
-  y: string | null = null;
-
   update() {
-    if (this.frequencyType === 'rate') {
-      this.formGroup.controls[this.control].setValue(`${this.x} ${this.y}`);
-    } else if (this.frequencyType === 'interval') {
-      this.formGroup.controls[this.control].setValue(
-        `Every ${this.x} ${this.y}`
-      );
+    const frequencyType = this.formGroup.value['frequencyType'];
+    const x = this.formGroup.value['frequencyX'];
+    const y = this.formGroup.value['frequencyY'];
+    if (frequencyType === 'rate') {
+      this.formGroup.controls['frequency'].setValue(`${x} times per ${y}`);
+    } else if (frequencyType === 'interval') {
+      this.formGroup.controls['frequency'].setValue(`Every ${x} ${y}`);
     }
   }
 }

@@ -9,6 +9,13 @@
         <td>Status</td>
         <td>{{ getStatus() }}</td>
       </tr>
+      <tr>
+        <td>Weight</td>
+        <td>
+          @if (patient.latestWeight) { {{ patient.latestWeight.weightValue }} {{
+          getWeightUnit(patient.latestWeight.weightUnit) }} }
+        </td>
+      </tr>
     </tbody>
   </table>
   @if (patient.status == PatientStatus.Dispositioned) {

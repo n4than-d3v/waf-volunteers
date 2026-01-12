@@ -1,4 +1,4 @@
-<div class="medication">
+<div class="medication" [class.border]="id != -1">
   @if (medications$ | async; as medications) { @if (medications.loading) {
   <spinner />
   } @else if (medications.error) {
@@ -68,7 +68,7 @@
     </div>
     <div class="field">
       <label for="quantity-{{ id }}">
-        Quantity
+        Dose
         <span class="required">*</span>
       </label>
       <div class="input-with-units">
@@ -92,12 +92,12 @@
     </div>
     <div class="field">
       <label for="comments-{{ id }}">Comments</label>
-      <input
+      <textarea
         id="comments-{{ id }}"
-        type="text"
         formControlName="comments"
         autocomplete="off"
-      />
+        rows="1"
+      ></textarea>
     </div>
     }
   </div>

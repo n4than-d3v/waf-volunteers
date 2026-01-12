@@ -74,6 +74,7 @@ public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResu
                 .ThenInclude(y => y.Pen)
                     .ThenInclude(y => y.Area)
             .Include(y => y.Medication)
+            .Include(y => y.MedicationConcentration)
             .Include(y => y.AdministrationMethod)
             .Include(y => y.Administrations)
                 .ThenInclude(y => y.Administrator);

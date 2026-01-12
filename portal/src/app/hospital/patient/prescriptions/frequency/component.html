@@ -4,45 +4,36 @@
     <span class="required">*</span>
   </label>
   <div class="flex">
-    <select [(ngModel)]="frequencyType" [ngModelOptions]="{standalone: true}">
+    <select id="{{ id }}" formControlName="frequencyType">
       <option value=""></option>
       <option value="rate">Rate (X times per Y)</option>
       <option value="interval">Interval (Every X Y)</option>
     </select>
-    @if (frequencyType === 'rate') {
-    <div class="input-with-units">
+    @if (formGroup.value.frequencyType === 'rate') {
+    <div class="rate-split">
       <input
         id="{{ id }}"
-        [(ngModel)]="x"
-        [ngModelOptions]="{standalone: true}"
+        formControlName="frequencyX"
         (change)="update()"
         type="number"
       />
-      <select
-        [(ngModel)]="y"
-        [ngModelOptions]="{standalone: true}"
-        (change)="update()"
-      >
-        <option>times per hour</option>
-        <option>times per day</option>
-        <option>times per week</option>
+      <span>times per</span>
+      <select formControlName="frequencyY" (change)="update()">
+        <option>hour</option>
+        <option>day</option>
+        <option>week</option>
       </select>
     </div>
-    } @else if (frequencyType === 'interval') {
-    <div class="input-with-units">
+    } @else if (formGroup.value.frequencyType === 'interval') {
+    <div class="interval-split">
       <span>Every</span>
       <input
         id="{{ id }}"
-        [(ngModel)]="x"
-        [ngModelOptions]="{standalone: true}"
+        formControlName="frequencyX"
         type="number"
         (change)="update()"
       />
-      <select
-        [(ngModel)]="y"
-        [ngModelOptions]="{standalone: true}"
-        (change)="update()"
-      >
+      <select formControlName="frequencyY" (change)="update()">
         <option>hours</option>
         <option>days</option>
         <option>weeks</option>
@@ -50,5 +41,5 @@
     </div>
     }
   </div>
-  <input type="hidden" [formControlName]="control" />
+  <input type="hidden" formControlName="frequency" />
 </div>

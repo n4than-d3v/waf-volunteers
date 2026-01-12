@@ -52,12 +52,18 @@ async; as task) { @if (task.loading) {
     <div class="description">
       @if (isPrescriptionMedication(prescription)) {
       <p>
-        💊 {{ prescription.quantityValue }}{{ prescription.quantityUnit }} ({{
-        prescription.administrationMethod.description }}) {{
-        prescription.medication.activeSubstance }}
+        💊 {{ prescription.medication.activeSubstance }} &middot; {{
+        prescription.medicationConcentration.form }}, {{
+        prescription.medicationConcentration.concentrationMgMl }} mg/ml
       </p>
+      <p>
+        💉 {{ prescription.administrationMethod.description }} ({{
+        prescription.administrationMethod.code }}), {{
+        prescription.quantityValue }} {{ prescription.quantityUnit }}
+      </p>
+      @if (prescription.comments) {
       <p>📋 {{ prescription.comments }}</p>
-      } @else {
+      } } @else {
       <p>📋 {{ prescription.instructions }}</p>
       }
     </div>

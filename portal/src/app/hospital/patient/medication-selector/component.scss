@@ -1,4 +1,4 @@
-.medication {
+.medication.border {
   border-left: solid 5px var(--theme-primary);
   padding-left: 1rem;
 }
@@ -10,7 +10,8 @@
 }
 
 input,
-select {
+select,
+textarea {
   padding: 0.25rem 0.5rem;
 }
 
@@ -43,4 +44,8 @@ p.unknown {
   color: var(--theme-color-2);
   font-weight: bold;
   margin-bottom: 0.5rem;
+}
+
+textarea {
+  min-width: 30rem;
 }

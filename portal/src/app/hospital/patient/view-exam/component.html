@@ -32,8 +32,8 @@
       <tr>
         <td>Weight</td>
         <td>
-          {{ exam.weightValue ? exam.weightValue +
-          getWeightUnit(exam.weightUnit) : '(blank)' }}
+          @if (exam.weightValue && exam.weightUnit) { {{ exam.weightValue }} {{
+          getWeightUnit(exam.weightUnit) }} } @else { (blank) }
         </td>
       </tr>
       <tr>
@@ -86,26 +86,26 @@
 <table class="treatments">
   <thead>
     <tr>
-      <th>Quantity</th>
-      <th>Administration</th>
       <th>Medication</th>
       <th>Concentration</th>
+      <th>Administration</th>
+      <th>Dose</th>
       <th>Comments</th>
     </tr>
   </thead>
   <tbody>
     @for (medication of exam.treatmentMedications; track medication.id) {
     <tr>
-      <td>{{ medication.quantityValue }}{{ medication.quantityUnit }}</td>
+      <td>{{ medication.medication.activeSubstance }}</td>
+      <td>
+        {{ medication.medicationConcentration.form }}, {{
+        medication.medicationConcentration.concentrationMgMl }} mg/ml
+      </td>
       <td>
         {{ medication.administrationMethod.description }} ({{
         medication.administrationMethod.code }})
       </td>
-      <td>{{ medication.medication.activeSubstance }}</td>
-      <td>
-        {{ medication.medicationConcentration.form }}, {{
-        medication.medicationConcentration.concentrationMgMl }} ml/kg
-      </td>
+      <td>{{ medication.quantityValue }} {{ medication.quantityUnit }}</td>
       <td>{{ medication.comments }}</td>
     </tr>
     }

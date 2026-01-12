@@ -100,7 +100,9 @@ task) { @if (task.loading) {
       @if (recheck.comments) {
       <p>✏️ {{ recheck.comments }}</p>
       } @if (recheck.weightValue && recheck.weightUnit) {
-      <p>⚖️ {{ recheck.weightValue }}{{ getWeightUnit(recheck.weightUnit) }}</p>
+      <p>
+        ⚖️ {{ recheck.weightValue }} {{ getWeightUnit(recheck.weightUnit) }}
+      </p>
       }
     </div>
     }

@@ -82,6 +82,9 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     start: new FormControl('', [Validators.required]),
     end: new FormControl('', [Validators.required]),
     instructions: new FormControl('', [Validators.required]),
+    frequencyType: new FormControl('', [Validators.required]),
+    frequencyX: new FormControl('', [Validators.required]),
+    frequencyY: new FormControl('', [Validators.required]),
     frequency: new FormControl('', [Validators.required]),
   });
 
@@ -94,6 +97,9 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     medicationConcentrationId: new FormControl('', [Validators.required]),
     administrationMethodId: new FormControl('', [Validators.required]),
     comments: new FormControl(''),
+    frequencyType: new FormControl('', [Validators.required]),
+    frequencyX: new FormControl('', [Validators.required]),
+    frequencyY: new FormControl('', [Validators.required]),
     frequency: new FormControl('', [Validators.required]),
   });
 

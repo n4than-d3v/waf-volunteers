@@ -76,6 +76,9 @@ export class AdminHospitalMedicationsComponent implements OnInit {
     doseMgKg: new FormControl(''),
     doseMlKg: new FormControl(''),
     administrationMethodId: new FormControl(''),
+    frequencyType: new FormControl(''),
+    frequencyX: new FormControl(''),
+    frequencyY: new FormControl(''),
     frequency: new FormControl(''),
     notes: new FormControl(''),
   });

@@ -29,7 +29,9 @@ public class Notice : Entity
 
     public bool ShouldShow(Account.Account account)
     {
-        return Roles.HasFlag(account.Roles) || account.Roles.HasFlag(Roles);
+        if (account.Status == AccountStatus.Inactive) return false;
+        return (account.Roles & Roles) != AccountRoles.None;
+        // return Roles.HasFlag(account.Roles) || account.Roles.HasFlag(Roles);
     }
 
     #endregion

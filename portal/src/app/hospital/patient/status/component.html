@@ -118,23 +118,17 @@
             Disposition reason
             <span class="required">*</span>
           </label>
-          <select
-            id="dispositionReasonId"
-            formControlName="dispositionReasonId"
-          >
-            <option value=""></option>
-            @if (dispositionReasons$ | async; as dispositionReasons) { @if
-            (dispositionReasons.loading) {
-            <spinner />
-            } @else if (dispositionReasons.error) {
-            <div class="error">Error occurred</div>
-            } @else if (dispositionReasons.data) { @for (dispositionReason of
-            dispositionReasons.data; track dispositionReason.id) {
-            <option [value]="dispositionReason.id">
-              {{ dispositionReason.description }}
-            </option>
-            } } }
-          </select>
+          @if (dispositionReasons$ | async; as dispositionReasons) { @if
+          (dispositionReasons.data) {
+          <hospital-patient-autocomplete
+            [id]="'dispositionReasonId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'dispositionReasonId'"
+            [formGroup]="deadForm"
+            [items]="convertDispositionReasons(dispositionReasons.data)"
+          ></hospital-patient-autocomplete>
+          } }
         </div>
       </div>
       @if (attemptedSave && !deadForm.valid) {

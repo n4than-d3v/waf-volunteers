@@ -15,10 +15,6 @@ textarea {
   padding: 0.25rem 0.5rem;
 }
 
-tr.selected {
-  font-weight: bold;
-}
-
 .input-with-units {
   display: flex;
 
@@ -48,4 +44,26 @@ p.unknown {
 
 textarea {
   min-width: 30rem;
+}
+
+table {
+  tr.selected {
+    td:not(:nth-child(1)) {
+      font-weight: bold;
+    }
+  }
+
+  td,
+  th {
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
+
+    &:nth-child(1) {
+      max-width: 30rem;
+
+      span.highlight {
+        font-weight: bold;
+      }
+    }
+  }
 }

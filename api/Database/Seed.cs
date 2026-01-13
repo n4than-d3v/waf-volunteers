@@ -3,6 +3,14 @@ using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.Medications;
 using Api.Database.Entities.Hospital.Patients.Outcome;
+using Microsoft.Graph.Models;
+using Newtonsoft.Json;
+using static Azure.Core.HttpHeader;
+using System.Threading;
+using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Org.BouncyCastle.Ocsp;
+using static Microsoft.Graph.Constants;
 
 namespace Api.Database;
 
@@ -14,37 +22,13 @@ public static class Seed
     {
         if (context.Medications.Any()) return;
 
-        List<CreateMedication> commands = [
-            new CreateMedication
-            {
-                Drug = "Amoxicillin",
-                Brands = ["Clamoxyl", "Betamox"],
-                Notes = "Broad spectrum AB. DO NOT use in rabbits.",
-                Forms = [
-                    new()
-                    {
-                        Form = "Injectable",
-                        ConcentrationMgMl = 150,
-                        Doses = [
-                            new()
-                            {
-                                SpeciesType = SpeciesType.Mammal,
-                                DoseMgKg = 15,
-                                DoseMlKg = 0.1,
-                                AdministrationMethod = "SQ",
-                                Frequency = "Every 48 hours",
-                            },
-                            new()
-                            {
-                                Species = "Hedgehog",
-                                DoseMgKg = 100,
-                                DoseMlKg = 0.7
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
+        var json = await File.ReadAllTextAsync("medications.json")!;
+        List<CreateMedication> commands = JsonConvert.DeserializeObject<List<CreateMedication>>(json)!;
+
+        string[] waterfowl = ["Blue Swedish Duck", "Canada Goose", "Common Coot", "Common Moorhen", "Duck", "Egyptian Goose", "Greylag Goose", "Little Grebe", "Mallard", "Mute Swan", "Tufted Duck", "Water Rail", "Unidentified Goose"];
+        string[] pigeons = ["Collared Dove", "Common Wood Pigeon", "Domestic Dove", "Domestic Pigeon", "Fancy Pigeon", "Pigeon", "Stock Dove", "Unidentified Pigeon"];
+        string[] raptors = ["Barn Owl", "Common Buzzard", "Common Kestrel", "Goshawk", "Hobby", "Little Owl", "Merlin", "Peregrine Falcon", "Red Kite", "Sparrowhawk", "Tawny Owl", "Ural Owl"];
+        string[] rodents = ["Bank Vole", "Black Rat", "Brown Rat", "Common Vole", "Field Mouse", "Field Vole", "Gray Squirrel", "Harvest Mouse", "Hazel Dormouse", "Rat", "Red Squirrel", "Wood Mouse", "Yellow-necked Field Mouse", "Unidentified Mouse", "Unidentified Rodent"];
 
         foreach (var command in commands)
         {
@@ -66,18 +50,64 @@ public static class Seed
                 };
                 foreach (var dose in form.Doses)
                 {
-                    var species = new MedicationConcentrationSpeciesDose
+                    if (dose.SpeciesType != null)
                     {
-                        MedicationConcentration = concentration,
-                        Species = string.IsNullOrWhiteSpace(dose.Species) ? null : context.Species.Single(x => x.Name == dose.Species),
-                        SpeciesType = dose.SpeciesType,
-                        DoseMgKg = dose.DoseMgKg,
-                        DoseMlKg = dose.DoseMlKg,
-                        AdministrationMethod = string.IsNullOrWhiteSpace(dose.AdministrationMethod) ? null : context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
-                        Frequency = dose.Frequency,
-                        Notes = dose.Notes ?? string.Empty
-                    };
-                    concentration.SpeciesDoses.Add(species);
+                        if (dose.SpeciesType == MedicationSpeciesType.Mammal
+                            || dose.SpeciesType == MedicationSpeciesType.Bird
+                            || dose.SpeciesType == MedicationSpeciesType.Amphibian
+                            || dose.SpeciesType == MedicationSpeciesType.Reptile)
+                        {
+                            concentration.SpeciesDoses.Add(new MedicationConcentrationSpeciesDose
+                            {
+                                MedicationConcentration = concentration,
+                                SpeciesType = (SpeciesType)dose.SpeciesType,
+                                DoseMgKgRangeStart = dose.DoseMgKgRangeStart,
+                                DoseMgKgRangeEnd = dose.DoseMgKgRangeEnd,
+                                DoseMlKgRangeStart = dose.DoseMlKgRangeStart,
+                                DoseMlKgRangeEnd = dose.DoseMlKgRangeEnd,
+                                AdministrationMethod = string.IsNullOrWhiteSpace(dose.AdministrationMethod) ? null : context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
+                                Frequency = dose.Frequency,
+                                Notes = dose.Notes ?? string.Empty
+                            });
+                        }
+                        else
+                        {
+                            foreach (var species in
+                                (dose.SpeciesType == MedicationSpeciesType.Waterfowl ? waterfowl :
+                                (dose.SpeciesType == MedicationSpeciesType.Pigeons ? pigeons :
+                                (dose.SpeciesType == MedicationSpeciesType.Raptors ? raptors :
+                                (dose.SpeciesType == MedicationSpeciesType.Rodents ? rodents : [])))))
+                            {
+                                concentration.SpeciesDoses.Add(new MedicationConcentrationSpeciesDose
+                                {
+                                    MedicationConcentration = concentration,
+                                    Species = context.Species.Single(x => x.Name == species),
+                                    DoseMgKgRangeStart = dose.DoseMgKgRangeStart,
+                                    DoseMgKgRangeEnd = dose.DoseMgKgRangeEnd,
+                                    DoseMlKgRangeStart = dose.DoseMlKgRangeStart,
+                                    DoseMlKgRangeEnd = dose.DoseMlKgRangeEnd,
+                                    AdministrationMethod = context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
+                                    Frequency = dose.Frequency,
+                                    Notes = dose.Notes ?? string.Empty
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        concentration.SpeciesDoses.Add(new MedicationConcentrationSpeciesDose
+                        {
+                            MedicationConcentration = concentration,
+                            Species = context.Species.Single(x => x.Name == dose.Species),
+                            DoseMgKgRangeStart = dose.DoseMgKgRangeStart,
+                            DoseMgKgRangeEnd = dose.DoseMgKgRangeEnd,
+                            DoseMlKgRangeStart = dose.DoseMlKgRangeStart,
+                            DoseMlKgRangeEnd = dose.DoseMlKgRangeEnd,
+                            AdministrationMethod = string.IsNullOrWhiteSpace(dose.AdministrationMethod) ? null : context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
+                            Frequency = dose.Frequency,
+                            Notes = dose.Notes ?? string.Empty
+                        });
+                    }
                 }
                 medication.Concentrations.Add(concentration);
             }
@@ -92,171 +122,13 @@ public static class Seed
         #region Species
 
         List<string> amphibiansAges = ["Infant", "Adult"];
-        List<string> amphibians = ["Common Pond Frog",
-"Common Toad",
-"Marsh Frog",
-"Green Frog",
-"Smooth Newt",
-"Unidentified Newt",
-"Unidentified Toad",
-"Unidentified Frog"];
+        List<string> amphibians = ["Common Pond Frog", "Common Toad", "Marsh Frog", "Green Frog", "Smooth Newt", "Unidentified Newt", "Unidentified Toad", "Unidentified Frog"];
         List<string> birdsAges = ["Egg", "Hatchling", "Nestling", "Fledgling", "Juvenile", "Adult"];
-        List<string> birds = [
-"Barn Owl",
-"Barn Swallow",
-"Black-headed Gull",
-"Blackbird",
-"Blackcap",
-"Blue Jay",
-"Blue Swedish Duck",
-"Blue Tit",
-"Canada Goose",
-"Carrion Crow",
-"Chaffinch",
-"Coal Tit",
-"Collared Dove",
-"Common Buzzard",
-"Common Chiffchaff",
-"Common Coot",
-"Common Kestrel",
-"Common Kingfisher",
-"Common Magpie",
-"Common Moorhen",
-"Common Pheasant",
-"Common Starling",
-"Common Swift",
-"Common Tern",
-"Common Wood Pigeon",
-"Cormorant",
-"Domestic Dove",
-"Domestic Pigeon",
-"Duck",
-"Dunnock",
-"Egyptian Goose",
-"English Sparrow",
-"Bullfinch",
-"Jackdaw",
-"Jay",
-"Siskin",
-"Sparrowhawk",
-"Treecreeper",
-"Woodcock",
-"Wren",
-"Wryneck",
-"Goldfinch",
-"Greenfinch",
-"Robin",
-"Fancy Pigeon",
-"Fieldfare",
-"Finch",
-"Firecrest",
-"Garden Warbler",
-"Goldcrest",
-"Goldfinch",
-"Goshawk",
-"Great Spotted Woodpecker",
-"Great Tit",
-"Green Parakeet",
-"Green Woodpecker",
-"Grey Heron",
-"Grey Wagtail",
-"Greylag Goose",
-"Gull",
-"Herring Gull",
-"Hobby",
-"House Martin",
-"Indian Ring-necked Parakeet",
-"Lapwing",
-"Lesser Black-backed Gull",
-"Lesser Spotted Woodpecker",
-"Little Egret",
-"Little Grebe",
-"Little Owl",
-"Little Ringed Plover",
-"Long-tailed Tit",
-"Mallard",
-"Merlin",
-"Mistle Thrush",
-"Mute Swan",
-"Nuthatch",
-"Partridge",
-"Peregrine Falcon",
-"Pied Wagtail",
-"Pigeon",
-"Quail sp",
-"Red Kite",
-"Red-legged Partridge",
-"Redpoll",
-"Redstart",
-"Redwing",
-"Sedge Warbler",
-"Skylark",
-"Song Thrush",
-"Sparrow",
-"Stock Dove",
-"Swallow",
-"Tawny Owl",
-"Thrush-like Wren",
-"Tufted Duck",
-"Ural Owl",
-"Warbler",
-"Water Rail",
-"Woodpecker",
-"Wren",
-"Yellow Wagtail",
-"Zebra Finch",
-"Unidentified Goose",
-"Unidentified Parakeet",
-"Unidentified Passerine",
-"Unidentified Pheasant",
-"Unidentified Thrush",
-"Unidentified Pigeon",
-"Unidentified Bird"];
+        List<string> birds = ["Barn Owl", "Barn Swallow", "Black-headed Gull", "Blackbird", "Blackcap", "Blue Jay", "Blue Swedish Duck", "Blue Tit", "Canada Goose", "Carrion Crow", "Chaffinch", "Coal Tit", "Collared Dove", "Common Buzzard", "Common Chiffchaff", "Common Coot", "Common Kestrel", "Common Kingfisher", "Common Magpie", "Common Moorhen", "Common Pheasant", "Common Starling", "Common Swift", "Common Tern", "Common Wood Pigeon", "Cormorant", "Domestic Dove", "Domestic Pigeon", "Duck", "Dunnock", "Egyptian Goose", "English Sparrow", "Bullfinch", "Jackdaw", "Jay", "Siskin", "Sparrowhawk", "Treecreeper", "Woodcock", "Wren", "Wryneck", "Goldfinch", "Greenfinch", "Robin", "Fancy Pigeon", "Fieldfare", "Finch", "Firecrest", "Garden Warbler", "Goldcrest", "Goldfinch", "Goshawk", "Great Spotted Woodpecker", "Great Tit", "Green Parakeet", "Green Woodpecker", "Grey Heron", "Grey Wagtail", "Greylag Goose", "Gull", "Herring Gull", "Hobby", "House Martin", "Indian Ring-necked Parakeet", "Lapwing", "Lesser Black-backed Gull", "Lesser Spotted Woodpecker", "Little Egret", "Little Grebe", "Little Owl", "Little Ringed Plover", "Long-tailed Tit", "Mallard", "Merlin", "Mistle Thrush", "Mute Swan", "Nuthatch", "Partridge", "Peregrine Falcon", "Pied Wagtail", "Pigeon", "Quail", "Red Kite", "Red-legged Partridge", "Redpoll", "Redstart", "Redwing", "Sedge Warbler", "Skylark", "Song Thrush", "Sparrow", "Stock Dove", "Swallow", "Tawny Owl", "Thrush-like Wren", "Tufted Duck", "Ural Owl", "Warbler", "Water Rail", "Woodpecker", "Wren", "Yellow Wagtail", "Zebra Finch", "Unidentified Goose", "Unidentified Parakeet", "Unidentified Passerine", "Unidentified Pheasant", "Unidentified Thrush", "Unidentified Pigeon", "Unidentified Bird"];
         List<string> mammalsAges = ["Neonate", "Infant", "Juvenile", "Sub-adult", "Adult"];
-        List<string> mammals = [
-"Badger",
-"Bank Vole",
-"Black Rat",
-"Brown Hare",
-"Brown Long-eared Bat",
-"Brown Rat",
-"Chinese Muntjak",
-"Common Pipistrelle",
-"Common Shrew",
-"Common Vole",
-"Hare",
-"Hedgehog",
-"Polecat",
-"Rabbit",
-"Roe Deer",
-"Field Mouse",
-"Field Vole",
-"Gray Squirrel",
-"Grey Long-eared Bat",
-"Harvest Mouse",
-"Hazel Dormouse",
-"Leisler's Bat",
-"Long-eared Myotis",
-"Mole",
-"Rabbit",
-"Rat",
-"Red Deer",
-"Red Fox",
-"Shrew",
-"Red Squirrel",
-"Weasel",
-"Whiskered Bat",
-"Wood Mouse",
-"Yellow-necked Field Mouse",
-"Unidentified Bat",
-"Unidentified Deer",
-"Unidentified Mouse",
-"Unidentified Rodent"];
+        List<string> mammals = ["Badger", "Bank Vole", "Black Rat", "Brown Hare", "Brown Long-eared Bat", "Brown Rat", "Chinese Muntjak", "Common Pipistrelle", "Common Shrew", "Common Vole", "Hare", "Hedgehog", "Polecat", "Rabbit", "Roe Deer", "Field Mouse", "Field Vole", "Gray Squirrel", "Grey Long-eared Bat", "Harvest Mouse", "Hazel Dormouse", "Leisler's Bat", "Long-eared Myotis", "Mole", "Rat", "Red Deer", "Red Fox", "Shrew", "Red Squirrel", "Weasel", "Whiskered Bat", "Wood Mouse", "Yellow-necked Field Mouse", "Unidentified Bat", "Unidentified Deer", "Unidentified Mouse", "Unidentified Rodent"];
         List<string> reptilesAges = ["Egg", "Infant", "Adult"];
-        List<string> reptiles = [
-"Common Slow Worm",
-"Corn Snake",
-"Grass Snake"];
+        List<string> reptiles = ["Common Slow Worm", "Corn Snake", "Grass Snake"];
 
         #endregion
 
@@ -317,7 +189,7 @@ public static class Seed
         for (int i = 1; i <= 33; i++) h2.Pens.Add(new Pen { Area = h2, Code = "CARR-" + i.ToString("D2") });
         for (int i = 1; i <= 8; i++) h2.Pens.Add(new Pen { Area = h2, Code = "CAGE-" + i.ToString("D2") });
 
-        var avry = new Area { Code = "AVRY", Name = "Aviary", Pens = [] };
+        var avry = new Area { Code = "AVRY", Name = "Aviaries", Pens = [] };
         avry.Pens.Add(new Pen { Area = avry, Code = "HP1" });
         avry.Pens.Add(new Pen { Area = avry, Code = "H2" });
         avry.Pens.Add(new Pen { Area = avry, Code = "TB" });
@@ -333,7 +205,7 @@ public static class Seed
         var hh = new Area { Code = "HH", Name = "Hacking houses", Pens = [] };
         for (int i = 3; i <= 4; i++) hh.Pens.Add(new Pen { Area = hh, Code = i.ToString("D2") });
 
-        var flight = new Area { Code = "FLIGHT", Name = "Flights", Pens = [] };
+        var flight = new Area { Code = "FLT", Name = "Flights", Pens = [] };
         flight.Pens.Add(new Pen { Area = flight, Code = "SMALL" });
         flight.Pens.Add(new Pen { Area = flight, Code = "LARGE" });
 
@@ -354,30 +226,46 @@ public static class Seed
         #endregion
     }
 
-    private class CreateMedication
+    #region DTOs
+
+    public class CreateMedication
     {
         public string Drug { get; set; }
         public string[] Brands { get; set; }
         public string Notes { get; set; }
         public List<CMForm> Forms { get; set; }
 
-        internal class CMForm
+        public class CMForm
         {
             public string Form { get; set; }
             public double ConcentrationMgMl { get; set; }
             public List<CMFSpecies> Doses { get; set; }
 
-            internal class CMFSpecies
+            public class CMFSpecies
             {
                 public string? Species { get; set; }
-                public SpeciesType? SpeciesType { get; set; }
-                public double DoseMgKg { get; set; }
-                public double DoseMlKg { get; set; }
+                public MedicationSpeciesType? SpeciesType { get; set; }
+                public double DoseMgKgRangeStart { get; set; }
+                public double DoseMgKgRangeEnd { get; set; }
+                public double DoseMlKgRangeStart { get; set; }
+                public double DoseMlKgRangeEnd { get; set; }
                 public string? AdministrationMethod { get; set; }
                 public string? Frequency { get; set; }
                 public string Notes { get; set; }
             }
         }
+    }
+
+    public enum MedicationSpeciesType
+    {
+        Mammal = 1,
+        Bird = 2,
+        Amphibian = 3,
+        Reptile = 4,
+        Waterfowl = 5,
+        Pigeons = 6,
+        Raptors = 7,
+        Rodents = 8
     }
 
     private class CreateSpecies
@@ -386,6 +274,8 @@ public static class Seed
         public List<string> Names { get; set; }
         public List<string> Ages { get; set; }
     }
+
+    #endregion
 
     public static async Task SetupHospitalReferenceData(this DatabaseContext context)
     {

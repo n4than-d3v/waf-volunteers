@@ -45,7 +45,8 @@
     }
   </div>
   <div class="wrapper">
-    @if (formGroup.value.medicationConcentrationId) {
+    @if (formGroup.value.medicationId &&
+    formGroup.value.medicationConcentrationId) {
     <div class="field">
       <label for="administrationMethod-{{ id }}">
         Method
@@ -122,14 +123,20 @@
       </tr>
     </thead>
     <tbody>
-      @for (dose of concentration.speciesDoses; track dose.id) {
-      <tr [class.selected]="dose === defaultDose">
+      @for (dose of groupMedicationDoses(concentration.speciesDoses); track
+      dose.key) {
+      <tr [class.selected]="dose.isDefault">
         <td>
-          {{ dose.species ? dose.species.name : getSpeciesType(dose.speciesType)
-          }}
+          @for (species of dose.species; track species.name; let last = $last) {
+          @if (species.highlight) {
+          <span class="highlight">{{ species.name }}</span>@if (!last) {<span
+            >, </span
+          >} } @else { <span>{{ species.name }}</span>@if (!last) {<span
+            >, </span
+          >} } }
         </td>
-        <td>{{ dose.doseMgKg }}</td>
-        <td>{{ dose.doseMlKg }}</td>
+        <td>{{ dose.doseMgKgRangeStart }} - {{ dose.doseMgKgRangeEnd }}</td>
+        <td>{{ dose.doseMlKgRangeStart }} - {{ dose.doseMlKgRangeEnd }}</td>
         <td>
           {{ dose.administrationMethod.description }} ({{
           dose.administrationMethod.code }})

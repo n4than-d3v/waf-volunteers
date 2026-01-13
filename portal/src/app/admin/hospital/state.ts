@@ -79,8 +79,10 @@ export interface MedicationConcentrationSpeciesDose {
   id: number;
   species: Species;
   speciesType: SpeciesType;
-  doseMgKg: number;
-  doseMlKg: number;
+  doseMgKgRangeStart: number;
+  doseMgKgRangeEnd: number;
+  doseMlKgRangeStart: number;
+  doseMlKgRangeEnd: number;
   administrationMethod: AdministrationMethod;
   frequency: string;
   notes: string;

@@ -38,7 +38,9 @@
       </tr>
       <tr>
         <td>Temperature</td>
-        <td>@if (exam.temperature) { {{ exam.temperature }} C }</td>
+        <td>
+          @if (exam.temperature) { {{ exam.temperature }} C } @else{ (blank) }
+        </td>
       </tr>
     </tbody>
   </table>

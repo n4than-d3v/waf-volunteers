@@ -27,6 +27,7 @@ import {
   MedicationConcentrationSpeciesDose,
   ReadOnlyWrapper,
   Species,
+  SpeciesType,
 } from '../../state';
 import {
   selectAdministrationMethods,
@@ -97,6 +98,7 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
     if (
       changes['speciesId'] ||
       changes['weightValue'] ||
@@ -143,7 +145,7 @@ export class HospitalPatientMedicationSelectorComponent
       dose.administrationMethod.id
     );
     this.formGroup.controls['quantityValue'].setValue(
-      Math.round(dose.doseMlKg * weight * 100) / 100
+      Math.round(dose.doseMlKgRangeEnd * weight * 100) / 100
     );
     this.formGroup.controls['quantityUnit'].setValue('ml');
     if (this.formGroup.controls['frequency']) {
@@ -175,4 +177,81 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   getSpeciesType = getSpeciesType;
+
+  private getGroupKey(item: MedicationConcentrationSpeciesDose): string {
+    return [
+      item.doseMgKgRangeStart,
+      item.doseMgKgRangeEnd,
+      item.doseMlKgRangeStart,
+      item.doseMlKgRangeEnd,
+      item.administrationMethod.code,
+      item.frequency,
+      item.notes,
+    ].join('|');
+  }
+
+  groupMedicationDoses(
+    items: MedicationConcentrationSpeciesDose[]
+  ): MedicationConcentrationSpeciesDoses[] {
+    const map = new Map<string, MedicationConcentrationSpeciesDoses>();
+
+    for (const item of items) {
+      const key = this.getGroupKey(item);
+
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          species: [],
+          isDefault: false,
+          doseMgKgRangeStart: item.doseMgKgRangeStart,
+          doseMgKgRangeEnd: item.doseMgKgRangeEnd,
+          doseMlKgRangeStart: item.doseMlKgRangeStart,
+          doseMlKgRangeEnd: item.doseMlKgRangeEnd,
+          administrationMethod: item.administrationMethod,
+          frequency: item.frequency,
+          notes: item.notes,
+        });
+      }
+
+      const group = map.get(key)!;
+
+      group.key = key;
+      group.isDefault = group.isDefault || item === this.defaultDose;
+
+      if (item.species) {
+        group.species.push({
+          name: item.species.name,
+          highlight:
+            group.isDefault &&
+            item.species.id === this.defaultDose?.species?.id,
+        });
+      }
+
+      if (item.speciesType) {
+        group.species.push({
+          name: getSpeciesType(item.speciesType),
+          highlight:
+            group.isDefault &&
+            item.speciesType === this.defaultDose?.speciesType,
+        });
+      }
+
+      group.species.sort();
+    }
+
+    return Array.from(map.values());
+  }
+}
+
+interface MedicationConcentrationSpeciesDoses {
+  key: string;
+  species: { name: string; highlight: boolean }[];
+  isDefault: boolean;
+  doseMgKgRangeStart: number;
+  doseMgKgRangeEnd: number;
+  doseMlKgRangeStart: number;
+  doseMlKgRangeEnd: number;
+  administrationMethod: AdministrationMethod;
+  frequency: string;
+  notes: string;
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import {
   getSpeciesType,
   Medication,
+  MedicationConcentrationSpeciesDose,
   Species,
   SpeciesType,
   Wrapper,
@@ -73,8 +74,10 @@ export class AdminHospitalMedicationsComponent implements OnInit {
     doseFor: new FormControl(''),
     speciesId: new FormControl(''),
     speciesType: new FormControl(''),
-    doseMgKg: new FormControl(''),
-    doseMlKg: new FormControl(''),
+    doseMgKgRangeStart: new FormControl(''),
+    doseMgKgRangeEnd: new FormControl(''),
+    doseMlKgRangeStart: new FormControl(''),
+    doseMlKgRangeEnd: new FormControl(''),
     administrationMethodId: new FormControl(''),
     frequencyType: new FormControl(''),
     frequencyX: new FormControl(''),
@@ -106,7 +109,7 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
   getTotalRows(medication: Medication) {
     return medication.concentrations
-      .map((x) => x.speciesDoses.length)
+      .map((x) => this.groupMedicationDoses(x.speciesDoses).length)
       .reduce((a, b) => a + b, 0);
   }
 
@@ -160,11 +163,17 @@ export class AdminHospitalMedicationsComponent implements OnInit {
               this.medicationConcentrationSpeciesDoseForm.value.speciesType
             )
           : null,
-        doseMgKg: Number(
-          this.medicationConcentrationSpeciesDoseForm.value.doseMgKg
+        doseMgKgRangeStart: Number(
+          this.medicationConcentrationSpeciesDoseForm.value.doseMgKgRangeStart
         ),
-        doseMlKg: Number(
-          this.medicationConcentrationSpeciesDoseForm.value.doseMlKg
+        doseMgKgRangeEnd: Number(
+          this.medicationConcentrationSpeciesDoseForm.value.doseMgKgRangeEnd
+        ),
+        doseMlKgRangeStart: Number(
+          this.medicationConcentrationSpeciesDoseForm.value.doseMlKgRangeStart
+        ),
+        doseMlKgRangeEnd: Number(
+          this.medicationConcentrationSpeciesDoseForm.value.doseMlKgRangeEnd
         ),
         administrationMethodId: Number(
           this.medicationConcentrationSpeciesDoseForm.value
@@ -184,4 +193,67 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   }
 
   SpeciesType = SpeciesType;
+  private getGroupKey(item: MedicationConcentrationSpeciesDose): string {
+    return [
+      item.doseMgKgRangeStart,
+      item.doseMgKgRangeEnd,
+      item.doseMlKgRangeStart,
+      item.doseMlKgRangeEnd,
+      item.administrationMethod.code,
+      item.frequency,
+      item.notes,
+    ].join('|');
+  }
+
+  groupMedicationDoses(
+    items: MedicationConcentrationSpeciesDose[]
+  ): MedicationConcentrationSpeciesDoses[] {
+    const map = new Map<string, MedicationConcentrationSpeciesDoses>();
+
+    for (const item of items) {
+      const key = this.getGroupKey(item);
+
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          species: [],
+          doseMgKgRangeStart: item.doseMgKgRangeStart,
+          doseMgKgRangeEnd: item.doseMgKgRangeEnd,
+          doseMlKgRangeStart: item.doseMlKgRangeStart,
+          doseMlKgRangeEnd: item.doseMlKgRangeEnd,
+          administrationMethod: item.administrationMethod,
+          frequency: item.frequency,
+          notes: item.notes,
+        });
+      }
+
+      const group = map.get(key)!;
+
+      group.key = key;
+
+      if (item.species) {
+        group.species.push(item.species.name);
+      }
+
+      if (item.speciesType) {
+        group.species.push(getSpeciesType(item.speciesType));
+      }
+
+      group.species.sort();
+    }
+
+    return Array.from(map.values());
+  }
+}
+
+interface MedicationConcentrationSpeciesDoses {
+  key: string;
+  species: string[];
+  doseMgKgRangeStart: number;
+  doseMgKgRangeEnd: number;
+  doseMlKgRangeStart: number;
+  doseMlKgRangeEnd: number;
+  administrationMethod: AdministrationMethod;
+  frequency: string;
+  notes: string;
 }

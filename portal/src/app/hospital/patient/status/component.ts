@@ -39,13 +39,20 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
 @Component({
   selector: 'hospital-patient-status',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, SpinnerComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    AsyncPipe,
+    SpinnerComponent,
+    HospitalPatientAutocompleteComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class HospitalPatientStatusComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
@@ -101,6 +108,13 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(getDispositionReasons());
     this.store.dispatch(getReleaseTypes());
     this.store.dispatch(getTransferLocations());
+  }
+
+  convertDispositionReasons(dispositionReasons: DispositionReason[]) {
+    return dispositionReasons.map((x) => ({
+      id: x.id,
+      display: x.description,
+    }));
   }
 
   getStatus() {

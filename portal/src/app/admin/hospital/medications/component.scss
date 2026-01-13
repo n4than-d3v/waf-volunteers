@@ -36,3 +36,56 @@ section {
     gap: 0.5rem;
   }
 }
+
+table {
+  width: 100%;
+}
+
+.medication {
+  margin-left: 0rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-left: solid 5px var(--theme-primary);
+  padding-left: 1rem;
+
+  button {
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.25rem;
+  }
+
+  p.brands {
+    font-style: italic;
+    color: var(--theme-color-4);
+  }
+
+  p.notes {
+    color: var(--theme-color-2);
+  }
+
+  h3 {
+    margin-bottom: 0.5rem;
+  }
+
+  h4 {
+    margin-bottom: 0.5rem;
+
+    span {
+      font-weight: normal;
+      font-size: 1rem;
+      padding: 0rem 0.25rem;
+    }
+  }
+
+  .concentration {
+    margin-top: 1rem;
+    margin-left: 2rem;
+
+    table {
+      th,
+      td {
+        padding: 0.25rem 0.5rem;
+      }
+    }
+  }
+}

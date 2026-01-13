@@ -117,18 +117,48 @@
     </div>
     }
     <div class="field">
-      <label for="doseMgKg">
-        Dose (mg/kg)
+      <label for="doseMgKgRangeStart">
+        Dose (mg/kg) [Start]
         <span class="required">*</span></label
       >
-      <input id="doseMgKg" type="number" formControlName="doseMgKg" />
+      <input
+        id="doseMgKgRangeStart"
+        type="number"
+        formControlName="doseMgKgRangeStart"
+      />
     </div>
     <div class="field">
-      <label for="doseMlKg">
-        Dose (ml/kg)
+      <label for="doseMgKgRangeEnd">
+        Dose (mg/kg) [End]
         <span class="required">*</span></label
       >
-      <input id="doseMlKg" type="number" formControlName="doseMlKg" />
+      <input
+        id="doseMgKgRangeEnd"
+        type="number"
+        formControlName="doseMgKgRangeEnd"
+      />
+    </div>
+    <div class="field">
+      <label for="doseMlKgRangeStart">
+        Dose (ml/kg) [Start]
+        <span class="required">*</span></label
+      >
+      <input
+        id="doseMlKgRangeStart"
+        type="number"
+        formControlName="doseMlKgRangeStart"
+      />
+    </div>
+    <div class="field">
+      <label for="doseMlKgRangeEnd">
+        Dose (ml/kg) [End]
+        <span class="required">*</span></label
+      >
+      <input
+        id="doseMlKgRangeEnd"
+        type="number"
+        formControlName="doseMlKgRangeEnd"
+      />
     </div>
     <div class="field">
       @if (administrationMethods$ | async; as administrationMethods) {
@@ -164,119 +194,68 @@
 <spinner></spinner>
 } @else if (medications.error) {
 <div class="error">Error occurred</div>
-} @else if (medications.data) {
-<table>
-  <thead>
-    <tr>
-      <th>Active substance</th>
-      <th>Brands</th>
-      <th></th>
-      <th>Form</th>
-      <th>Concentration (mg/ml)</th>
-      <th></th>
-      <th>Species</th>
-      <th>Dose (mg/kg)</th>
-      <th>Dose (ml/kg)</th>
-      <th>Method</th>
-      <th>Frequency</th>
-      <th colspan="2">Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (medication of medications.data; track medication.id) { @if
-    (medication.concentrations.length === 0) {
-    <tr>
-      <td>{{ medication.activeSubstance }}</td>
-      <td>{{ formatBrands(medication) }}</td>
-      <td>
-        <button
-          (click)="addMedicationConcentration = medication.id"
-          class="button button--secondary"
-        >
-          Add form
-        </button>
-      </td>
-      <td colspan="10"></td>
-    </tr>
-    } @for (concentration of medication.concentrations; track concentration.id;
-    let i = $index) { @if (concentration.speciesDoses.length === 0) {
-    <tr>
-      <td>{{ medication.activeSubstance }}</td>
-      <td>{{ formatBrands(medication) }}</td>
-      <td>
-        <button
-          (click)="addMedicationConcentration = medication.id"
-          class="button button--secondary"
-        >
-          Add form
-        </button>
-      </td>
-      <td>{{ concentration.form }}</td>
-      <td>{{ concentration.concentrationMgMl }}</td>
-      <td>
-        <button
-          (click)="addMedicationConcentrationSpeciesDose = concentration.id"
-          class="button button--secondary"
-        >
-          Add dose
-        </button>
-      </td>
-      <td colspan="8"></td>
-    </tr>
-    } @for (dose of concentration.speciesDoses; track dose.id; let j = $index) {
-    <tr>
-      @if (i == 0 && j == 0) {
-      <td [attr.rowspan]="getTotalRows(medication)">
-        {{ medication.activeSubstance }}
-      </td>
-      <td [attr.rowspan]="getTotalRows(medication)">
-        {{ formatBrands(medication) }}
-      </td>
-      <td [attr.rowspan]="getTotalRows(medication)">
-        <button
-          (click)="addMedicationConcentration = medication.id"
-          class="button button--secondary"
-        >
-          Add form
-        </button>
-      </td>
-      } @if (j == 0) {
-      <td [attr.rowspan]="concentration.speciesDoses.length">
-        {{ concentration.form }}
-      </td>
-      <td [attr.rowspan]="concentration.speciesDoses.length">
-        {{ concentration.concentrationMgMl }}
-      </td>
-      <td [attr.rowspan]="concentration.speciesDoses.length">
-        <button
-          (click)="addMedicationConcentrationSpeciesDose = concentration.id"
-          class="button button--secondary"
-        >
-          Add dose
-        </button>
-      </td>
-      } @if (dose.species) {
-      <td>{{ dose.species.name }}</td>
-      } @else if (dose.speciesType) {
-      <td>{{ getSpeciesType(dose.speciesType) }}</td>
-      }
-      <td>{{ dose.doseMgKg }}</td>
-      <td>{{ dose.doseMlKg }}</td>
-      @if (dose.administrationMethod) {
-      <td>
-        {{ dose.administrationMethod.description }} ({{
-        dose.administrationMethod.code }})
-      </td>
-      } @else {
-      <td></td>
-      }
-      <td>{{ dose.frequency }}</td>
-      <td>{{ dose.notes }}</td>
-      @if (i == 0 && j == 0) {
-      <td [attr.rowspan]="getTotalRows(medication)">{{ medication.notes }}</td>
-      }
-    </tr>
-    } } }
-  </tbody>
-</table>
-} }
+} @else if (medications.data) { @for (medication of medications.data; track
+medication.id) {
+<div class="medication">
+  <h3>
+    {{ medication.activeSubstance }}
+    <button
+      (click)="addMedicationConcentration = medication.id"
+      class="button button--secondary"
+    >
+      Add form
+    </button>
+  </h3>
+  <p class="brands">{{ formatBrands(medication) }}</p>
+  <p class="notes">{{ medication.notes }}</p>
+  @for (concentration of medication.concentrations; track concentration.id) {
+  <div class="concentration">
+    <h4>
+      {{ concentration.form }}
+      <span>{{ concentration.concentrationMgMl }} mg/ml</span>
+      <button
+        (click)="addMedicationConcentrationSpeciesDose = concentration.id"
+        class="button button--secondary"
+      >
+        Add dose
+      </button>
+    </h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Species</th>
+          <th>Dose (mg/kg)</th>
+          <th>Dose (ml/kg)</th>
+          <th>Method</th>
+          <th>Frequency</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (dose of groupMedicationDoses(concentration.speciesDoses); track
+        dose.key) {
+        <tr>
+          <td>
+            @for (species of dose.species; track species; let last = $last) {
+            <span>{{ species }}</span>@if (!last) {<span>, </span>} }
+          </td>
+          <td>{{ dose.doseMgKgRangeStart }} - {{ dose.doseMgKgRangeEnd }}</td>
+          <td>{{ dose.doseMlKgRangeStart }} - {{ dose.doseMlKgRangeEnd }}</td>
+          @if (dose.administrationMethod) {
+          <td>
+            {{ dose.administrationMethod.description }} ({{
+            dose.administrationMethod.code }})
+          </td>
+          } @else {
+          <td></td>
+          }
+          <td>{{ dose.frequency }}</td>
+          <td>{{ dose.notes }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>
+} } }

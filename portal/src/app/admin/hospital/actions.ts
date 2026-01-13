@@ -214,8 +214,10 @@ export const createMedicationConcentrationSpeciesDose = createAction(
     medicationConcentrationId: number;
     speciesId: number | null;
     speciesType: SpeciesType | null;
-    doseMgKg: number;
-    doseMlKg: number;
+    doseMgKgRangeStart: number;
+    doseMgKgRangeEnd: number;
+    doseMlKgRangeStart: number;
+    doseMlKgRangeEnd: number;
     administrationMethodId: number;
     frequency: string;
     notes: string;

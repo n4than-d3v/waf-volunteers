@@ -269,3 +269,67 @@ span.required {
 .margin-left-lists ul {
   margin-left: 1.125rem;
 }
+
+.slider-container {
+  width: 100%;
+}
+
+/* RESET */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: transparent;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0rem !important;
+
+  /* FILLED TRACK */
+  background: linear-gradient(
+    to right,
+    var(--theme-color-6) 0%,
+    var(--theme-color-6) var(--value),
+    #e0e0e0 var(--value),
+    #e0e0e0 100%
+  );
+  border-radius: 3px;
+}
+
+/* WebKit track */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+}
+
+/* Firefox track */
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  background: transparent;
+}
+
+/* THUMB */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--theme-primary);
+  border: 2px solid black;
+  border-radius: 2px;
+  margin-top: -5px;
+}
+
+/* Firefox thumb */
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--theme-primary);
+  border: 2px solid black;
+  border-radius: 2px;
+}
+
+/* Remove outline */
+input[type="range"]:focus {
+  outline: none;
+}

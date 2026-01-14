@@ -159,13 +159,13 @@ export interface Species extends UpdateSpeciesCommand {
 export function getSpeciesType(type: SpeciesType) {
   switch (type) {
     case SpeciesType.Amphibian:
-      return 'Amphibian';
+      return 'Amphibians';
     case SpeciesType.Bird:
-      return 'Bird';
+      return 'Birds';
     case SpeciesType.Mammal:
-      return 'Mammal';
+      return 'Mammals';
     case SpeciesType.Reptile:
-      return 'Reptile';
+      return 'Reptiles';
     default:
       return 'Unknown';
   }

@@ -261,8 +261,7 @@
             "DoseMlKgRangeStart": 0,
             "DoseMlKgRangeEnd": 0,
             "AdministrationMethod": "PO",
-            "Frequency": "Every 365 days",
-            "Notes": "One time."
+            "Frequency": "One time"
           },
           {
             "SpeciesType": 7,
@@ -527,8 +526,7 @@
             "DoseMlKgRangeStart": 1,
             "DoseMlKgRangeEnd": 2.5,
             "AdministrationMethod": "SQ",
-            "Frequency": "Every 365 days",
-            "Notes": "One time."
+            "Frequency": "One time"
           },
           {
             "SpeciesType": 2,
@@ -537,8 +535,7 @@
             "DoseMlKgRangeStart": 1,
             "DoseMlKgRangeEnd": 2.5,
             "AdministrationMethod": "SQ",
-            "Frequency": "Every 365 days",
-            "Notes": "One time."
+            "Frequency": "One time"
           },
           {
             "SpeciesType": 3,
@@ -547,8 +544,7 @@
             "DoseMlKgRangeStart": 1,
             "DoseMlKgRangeEnd": 2.5,
             "AdministrationMethod": "SQ",
-            "Frequency": "Every 365 days",
-            "Notes": "One time."
+            "Frequency": "One time"
           },
           {
             "SpeciesType": 4,
@@ -557,8 +553,7 @@
             "DoseMlKgRangeStart": 1,
             "DoseMlKgRangeEnd": 2.5,
             "AdministrationMethod": "SQ",
-            "Frequency": "Every 365 days",
-            "Notes": "One time."
+            "Frequency": "One time"
           }
         ]
       }
@@ -580,7 +575,7 @@
             "DoseMlKgRangeStart": 1,
             "DoseMlKgRangeEnd": 1,
             "AdministrationMethod": "PO",
-            "Frequency": "Every 365 days",
+            "Frequency": "One time",
             "Notes": "1 tab, one time."
           }
         ]
@@ -820,8 +815,7 @@
             "DoseMlKgRangeStart": 1,
             "DoseMlKgRangeEnd": 2,
             "AdministrationMethod": "PO",
-            "Frequency": "Every 365 days",
-            "Notes": "One time."
+            "Frequency": "One time"
           }
         ]
       }
@@ -1010,7 +1004,7 @@
             "DoseMlKgRangeStart": 3,
             "DoseMlKgRangeEnd": 3,
             "AdministrationMethod": "TP",
-            "Frequency": "Every 365 days"
+            "Frequency": "One time"
           }
         ]
       }
@@ -1263,7 +1257,7 @@
             "DoseMlKgRangeEnd": 0.1,
             "AdministrationMethod": "SQ",
             "Frequency": "Every 7 days",
-            "Notes": "PO / SQ / IM. Once weekly for 3 weeks. High dose used for capillariasis."
+            "Notes": "SQ / IM. Once weekly for 3 weeks. High dose used for capillariasis."
           },
           {
             "SpeciesType": 3,
@@ -1272,8 +1266,7 @@
             "DoseMlKgRangeStart": 0.02,
             "DoseMlKgRangeEnd": 0.02,
             "AdministrationMethod": "SQ",
-            "Frequency": "Every 365 days",
-            "Notes": "PO / SQ. One time."
+            "Frequency": "One time"
           },
           {
             "SpeciesType": 4,
@@ -1282,8 +1275,41 @@
             "DoseMlKgRangeStart": 0.02,
             "DoseMlKgRangeEnd": 0.02,
             "AdministrationMethod": "SQ",
-            "Frequency": "Every 365 days",
-            "Notes": "PO / SQ. One time."
+            "Frequency": "One time"
+          }
+        ]
+      },
+      {
+        "Form": "Oral",
+        "ConcentrationMgMl": 10,
+        "Doses": [
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 1,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 7 days",
+            "Notes": "Once weekly for 3 weeks. High dose used for capillariasis."
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.2,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.02,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.2,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.02,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
           }
         ]
       }
@@ -1547,56 +1573,1495 @@
         ]
       }
     ]
-  }
-  // continue with meloxicam
-  // need to add migration for range properties
-  // need to hide same start+end in front end
-
-
-
-
-
-
-
-
-
-
-  /*
-  just using this for copy pasting
+  },
   {
-    "Drug": "Gentamicin",
-    "Brands": [],
-    "Notes": "Ectoparasites.",
+    "Drug": "Meloxicam",
+    "Brands": [ "Metacam", "Loxicom" ],
+    "Notes": "Anti-inflammatory. DO NOT USE with steroids / NAIDS or in dehydrated animals.",
     "Forms": [
       {
-        "Form": "Solution",
+        "Form": "Oral",
+        "ConcentrationMgMl": 0.5,
+        "Doses": [
+          {
+            "Species": "Red Fox",
+            "DoseMgKgRangeStart": 0.1,
+            "DoseMgKgRangeEnd": 0.1,
+            "DoseMlKgRangeStart": 0.2,
+            "DoseMlKgRangeEnd": 0.2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Badger",
+            "DoseMgKgRangeStart": 0.1,
+            "DoseMgKgRangeEnd": 0.1,
+            "DoseMlKgRangeStart": 0.2,
+            "DoseMlKgRangeEnd": 0.2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 1,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 2,
+            "DoseMlKgRangeEnd": 4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.6,
+            "DoseMlKgRangeStart": 0.4,
+            "DoseMlKgRangeEnd": 1.2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 1,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 0.4,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.4,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.4,
+            "DoseMlKgRangeEnd": 0.8,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      },
+      {
+        "Form": "Oral",
+        "ConcentrationMgMl": 1.5,
+        "Doses": [
+          {
+            "Species": "Red Fox",
+            "DoseMgKgRangeStart": 0.1,
+            "DoseMgKgRangeEnd": 0.1,
+            "DoseMlKgRangeStart": 0.07,
+            "DoseMlKgRangeEnd": 0.07,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Badger",
+            "DoseMgKgRangeStart": 0.1,
+            "DoseMgKgRangeEnd": 0.1,
+            "DoseMlKgRangeStart": 0.07,
+            "DoseMlKgRangeEnd": 0.07,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 1,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.07,
+            "DoseMlKgRangeEnd": 1.3,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.6,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 1,
+            "DoseMlKgRangeStart": 0.35,
+            "DoseMlKgRangeEnd": 0.7,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.35,
+            "DoseMlKgRangeEnd": 1.3,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.35,
+            "DoseMlKgRangeEnd": 1.3,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 0.4,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.13,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.3,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      },
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 2,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 0.1,
+            "DoseMgKgRangeEnd": 0.2,
+            "DoseMlKgRangeStart": 0.05,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "Initial dose 0.2 mg/kg SQ, followed by 0.1 mg/kg SQ q24h."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Roe Deer",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Red Deer",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Unidentified Deer",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 1,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 0.3,
+            "DoseMgKgRangeEnd": 0.6,
+            "DoseMlKgRangeStart": 0.15,
+            "DoseMlKgRangeEnd": 0.3,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 1,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 0.4,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.2,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          }
+        ]
+      },
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 5,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 0.1,
+            "DoseMgKgRangeEnd": 0.2,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.04,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "Initial dose 0.2 mg/kg SQ, followed by 0.1 mg/kg SQ q24h."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Roe Deer",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Red Deer",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Unidentified Deer",
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 1,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.2,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 0.3,
+            "DoseMgKgRangeEnd": 0.6,
+            "DoseMlKgRangeStart": 0.06,
+            "DoseMlKgRangeEnd": 0.12,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 1,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.2,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 0.4,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.04,
+            "DoseMlKgRangeEnd": 0.04,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.4,
+            "DoseMlKgRangeStart": 0.04,
+            "DoseMlKgRangeEnd": 0.08,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Metoclopramide",
+    "Brands": [],
+    "Notes": "Antiemetic, prokinetic.",
+    "Forms": [
+      {
+        "Form": "Oral sol.",
+        "ConcentrationMgMl": 1,
+        "Doses": [
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.2,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours",
+            "Notes": "q8-12h."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.2,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours",
+            "Notes": "q8-12h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          }
+        ]
+      },
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 5,
+        "Doses": [
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.04,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 12 hours",
+            "Notes": "SQ / IM / IV. q8-12h."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.04,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 12 hours",
+            "Notes": "SQ / IM / IV. q8-12h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 0.5,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "One time",
+            "Notes": "SQ / IM / IV."
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 0.5,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "SQ",
+            "Frequency": "One time",
+            "Notes": "SQ / IM / IV."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Metronidazol",
+    "Brands": [ "Flagyl" ],
+    "Notes": "Antibiotic, antiprotozoal. 1st choice treatment trichomonosis (canker, frounce). Treat for 5-7 days.",
+    "Forms": [
+      {
+        "Form": "Oral sol.",
+        "ConcentrationMgMl": 200,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 15,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.38,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 15,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.38,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 40,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 50,
+            "DoseMgKgRangeEnd": 50,
+            "DoseMlKgRangeStart": 1.25,
+            "DoseMlKgRangeEnd": 1.25,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 50,
+            "DoseMgKgRangeEnd": 50,
+            "DoseMlKgRangeStart": 1.25,
+            "DoseMlKgRangeEnd": 1.25,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 30,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.75,
+            "DoseMlKgRangeEnd": 0.75,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Nystatin",
+    "Brands": [],
+    "Notes": "Give in empty crop. T(x) candidiasis.",
+    "Forms": [
+      {
+        "Form": "100,000 Uml",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 2,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours",
+            "Notes": "200,000 U/kg. 14-30 days."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Oxytetracycline LA",
+    "Brands": [ "Engemycin" ],
+    "Notes": "",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 100,
+        "Doses": [
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 50,
+            "DoseMgKgRangeEnd": 50,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 48 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 25,
+            "DoseMgKgRangeEnd": 25,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 100,
+            "DoseMgKgRangeEnd": 100,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 72 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 25,
+            "DoseMgKgRangeEnd": 25,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 48 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 25,
+            "DoseMgKgRangeEnd": 25,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 48 hours",
+            "Notes": "SQ / IM."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Praziquantel",
+    "Brands": [ "Droncit" ],
+    "Notes": "TOXIC in finches!!! T(x) cestodes and trematodes. Dose can be repeated in 7-10d.",
+    "Forms": [
+      {
+        "Form": "Tabs",
+        "ConcentrationMgMl": 50,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 4.5,
+            "DoseMgKgRangeEnd": 4.5,
+            "DoseMlKgRangeStart": 0.08,
+            "DoseMlKgRangeEnd": 0.08,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.75,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.75,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 5,
+            "DoseMgKgRangeEnd": 10,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          }
+        ]
+      },
+      {
+        "Form": "Spot on",
+        "ConcentrationMgMl": 40,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 4.5,
+            "DoseMgKgRangeEnd": 4.5,
+            "DoseMlKgRangeStart": 0.08,
+            "DoseMlKgRangeEnd": 0.08,
+            "AdministrationMethod": "TP",
+            "Frequency": "One time"
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.75,
+            "AdministrationMethod": "TP",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.75,
+            "AdministrationMethod": "TP",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 5,
+            "DoseMgKgRangeEnd": 10,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "TP",
+            "Frequency": "One time"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Praziquantel + Emodepside",
+    "Brands": [ "Profender" ],
+    "Notes": "Topical, apply to furred parts of skin. T(x) trematodes / cestodes.",
+    "Forms": [
+      {
+        "Form": "Spot on",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "TP",
+            "Frequency": "One time"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Ranitidine",
+    "Brands": [ "Zantac" ],
+    "Notes": "If using Antepsin, give it 1h before Ranitidine.",
+    "Forms": [
+      {
+        "Form": "Oral",
+        "ConcentrationMgMl": 15,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 1,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.13,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 2,
+            "DoseMgKgRangeEnd": 4,
+            "DoseMlKgRangeStart": 0.13,
+            "DoseMlKgRangeEnd": 0.27,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 3.75,
+            "DoseMgKgRangeEnd": 3.75,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      },
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 25,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 1,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.04,
+            "DoseMlKgRangeEnd": 0.08,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM / IV."
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 2,
+            "DoseMgKgRangeEnd": 4,
+            "DoseMlKgRangeStart": 0.08,
+            "DoseMlKgRangeEnd": 0.16,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM / IV."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 3.75,
+            "DoseMgKgRangeEnd": 3.75,
+            "DoseMlKgRangeStart": 0.15,
+            "DoseMlKgRangeEnd": 0.15,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM / IV."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Sulfadiazine + Trimethoprim",
+    "Brands": [ "Trimacare" ],
+    "Notes": "Antibiotic, T(x) coccidiosis.",
+    "Forms": [
+      {
+        "Form": "Oral tabs",
+        "ConcentrationMgMl": 240,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 15,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.06,
+            "DoseMlKgRangeEnd": 0.13,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Red Fox",
+            "DoseMgKgRangeStart": 5,
+            "DoseMgKgRangeEnd": 5,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.02,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 120,
+            "DoseMgKgRangeEnd": 120,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      },
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 240,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 15,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.06,
+            "DoseMlKgRangeEnd": 0.13,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Red Fox",
+            "DoseMgKgRangeStart": 5,
+            "DoseMgKgRangeEnd": 5,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.02,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 120,
+            "DoseMgKgRangeEnd": 120,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Sulfadoxine + Trimethoprim",
+    "Brands": [ "Bimotrim" ],
+    "Notes": "Treatment for coccidiosis.",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 240,
+        "Doses": [
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 50,
+            "DoseMgKgRangeEnd": 50,
+            "DoseMlKgRangeStart": 0.2,
+            "DoseMlKgRangeEnd": 0.2,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 5 days."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Sulfamethoxazol + Trimethoprim",
+    "Brands": [ "Septrin" ],
+    "Notes": "Antibiotic.",
+    "Forms": [
+      {
+        "Form": "Oral sol.",
+        "ConcentrationMgMl": 48,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 15,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.3,
+            "DoseMlKgRangeEnd": 0.6,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 15,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.3,
+            "DoseMlKgRangeEnd": 0.6,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 12 hours"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Toltrazuril",
+    "Brands": [ "Baycox" ],
+    "Notes": "Treatment for coccidiosis. May be repeated in a week if necessary.",
+    "Forms": [
+      {
+        "Form": "Oral sol.",
+        "ConcentrationMgMl": 25,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.4,
+            "DoseMlKgRangeEnd": 1.2,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "Species": "Roe Deer",
+            "DoseMgKgRangeStart": 25,
+            "DoseMgKgRangeEnd": 25,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 2 days."
+          },
+          {
+            "Species": "Red Deer",
+            "DoseMgKgRangeStart": 25,
+            "DoseMgKgRangeEnd": 25,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 2 days."
+          },
+          {
+            "Species": "Unidentified Deer",
+            "DoseMgKgRangeStart": 25,
+            "DoseMgKgRangeEnd": 25,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 2 days."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 50,
+            "DoseMgKgRangeEnd": 50,
+            "DoseMlKgRangeStart": 2,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "One time"
+          },
+          {
+            "SpeciesType": 8,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 10,
+            "DoseMlKgRangeStart": 0.4,
+            "DoseMlKgRangeEnd": 0.4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Rabbit",
+            "DoseMgKgRangeStart": 2.5,
+            "DoseMgKgRangeEnd": 5,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 2 days."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 15,
+            "DoseMgKgRangeEnd": 20,
+            "DoseMlKgRangeStart": 0.6,
+            "DoseMlKgRangeEnd": 0.8,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 2 days. Dilute 50:50 with Coca-Cola to avoid regurgitation."
+          },
+          {
+            "SpeciesType": 6,
+            "DoseMgKgRangeStart": 20,
+            "DoseMgKgRangeEnd": 35,
+            "DoseMlKgRangeStart": 0.8,
+            "DoseMlKgRangeEnd": 1.4,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 3 days. Dilute 50:50 with Coca-Cola to avoid regurgitation."
+          },
+          {
+            "SpeciesType": 7,
+            "DoseMgKgRangeStart": 7,
+            "DoseMgKgRangeEnd": 15,
+            "DoseMlKgRangeStart": 0.3,
+            "DoseMlKgRangeEnd": 0.6,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "For 3 days. Dilute 50:50 with Coca-Cola to avoid regurgitation."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Tylosin",
+    "Brands": [ "Tylan" ],
+    "Notes": "T(x) mycoplasmosis.",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 200,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 10,
+            "DoseMlKgRangeStart": 0.05,
+            "DoseMlKgRangeEnd": 0.05,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 20,
+            "DoseMgKgRangeEnd": 20,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 15,
+            "DoseMgKgRangeEnd": 30,
+            "DoseMlKgRangeStart": 0.08,
+            "DoseMlKgRangeEnd": 0.16,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Vitamin A (retinol)",
+    "Brands": [],
+    "Notes": "Supportive therapy pox infection.",
+    "Forms": [
+      {
+        "Form": "Oral",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0,
+            "DoseMlKgRangeEnd": 0,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "2,000 U/kg"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Vitamin B (complex)",
+    "Brands": [],
+    "Notes": "",
+    "Forms": [
+      {
+        "Form": "Injectable",
         "ConcentrationMgMl": 0,
         "Doses": [
           {
             "SpeciesType": 1,
             "DoseMgKgRangeStart": 0,
             "DoseMgKgRangeEnd": 0,
-            "DoseMlKgRangeStart": 0,
-            "DoseMlKgRangeEnd": 0,
-            "AdministrationMethod": "TP",
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 7 days",
+            "Notes": "SQ / IM"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.02,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 7 days",
+            "Notes": "SQ / IM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Vitamin B1 (Thiamine)",
+    "Brands": [],
+    "Notes": "",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 10,
+            "DoseMgKgRangeEnd": 10,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 12 hours",
+            "Notes": "q8-12h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 2,
+            "DoseMgKgRangeEnd": 2,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.02,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 7 days",
+            "Notes": "SQ / IM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Vitamin B12 (Cianocobalamine)",
+    "Brands": [],
+    "Notes": "",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 0.025,
+            "DoseMgKgRangeEnd": 0.025,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 7 days",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Hedgehog",
+            "DoseMgKgRangeStart": 0.25,
+            "DoseMgKgRangeEnd": 0.25,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 7 days",
+            "Notes": "SQ / IM."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.25,
+            "DoseMgKgRangeEnd": 5,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "IM",
+            "Frequency": "Every 7 days",
+            "Notes": "SQ / IM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Vitamin D + Calcium",
+    "Brands": [ "Zolcal", "Calcivet" ],
+    "Notes": "High dose should be used for severe cases of calcium deficiency.",
+    "Forms": [
+      {
+        "Form": "Oral sol.",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 3,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours",
+            "Notes": "q12-24h."
+          },
+          {
+            "SpeciesType": 4,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 1,
+            "DoseMlKgRangeEnd": 2,
+            "AdministrationMethod": "PO",
             "Frequency": "Every 24 hours",
             "Notes": "q12-24h."
           }
         ]
       }
     ]
-  }*/
+  },
+  {
+    "Drug": "Vitamin E + Selenium",
+    "Brands": [ "Vitesel" ],
+    "Notes": "",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.06,
+            "DoseMlKgRangeEnd": 0.06,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Roe Deer",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Red Deer",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "Species": "Unidentified Deer",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours",
+            "Notes": "SQ / IM."
+          }
+        ]
+      },
+      {
+        "Form": "Oral caps",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.06,
+            "DoseMlKgRangeEnd": 0.06,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Roe Deer",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Red Deer",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "Species": "Unidentified Deer",
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.1,
+            "DoseMlKgRangeEnd": 0.1,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0,
+            "DoseMgKgRangeEnd": 0,
+            "DoseMlKgRangeStart": 0.5,
+            "DoseMlKgRangeEnd": 0.5,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "Drug": "Vitamin K",
+    "Brands": [ "Konakion" ],
+    "Notes": "",
+    "Forms": [
+      {
+        "Form": "Injectable",
+        "ConcentrationMgMl": 10,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 2.5,
+            "DoseMgKgRangeEnd": 5,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 2.5,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "SQ",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      },
+      {
+        "Form": "Oral",
+        "ConcentrationMgMl": 0,
+        "Doses": [
+          {
+            "SpeciesType": 1,
+            "DoseMgKgRangeStart": 2.5,
+            "DoseMgKgRangeEnd": 5,
+            "DoseMlKgRangeStart": 0.25,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          },
+          {
+            "SpeciesType": 2,
+            "DoseMgKgRangeStart": 0.2,
+            "DoseMgKgRangeEnd": 2.5,
+            "DoseMlKgRangeStart": 0.02,
+            "DoseMlKgRangeEnd": 0.25,
+            "AdministrationMethod": "PO",
+            "Frequency": "Every 24 hours"
+          }
+        ]
+      }
+    ]
+  }
 ]
-/*
-public enum MedicationSpeciesType
-{
-    Mammal = 1,
-    Bird = 2,
-    Amphibian = 3,
-    Reptile = 4,
-    Waterfowl = 5,
-    Pigeons = 6,
-    Raptors = 7,
-    Rodents = 8
-}
-*/

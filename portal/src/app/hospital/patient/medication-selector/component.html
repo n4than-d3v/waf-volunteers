@@ -135,8 +135,29 @@
             >, </span
           >} } }
         </td>
-        <td>{{ dose.doseMgKgRangeStart }} - {{ dose.doseMgKgRangeEnd }}</td>
-        <td>{{ dose.doseMlKgRangeStart }} - {{ dose.doseMlKgRangeEnd }}</td>
+        <td>
+          @if (dose.doseMgKgRangeStart === dose.doseMgKgRangeEnd) { {{
+          dose.doseMgKgRangeStart }} } @else { {{ dose.doseMgKgRangeStart }} -
+          {{ dose.doseMgKgRangeEnd }} }
+        </td>
+        <td>
+          @if (dose.doseMlKgRangeStart === dose.doseMlKgRangeEnd) { {{
+          dose.doseMlKgRangeStart }} } @else { {{ dose.doseMlKgRangeStart }} -
+          {{ dose.doseMlKgRangeEnd }} @if (dose.isDefault) {
+          <div class="slider-container">
+            <input
+              type="range"
+              id="dose-slider"
+              [min]="dose.doseMlKgRangeStart"
+              [max]="dose.doseMlKgRangeEnd"
+              [step]="0.01"
+              formControlName="rangeSelection"
+              (input)="updateRange()"
+              [attr.style]="'--value:' + (((formGroup.value.rangeSelection - dose.doseMlKgRangeStart) / (dose.doseMlKgRangeEnd - dose.doseMlKgRangeStart)) * 100) + '%'"
+            />
+          </div>
+          {{ formGroup.value.rangeSelection }} } }
+        </td>
         <td>
           {{ dose.administrationMethod.description }} ({{
           dose.administrationMethod.code }})

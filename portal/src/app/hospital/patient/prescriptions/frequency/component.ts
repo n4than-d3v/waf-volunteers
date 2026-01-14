@@ -29,6 +29,8 @@ export class HospitalPatientPrescriptionsFrequencyComponent {
       this.formGroup.controls['frequency'].setValue(`${x} times per ${y}`);
     } else if (frequencyType === 'interval') {
       this.formGroup.controls['frequency'].setValue(`Every ${x} ${y}`);
+    } else if (frequencyType === 'once') {
+      this.formGroup.controls['frequency'].setValue(`One time`);
     }
   }
 }

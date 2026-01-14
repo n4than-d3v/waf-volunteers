@@ -116,6 +116,7 @@ export class HospitalPatientExamComponent implements OnInit {
     >([]),
     treatmentMedications: new FormArray<
       FormGroup<{
+        rangeSelection: FormControl<string | null>;
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
         medicationId: FormControl<string | null>;
@@ -165,6 +166,7 @@ export class HospitalPatientExamComponent implements OnInit {
   addTreatmentMedication() {
     this.examForm.controls.treatmentMedications.push(
       new FormGroup({
+        rangeSelection: new FormControl<string | null>(''),
         quantityValue: new FormControl<string | null>('', [
           Validators.required,
         ]),

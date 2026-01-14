@@ -138,28 +138,41 @@ export class HospitalPatientMedicationSelectorComponent
     }
   }
 
+  updateRange() {
+    const weight = this.getWeightKg();
+    const doseMlKg = Number(this.formGroup.value.rangeSelection);
+    this.formGroup.controls['quantityValue'].setValue(
+      Math.round(doseMlKg * weight * 100) / 100
+    );
+  }
+
   private updateDoseDefaults(dose: MedicationConcentrationSpeciesDose) {
     this.defaultDose = dose;
     const weight = this.getWeightKg();
     this.formGroup.controls['administrationMethodId'].setValue(
       dose.administrationMethod.id
     );
+    this.formGroup.controls['rangeSelection'].setValue(dose.doseMlKgRangeEnd);
     this.formGroup.controls['quantityValue'].setValue(
       Math.round(dose.doseMlKgRangeEnd * weight * 100) / 100
     );
     this.formGroup.controls['quantityUnit'].setValue('ml');
     if (this.formGroup.controls['frequency']) {
       this.formGroup.controls['frequency'].setValue(dose.frequency);
-      const frequencyType = dose.frequency.startsWith('Every')
-        ? 'interval'
-        : 'rate';
-      this.formGroup.controls['frequencyType'].setValue(frequencyType);
-      const split = dose.frequency
-        .replace('Every ', '')
-        .replace('times per ', '')
-        .split(' ');
-      this.formGroup.controls['frequencyX'].setValue(split[0]);
-      this.formGroup.controls['frequencyY'].setValue(split[1]);
+      if (dose.frequency === 'One time') {
+        this.formGroup.controls['frequencyType'].setValue('once');
+      } else {
+        const frequencyType = dose.frequency.startsWith('Every')
+          ? 'interval'
+          : 'rate';
+        this.formGroup.controls['frequencyType'].setValue(frequencyType);
+        const split = dose.frequency
+          .replace('Every ', '')
+          .replace('times per ', '')
+          .split(' ');
+        this.formGroup.controls['frequencyX'].setValue(split[0]);
+        this.formGroup.controls['frequencyY'].setValue(split[1]);
+      }
     }
   }
 

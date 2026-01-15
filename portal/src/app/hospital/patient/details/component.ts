@@ -48,6 +48,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
     uniqueIdentifier: new FormControl(''),
     speciesId: new FormControl('', [Validators.required]),
     speciesVariantId: new FormControl('', [Validators.required]),
+    sex: new FormControl('', [Validators.required]),
   });
 
   updating = false;
@@ -63,20 +64,12 @@ export class HospitalPatientDetailsComponent implements OnInit {
     this.store.dispatch(getSpecies());
   }
 
-  getStatus() {
-    switch (this.patient.status) {
-      case PatientStatus.PendingInitialExam:
-        return 'Pending intake exam';
-      case PatientStatus.Inpatient:
-        return 'Inpatient';
-      case PatientStatus.PendingHomeCare:
-        return 'Pending home care';
-      case PatientStatus.ReceivingHomeCare:
-        return 'Receiving home care';
-      case PatientStatus.ReadyForRelease:
-        return 'Ready for release';
-      case PatientStatus.Dispositioned:
-        return 'Dispositioned';
+  getSex() {
+    switch (this.patient.sex) {
+      case 1:
+        return 'Male';
+      case 2:
+        return 'Female';
       default:
         return 'Unknown';
     }
@@ -96,6 +89,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
       uniqueIdentifier: patient.uniqueIdentifier,
       speciesId: patient.species?.id.toString(),
       speciesVariantId: patient.speciesVariant?.id.toString(),
+      sex: patient.sex!.toString(),
     });
   }
 
@@ -111,6 +105,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
         uniqueIdentifier: this.detailsForm.value.uniqueIdentifier || '',
         speciesId: Number(this.detailsForm.value.speciesId),
         speciesVariantId: Number(this.detailsForm.value.speciesVariantId),
+        sex: Number(this.detailsForm.value.sex),
         // Not updating tags or diets (yet)
         tagIds: this.patient.tags.map((x) => x.id),
         dietIds: this.patient.diets.map((x) => x.id),

@@ -126,6 +126,8 @@ export interface ListPatient {
   uniqueIdentifier: string | null;
   species: Species | null;
   speciesVariant: SpeciesVariant | null;
+  sex: number | null;
+  lastUpdatedDetails: string | null;
   status: PatientStatus;
   pen: Pen | null;
   area: Area | null;
@@ -255,6 +257,7 @@ export interface ListRecheck {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
+  hasPrescriptions: boolean;
 }
 
 export interface ListNote {
@@ -305,6 +308,7 @@ export interface PrescriptionInstruction extends TreatmentInstruction {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
+  hasRechecks: boolean;
 }
 
 export interface TreatmentInstruction {
@@ -324,6 +328,7 @@ export interface PrescriptionMedication extends TreatmentMedication {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
+  hasRechecks: boolean;
 }
 
 export interface TreatmentMedication {

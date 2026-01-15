@@ -35,8 +35,14 @@ public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResu
             (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
                 x.Start <= request.Date && request.Date <= x.End, tracking: false, Action);
 
+        foreach (var medication in medications)
+        {
+            medication.HasRechecks = medication.Patient.Rechecks.Any(x => x.Due == request.Date);
+        }
+
         foreach (var instruction in instructions)
         {
+            instruction.HasRechecks = instruction.Patient.Rechecks.Any(x => x.Due == request.Date);
             if (instruction.Administrations?.Any() ?? false)
             {
                 foreach (var administration in instruction.Administrations)
@@ -59,6 +65,8 @@ public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResu
             .Include(y => y.Patient)
                 .ThenInclude(y => y.Pen)
                     .ThenInclude(y => y.Area)
+            .Include(y => y.Patient)
+                .ThenInclude(y => y.Rechecks)
             .Include(y => y.Administrations)
                 .ThenInclude(y => y.Administrator);
     }
@@ -73,6 +81,8 @@ public class ViewPrescriptionsHandler : IRequestHandler<ViewPrescriptions, IResu
             .Include(y => y.Patient)
                 .ThenInclude(y => y.Pen)
                     .ThenInclude(y => y.Area)
+            .Include(y => y.Patient)
+                .ThenInclude(y => y.Rechecks)
             .Include(y => y.Medication)
             .Include(y => y.MedicationConcentration)
             .Include(y => y.AdministrationMethod)

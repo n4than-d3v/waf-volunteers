@@ -172,6 +172,8 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
             patient.Status = PatientStatus.Inpatient;
             patient.Species = species;
             patient.SpeciesVariant = speciesVariant;
+            patient.Sex = exam.Sex;
+            patient.LastUpdatedDetails = DateTime.UtcNow;
         }
 
         _repository.Create(exam);

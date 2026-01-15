@@ -69,6 +69,7 @@ export class HospitalPatientDietsComponent implements OnInit {
       uniqueIdentifier: this.patient.uniqueIdentifier || '',
       speciesId: this.patient.species!.id,
       speciesVariantId: this.patient.speciesVariant!.id,
+      sex: this.patient.sex!,
       tagIds: this.patient.tags.map((x) => x.id),
       dietIds: this.patient.diets.map((x) => x.id),
     };

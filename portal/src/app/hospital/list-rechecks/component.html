@@ -44,6 +44,9 @@ task) { @if (task.loading) {
         recheck.uniqueIdentifier }}) }
       </p>
       <p>🐾 {{ recheck.species.name }} ({{ recheck.variant.name }})</p>
+      @if (recheck.hasPrescriptions) {
+      <p class="also-has">❗ Also has prescriptions</p>
+      }
     </div>
     <div class="description">
       <p>🩺 {{ recheck.description }}</p>

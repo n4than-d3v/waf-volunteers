@@ -1,5 +1,6 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
 using MediatR;
 
@@ -12,6 +13,7 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
     public string UniqueIdentifier { get; set; }
     public int SpeciesId { get; set; }
     public int SpeciesVariantId { get; set; }
+    public Sex Sex { get; set; }
     public List<int> TagIds { get; set; }
     public List<int> DietIds { get; set; }
 
@@ -49,6 +51,8 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
         patient.UniqueIdentifier = request.UniqueIdentifier;
         patient.Species = species;
         patient.SpeciesVariant = speciesVariant;
+        patient.Sex = request.Sex;
+        patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.Tags.RemoveAll(x => !request.TagIds.Contains(x.Id));
         patient.Tags.AddRange(tags.Where(x => request.TagIds.Contains(x.Id)));
         patient.Diets.RemoveAll(x => !request.DietIds.Contains(x.Id));

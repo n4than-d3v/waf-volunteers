@@ -500,6 +500,7 @@ export const updatePatientBasicDetails = createAction(
     uniqueIdentifier: string;
     speciesId: number;
     speciesVariantId: number;
+    sex: number;
     tagIds: number[];
     dietIds: number[];
   }>()

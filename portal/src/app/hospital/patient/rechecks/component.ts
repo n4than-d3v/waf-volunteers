@@ -57,7 +57,7 @@ export class HospitalPatientRechecksComponent {
     roles: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     due: new FormControl('', [Validators.required]),
-    requireWeight: new FormControl(false, [Validators.required]),
+    requireWeight: new FormControl(false),
   });
 
   add() {

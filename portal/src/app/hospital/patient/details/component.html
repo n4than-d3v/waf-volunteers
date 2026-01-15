@@ -9,6 +9,10 @@
         <td>Variant</td>
         <td>{{ patient.speciesVariant?.name }}</td>
       </tr>
+      <tr>
+        <td>Sex</td>
+        <td>{{ getSex() }}</td>
+      </tr>
     </tbody>
   </table>
   <table>
@@ -69,6 +73,17 @@
         { @for (variant of species.variants; track variant.id) {
         <option [value]="variant.id">{{ variant.name }}</option>
         } } } } }
+      </select>
+    </div>
+    <div class="field">
+      <label for="sex">
+        Sex
+        <span class="required">*</span>
+      </label>
+      <select id="sex" formControlName="sex">
+        <option value="1">Male</option>
+        <option value="2">Female</option>
+        <option value="3">Unknown</option>
       </select>
     </div>
     <div class="field">

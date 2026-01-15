@@ -40,6 +40,9 @@ public class ViewRechecksHandler : IRequestHandler<ViewRechecks, IResult>
 
         foreach (var recheck in rechecks)
         {
+            recheck.HasPrescriptions =
+                recheck.Patient.PrescriptionInstructions.Any(x => x.Start <= request.Date && request.Date <= x.End) ||
+                recheck.Patient.PrescriptionMedications.Any(x => x.Start <= request.Date && request.Date <= x.End);
             recheck.Rechecker?.CleanUser(_encryptionService);
         }
 
@@ -56,6 +59,10 @@ public class ViewRechecksHandler : IRequestHandler<ViewRechecks, IResult>
             .Include(y => y.Patient)
                 .ThenInclude(y => y.Pen)
                     .ThenInclude(y => y.Area)
+            .Include(y => y.Patient)
+                .ThenInclude(y => y.PrescriptionInstructions)
+            .Include(y => y.Patient)
+                .ThenInclude(y => y.PrescriptionMedications)
             .Include(y => y.Rechecker);
     }
 }

@@ -32,6 +32,8 @@ public class Patient : Entity
     public string? UniqueIdentifier { get; set; }
     public Species? Species { get; set; }
     public SpeciesVariant? SpeciesVariant { get; set; }
+    public Sex? Sex { get; set; }
+    public DateTime? LastUpdatedDetails { get; set; }
 
     #endregion
 

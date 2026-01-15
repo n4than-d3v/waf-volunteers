@@ -25,10 +25,6 @@
         <td>Sex</td>
         <td>{{ getSex(exam.sex) }}</td>
       </tr>
-    </tbody>
-  </table>
-  <table>
-    <tbody>
       <tr>
         <td>Weight</td>
         <td>
@@ -36,16 +32,16 @@
           getWeightUnit(exam.weightUnit) }} } @else { (blank) }
         </td>
       </tr>
+    </tbody>
+  </table>
+  <table>
+    <tbody>
       <tr>
         <td>Temperature</td>
         <td>
           @if (exam.temperature) { {{ exam.temperature }} C } @else{ (blank) }
         </td>
       </tr>
-    </tbody>
-  </table>
-  <table>
-    <tbody>
       <tr>
         <td>Attitude</td>
         <td>{{ exam.attitude?.description || '(blank)' }}</td>
@@ -65,6 +61,16 @@
       <tr>
         <td>Mucous membrane texture</td>
         <td>{{ exam.mucousMembraneTexture?.description || '(blank)' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="row">
+  <table>
+    <tbody>
+      <tr>
+        <td>Comments</td>
+        <td>{{ exam.comments || '(blank)' }}</td>
       </tr>
     </tbody>
   </table>

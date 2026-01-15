@@ -30,4 +30,6 @@ public class PatientPrescriptionInstruction : Entity
     public SpeciesVariant Variant => Patient.SpeciesVariant;
     [NotMapped]
     public Pen Pen => Patient.Pen;
+    [NotMapped]
+    public bool HasRechecks { get; set; }
 }

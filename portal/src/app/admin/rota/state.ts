@@ -126,6 +126,12 @@ export interface AdminRota {
   date: string;
   week: number | null;
   shifts: AdminRotaShift[];
+  workExperiences: DayWorkExperience[];
+}
+
+export interface DayWorkExperience {
+  name: string;
+  notes: string;
 }
 
 export interface AdminRotaShift {

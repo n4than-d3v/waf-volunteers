@@ -100,16 +100,21 @@
           Confirm
         </button>
       </div>
-      } @else if (shift.confirmed || shift.others.length) {
+      } @else if (shift.confirmed || shift.others.length || shift.newbies.length
+      || shift.workExperiences.length) {
       <div class="people-coming">
+        @if (shift.confirmed || shift.others.length) {
         <strong>Who's coming?</strong>
         <p>
           {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
           shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
         </p>
-        @if (shift.newbies.length > 0) {
+        } @if (shift.newbies.length > 0) {
         <strong>Newbies</strong>
         <p class="newbies">{{ formatNewbies(shift) }}</p>
+        } @if (shift.workExperiences.length > 0) {
+        <strong>Work experience</strong>
+        <p class="work-experiences">{{ formatWorkExperiences(shift) }}</p>
         }
       </div>
       } @if (shift.area) {
@@ -243,16 +248,21 @@
           Confirm
         </button>
       </div>
-      } @else if (shift.confirmed || shift.others.length) {
+      } @else if (shift.confirmed || shift.others.length || shift.newbies.length
+      || shift.workExperiences.length) {
       <div class="people-coming">
+        @if (shift.confirmed || shift.others.length) {
         <strong>Who's coming?</strong>
         <p>
           {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
           shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
         </p>
-        @if (shift.newbies.length > 0) {
+        } @if (shift.newbies.length > 0) {
         <strong>Newbies</strong>
         <p class="newbies">{{ formatNewbies(shift) }}</p>
+        } @if (shift.workExperiences.length > 0) {
+        <strong>Work experience</strong>
+        <p class="work-experiences">{{ formatWorkExperiences(shift) }}</p>
         }
       </div>
       } @if (shift.area) {
@@ -340,16 +350,21 @@
           Confirm
         </button>
       </div>
-      } @else if (shift.confirmed || shift.others.length) {
+      } @else if (shift.confirmed || shift.others.length || shift.newbies.length
+      || shift.workExperiences.length) {
       <div class="people-coming">
+        @if (shift.confirmed || shift.others.length) {
         <strong>Who's coming?</strong>
         <p>
           {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
           shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
         </p>
-        @if (shift.newbies.length > 0) {
+        } @if (shift.newbies.length > 0) {
         <strong>Newbies</strong>
         <p class="newbies">{{ formatNewbies(shift) }}</p>
+        } @if (shift.workExperiences.length > 0) {
+        <strong>Work experience</strong>
+        <p class="work-experiences">{{ formatWorkExperiences(shift) }}</p>
         }
       </div>
       } @if (shift.area) {

@@ -140,6 +140,12 @@ export class VolunteerRotaComponent implements OnInit {
     return shift.newbies.map((x) => x.name).join(', ');
   }
 
+  formatWorkExperiences(shift: Shift) {
+    return shift.workExperiences
+      .map((x) => `${x.name} - ${x.notes}`)
+      .join(', ');
+  }
+
   ngOnInit() {
     this.store.dispatch(getRota());
     this.store.dispatch(getTimes());

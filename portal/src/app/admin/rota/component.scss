@@ -297,7 +297,7 @@ a {
               .newbie {
                 font-size: 0.9rem;
                 background-color: pink;
-                padding: 0.125rem 0.25rem;
+                padding: 0.125rem 0.35rem;
               }
             }
           }
@@ -308,5 +308,40 @@ a {
 
   .day:last-child {
     border-right: solid 5px var(--theme-primary);
+  }
+}
+
+.add-work-experience {
+  .included-dates {
+    margin: 1rem 0rem 0.75rem;
+    border-left: solid 3px rgb(49, 49, 49);
+    padding-left: 0.75rem;
+
+    .included-date {
+      display: flex;
+
+      > p {
+        min-width: 10rem;
+        color: rgb(97, 97, 97);
+      }
+    }
+  }
+
+  .add-date {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-end;
+    margin-bottom: 1rem;
+
+    .field,
+    input {
+      margin-bottom: 0rem;
+    }
+  }
+}
+
+.shift.shift--work-experience {
+  .details {
+    background-color: rgb(197, 197, 234);
   }
 }

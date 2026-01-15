@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   addNewbie,
+  addWorkExperience,
   assignArea,
   confirmShift,
   denyShift,
@@ -77,8 +78,14 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
   timeId: number | null = null;
   jobId: number | null = null;
 
+  workExperienceName = '';
+  workExperienceDates: { date: string; notes: string }[] = [];
+  workExperienceDate = '';
+  workExperienceNotes = '';
+
   addingExtra = false;
   addingNewbie = false;
+  addingWorkExperience = false;
 
   subscription: Subscription;
 
@@ -179,11 +186,16 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
   private resetForm() {
     this.addingExtra = false;
     this.addingNewbie = false;
+    this.addingWorkExperience = false;
     this.accountId = null;
     this.newbieName = '';
     this.date = '';
     this.timeId = null;
     this.jobId = null;
+    this.workExperienceName = '';
+    this.workExperienceDate = '';
+    this.workExperienceNotes = '';
+    this.workExperienceDates = [];
   }
 
   addExtraShift() {
@@ -208,6 +220,30 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
         date: this.date,
         timeId: Number(this.timeId),
         jobId: Number(this.jobId),
+        start: this._start.format('YYYY-MM-DD'),
+        end: this._end.format('YYYY-MM-DD'),
+      })
+    );
+    this.resetForm();
+  }
+
+  includeWorkExperienceDate() {
+    if (!this.workExperienceDate) return;
+
+    this.workExperienceDates.push({
+      date: this.workExperienceDate,
+      notes: this.workExperienceNotes || '',
+    });
+
+    this.workExperienceDate = '';
+    this.workExperienceNotes = '';
+  }
+
+  addWorkExperience() {
+    this.store.dispatch(
+      addWorkExperience({
+        name: this.workExperienceName,
+        dates: this.workExperienceDates,
         start: this._start.format('YYYY-MM-DD'),
         end: this._end.format('YYYY-MM-DD'),
       })

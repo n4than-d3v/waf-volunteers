@@ -35,6 +35,8 @@ public class DatabaseContext : DbContext
     public DbSet<AssignableShift> AssignableShifts { get; set; }
     public DbSet<Assignment> Assignments { get; set; }
     public DbSet<Newbie> Newbies { get; set; }
+    public DbSet<WorkExperience> WorkExperiences { get; set; }
+    public DbSet<WorkExperienceDate> WorkExperienceDates { get; set; }
 
     // Notices
     public DbSet<Notice> Notices { get; set; }

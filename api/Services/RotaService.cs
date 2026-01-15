@@ -81,6 +81,7 @@ public class RotaService : IRotaService
         var assignableShifts = await _repository.GetAll<AssignableShift>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
         var assignments = await _repository.GetAll<Assignment>(x => start <= x.Attendance.Date && x.Attendance.Date <= end, tracking: false, action: x => x.Include(y => y.Attendance).Include(y => y.Area));
         var newbies = await _repository.GetAll<Newbie>(x => start <= x.Date && x.Date <= end, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
+        var workExperiences = await _repository.GetAll<WorkExperience>(x => x.Dates.Any(y => start <= y.Date && y.Date <= end), tracking: false, action: x => x.Include(y => y.Dates));
 
         var days = new List<Day>();
 
@@ -110,6 +111,15 @@ public class RotaService : IRotaService
             return new Day.DayShift.DayShiftJob.DayShiftJobNewbie
             {
                 Name = newbie.Name
+            };
+        }
+
+        Day.DayWorkExperience GetDayWorkExperience(WorkExperienceDate workExperience)
+        {
+            return new Day.DayWorkExperience
+            {
+                Name = workExperience.WorkExperience.Name,
+                Notes = workExperience.Notes
             };
         }
 
@@ -206,6 +216,7 @@ public class RotaService : IRotaService
 
         for (var date = start; date <= end; date = date.AddDays(1))
         {
+            var dayWorkExperiences = workExperiences.SelectMany(x => x.Dates).Where(x => x.Date == date);
             days.Add(new Day
             {
                 Date = date,
@@ -218,7 +229,8 @@ public class RotaService : IRotaService
                 Shifts = [.. times
                     .OrderBy(time => time.Id)
                     .Select(time => GetDayShift(date, time))
-                ]
+                ],
+                WorkExperiences = dayWorkExperiences.Select(GetDayWorkExperience).ToList()
             });
         }
 
@@ -246,6 +258,9 @@ public class RotaService : IRotaService
             Newbies = job.Newbies
                 .Select(x => new ShiftNewbie { Name = x.Name })
                 .ToArray(),
+            WorkExperiences = day.WorkExperiences
+                .Select(x => new ShiftWorkExperience { Name = x.Name, Notes = x.Notes })
+                .ToArray(),
             Others = shift.Jobs
                 .Where(j => j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id))
                 .SelectMany(j => j.Volunteers)
@@ -272,8 +287,11 @@ public class RotaService : IRotaService
                 Confirmed = volunteer?.Confirmed,
                 Type = volunteer?.Type ?? AttendanceType.Urgent,
                 Newbies = job.Newbies
-                .Select(x => new ShiftNewbie { Name = x.Name })
-                .ToArray(),
+                    .Select(x => new ShiftNewbie { Name = x.Name })
+                    .ToArray(),
+                WorkExperiences = day.WorkExperiences
+                    .Select(x => new ShiftWorkExperience { Name = x.Name, Notes = x.Notes })
+                    .ToArray(),
                 Others = shift.Jobs
                     .Where(j => j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id))
                     .SelectMany(j => j.Volunteers)
@@ -379,6 +397,13 @@ public class Day
     public DateOnly Date { get; set; }
     public int? Week { get; set; }
     public IReadOnlyList<DayShift> Shifts { get; set; }
+    public IReadOnlyList<DayWorkExperience> WorkExperiences { get; set; }
+
+    public class DayWorkExperience
+    {
+        public string Name { get; set; }
+        public string Notes { get; set; }
+    }
 
     public class DayShift
     {
@@ -453,6 +478,7 @@ public class UserRota
         public AttendanceType Type { get; set; }
         public IReadOnlyList<ShiftOther> Others { get; set; }
         public IReadOnlyList<ShiftNewbie> Newbies { get; set; }
+        public IReadOnlyList<ShiftWorkExperience> WorkExperiences { get; set; }
         public AssignableArea? Area { get; set; }
 
         public class ShiftOther
@@ -464,6 +490,12 @@ public class UserRota
         public class ShiftNewbie
         {
             public string Name { get; set; }
+        }
+
+        public class ShiftWorkExperience
+        {
+            public string Name { get; set; }
+            public string Notes { get; set; }
         }
     }
 

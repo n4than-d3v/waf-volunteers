@@ -8,6 +8,9 @@ import {
   addRegularShift,
   addRegularShiftError,
   addRegularShiftSuccess,
+  addWorkExperience,
+  addWorkExperienceError,
+  addWorkExperienceSuccess,
   assignArea,
   assignAreaError,
   assignAreaSuccess,
@@ -453,6 +456,35 @@ export class RotaManagementEffects {
   addNewbieSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addNewbieSuccess),
+      switchMap((action) =>
+        of(
+          getAdminRota({
+            start: action.start,
+            end: action.end,
+            silent: true,
+          })
+        )
+      )
+    )
+  );
+
+  addWorkExperience$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addWorkExperience),
+      switchMap((action) =>
+        this.http.post(`rota/add-work-experience`, action).pipe(
+          map(() =>
+            addWorkExperienceSuccess({ start: action.start, end: action.end })
+          ),
+          catchError(() => of(addWorkExperienceError()))
+        )
+      )
+    )
+  );
+
+  addWorkExperienceSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(addWorkExperienceSuccess),
       switchMap((action) =>
         of(
           getAdminRota({

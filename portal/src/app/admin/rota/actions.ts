@@ -226,6 +226,27 @@ export const addNewbieSuccess = createAction(
 );
 export const addNewbieError = createAction('[Rota] Admin adds newbie: Error');
 
+export const addWorkExperience = createAction(
+  '[Rota] Admin adds work experience',
+  props<{
+    name: string;
+    dates: { date: string; notes: string }[];
+
+    start: string;
+    end: string;
+  }>()
+);
+export const addWorkExperienceSuccess = createAction(
+  '[Rota] Admin adds work experience: Success',
+  props<{
+    start: string;
+    end: string;
+  }>()
+);
+export const addWorkExperienceError = createAction(
+  '[Rota] Admin adds work experience: Error'
+);
+
 export const getReports = createAction(
   '[Rota] Get Reports',
   props<{

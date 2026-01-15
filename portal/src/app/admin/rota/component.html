@@ -40,7 +40,8 @@
 <spinner></spinner>
 } @else if (rota.error) {
 <div class="error">Error occurred</div>
-} @else if (rota.data) { @if (!(addingExtra || addingNewbie)) {
+} @else if (rota.data) { @if (!(addingExtra || addingNewbie ||
+addingWorkExperience)) {
 <div class="top-buttons">
   <button class="button button--primary expand-all" (click)="toggleAll()">
     {{ expandAll ? 'Hide' : 'Show' }} all
@@ -51,8 +52,14 @@
   <button class="button button--secondary" (click)="addingNewbie = true">
     Add newbie
   </button>
+  <button
+    class="button button--secondary"
+    (click)="addingWorkExperience = true"
+  >
+    Add work experience
+  </button>
 </div>
-} @else {
+} @else if (addingExtra || addingNewbie) {
 <div class="add-extra">
   @if (addingExtra) {
   <div class="field">
@@ -110,6 +117,57 @@
       Cancel
     </button>
     }
+  </div>
+</div>
+} @else if (addingWorkExperience) {
+<div class="add-extra add-work-experience">
+  <div class="field">
+    <label for="workExperienceName">Name</label>
+    <input
+      type="text"
+      id="workExperienceName"
+      [(ngModel)]="workExperienceName"
+    />
+  </div>
+  <div class="included-dates">
+    @for (weDate of workExperienceDates; track weDate.date) {
+    <div class="included-date">
+      <p>{{ weDate.date | date: 'dd MMM yyyy' }}</p>
+      <p>{{ weDate.notes }}</p>
+    </div>
+    }
+  </div>
+  <div class="add-date">
+    <div class="field">
+      <label for="date">Date</label>
+      <input type="date" id="date" [(ngModel)]="workExperienceDate" />
+    </div>
+    <div class="field">
+      <label for="workExperienceNotes">Notes</label>
+      <input
+        type="text"
+        id="workExperienceNotes"
+        [(ngModel)]="workExperienceNotes"
+      />
+    </div>
+    <button
+      (click)="includeWorkExperienceDate()"
+      class="button button--secondary"
+    >
+      Include date
+    </button>
+  </div>
+  <p>Include all relevant work experience dates before saving</p>
+  <div class="buttons">
+    <button (click)="addWorkExperience()" class="button button--primary">
+      Add work experience
+    </button>
+    <button
+      (click)="addingWorkExperience = false"
+      class="button button--secondary"
+    >
+      Cancel
+    </button>
   </div>
 </div>
 }
@@ -263,18 +321,38 @@
               </div>
               } }
             </div>
-            @if (job.newbies.length > 0) {
+            @if (job.newbies.length > 0) { @for (newbie of job.newbies; track
+            newbie.name) {
             <div class="newbies">
-              @for (newbie of job.newbies; track newbie.name) {
               <div class="newbie">{{ newbie.name }}</div>
-              }
             </div>
-            }
+            } }
           </div>
           } }
         </div>
       </div>
-      } }
+      } } @if (day.workExperiences.length > 0) {
+      <div class="shift shift--work-experience">
+        <h4>Work experience</h4>
+        <div class="jobs">
+          <div class="job job__enough">
+            <div class="volunteers">
+              @for (workExperience of day.workExperiences; track
+              workExperience.name) {
+              <div class="volunteer">
+                <div class="details">
+                  <abbr class="name"
+                    >{{ workExperience.name }} - {{ workExperience.notes
+                    }}</abbr
+                  >
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      }
     </div>
   </div>
   }

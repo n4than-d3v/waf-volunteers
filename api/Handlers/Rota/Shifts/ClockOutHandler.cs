@@ -11,7 +11,6 @@ namespace Api.Handlers.Rota.Shifts;
 public class ClockOut : IRequest<IResult>
 {
     public int AttendanceId { get; set; }
-    public string? Car { get; set; }
 }
 
 public class ClockOutHandler : IRequestHandler<ClockOut, IResult>

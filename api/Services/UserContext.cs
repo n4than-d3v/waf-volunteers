@@ -58,5 +58,5 @@ public static class ClaimsPrincipalExtensions
             roles.HasFlag(AccountRoles.BEACON_VET_NURSE);
     }
     public static bool IsOrphanFeeder(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.BEACON_ORPHAN_FEEDER);
-    public static bool IsClocking(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.GetRoles().HasFlag(AccountRoles.APP_CLOCKING);
+    public static bool IsClocking(this ClaimsPrincipal claimsPrincipal) => claimsPrincipal.IsAdmin() || claimsPrincipal.GetRoles().HasFlag(AccountRoles.APP_CLOCKING);
 }

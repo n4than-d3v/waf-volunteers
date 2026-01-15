@@ -546,7 +546,15 @@ public partial class Program
             .AddNote("Clock volunteer out")
             .RequireAuthorization(clockingPolicy);
 
-        apiClocking.MapGet("/view", (IMediator mediator) => mediator.Send(new GetClockingRota()))
+        apiClocking.MapPost("/visitor/in", (IMediator mediator, VisitorClockIn request) => mediator.Send(request))
+            .AddNote("Clock visitor in")
+            .RequireAuthorization(clockingPolicy);
+
+        apiClocking.MapPost("/visitor/out", (IMediator mediator, VisitorClockOut request) => mediator.Send(request))
+            .AddNote("Clock visitor out")
+            .RequireAuthorization(clockingPolicy);
+
+        apiClocking.MapGet("/view", (IMediator mediator, string? date) => mediator.Send(new GetClockingRota(date)))
             .AddNote("View clocking rota")
             .RequireAuthorization(clockingPolicy);
     }

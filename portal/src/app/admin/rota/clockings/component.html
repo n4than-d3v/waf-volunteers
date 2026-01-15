@@ -1,0 +1,56 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>View clockings</h1>
+
+<div class="range">
+  <h2>Date</h2>
+  <div>
+    <input type="date" id="date" [(ngModel)]="date" />
+  </div>
+  <button class="button button--primary" (click)="update()">View</button>
+</div>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (rota$ | async; as rota) {
+<table>
+  <thead>
+    <tr>
+      <th>Shift</th>
+      <th>Name</th>
+      <th>In</th>
+      <th>Car</th>
+      <th>Out</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (shift of rota; track shift.time.id) { @if
+    (isAnyoneSupposedToCome(shift)) { @for (volunteer of shift.volunteers; track
+    getTrackingKey(volunteer); let first = $first) { @if (volunteer.confirmed) {
+    <tr>
+      @if (first) {
+      <td>{{ shift.time.name }}</td>
+      } @else {
+      <td></td>
+      }
+      <td>{{ volunteer.fullName }}</td>
+      <td>{{ volunteer.in }}</td>
+      <td>{{ volunteer.car }}</td>
+      <td>{{ volunteer.out }}</td>
+      @if (!volunteer.in) { @if (isHistorical) {
+      <td><span class="no-show">No show</span></td>
+      } @else {
+      <td><span class="not-here">On their way</span></td>
+      } } @else if (volunteer.out) {
+      <td><span class="left">Left</span></td>
+      } @else if (volunteer.in) {
+      <td><span class="here">Here</span></td>
+      }
+    </tr>
+    } } } }
+  </tbody>
+</table>
+}

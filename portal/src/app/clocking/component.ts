@@ -3,7 +3,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerComponent } from '../shared/spinner/component';
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { clockIn, clockOut, getClockingRota } from './actions';
+import {
+  clockIn,
+  clockOut,
+  getClockingRota,
+  visitorClockIn,
+  visitorClockOut,
+} from './actions';
 import { Observable } from 'rxjs';
 import { ClockingRota, Volunteer } from './state';
 import {
@@ -34,7 +40,14 @@ export class ClockingComponent implements OnInit {
 
   date: string = new Date().toString();
 
+  viewingReport = false;
+
+  visitor = false;
+  visitorName = '';
+  visitorCar = '';
+
   selectedVolunteer: Volunteer | null = null;
+  clockingOut = false;
   enteringCustomCar = false;
   customCar = '';
   cars: string[] | null = null;
@@ -45,9 +58,48 @@ export class ClockingComponent implements OnInit {
     this.error$ = this.store.select(selectClockingError);
   }
 
+  getTrackingKey(volunteer: Volunteer) {
+    if (volunteer.attendanceId) return 'A' + volunteer.attendanceId;
+    if (volunteer.visitorId) return 'V' + volunteer.visitorId;
+    return volunteer.fullName;
+  }
+
+  isAnyoneSupposedToCome(shift: ClockingRota) {
+    return shift.volunteers.some((x) => x.confirmed);
+  }
+
+  isAnyoneHere(shift: ClockingRota) {
+    return shift.volunteers.some((x) => x.in && !x.out);
+  }
+
+  isAnyoneNotHere(shift: ClockingRota) {
+    return shift.volunteers.some((x) => x.confirmed && !x.in);
+  }
+
+  isAnyoneNotComing(shift: ClockingRota) {
+    return shift.volunteers.some((x) => !x.confirmed);
+  }
+
+  getNotComing(shift: ClockingRota) {
+    return shift.volunteers
+      .filter((x) => !x.confirmed)
+      .map((x) => x.fullName)
+      .join(', ');
+  }
+
+  hasAnyoneLeft(shift: ClockingRota) {
+    return shift.volunteers.some((x) => x.out);
+  }
+
+  hasEveryoneLeft(shift: ClockingRota) {
+    const confirmed = shift.volunteers.filter((x) => x.confirmed).length;
+    const left = shift.volunteers.filter((x) => x.out).length;
+    return confirmed === left;
+  }
+
   ngOnInit() {
     this.date = new Date().toString();
-    this.store.dispatch(getClockingRota());
+    this.store.dispatch(getClockingRota({}));
   }
 
   showCars(volunteer: Volunteer) {
@@ -56,20 +108,56 @@ export class ClockingComponent implements OnInit {
     this.enteringCustomCar = false;
   }
 
+  reset() {
+    this.selectedVolunteer = null;
+    this.enteringCustomCar = false;
+    this.customCar = '';
+    this.cars = null;
+    this.clockingOut = false;
+    this.visitor = false;
+    this.visitorName = '';
+    this.visitorCar = '';
+  }
+
+  clockInVisitor() {
+    if (!this.visitorName) return;
+    this.store.dispatch(
+      visitorClockIn({
+        name: this.visitorName,
+        car: this.visitorCar || '',
+      })
+    );
+    this.reset();
+  }
+
   clockIn(volunteer: Volunteer, car: string | null) {
     this.store.dispatch(
       clockIn({
-        attendanceId: volunteer.attendanceId,
+        attendanceId: volunteer.attendanceId!,
         car: car || '',
       })
     );
+    this.reset();
   }
 
   clockOut(volunteer: Volunteer) {
-    this.store.dispatch(
-      clockOut({
-        attendanceId: volunteer.attendanceId,
-      })
-    );
+    if (volunteer.attendanceId) {
+      this.store.dispatch(
+        clockOut({
+          attendanceId: volunteer.attendanceId,
+        })
+      );
+    } else if (volunteer.visitorId) {
+      this.store.dispatch(
+        visitorClockOut({
+          id: volunteer.visitorId,
+        })
+      );
+    }
+    this.selectedVolunteer = volunteer;
+    this.clockingOut = true;
+    setTimeout(() => {
+      this.reset();
+    }, 5_000);
   }
 }

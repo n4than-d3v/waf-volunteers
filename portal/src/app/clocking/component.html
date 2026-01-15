@@ -1,94 +1,203 @@
-<h1>{{date | date:'EEEE' }} {{ date | day }} {{ date | date: 'MMMM y'}}</h1>
-
 @if (loading$ | async) {
 <spinner></spinner>
 } @if (error$ | async) {
 <div class="error">Error occurred</div>
-} @if (rota$ | async; as rota) { @for ( shift of rota; track shift.time.id) {
+} @if (rota$ | async; as rota) { @if (visitor) {
+<h2>
+  Welcome @if (visitorName) {
+  <span class="name">{{ visitorName.split(' ')[0] }}</span>
+  }
+</h2>
+<div class="message">
+  <p>Please provide your name and the car you arrived in</p>
+</div>
+<br />
+<div class="field">
+  <label for="visitorName">Full name</label>
+  <input
+    type="text"
+    id="visitorName"
+    autocomplete="off"
+    [(ngModel)]="visitorName"
+  />
+</div>
+<div class="cars">
+  <button class="button button--secondary" (click)="clockInVisitor()">
+    No car
+  </button>
+  <input
+    type="text"
+    id="visitorCar"
+    class="custom-car"
+    autocomplete="off"
+    [(ngModel)]="visitorCar"
+  />
+  @if (visitorCar) {
+  <button class="button button--primary" (click)="clockInVisitor()">
+    {{ visitorCar }}
+  </button>
+  }
+  <button class="button button--warning" (click)="reset()">Cancel</button>
+</div>
+
+} @else if (selectedVolunteer) { @if (clockingOut) {
+<h2>
+  Goodbye
+  <span class="name">{{ selectedVolunteer.fullName.split(' ')[0] }}</span>
+</h2>
+<div class="message">
+  <p>Thank you so much for coming in today</p>
+  <p>Hope you have an incredible rest of your day 😊</p>
+</div>
+} @else {
+<h2>
+  Welcome
+  <span class="name">{{ selectedVolunteer.fullName.split(' ')[0] }}</span>
+</h2>
+<div class="message">
+  <p>Thank you for coming in today 😊</p>
+  <p>Please select the car you arrived in</p>
+</div>
+<div class="cars">
+  <button
+    class="button button--secondary"
+    (click)="clockIn(selectedVolunteer, null)"
+  >
+    No car
+  </button>
+  @for (car of cars; track car) {
+  <button
+    class="button button--primary"
+    (click)="clockIn(selectedVolunteer, car)"
+  >
+    {{ car }}
+  </button>
+  } @if (enteringCustomCar) {
+  <input
+    type="text"
+    class="custom-car"
+    autocomplete="off"
+    [(ngModel)]="customCar"
+  />
+  @if (customCar) {
+  <button
+    class="button button--primary"
+    (click)="clockIn(selectedVolunteer, customCar)"
+  >
+    {{ customCar }}
+  </button>
+  } } @else {
+  <button class="button button--primary" (click)="enteringCustomCar = true">
+    Other
+  </button>
+  }
+  <button class="button button--warning" (click)="reset()">Cancel</button>
+</div>
+} } @else if (viewingReport) {
+<div class="report">
+  <button (click)="viewingReport = false" class="button button--secondary">
+    Back to sign in
+  </button>
+  <table>
+    <thead>
+      <tr>
+        <th>Shift</th>
+        <th>Name</th>
+        <th>In</th>
+        <th>Car</th>
+        <th>Out</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (shift of rota; track shift.time.id) { @if
+      (isAnyoneSupposedToCome(shift)) { @for (volunteer of shift.volunteers;
+      track getTrackingKey(volunteer); let first = $first) { @if
+      (volunteer.confirmed) {
+      <tr>
+        @if (first) {
+        <td>{{ shift.time.name }}</td>
+        } @else {
+        <td></td>
+        }
+        <td>{{ volunteer.fullName }}</td>
+        <td>{{ volunteer.in }}</td>
+        <td>{{ volunteer.car }}</td>
+        <td>{{ volunteer.out }}</td>
+        @if (!volunteer.in) {
+        <td><span class="not-here">On their way</span></td>
+        } @else if (volunteer.out) {
+        <td><span class="left">Left</span></td>
+        } @else if (volunteer.in) {
+        <td><span class="here">Here</span></td>
+        }
+      </tr>
+      } } } }
+    </tbody>
+  </table>
+</div>
+} @else {
+<h1>
+  <span
+    >{{date | date:'EEEE' }} {{ date | day }} {{ date | date: 'MMMM y'}}</span
+  >
+  <button class="button button--primary" (click)="visitor = true">
+    Visitor sign-in
+  </button>
+</h1>
+
+@for (shift of rota; track shift.time.id) { @if (!hasEveryoneLeft(shift)) {
 <div class="shift">
   <h2>{{ shift.time.name }}</h2>
-  @for ( job of shift.jobs; track job.job.id) {
-  <div class="job">
-    <h3>{{ job.job.name }}</h3>
-    <div class="volunteers">
-      @for ( volunteer of job.volunteers; track volunteer.attendanceId) {
-      <div class="volunteer">
+  <div class="content">
+    @if (isAnyoneHere(shift)) {
+    <h3>Here</h3>
+    <div class="people">
+      @for (volunteer of shift.volunteers; track getTrackingKey(volunteer)) {
+      @if (volunteer.in && !volunteer.out) {
+      <div class="person person--signed-in">
         <p>{{ volunteer.fullName }}</p>
-        @if (!volunteer.confirmed) {
-        <p><strong>X</strong></p>
-        } @else if (selectedVolunteer == volunteer && cars) {
-        <div class="cars">
-          @if (enteringCustomCar) {
-          <input type="text" class="custom-car" [(ngModel)]="customCar" />
-          <button
-            class="button button--primary"
-            (click)="clockIn(volunteer, customCar)"
-          >
-            Save
-          </button>
-          <button
-            class="button button--secondary"
-            (click)="enteringCustomCar = false"
-          >
-            Back
-          </button>
-          } @else {
-          <button
-            class="button button--secondary"
-            (click)="clockIn(volunteer, null)"
-          >
-            No car
-          </button>
-          @for (car of cars; track car) {
-          <button
-            class="button button--primary"
-            (click)="clockIn(volunteer, car)"
-          >
-            {{ car }}
-          </button>
-          }
-          <button
-            class="button button--primary"
-            (click)="enteringCustomCar = true"
-          >
-            Other
-          </button>
-          }
-        </div>
-        } @else { @if (!volunteer.in) {
-        <button class="button button--primary" (click)="showCars(volunteer)">
-          I'm here
-        </button>
-        } @else if (!volunteer.out) {
-        <p class="clock">
-          <img src="images/rota/car.svg" />
-          {{ volunteer.car || 'No car' }}
-        </p>
-        <p class="clock">
-          <img src="images/rota/clock-in.svg" />
-          {{ volunteer.in }}
-        </p>
         <button class="button button--secondary" (click)="clockOut(volunteer)">
           I'm leaving
         </button>
-        } @else {
-        <p class="clock">
-          <img src="images/rota/car.svg" />
-          {{ volunteer.car || 'No car' }}
-        </p>
-        <p class="clock">
-          <img src="images/rota/clock-in.svg" />
-          {{ volunteer.in }}
-        </p>
-        <p class="clock">
-          <img src="images/rota/clock-out.svg" />
-          {{ volunteer.out }}
-        </p>
-        }}
       </div>
-      }
+      } }
     </div>
+    } @if (isAnyoneNotHere(shift)) {
+    <h3>On their way</h3>
+    <div class="people">
+      @for (volunteer of shift.volunteers; track getTrackingKey(volunteer)) {
+      @if (volunteer.confirmed && !volunteer.in) {
+      <div class="person person--not-signed-in">
+        <p>{{ volunteer.fullName }}</p>
+        <button class="button button--primary" (click)="showCars(volunteer)">
+          I'm here
+        </button>
+      </div>
+      } }
+    </div>
+    } @if (hasAnyoneLeft(shift)) {
+    <h3>Left</h3>
+    <div class="people">
+      @for (volunteer of shift.volunteers; track getTrackingKey(volunteer)) {
+      @if (volunteer.out) {
+      <div class="person person--left">
+        <p>{{ volunteer.fullName }}</p>
+      </div>
+      } }
+    </div>
+    } @if (isAnyoneNotComing(shift)) {
+    <div class="not-coming">
+      <h3>Not coming</h3>
+      <p>{{ getNotComing(shift) }}</p>
+    </div>
+    }
   </div>
-  }
 </div>
-}}
+} }
+<div class="view-report">
+  <button (click)="viewingReport = true" class="button button--primary">
+    View report
+  </button>
+</div>
+} }

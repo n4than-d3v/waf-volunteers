@@ -17,19 +17,16 @@ export interface ClockingRota {
     end: string;
     id: number;
   };
-  jobs: Job[];
-}
-
-export interface Job {
-  job: { id: number; name: string };
   volunteers: Volunteer[];
 }
 
 export interface Volunteer {
+  job: { id: number; name: string };
   fullName: string;
   name: string;
   confirmed: boolean;
-  attendanceId: number;
+  attendanceId?: number;
+  visitorId?: number;
   cars: string[];
   car: string | null;
   in: string | null;

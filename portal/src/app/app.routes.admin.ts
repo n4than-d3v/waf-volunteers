@@ -13,6 +13,7 @@ import { AdminNoticeCreateComponent } from './admin/notices/create/component';
 import { AdminNoticeInteractionsComponent } from './admin/notices/interactions/component';
 import { AdminNoticeDeleteComponent } from './admin/notices/delete/component';
 import { AdminNoticeUpdateComponent } from './admin/notices/update/component';
+import { AdminRotaViewClockingsComponent } from './admin/rota/clockings/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -47,6 +48,7 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', component: AdminRotaComponent },
       { path: 'configuration', component: AdminRotaConfigurationComponent },
       { path: 'attendance', component: AdminRotaViewAttendanceComponent },
+      { path: 'clockings', component: AdminRotaViewClockingsComponent },
     ],
   },
   {

@@ -10,6 +10,12 @@ import {
   getClockingRota,
   getClockingRotaFailure,
   getClockingRotaSuccess,
+  visitorClockIn,
+  visitorClockInFailure,
+  visitorClockInSuccess,
+  visitorClockOut,
+  visitorClockOutFailure,
+  visitorClockOutSuccess,
 } from './actions';
 import { HttpClient } from '@angular/common/http';
 import { map, switchMap, catchError } from 'rxjs/operators';
@@ -25,11 +31,13 @@ export class ClockingEffects {
   getClockingRota$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getClockingRota),
-      switchMap((_) =>
-        this.http.get<ClockingRota[]>('clocking/view').pipe(
-          map((rota) => getClockingRotaSuccess({ rota })),
-          catchError((_) => of(getClockingRotaFailure()))
-        )
+      switchMap((action) =>
+        this.http
+          .get<ClockingRota[]>('clocking/view?date=' + (action.date || ''))
+          .pipe(
+            map((rota) => getClockingRotaSuccess({ rota })),
+            catchError((_) => of(getClockingRotaFailure()))
+          )
       )
     )
   );
@@ -49,7 +57,7 @@ export class ClockingEffects {
   clockInSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(clockInSuccess),
-      switchMap(() => of(getClockingRota()))
+      switchMap(() => of(getClockingRota({})))
     )
   );
 
@@ -68,7 +76,45 @@ export class ClockingEffects {
   clockOutSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(clockOutSuccess),
-      switchMap(() => of(getClockingRota()))
+      switchMap(() => of(getClockingRota({})))
+    )
+  );
+
+  visitorClockIn$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(visitorClockIn),
+      switchMap((action) =>
+        this.http.post('clocking/visitor/in', action).pipe(
+          map((_) => visitorClockInSuccess()),
+          catchError((_) => of(visitorClockInFailure()))
+        )
+      )
+    )
+  );
+
+  visitorClockInSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(visitorClockInSuccess),
+      switchMap(() => of(getClockingRota({})))
+    )
+  );
+
+  visitorClockOut$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(visitorClockOut),
+      switchMap((action) =>
+        this.http.post('clocking/visitor/out', action).pipe(
+          map((_) => visitorClockOutSuccess()),
+          catchError((_) => of(visitorClockOutFailure()))
+        )
+      )
+    )
+  );
+
+  visitorClockOutSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(visitorClockOutSuccess),
+      switchMap(() => of(getClockingRota({})))
     )
   );
 }

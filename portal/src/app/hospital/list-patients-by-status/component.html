@@ -36,6 +36,7 @@
       <th>Variant</th>
       <th>Pen</th>
       <th>Date admitted</th>
+      <th>Stay</th>
     </tr>
   </thead>
   <tbody>
@@ -48,6 +49,13 @@
       <td>{{ patient.speciesVariant?.name }}</td>
       <td>{{ patient.pen?.reference }} {{ patient.uniqueIdentifier }}</td>
       <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>
+        {{ duration(patient) }} @if (patient.isLongTerm) {
+        <span class="long-term">Long term</span>
+        } @if (patient.isOutdated) {
+        <span class="outdated">Outdated</span>
+        }
+      </td>
     </tr>
     }
   </tbody>

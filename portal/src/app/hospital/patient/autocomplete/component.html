@@ -36,7 +36,9 @@
         (click)="selectItem(searchResult, $event)"
         tabindex="0"
       >
-        {{ searchResult.display }}
+        {{ searchResult.display }} @if (searchResult.aka) {
+        <span class="aka">{{ searchResult.aka }}</span>
+        }
       </li>
       }
     </ul>

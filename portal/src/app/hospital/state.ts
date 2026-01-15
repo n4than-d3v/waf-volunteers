@@ -128,6 +128,8 @@ export interface ListPatient {
   speciesVariant: SpeciesVariant | null;
   sex: number | null;
   lastUpdatedDetails: string | null;
+  isLongTerm: boolean;
+  isOutdated: boolean;
   status: PatientStatus;
   pen: Pen | null;
   area: Area | null;

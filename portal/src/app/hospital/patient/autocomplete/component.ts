@@ -24,13 +24,17 @@ export class HospitalPatientAutocompleteComponent {
   @Input({ required: true }) label!: string;
   @Input({ required: true }) control!: string;
   @Input({ required: true }) formGroup!: FormGroup;
-  @Input({ required: true }) items!: { id: number; display: string }[];
+  @Input({ required: true }) items!: {
+    id: number;
+    display: string;
+    aka?: string;
+  }[];
 
   search = '';
   open = false;
-  searchResults: { id: number; display: string }[] = [];
+  searchResults: { id: number; display: string; aka?: string }[] = [];
 
-  item: { id: number; display: string } | null = null;
+  item: { id: number; display: string; aka?: string } | null = null;
 
   private getFirstInList() {
     const first = document.querySelector(
@@ -60,8 +64,10 @@ export class HospitalPatientAutocompleteComponent {
   performSearch(search: string) {
     this.open = !!search;
     if (!search) return;
-    this.searchResults = this.items.filter((x) =>
-      x.display.toUpperCase().includes(search.toUpperCase())
+    this.searchResults = this.items.filter(
+      (x) =>
+        x.display.toUpperCase().includes(search.toUpperCase()) ||
+        (x.aka && x.aka.toUpperCase().includes(search.toUpperCase()))
     );
   }
 

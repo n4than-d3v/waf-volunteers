@@ -36,6 +36,13 @@
   >
     ✏️ Edit
   </button>
+  @if (patient.lastUpdatedDetails) {
+  <p class="last-updated" [class.outdated]="patient.isOutdated">
+    @if (patient.isOutdated) {
+    <span>Check if up to date</span>
+    } Last updated {{ patient.lastUpdatedDetails | date: 'dd MMM yyyy HH:mm' }}
+  </p>
+  }
 </div>
 } } @else {
 <form [formGroup]="detailsForm">

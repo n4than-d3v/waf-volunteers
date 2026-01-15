@@ -39,8 +39,26 @@ table:not(:has(thead)) tbody {
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+  align-items: center;
 
   button {
     padding: 0.125rem 0.25rem;
+  }
+}
+
+.last-updated {
+  font-size: 0.95rem;
+  color: rgb(75, 75, 75);
+  margin-left: 0.25rem;
+
+  &.outdated {
+    color: var(--theme-color-2);
+
+    span {
+      padding: 0.125rem 0.35rem;
+      background-color: var(--theme-color-2);
+      color: white;
+      font-weight: bold;
+    }
   }
 }

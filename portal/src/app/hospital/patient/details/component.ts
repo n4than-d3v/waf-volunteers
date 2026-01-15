@@ -31,7 +31,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, SpinnerComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    SpinnerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
 })
 export class HospitalPatientDetailsComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;

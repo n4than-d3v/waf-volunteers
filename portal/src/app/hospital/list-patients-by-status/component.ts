@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { selectPatientsByStatus } from '../../hospital/selectors';
 import { getPatientsByStatus, setTab } from '../actions';
 import { AsyncPipe, DatePipe } from '@angular/common';
+import moment from 'moment';
 
 @Component({
   selector: 'hospital-list-patients-by-status',
@@ -36,6 +37,22 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store) {
     this.patients$ = this.store.select(selectPatientsByStatus);
+  }
+
+  duration(patient: ListPatient) {
+    const start = moment(patient.admitted);
+    const end = moment();
+
+    const months = end.diff(start, 'months');
+    start.add(months, 'months');
+
+    const days = end.diff(start, 'days');
+
+    const parts = [];
+    if (months) parts.push(`${months} month${months !== 1 ? 's' : ''}`);
+    if (days) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+
+    return parts.join(', ') || '0 days';
   }
 
   formatAdmissionReasons(patient: ListPatient) {

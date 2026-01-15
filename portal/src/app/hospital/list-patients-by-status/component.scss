@@ -9,3 +9,17 @@ th {
     cursor: pointer;
   }
 }
+
+.long-term {
+  background-color: var(--theme-color-5);
+  color: white;
+  padding: 0.125rem 0.35rem;
+  margin-left: 0.35rem;
+}
+
+.outdated {
+  background-color: var(--theme-color-2);
+  color: white;
+  padding: 0.125rem 0.35rem;
+  margin-left: 0.35rem;
+}

@@ -186,7 +186,11 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   convertMedications(medications: Medication[]) {
-    return medications.map((x) => ({ id: x.id, display: x.activeSubstance }));
+    return medications.map((x) => ({
+      id: x.id,
+      display: x.activeSubstance,
+      aka: x.brands.join(', '),
+    }));
   }
 
   getSpeciesType = getSpeciesType;

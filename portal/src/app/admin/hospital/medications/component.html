@@ -239,8 +239,16 @@ medication.id) {
             @for (species of dose.species; track species; let last = $last) {
             <span>{{ species }}</span>@if (!last) {<span>, </span>} }
           </td>
-          <td>{{ dose.doseMgKgRangeStart }} - {{ dose.doseMgKgRangeEnd }}</td>
-          <td>{{ dose.doseMlKgRangeStart }} - {{ dose.doseMlKgRangeEnd }}</td>
+          <td>
+            @if (dose.doseMgKgRangeStart === dose.doseMgKgRangeEnd) { {{
+            dose.doseMgKgRangeStart }} } @else { {{ dose.doseMgKgRangeStart }} -
+            {{ dose.doseMgKgRangeEnd }} }
+          </td>
+          <td>
+            @if (dose.doseMlKgRangeStart === dose.doseMlKgRangeEnd) { {{
+            dose.doseMlKgRangeStart }} } @else { {{ dose.doseMlKgRangeStart }} -
+            {{ dose.doseMlKgRangeEnd }} }
+          </td>
           @if (dose.administrationMethod) {
           <td>
             {{ dose.administrationMethod.description }} ({{

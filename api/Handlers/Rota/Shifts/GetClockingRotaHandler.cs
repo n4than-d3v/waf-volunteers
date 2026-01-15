@@ -81,7 +81,7 @@ public class GetClockingRotaHandler : IRequestHandler<GetClockingRota, IResult>
         {
             items.Insert(0, new RotaItem
             {
-                Time = new TimeRange { Id = -1, Name = "Visitors" },
+                Time = new TimeRange { Id = -1, Name = "Extra" },
                 Volunteers = visitorClockings.Select(visitor => new RotaItemVolunteer
                 {
                     FullName = visitor.Name,

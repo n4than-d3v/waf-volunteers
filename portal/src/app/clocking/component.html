@@ -133,11 +133,12 @@
 </div>
 } @else {
 <h1>
-  <span
-    >{{date | date:'EEEE' }} {{ date | day }} {{ date | date: 'MMMM y'}}</span
-  >
+  <span>
+    {{date | date:'EEEE' }}<br />
+    {{ date | day }} {{ date | date: 'MMMM'}}
+  </span>
   <button class="button button--primary" (click)="visitor = true">
-    Visitor sign-in
+    Extra sign-in
   </button>
 </h1>
 

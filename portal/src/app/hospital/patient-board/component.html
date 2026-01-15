@@ -19,7 +19,9 @@
           @for (patient of getPatientsInPen(patients.data, pen); track
           patient.id) {
           <div class="patient">
-            <div class="species">{{ patient.speciesVariant?.name }}</div>
+            <div class="species">
+              {{ patient.speciesVariant?.friendlyName }}
+            </div>
             @if (patient.diets.length > 0) {
             <div class="diets">
               @for (diet of patient.diets; track diet.id) {

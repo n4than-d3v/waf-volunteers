@@ -112,14 +112,9 @@
     <tbody>
       @for (shift of rota; track shift.time.id) { @if
       (isAnyoneSupposedToCome(shift)) { @for (volunteer of shift.volunteers;
-      track getTrackingKey(volunteer); let first = $first) { @if
-      (volunteer.confirmed) {
+      track getTrackingKey(volunteer)) { @if (volunteer.confirmed) {
       <tr>
-        @if (first) {
         <td>{{ shift.time.name }}</td>
-        } @else {
-        <td></td>
-        }
         <td>{{ volunteer.fullName }}</td>
         <td>{{ volunteer.in }}</td>
         <td>{{ volunteer.car }}</td>

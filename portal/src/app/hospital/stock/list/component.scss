@@ -21,6 +21,11 @@ table {
   }
 }
 
+.warnings {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .expired {
   font-weight: bold;
   color: var(--theme-color-2);

@@ -39,13 +39,15 @@
       <td>{{ item.quantityInStock }} {{ getMeasurement(item.measurement) }}</td>
       <td>{{ item.quantityInUse }} {{ getMeasurement(item.measurement) }}</td>
       <td>
-        @if (item.needsReordering) {
-        <span class="reorder">Re-order</span>
-        } @if (item.expired) {
-        <span class="expired">Batch expired</span>
-        } @if (item.expiredAfterOpening) {
-        <span class="expired">In-use expired</span>
-        }
+        <div class="warnings">
+          @if (item.needsReordering) {
+          <span class="reorder">Re-order</span>
+          } @if (item.expired) {
+          <span class="expired">Batch expired</span>
+          } @if (item.expiredAfterOpening) {
+          <span class="expired">In-use expired</span>
+          }
+        </div>
       </td>
       <td>
         <div class="buttons">

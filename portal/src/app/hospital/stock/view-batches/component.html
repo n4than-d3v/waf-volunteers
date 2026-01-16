@@ -22,7 +22,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (batch of page.item.batches; track batch.id) {
+    @for (batch of page.item.batches; track batch.id; let last = $last) {
     <tr>
       <td>{{ batch.number }}</td>
       <td>{{ batch.date | date: 'dd MMM yyyy' }}</td>
@@ -99,6 +99,10 @@
         </div>
         }
       </td>
+    </tr>
+    } @if (!last) {
+    <tr>
+      <td colspan="9">&nbsp;</td>
     </tr>
     } } }
   </tbody>

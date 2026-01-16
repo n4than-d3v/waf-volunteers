@@ -3,6 +3,7 @@ using System;
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260116113957_StockManagement")]
+    partial class StockManagement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1841,8 +1844,8 @@ namespace Api.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly>("Expiry")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Expiry")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Initials")
                         .IsRequired()
@@ -1885,8 +1888,8 @@ namespace Api.Migrations
                     b.Property<string>("DisposedBy")
                         .HasColumnType("text");
 
-                    b.Property<DateOnly>("Expiry")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Expiry")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");

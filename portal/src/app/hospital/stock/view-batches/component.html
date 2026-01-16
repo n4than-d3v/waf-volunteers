@@ -1,0 +1,106 @@
+<div class="buttons">
+  <button (click)="back()" class="button button--secondary-invert">
+    ⬅️ Back
+  </button>
+</div>
+@if (page$ | async; as page) { @if (page.item) {
+<h3>View batches</h3>
+<p class="subtitle">
+  {{ page.item.medication }}, {{ page.item.medicationConcentration }}, {{
+  page.item.brand }}
+</p>
+<table>
+  <thead>
+    <tr>
+      <th>Batch number</th>
+      <th>Arrival date</th>
+      <th>Expiration date</th>
+      <th>Delivered</th>
+      <th>In stock</th>
+      <th>In use</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (batch of page.item.batches; track batch.id) {
+    <tr>
+      <td>{{ batch.number }}</td>
+      <td>{{ batch.date | date: 'dd MMM yyyy' }}</td>
+      <td>{{ batch.expiry | date: 'dd MMM yyyy' }}</td>
+      <td>
+        {{ batch.deliveredQuantity }} {{ getMeasurement(page.item.measurement)
+        }}
+      </td>
+      <td>
+        {{ batch.quantityInStock }} {{ getMeasurement(page.item.measurement) }}
+      </td>
+      <td>
+        {{ batch.quantityInUse }} {{ getMeasurement(page.item.measurement) }}
+      </td>
+      <td>
+        @if (batch.expired) {
+        <span class="expired">Batch expired</span>
+        } @if (batch.expiredAfterOpening) {
+        <span class="expired">In-use expired</span>
+        }
+      </td>
+      <td>
+        <div class="buttons">
+          @if (!(batch.expired || batch.quantityInStock === 0)) {
+          <button
+            (click)="signOut(page.item, batch)"
+            class="button button--secondary-invert"
+          >
+            💉 Sign out
+          </button>
+          }
+          <button
+            (click)="disposeBatch(page.item, batch)"
+            class="button button--secondary-invert"
+          >
+            🗑️ Dispose
+          </button>
+        </div>
+      </td>
+    </tr>
+    @if (batch.usages.length > 0) {
+    <tr class="secondary">
+      <td colspan="2"></td>
+      <th>Signed out</th>
+      <th>In-use expiration</th>
+      <th>Quantity</th>
+      <th>Disposal</th>
+      <th colspan="2"></th>
+    </tr>
+    @for (usage of batch.usages; track usage.id) {
+    <tr>
+      <td colspan="2"></td>
+      <td>{{ usage.date | date: 'dd MMM yyyy' }} ({{ usage.signedOutBy }})</td>
+      <td>{{ usage.expiry | date: 'dd MMM yyyy' }}</td>
+      <td>{{ usage.quantity }} {{ getMeasurement(page.item.measurement) }}</td>
+      <td>
+        @if (usage.disposed) { {{ usage.disposed | date: 'dd MMM yyyy' }} ({{
+        usage.disposedBy }}) } @else { Still in use }
+      </td>
+      <td>
+        @if (usage.expired) {
+        <span class="expired">In-use expired</span>
+        }
+      </td>
+      <td>
+        @if (!usage.disposed) {
+        <div class="buttons">
+          <button
+            (click)="disposeUsage(page.item, batch, usage)"
+            class="button button--secondary-invert"
+          >
+            🗑️ Dispose
+          </button>
+        </div>
+        }
+      </td>
+    </tr>
+    } } }
+  </tbody>
+</table>
+} }

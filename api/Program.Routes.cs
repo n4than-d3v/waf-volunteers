@@ -33,6 +33,7 @@ using Api.Handlers.Hospital.PatientTypes;
 using Api.Handlers.Hospital.Tasks;
 using Api.Handlers.Hospital.Patients.Labs.Blood;
 using Api.Handlers.Hospital.Patients.Labs.Faecal;
+using Api.Handlers.Stock;
 
 public partial class Program
 {
@@ -44,6 +45,36 @@ public partial class Program
         RegisterClockingRoutes(api);
         RegisterNoticeRoutes(api);
         RegisterHospitalRoutes(api);
+        RegisterStockRoutes(api);
+    }
+
+    private static void RegisterStockRoutes(RouteGroupBuilder api)
+    {
+        var apiStock = api.MapGroup("/stock");
+
+        apiStock.MapPost("/item", (IMediator mediator, AddStockItem request) => mediator.Send(request))
+            .AddNote("Vet adds new stock item")
+            .RequireAuthorization(vetPolicy);
+
+        apiStock.MapPost("/batch", (IMediator mediator, AddStockItemBatch request) => mediator.Send(request))
+            .AddNote("Vet adds new stock batch")
+            .RequireAuthorization(vetPolicy);
+
+        apiStock.MapPut("/batch/{id:int}", (IMediator mediator, int id, UseStockItemBatch request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet or aux uses batch")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiStock.MapPut("/usage/{id:int}", (IMediator mediator, int id, DisposeStockItemBatchUsage request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet or aux disposes of usage")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiStock.MapGet("/items", (IMediator mediator) => mediator.Send(new GetStockItems()))
+            .AddNote("View stock items")
+            .RequireAuthorization(signedInPolicy);
+
+        apiStock.MapGet("/", (IMediator mediator) => mediator.Send(new GetStock()))
+            .AddNote("View stock")
+            .RequireAuthorization(signedInPolicy);
     }
 
     private static void RegisterHospitalRoutes(RouteGroupBuilder api)

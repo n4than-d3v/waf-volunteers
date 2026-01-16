@@ -10,7 +10,8 @@
       />
       }
     </a>
-    @if (!router.url.includes('/login')){
+    @if (!(router.url.includes('/login') ||
+    router.url.includes('/clocking/dashboard'))) {
     <div class="sign-out">
       <a [routerLink]="'./'" (click)="signOut()">
         <img src="images/sign-out.svg" alt="Sign out" />

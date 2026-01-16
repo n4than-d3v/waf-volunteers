@@ -11,6 +11,8 @@ import { HospitalPatientSearchComponent } from '../../hospital/patient-search/co
 import { HospitalListRechecks } from '../../hospital/list-rechecks/component';
 import { setTab } from '../../hospital/actions';
 import { HospitalListPrescriptions } from '../../hospital/list-prescriptions/component';
+import { HospitalStockListComponent } from '../../hospital/stock/list/component';
+import { setPage } from '../../hospital/stock/actions';
 
 @Component({
   selector: 'vet-hospital',
@@ -25,6 +27,7 @@ import { HospitalListPrescriptions } from '../../hospital/list-prescriptions/com
     HospitalPatientSearchComponent,
     HospitalListRechecks,
     HospitalListPrescriptions,
+    HospitalStockListComponent,
   ],
 })
 export class VetHospitalComponent {
@@ -51,6 +54,22 @@ export class VetHospitalComponent {
         tab: {
           code: 'LIST_PRESCRIPTIONS',
           title: 'View prescriptions',
+        },
+      })
+    );
+  }
+
+  viewStock() {
+    this.store.dispatch(
+      setPage({
+        page: { pageType: 'dashboard' },
+      })
+    );
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'VIEW_STOCK',
+          title: 'Stock',
         },
       })
     );

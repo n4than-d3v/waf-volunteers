@@ -41,6 +41,8 @@ import { HospitalEffects } from './hospital/effects';
 import { hospitalReducer } from './hospital/reducer';
 import { orphanFeederReducer } from './volunteer/home-care/reducer';
 import { OrphanFeederEffects } from './volunteer/home-care/effects';
+import { hospitalStockReducer } from './hospital/stock/reducer';
+import { HospitalStockEffects } from './hospital/stock/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -101,6 +103,7 @@ export const appConfig: ApplicationConfig = {
 
       // Hospital
       hospital: hospitalReducer,
+      hospitalStock: hospitalStockReducer,
 
       // Clocking
       clocking: clockingReducer,
@@ -124,6 +127,7 @@ export const appConfig: ApplicationConfig = {
 
       // Hospital
       HospitalEffects,
+      HospitalStockEffects,
 
       // Clocking
       ClockingEffects,

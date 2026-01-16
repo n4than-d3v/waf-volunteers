@@ -22,11 +22,8 @@ import {
   Exam,
   Outcome,
   ListRecheck,
-  PrescriptionInstruction,
-  PrescriptionMedication,
   Prescription,
 } from './state';
-import { FormControl } from '@angular/forms';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
 

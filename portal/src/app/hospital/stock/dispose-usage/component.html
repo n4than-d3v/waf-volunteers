@@ -1,0 +1,57 @@
+<div class="buttons">
+  <button (click)="back()" class="button button--secondary-invert">
+    ⬅️ Back
+  </button>
+</div>
+<h3>Confirm disposal of batch usage</h3>
+@if (loading$ | async; as loading) {
+<spinner></spinner>
+} @if (error$ | async; as error) {
+<div class="error">Error occurred</div>
+} @if (page$ | async; as page) { @if (page.item && page.batch && page.usage) {
+<div class="details">
+  <p>
+    Batch
+    <strong>{{ page.batch.number }} </strong>
+  </p>
+  <p>
+    Signed out
+    <strong
+      >{{ page.usage.date | date: 'dd MMM yyyy' }} ({{ page.usage.signedOutBy
+      }})
+    </strong>
+  </p>
+  <p>
+    Expiration date
+    <strong>{{ page.usage.expiry | date: 'dd MMM yyyy' }} </strong>
+  </p>
+  <p>
+    Quantity
+    <strong
+      >{{ page.usage.quantity }} {{ getMeasurement(page.item.measurement) }}
+    </strong>
+  </p>
+</div>
+<form [formGroup]="form">
+  <div class="field">
+    <label for="initials">
+      Initials
+      <span class="required">*</span>
+    </label>
+    <input
+      type="text"
+      id="initials"
+      formControlName="initials"
+      autocomplete="off"
+    />
+  </div>
+</form>
+@if (attemptedSave && !form.valid) {
+<div class="error">Please fill in required fields</div>
+}
+<div class="buttons">
+  <button (click)="save(page.usage)" class="button button--primary">
+    Save
+  </button>
+</div>
+} }

@@ -1,0 +1,75 @@
+<div class="buttons">
+  <button (click)="back()" class="button button--secondary-invert">
+    ⬅️ Back
+  </button>
+</div>
+<h3>Sign out stock</h3>
+@if (loading$ | async; as loading) {
+<spinner></spinner>
+} @if (error$ | async; as error) {
+<div class="error">Error occurred</div>
+} @if (page$ | async; as page) { @if (page.item && page.batch) {
+<div class="details">
+  <p>
+    Batch
+    <strong>{{ page.batch.number }} </strong>
+  </p>
+  <p>
+    In stock
+    <strong>
+      {{ page.batch.quantityInStock }} {{ getMeasurement(page.item.measurement)
+      }}
+    </strong>
+  </p>
+  <p>
+    In use
+    <strong>
+      {{ page.batch.quantityInUse }} {{ getMeasurement(page.item.measurement) }}
+    </strong>
+  </p>
+  <p>
+    Disposed
+    <strong>
+      {{ page.batch.quantityDisposed }} {{ getMeasurement(page.item.measurement)
+      }}
+    </strong>
+  </p>
+</div>
+<form [formGroup]="form">
+  <div class="field">
+    <label for="quantity">
+      Quantity
+      <span class="required">*</span>
+    </label>
+    <div class="quantity">
+      <input
+        type="number"
+        id="quantity"
+        formControlName="quantity"
+        autocomplete="off"
+      />
+      <span>{{ getMeasurement(page.item.measurement) }}</span>
+    </div>
+  </div>
+  <div class="field">
+    <label for="initials">
+      Initials
+      <span class="required">*</span>
+    </label>
+    <input
+      type="text"
+      id="initials"
+      formControlName="initials"
+      autocomplete="off"
+    />
+  </div>
+</form>
+@if (attemptedSave && !form.valid) {
+<div class="error">Please fill in required fields</div>
+}
+<div class="buttons">
+  <button (click)="save(page.batch)" class="button button--primary">
+    Save
+  </button>
+</div>
+} }

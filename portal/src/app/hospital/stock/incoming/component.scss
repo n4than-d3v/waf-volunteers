@@ -1,0 +1,49 @@
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+input,
+select,
+button {
+  padding: 0.25rem 0.5rem;
+  max-width: max-content;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+form .field {
+  margin-bottom: 0.5rem;
+}
+
+.brand-selector,
+.lifetime,
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+input.small {
+  max-width: 5rem;
+}
+
+.not-stocked {
+  border-left: solid 5px var(--theme-color-2);
+  background-color: rgb(219, 219, 219);
+  max-width: max-content;
+  padding: 0.125rem 0.5rem 0.25rem 0.75rem;
+
+  .not-stocked-header {
+    margin-bottom: 0.5rem;
+  }
+}

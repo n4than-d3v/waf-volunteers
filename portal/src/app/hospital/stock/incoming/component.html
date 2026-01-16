@@ -1,0 +1,183 @@
+<div class="buttons">
+  <button (click)="back()" class="button button--secondary-invert">
+    ⬅️ Back
+  </button>
+</div>
+<h3>Incoming delivery</h3>
+@if (loading$ | async; as loading) {
+<spinner></spinner>
+} @if (error$ | async; as error) {
+<div class="error">Error occurred</div>
+} @if (medications$ | async; as medications) {
+<form [formGroup]="form">
+  <section>
+    <div class="field">
+      <label for="medication">
+        Medication
+        <span class="required">*</span>
+      </label>
+      @if (medications.data) {
+      <hospital-patient-autocomplete
+        [id]="'medication'"
+        [inline]="true"
+        [label]="''"
+        [control]="'medicationId'"
+        [formGroup]="form"
+        [items]="convertMedications(medications.data)"
+      ></hospital-patient-autocomplete>
+      }
+    </div>
+    @if (form.value.medicationId) {
+    <div class="field">
+      <label for="concentration">
+        Concentration
+        <span class="required">*</span>
+      </label>
+      <select id="concentration" formControlName="medicationConcentrationId">
+        <option value=""></option>
+        @for (medication of medications.data; track medication.id) { @if
+        (medication.id.toString() == form.value.medicationId) { @for
+        (concentration of medication.concentrations; track concentration.id) {
+        <option [value]="concentration.id">
+          {{ concentration.form }}, {{ concentration.concentrationMgMl }} mg/ml
+        </option>
+        } } }
+      </select>
+    </div>
+    }
+    <div class="field">
+      <label for="brand">
+        Brand
+        <span class="required">*</span>
+      </label>
+      <div class="brand-selector">
+        <select id="brand" formControlName="brand">
+          <option value=""></option>
+          @for (medication of medications.data; track medication.id) { @if
+          (medication.id.toString() == form.value.medicationId) { @for (brand of
+          medication.brands; track brand) {
+          <option [value]="brand">{{ brand }}</option>
+          } } }
+          <option value="(New)">(New)</option>
+        </select>
+        @if (form.value.brand === '(New)') {
+        <input id="newBrand" formControlName="newBrand" autocomplete="off" />
+        }
+      </div>
+    </div>
+  </section>
+  @if (items$ | async; as items) { @if (attemptFindItem()) { @if
+  (!findItem(items)) {
+  <section>
+    <div class="not-stocked">
+      <div class="not-stocked-header">
+        <p><strong>Additional details required</strong></p>
+      </div>
+      <div class="field">
+        <label for="measurement">
+          Measurement
+          <span class="required">*</span>
+        </label>
+        <select id="measurement" formControlName="measurement">
+          <option value=""></option>
+          <option [value]="1">{{ getMeasurement('1') }}</option>
+          <option [value]="2">{{ getMeasurement('2') }}</option>
+          <option [value]="3">{{ getMeasurement('3') }}</option>
+          <option [value]="4">{{ getMeasurement('4') }}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="afterOpeningLifetimeDays">
+          Lifetime after opening
+          <span class="required">*</span>
+        </label>
+        <div class="lifetime">
+          <input
+            class="small"
+            type="number"
+            id="afterOpeningLifetimeDays"
+            formControlName="afterOpeningLifetimeDays"
+            autocomplete="off"
+          />
+          <span>days</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="reorderQuantity">
+          Reorder quantity
+          <span class="required">*</span>
+        </label>
+        <div class="quantity">
+          <input
+            class="small"
+            type="number"
+            id="reorderQuantity"
+            formControlName="reorderQuantity"
+            autocomplete="off"
+          />
+          <span>{{ getMeasurement(form.value.measurement) }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  }
+  <section>
+    <div class="field">
+      <label for="number">
+        Batch number
+        <span class="required">*</span>
+      </label>
+      <input
+        type="text"
+        id="number"
+        formControlName="number"
+        autocomplete="off"
+      />
+    </div>
+    <div class="field">
+      <label for="expiry">
+        Expiration date
+        <span class="required">*</span>
+      </label>
+      <input type="date" id="expiry" formControlName="expiry" />
+    </div>
+    <div class="field">
+      <label for="quantity">
+        Quantity
+        <span class="required">*</span>
+      </label>
+      <div class="quantity">
+        <input
+          class="small"
+          type="number"
+          id="quantity"
+          formControlName="quantity"
+          autocomplete="off"
+        />
+        <span
+          >{{ existingItem ? getMeasurement(existingItem.measurement.toString())
+          : getMeasurement(form.value.measurement) }}</span
+        >
+      </div>
+    </div>
+    <div class="field">
+      <label for="initials">
+        Initials
+        <span class="required">*</span>
+      </label>
+      <input
+        class="small"
+        type="text"
+        id="initials"
+        formControlName="initials"
+        autocomplete="off"
+      />
+    </div>
+  </section>
+  } }
+</form>
+@if (attemptFindItem()) { @if (attemptedSave && !form.valid) {
+<div class="error">Please fill out the required fields</div>
+}
+<button (click)="save()" class="button button--primary">Save</button>
+} }

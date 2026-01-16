@@ -11,6 +11,7 @@ using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
 using Api.Database.Entities.Notices;
 using Api.Database.Entities.Rota;
+using Api.Database.Entities.Stock;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Database;
@@ -84,6 +85,11 @@ public class DatabaseContext : DbContext
     public DbSet<PatientFaecalTest> PatientFaecalTests { get; set; }
     public DbSet<Species> Species { get; set; }
     public DbSet<SpeciesVariant> SpeciesVariants { get; set; }
+
+    // Stock
+    public DbSet<StockItem> StockItems { get; set; }
+    public DbSet<StockItemBatch> StockItemBatches { get; set; }
+    public DbSet<StockItemBatchUsage> StockItemBatchUsages { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 }

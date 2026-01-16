@@ -1,0 +1,69 @@
+<div class="buttons">
+  <button (click)="back()" class="button button--secondary-invert">
+    ⬅️ Back
+  </button>
+</div>
+<h3>Confirm disposal of batch</h3>
+@if (loading$ | async; as loading) {
+<spinner></spinner>
+} @if (error$ | async; as error) {
+<div class="error">Error occurred</div>
+} @if (page$ | async; as page) { @if (page.item && page.batch) {
+<div class="details">
+  <p>
+    Batch
+    <strong>{{ page.batch.number }} </strong>
+  </p>
+  <p>
+    Arrival date
+    <strong>{{ page.batch.date | date: 'dd MMM yyyy' }} </strong>
+  </p>
+  <p>
+    Expiration date
+    <strong>{{ page.batch.expiry | date: 'dd MMM yyyy' }} </strong>
+  </p>
+  <p>
+    Delivered quantity
+    <strong
+      >{{ page.batch.deliveredQuantity }} {{
+      getMeasurement(page.item.measurement) }}
+    </strong>
+  </p>
+  <p>
+    Quantity in stock
+    <strong
+      >{{ page.batch.quantityInStock }} {{ getMeasurement(page.item.measurement)
+      }}
+    </strong>
+  </p>
+  <p>
+    Quantity in use
+    <strong
+      >{{ page.batch.quantityInUse }} {{ getMeasurement(page.item.measurement)
+      }}
+    </strong>
+  </p>
+</div>
+<form [formGroup]="form">
+  <div class="field">
+    <label for="initials">
+      Initials
+      <span class="required">*</span>
+    </label>
+    <input
+      type="text"
+      id="initials"
+      formControlName="initials"
+      autocomplete="off"
+    />
+  </div>
+</form>
+@if (attemptedSave && !form.valid) {
+<div class="error">Please fill in required fields</div>
+}
+<div class="buttons">
+  <button (click)="save(page.batch)" class="button button--primary">
+    Save
+  </button>
+</div>
+} }

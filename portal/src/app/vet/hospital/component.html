@@ -6,12 +6,18 @@
       <hospital-patient-by-status />
     </div>
     <div class="tasks">
-      <h2>Tasks</h2>
+      <h2>Daily tasks</h2>
       <div class="items">
         <div (click)="viewRechecks()" class="item">🩺 View rechecks</div>
         <div (click)="viewPrescriptions()" class="item">
           💊 View prescriptions
         </div>
+      </div>
+    </div>
+    <div class="stock">
+      <h2>Stock</h2>
+      <div class="items">
+        <div (click)="viewStock()" class="item">📦 View stock</div>
       </div>
     </div>
   </div>
@@ -31,6 +37,8 @@
       <hospital-list-rechecks></hospital-list-rechecks>
       } @else if (tab.code === 'LIST_PRESCRIPTIONS') {
       <hospital-list-prescriptions></hospital-list-prescriptions>
+      } @else if (tab.code === 'VIEW_STOCK') {
+      <hospital-stock-list></hospital-stock-list>
       }
     </div>
     }

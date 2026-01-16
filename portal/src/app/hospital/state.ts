@@ -58,7 +58,8 @@ export type TabCode =
   | 'LIST_PATIENTS_BY_STATUS'
   | 'VIEW_PATIENT'
   | 'LIST_RECHECKS'
-  | 'LIST_PRESCRIPTIONS';
+  | 'LIST_PRESCRIPTIONS'
+  | 'VIEW_STOCK';
 
 export interface Tab {
   code: TabCode;

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import {
   ControlContainer,
   FormGroup,
@@ -18,7 +23,7 @@ import {
     { provide: ControlContainer, useExisting: FormGroupDirective },
   ],
 })
-export class HospitalPatientAutocompleteComponent {
+export class HospitalPatientAutocompleteComponent implements OnInit {
   @Input({ required: true }) id!: string;
   @Input() inline: boolean = false;
   @Input({ required: true }) label!: string;
@@ -41,6 +46,14 @@ export class HospitalPatientAutocompleteComponent {
       `#${this.id}-selector ul li:first-child`
     ) as any;
     return first;
+  }
+
+  ngOnInit() {
+    const value = this.formGroup.value[this.control];
+    if (!value) return;
+    const initialItem = this.items.find((x) => x.id == value);
+    if (!initialItem) return;
+    this.selectItem(initialItem, {});
   }
 
   onKeyDown(event: KeyboardEvent) {

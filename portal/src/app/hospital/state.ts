@@ -540,7 +540,12 @@ export interface Exam {
   comments: string;
 }
 
-export type Outcome = 'alive' | 'release' | 'deadOnArrival' | 'pts';
+export type Outcome =
+  | 'alive'
+  | 'release'
+  | 'diedOnTable'
+  | 'deadOnArrival'
+  | 'pts';
 
 export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
   data: null,

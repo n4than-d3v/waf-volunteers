@@ -200,6 +200,7 @@ export class HospitalPatientExamComponent implements OnInit {
     if (this.examForm.controls.outcome.value === 'alive') {
       this.examForm.controls.penId.setValidators([Validators.required]);
     } else if (
+      this.examForm.controls.outcome.value === 'diedOnTable' ||
       this.examForm.controls.outcome.value === 'deadOnArrival' ||
       this.examForm.controls.outcome.value === 'pts'
     ) {

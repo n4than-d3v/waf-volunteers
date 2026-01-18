@@ -16,15 +16,15 @@ import {
   createDispositionReason,
   createDispositionReasonError,
   createDispositionReasonSuccess,
-  createMedication,
-  createMedicationConcentration,
-  createMedicationConcentrationError,
-  createMedicationConcentrationSpeciesDose,
-  createMedicationConcentrationSpeciesDoseError,
-  createMedicationConcentrationSpeciesDoseSuccess,
-  createMedicationConcentrationSuccess,
-  createMedicationError,
-  createMedicationSuccess,
+  upsertMedication,
+  upsertMedicationConcentration,
+  upsertMedicationConcentrationError,
+  upsertMedicationConcentrationSpeciesDose,
+  upsertMedicationConcentrationSpeciesDoseError,
+  upsertMedicationConcentrationSpeciesDoseSuccess,
+  upsertMedicationConcentrationSuccess,
+  upsertMedicationError,
+  upsertMedicationSuccess,
   createPen,
   createPenError,
   createPenSuccess,
@@ -518,9 +518,9 @@ export const adminHospitalManagementReducer =
       },
     })),
     on(
-      createMedication,
-      createMedicationConcentration,
-      createMedicationConcentrationSpeciesDose,
+      upsertMedication,
+      upsertMedicationConcentration,
+      upsertMedicationConcentrationSpeciesDose,
       (state) => ({
         ...state,
         medications: {
@@ -531,9 +531,9 @@ export const adminHospitalManagementReducer =
       })
     ),
     on(
-      createMedicationSuccess,
-      createMedicationConcentrationSuccess,
-      createMedicationConcentrationSpeciesDoseSuccess,
+      upsertMedicationSuccess,
+      upsertMedicationConcentrationSuccess,
+      upsertMedicationConcentrationSpeciesDoseSuccess,
       (state) => ({
         ...state,
         medications: {
@@ -544,9 +544,9 @@ export const adminHospitalManagementReducer =
       })
     ),
     on(
-      createMedicationError,
-      createMedicationConcentrationError,
-      createMedicationConcentrationSpeciesDoseError,
+      upsertMedicationError,
+      upsertMedicationConcentrationError,
+      upsertMedicationConcentrationSpeciesDoseError,
       (state) => ({
         ...state,
         medications: {

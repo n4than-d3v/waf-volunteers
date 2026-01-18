@@ -4,7 +4,7 @@
     <span class="required">*</span>
   </label>
   <div class="flex">
-    <select id="{{ id }}" formControlName="frequencyType">
+    <select id="{{ id }}" formControlName="frequencyType" (change)="update()">
       <option value=""></option>
       <option value="once">One time</option>
       <option value="rate">Rate (X times per Y)</option>

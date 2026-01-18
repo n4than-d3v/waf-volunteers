@@ -313,6 +313,15 @@
         />
       </div>
       <div class="field">
+        <label for="diedOnTable">died on the table</label>
+        <input
+          type="radio"
+          id="diedOnTable"
+          formControlName="outcome"
+          value="diedOnTable"
+        />
+      </div>
+      <div class="field">
         <label for="deadOnArrival">was dead on arrival</label>
         <input
           type="radio"
@@ -373,7 +382,8 @@
           </select>
         </div>
       </div>
-      } @else if (examForm.controls.outcome.value === 'deadOnArrival' ||
+      } @else if (examForm.controls.outcome.value === 'diedOnTable' ||
+      examForm.controls.outcome.value === 'deadOnArrival' ||
       examForm.controls.outcome.value === 'pts') {
       <div class="fields">
         <div class="field">

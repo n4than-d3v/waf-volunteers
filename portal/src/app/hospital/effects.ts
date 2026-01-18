@@ -459,6 +459,7 @@ export class HospitalEffects {
               const actions: any[] = [performExamSuccess()];
 
               if (
+                action.outcome === 'diedOnTable' ||
                 action.outcome === 'deadOnArrival' ||
                 action.outcome === 'pts'
               ) {

@@ -29,15 +29,15 @@ import {
   createDispositionReason,
   createDispositionReasonError,
   createDispositionReasonSuccess,
-  createMedication,
-  createMedicationConcentration,
-  createMedicationConcentrationError,
-  createMedicationConcentrationSpeciesDose,
-  createMedicationConcentrationSpeciesDoseError,
-  createMedicationConcentrationSpeciesDoseSuccess,
-  createMedicationConcentrationSuccess,
-  createMedicationError,
-  createMedicationSuccess,
+  upsertMedication,
+  upsertMedicationConcentration,
+  upsertMedicationConcentrationError,
+  upsertMedicationConcentrationSpeciesDose,
+  upsertMedicationConcentrationSpeciesDoseError,
+  upsertMedicationConcentrationSpeciesDoseSuccess,
+  upsertMedicationConcentrationSuccess,
+  upsertMedicationError,
+  upsertMedicationSuccess,
   createPen,
   createPenError,
   createPenSuccess,
@@ -423,59 +423,59 @@ export class AdminHospitalManagementEffects {
     )
   );
 
-  createMedication$ = createEffect(() =>
+  upsertMedication$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(createMedication),
+      ofType(upsertMedication),
       switchMap((action) =>
         this.http.post(`hospital/medications`, action).pipe(
-          map((_) => createMedicationSuccess()),
-          catchError(() => of(createMedicationError()))
+          map((_) => upsertMedicationSuccess()),
+          catchError(() => of(upsertMedicationError()))
         )
       )
     )
   );
 
-  createMedicationSuccess$ = createEffect(() =>
+  upsertMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(createMedicationSuccess),
+      ofType(upsertMedicationSuccess),
       switchMap((_) => of(getMedications()))
     )
   );
 
-  createMedicationConcentration$ = createEffect(() =>
+  upsertMedicationConcentration$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(createMedicationConcentration),
+      ofType(upsertMedicationConcentration),
       switchMap((action) =>
         this.http.post(`hospital/medications/concentration`, action).pipe(
-          map((_) => createMedicationConcentrationSuccess()),
-          catchError(() => of(createMedicationConcentrationError()))
+          map((_) => upsertMedicationConcentrationSuccess()),
+          catchError(() => of(upsertMedicationConcentrationError()))
         )
       )
     )
   );
 
-  createMedicationConcentrationSuccess$ = createEffect(() =>
+  upsertMedicationConcentrationSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(createMedicationConcentrationSuccess),
+      ofType(upsertMedicationConcentrationSuccess),
       switchMap((_) => of(getMedications()))
     )
   );
 
-  createMedicationConcentrationSpeciesDose$ = createEffect(() =>
+  upsertMedicationConcentrationSpeciesDose$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(createMedicationConcentrationSpeciesDose),
+      ofType(upsertMedicationConcentrationSpeciesDose),
       switchMap((action) =>
         this.http.post(`hospital/medications/species-dose`, action).pipe(
-          map((_) => createMedicationConcentrationSpeciesDoseSuccess()),
-          catchError(() => of(createMedicationConcentrationSpeciesDoseError()))
+          map((_) => upsertMedicationConcentrationSpeciesDoseSuccess()),
+          catchError(() => of(upsertMedicationConcentrationSpeciesDoseError()))
         )
       )
     )
   );
 
-  createMedicationConcentrationSpeciesDoseSuccess$ = createEffect(() =>
+  upsertMedicationConcentrationSpeciesDoseSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(createMedicationConcentrationSpeciesDoseSuccess),
+      ofType(upsertMedicationConcentrationSpeciesDoseSuccess),
       switchMap((_) => of(getMedications()))
     )
   );

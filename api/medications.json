@@ -97,8 +97,8 @@
             "SpeciesType": 2,
             "DoseMgKgRangeStart": 125,
             "DoseMgKgRangeEnd": 125,
-            "DoseMlKgRangeStart": 0.07,
-            "DoseMlKgRangeEnd": 0.07,
+            "DoseMlKgRangeStart": 0.7,
+            "DoseMlKgRangeEnd": 0.7,
             "AdministrationMethod": "IM",
             "Frequency": "Every 12 hours"
           }

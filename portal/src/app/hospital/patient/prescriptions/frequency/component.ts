@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   ControlContainer,
   FormGroup,
@@ -17,7 +17,7 @@ import {
     { provide: ControlContainer, useExisting: FormGroupDirective },
   ],
 })
-export class HospitalPatientPrescriptionsFrequencyComponent {
+export class HospitalPatientPrescriptionsFrequencyComponent implements OnInit {
   @Input({ required: true }) id!: string;
   @Input({ required: true }) formGroup!: FormGroup;
 
@@ -32,5 +32,9 @@ export class HospitalPatientPrescriptionsFrequencyComponent {
     } else if (frequencyType === 'once') {
       this.formGroup.controls['frequency'].setValue(`One time`);
     }
+  }
+
+  ngOnInit() {
+    this.update();
   }
 }

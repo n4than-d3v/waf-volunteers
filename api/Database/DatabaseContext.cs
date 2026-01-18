@@ -9,6 +9,7 @@ using Api.Database.Entities.Hospital.Patients.Labs;
 using Api.Database.Entities.Hospital.Patients.Medications;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
+using Api.Database.Entities.Learning;
 using Api.Database.Entities.Notices;
 using Api.Database.Entities.Rota;
 using Api.Database.Entities.Stock;
@@ -90,6 +91,10 @@ public class DatabaseContext : DbContext
     public DbSet<StockItem> StockItems { get; set; }
     public DbSet<StockItemBatch> StockItemBatches { get; set; }
     public DbSet<StockItemBatchUsage> StockItemBatchUsages { get; set; }
+
+    // Learning
+    public DbSet<AuxDevPlanTask> AuxDevPlanTasks { get; set; }
+    public DbSet<AuxDevPlanTaskWitness> AuxDevPlanTaskWitnesses { get; set; }
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 }

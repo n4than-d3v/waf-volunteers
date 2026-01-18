@@ -64,7 +64,7 @@ export interface Medication {
   id: number;
   activeSubstance: string;
   brands: string[];
-  notes: string[];
+  notes: string;
   concentrations: MedicationConcentration[];
 }
 

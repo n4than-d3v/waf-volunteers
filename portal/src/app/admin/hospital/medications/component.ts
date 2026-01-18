@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import {
   getSpeciesType,
   Medication,
+  MedicationConcentration,
   MedicationConcentrationSpeciesDose,
   Species,
   SpeciesType,
@@ -12,9 +13,9 @@ import {
 import { Store } from '@ngrx/store';
 import { selectMedications, selectSpecies } from '../selectors';
 import {
-  createMedication,
-  createMedicationConcentration,
-  createMedicationConcentrationSpeciesDose,
+  upsertMedication,
+  upsertMedicationConcentration,
+  upsertMedicationConcentrationSpeciesDose,
   getMedications,
   getSpecies,
 } from '../actions';
@@ -56,8 +57,11 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   search = '';
 
   addMedication = false;
+  editMedication: number | null = null;
   addMedicationConcentration: number | null = null;
+  editMedicationConcentration: number | null = null;
   addMedicationConcentrationSpeciesDose: number | null = null;
+  editMedicationConcentrationSpeciesDose: number | null = null;
 
   medicationForm = new FormGroup({
     activeSubstance: new FormControl(''),
@@ -119,16 +123,102 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
   cancel() {
     this.addMedication = false;
+    this.editMedication = null;
     this.addMedicationConcentration = null;
+    this.editMedicationConcentration = null;
     this.addMedicationConcentrationSpeciesDose = null;
+    this.editMedicationConcentrationSpeciesDose = null;
     this.medicationForm.reset();
     this.medicationConcentrationForm.reset();
     this.medicationConcentrationSpeciesDoseForm.reset();
   }
 
+  prepareAddMedication() {
+    this.addMedication = true;
+    window.scroll(0, 0);
+  }
+
+  prepareAddMedicationConcentration(medication: Medication) {
+    this.addMedicationConcentration = medication.id;
+    window.scroll(0, 0);
+  }
+
+  prepareAddMedicationConcentrationSpeciesDose(
+    concentration: MedicationConcentration
+  ) {
+    this.addMedicationConcentrationSpeciesDose = concentration.id;
+    window.scroll(0, 0);
+  }
+
+  prepareEditMedication(medication: Medication) {
+    this.addMedication = true;
+    this.editMedication = medication.id;
+    this.medicationForm.patchValue({
+      activeSubstance: medication.activeSubstance,
+      brands: medication.brands.join(', '),
+      notes: medication.notes,
+    });
+    window.scroll(0, 0);
+  }
+
+  prepareEditMedicationConcentration(
+    medication: Medication,
+    concentration: MedicationConcentration
+  ) {
+    this.addMedicationConcentration = medication.id;
+    this.editMedicationConcentration = concentration.id;
+    this.medicationConcentrationForm.patchValue({
+      form: concentration.form,
+      concentrationMgMl: concentration.concentrationMgMl.toString(),
+    });
+    window.scroll(0, 0);
+  }
+
+  prepareEditMedicationConcentrationSpeciesDose(
+    concentration: MedicationConcentration,
+    dose: MedicationConcentrationSpeciesDose
+  ) {
+    this.addMedicationConcentrationSpeciesDose = concentration.id;
+    this.editMedicationConcentrationSpeciesDose = dose.id;
+    let frequencyType = '',
+      frequencyX = '',
+      frequencyY = '';
+    if (dose.frequency === 'One time') {
+      frequencyType = 'once';
+    } else {
+      frequencyType = dose.frequency.startsWith('Every') ? 'interval' : 'rate';
+      const split = dose.frequency
+        .replace('Every ', '')
+        .replace('times per ', '')
+        .split(' ');
+      frequencyX = split[0];
+      frequencyY = split[1];
+    }
+    console.log({ frequencyType, frequencyX, frequencyY });
+    this.medicationConcentrationSpeciesDoseForm.patchValue({
+      doseFor: dose.species ? 'SID' : 'STYPE',
+      speciesId: dose.species ? dose.species.id.toString() : null,
+      speciesType: dose.speciesType ? dose.speciesType.toString() : null,
+      doseMgKgRangeStart: dose.doseMgKgRangeStart.toString(),
+      doseMgKgRangeEnd: dose.doseMgKgRangeEnd.toString(),
+      doseMlKgRangeStart: dose.doseMlKgRangeEnd.toString(),
+      doseMlKgRangeEnd: dose.doseMlKgRangeEnd.toString(),
+      administrationMethodId: dose.administrationMethod
+        ? dose.administrationMethod.id.toString()
+        : null,
+      frequency: dose.frequency,
+      frequencyType,
+      frequencyX,
+      frequencyY,
+      notes: dose.notes,
+    });
+    window.scroll(0, 0);
+  }
+
   saveMedication() {
     this.store.dispatch(
-      createMedication({
+      upsertMedication({
+        id: this.editMedication || undefined,
         activeSubstance: this.medicationForm.value.activeSubstance!,
         brands: this.medicationForm.value.brands!.split(','),
         notes: this.medicationForm.value.notes || '',
@@ -139,7 +229,8 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
   saveMedicationConcentration() {
     this.store.dispatch(
-      createMedicationConcentration({
+      upsertMedicationConcentration({
+        id: this.editMedicationConcentration || undefined,
         medicationId: this.addMedicationConcentration!,
         form: this.medicationConcentrationForm.value.form!,
         concentrationMgMl: Number(
@@ -151,8 +242,10 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   }
 
   saveMedicationConcentrationSpeciesDose() {
+    console.log(this.medicationConcentrationSpeciesDoseForm.value);
     this.store.dispatch(
-      createMedicationConcentrationSpeciesDose({
+      upsertMedicationConcentrationSpeciesDose({
+        id: this.editMedicationConcentrationSpeciesDose || undefined,
         medicationConcentrationId: this.addMedicationConcentrationSpeciesDose!,
         speciesId: this.medicationConcentrationSpeciesDoseForm.value.speciesId
           ? Number(this.medicationConcentrationSpeciesDoseForm.value.speciesId)
@@ -232,11 +325,17 @@ export class AdminHospitalMedicationsComponent implements OnInit {
       group.key = key;
 
       if (item.species) {
-        group.species.push(item.species.name);
+        group.species.push({
+          display: item.species.name,
+          item,
+        });
       }
 
       if (item.speciesType) {
-        group.species.push(getSpeciesType(item.speciesType));
+        group.species.push({
+          display: getSpeciesType(item.speciesType),
+          item,
+        });
       }
 
       group.species.sort();
@@ -248,7 +347,10 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
 interface MedicationConcentrationSpeciesDoses {
   key: string;
-  species: string[];
+  species: {
+    display: string;
+    item: MedicationConcentrationSpeciesDose;
+  }[];
   doseMgKgRangeStart: number;
   doseMgKgRangeEnd: number;
   doseMlKgRangeStart: number;

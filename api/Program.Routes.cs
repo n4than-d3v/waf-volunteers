@@ -46,6 +46,11 @@ public partial class Program
         RegisterNoticeRoutes(api);
         RegisterHospitalRoutes(api);
         RegisterStockRoutes(api);
+        RegisterAuxDevPlanRoutes(api);
+    }
+
+    private static void RegisterAuxDevPlanRoutes(RouteGroupBuilder api)
+    {
     }
 
     private static void RegisterStockRoutes(RouteGroupBuilder api)

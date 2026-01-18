@@ -182,35 +182,42 @@ export const getMedicationsError = createAction(
   '[HMS-A] Get medications: error'
 );
 
-export const createMedication = createAction(
-  '[HMS-A] Create medication',
-  props<{ activeSubstance: string; brands: string[]; notes: string }>()
+export const upsertMedication = createAction(
+  '[HMS-A] Upsert medication',
+  props<{
+    id?: number;
+    activeSubstance: string;
+    brands: string[];
+    notes: string;
+  }>()
 );
-export const createMedicationSuccess = createAction(
-  '[HMS-A] Create medication: success'
+export const upsertMedicationSuccess = createAction(
+  '[HMS-A] Upsert medication: success'
 );
-export const createMedicationError = createAction(
-  '[HMS-A] Create medication: error'
+export const upsertMedicationError = createAction(
+  '[HMS-A] Upsert medication: error'
 );
 
-export const createMedicationConcentration = createAction(
-  '[HMS-A] Create medication concentration',
+export const upsertMedicationConcentration = createAction(
+  '[HMS-A] Upsert medication concentration',
   props<{
+    id?: number;
     medicationId: number;
     form: string;
     concentrationMgMl: number;
   }>()
 );
-export const createMedicationConcentrationSuccess = createAction(
-  '[HMS-A] Create medication concentration: success'
+export const upsertMedicationConcentrationSuccess = createAction(
+  '[HMS-A] Upsert medication concentration: success'
 );
-export const createMedicationConcentrationError = createAction(
-  '[HMS-A] Create medication concentration: error'
+export const upsertMedicationConcentrationError = createAction(
+  '[HMS-A] Upsert medication concentration: error'
 );
 
-export const createMedicationConcentrationSpeciesDose = createAction(
-  '[HMS-A] Create medication concentration species dose',
+export const upsertMedicationConcentrationSpeciesDose = createAction(
+  '[HMS-A] Upsert medication concentration species dose',
   props<{
+    id?: number;
     medicationConcentrationId: number;
     speciesId: number | null;
     speciesType: SpeciesType | null;
@@ -223,11 +230,11 @@ export const createMedicationConcentrationSpeciesDose = createAction(
     notes: string;
   }>()
 );
-export const createMedicationConcentrationSpeciesDoseSuccess = createAction(
-  '[HMS-A] Create medication concentration species dose: success'
+export const upsertMedicationConcentrationSpeciesDoseSuccess = createAction(
+  '[HMS-A] Upsert medication concentration species dose: success'
 );
-export const createMedicationConcentrationSpeciesDoseError = createAction(
-  '[HMS-A] Create medication concentration species dose: error'
+export const upsertMedicationConcentrationSpeciesDoseError = createAction(
+  '[HMS-A] Upsert medication concentration species dose: error'
 );
 
 // Locations

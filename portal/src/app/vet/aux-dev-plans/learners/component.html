@@ -1,0 +1,62 @@
+<a class="back-link" [routerLink]="'../tasks'">Back</a>
+
+<h1>Auxiliaries</h1>
+@if (witnessingLearner && witnessingTask) {
+<form [formGroup]="witnessForm">
+  <div class="field">
+    <label for="notes">Notes</label>
+    <textarea id="notes" formControlName="notes"></textarea>
+  </div>
+  <div class="field">
+    <label for="signedOff">Signing off</label>
+    <input type="checkbox" id="signedOff" formControlName="signedOff" />
+  </div>
+</form>
+<div class="buttons">
+  <button (click)="witnessLearner()" class="button button--primary">
+    Save
+  </button>
+  <button (click)="cancel()" class="button button--secondary">Cancel</button>
+</div>
+} @if (learners$ | async; as learners) { @for (learner of learners; track
+learner.id) {
+<h2>{{ learner.name }}</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Signed off</th>
+      <th></th>
+      <th>Witnessed by</th>
+      <th>Witnessed on</th>
+      <th>Notes</th>
+      <th>Happy to sign off</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (task of learner.tasks; track task.id) {
+    <tr>
+      <td [attr.rowspan]="1 + task.witnesses.length">{{ task.name }}</td>
+      <td [attr.rowspan]="1 + task.witnesses.length">
+        @if (task.signedOff) { ✅ } @else { ❌ }
+      </td>
+      <td [attr.rowspan]="1 + task.witnesses.length">
+        <button
+          (click)="beginWitness(learner, task)"
+          class="button button--primary"
+        >
+          Witness
+        </button>
+      </td>
+    </tr>
+    @for (witness of task.witnesses; track witness.id) {
+    <tr>
+      <td>{{ witness.witnessedBy }}</td>
+      <td>{{ witness.date | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ witness.notes }}</td>
+      <td>@if (witness.signedOff) { ✅ } @else { ❌ }</td>
+    </tr>
+    } }
+  </tbody>
+</table>
+} }

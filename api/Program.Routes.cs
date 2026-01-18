@@ -34,6 +34,7 @@ using Api.Handlers.Hospital.Tasks;
 using Api.Handlers.Hospital.Patients.Labs.Blood;
 using Api.Handlers.Hospital.Patients.Labs.Faecal;
 using Api.Handlers.Stock;
+using Api.Handlers.Learning;
 
 public partial class Program
 {
@@ -51,6 +52,23 @@ public partial class Program
 
     private static void RegisterAuxDevPlanRoutes(RouteGroupBuilder api)
     {
+        var apiAuxDevPlans = api.MapGroup("/aux-dev-plans");
+
+        apiAuxDevPlans.MapGet("/auxiliaries", (IMediator mediator) => mediator.Send(new ViewAuxDevPlanLearners()))
+            .AddNote("Vet views auxiliaries and plan progression")
+            .RequireAuthorization(vetPolicy);
+
+        apiAuxDevPlans.MapGet("/tasks", (IMediator mediator) => mediator.Send(new GetAuxDevPlanTasks()))
+            .AddNote("Vet or aux views tasks and progression")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiAuxDevPlans.MapPost("/task", (IMediator mediator, UpsertAuxDevPlanTask request) => mediator.Send(request))
+            .AddNote("Vet creates or edits a task")
+            .RequireAuthorization(vetPolicy);
+
+        apiAuxDevPlans.MapPost("/witness", (IMediator mediator, WitnessAuxDevPlanTaskPerformance request) => mediator.Send(request))
+            .AddNote("Vet witnesses the performance of a task by an aux")
+            .RequireAuthorization(vetPolicy);
     }
 
     private static void RegisterStockRoutes(RouteGroupBuilder api)

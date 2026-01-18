@@ -43,6 +43,8 @@ import { orphanFeederReducer } from './volunteer/home-care/reducer';
 import { OrphanFeederEffects } from './volunteer/home-care/effects';
 import { hospitalStockReducer } from './hospital/stock/reducer';
 import { HospitalStockEffects } from './hospital/stock/effects';
+import { AuxDevPlanEffects } from './vet/aux-dev-plans/effects';
+import { auxDevPlanReducer } from './vet/aux-dev-plans/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -107,6 +109,9 @@ export const appConfig: ApplicationConfig = {
 
       // Clocking
       clocking: clockingReducer,
+
+      // Auxiliary
+      auxDevPlan: auxDevPlanReducer,
     }),
     provideEffects([
       LoginEffects,
@@ -131,6 +136,9 @@ export const appConfig: ApplicationConfig = {
 
       // Clocking
       ClockingEffects,
+
+      // Auxiliary
+      AuxDevPlanEffects,
     ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),

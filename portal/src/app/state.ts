@@ -8,6 +8,7 @@ import { ResetPasswordState } from './authentication/reset-password/state';
 import { ClockingState } from './clocking/state';
 import { HospitalState } from './hospital/state';
 import { HospitalStockState } from './hospital/stock/state';
+import { AuxDevPlanState } from './vet/aux-dev-plans/state';
 import { OrphanFeederState } from './volunteer/home-care/state';
 import { NoticesState } from './volunteer/notices/state';
 import { ProfileState } from './volunteer/profile/state';
@@ -34,4 +35,7 @@ export interface AppState {
 
   // Clocking
   clocking: ClockingState;
+
+  // Auxiliary
+  auxDevPlan: AuxDevPlanState;
 }

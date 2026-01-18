@@ -11,6 +11,8 @@ import { AdminHospitalMedicationsComponent } from './admin/hospital/medications/
 import { AdminHospitalAreasComponent } from './admin/hospital/areas/component';
 import { AdminHospitalSpeciesComponent } from './admin/hospital/species/component';
 import { isVet } from './authentication/guards';
+import { AuxDevPlanTasksComponent } from './vet/aux-dev-plans/tasks/component';
+import { AuxDevPlanLearnersComponent } from './vet/aux-dev-plans/learners/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -56,6 +58,24 @@ export const routes: Routes = [
       {
         path: 'species',
         component: AdminHospitalSpeciesComponent,
+      },
+    ],
+  },
+  {
+    path: 'aux',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'tasks',
+      },
+      {
+        path: 'tasks',
+        component: AuxDevPlanTasksComponent,
+      },
+      {
+        path: 'learners',
+        component: AuxDevPlanLearnersComponent,
       },
     ],
   },

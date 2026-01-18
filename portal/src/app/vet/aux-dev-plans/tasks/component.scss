@@ -1,0 +1,41 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+.hint {
+  color: rgb(97, 97, 97);
+  font-size: 1rem;
+}
+
+.buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.task {
+  margin-top: 1rem;
+  border: solid 5px var(--theme-primary);
+  max-width: max-content;
+
+  .task-header {
+    background-color: var(--theme-primary);
+    padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+    color: white;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .task-videos {
+    padding: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    border-bottom: dotted 2px rgb(57, 70, 60);
+  }
+
+  .task-explanation {
+    padding: 1rem 1.5rem;
+  }
+}

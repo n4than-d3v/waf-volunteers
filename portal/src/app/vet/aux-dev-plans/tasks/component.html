@@ -1,0 +1,91 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+<h1>{{ isVet ? 'Auxiliary learning' : 'Learning' }}</h1>
+@if (isVet) { @if (adding || editing) {
+<h2>{{ adding ? 'Add' : 'Edit' }} learning item</h2>
+<form [formGroup]="taskForm">
+  <div class="field">
+    <label for="name">
+      Name
+      <span class="required">*</span>
+    </label>
+    <input type="text" formControlName="name" />
+  </div>
+  <div class="field">
+    <label for="youtube">YouTube videos</label>
+    <div class="hint">
+      <strong>Video IDs</strong> separated by commas.<br />
+      https://www.youtube.com/watch?v=<strong>EIyixC9NsLI</strong>
+    </div>
+    <input type="text" formControlName="youtube" />
+  </div>
+  <div class="field">
+    <label for="editor">Explanation</label>
+    <div class="NgxEditor__Wrapper margin-left-lists">
+      <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+      <ngx-editor
+        [editor]="editor"
+        [placeholder]="'Type here...'"
+        formControlName="explanation"
+      ></ngx-editor>
+    </div>
+  </div>
+  @if (attemptedSave && !taskForm.valid) {
+  <div class="error">Please fill out the required fields</div>
+  }
+  <div class="buttons">
+    <button (click)="upsertTask()" class="button button--primary">Save</button>
+    <button (click)="cancel()" class="button button--secondary">Cancel</button>
+  </div>
+</form>
+} @else {
+<div class="buttons">
+  <button (click)="adding = true" class="button button--primary">
+    Add learning item
+  </button>
+  <a [routerLink]="'../learners'" class="button button--secondary">
+    View auxiliaries
+  </a>
+</div>
+} } @if (tasks$ | async; as tasks) { @for (task of tasks; track task.id) {
+<div class="task">
+  <h3 class="task-header">
+    <span>
+      @if (!isVet) { @if (task.signedOff) { ✅ } @else { ❌ } } {{ task.name }}
+    </span>
+    @if (expanded === task.id) {
+    <button (click)="expanded = null" class="button button--secondary">
+      Collapse
+    </button>
+    } @else {
+    <button (click)="expanded = task.id" class="button button--secondary">
+      Expand
+    </button>
+    } @if (isVet) {
+    <button (click)="prepareEdit(task)" class="button button--primary">
+      Edit
+    </button>
+    }
+  </h3>
+  @if (expanded === task.id) { @if (task.youTube) {
+  <div class="task-videos">
+    @for (video of task.youTube; track video) {
+    <iframe
+      width="560"
+      height="315"
+      [src]="video | safeYoutube"
+      title="YouTube video player"
+      frameborder="0"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+    }
+  </div>
+  }
+  <div
+    class="task-explanation"
+    [innerHTML]="convertHtml(task.explanation)"
+  ></div>
+  }
+</div>
+} }

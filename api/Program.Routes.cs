@@ -70,11 +70,11 @@ public partial class Program
 
         apiStock.MapGet("/items", (IMediator mediator) => mediator.Send(new GetStockItems()))
             .AddNote("View stock items")
-            .RequireAuthorization(signedInPolicy);
+            .RequireAuthorization(vetOrAuxPolicy);
 
         apiStock.MapGet("/", (IMediator mediator) => mediator.Send(new GetStock()))
             .AddNote("View stock")
-            .RequireAuthorization(signedInPolicy);
+            .RequireAuthorization(vetOrAuxPolicy);
     }
 
     private static void RegisterHospitalRoutes(RouteGroupBuilder api)

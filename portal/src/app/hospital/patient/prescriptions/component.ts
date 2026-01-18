@@ -114,7 +114,6 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
   }
 
   addMedication() {
-    console.log(this.prescriptionMedicationForm.value);
     this.attemptedSave = true;
     if (!this.prescriptionMedicationForm.valid) return;
     this.saving = true;

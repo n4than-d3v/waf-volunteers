@@ -8,13 +8,13 @@
 <hospital-stock-dispose-batch></hospital-stock-dispose-batch>
 } @else if (page.pageType === 'disposeUsage') {
 <hospital-stock-dispose-usage></hospital-stock-dispose-usage>
-} @else if (page.pageType === 'dashboard') {
+} @else if (page.pageType === 'dashboard') { @if (isVet) {
 <div class="buttons">
   <button (click)="incoming()" class="button button--secondary-invert">
     🚚 Incoming delivery
   </button>
 </div>
-@if (loading$ | async; as loading) {
+} @if (loading$ | async; as loading) {
 <spinner></spinner>
 } @if (error$ | async; as error) {
 <div class="error">Error occurred</div>

@@ -1,16 +1,15 @@
 <div class="medication" [class.border]="id != -1">
   @if (medications$ | async; as medications) { @if (medications.loading) {
   <spinner />
-  } @else if (medications.error) {
+  } @if (medications.error) {
   <div class="error">Error occurred</div>
-  } @else if (medications.data) {
+  } @if (medications.data) {
   <div [formGroup]="formGroup" class="wrapper">
     <div class="field">
       <label for="medication-{{ id }}">
         Medication
         <span class="required">*</span>
       </label>
-      @if (medications.data) {
       <hospital-patient-autocomplete
         [id]="'medication-' + id"
         [inline]="true"
@@ -19,7 +18,6 @@
         [formGroup]="formGroup"
         [items]="convertMedications(medications.data)"
       ></hospital-patient-autocomplete>
-      }
     </div>
     @if (formGroup.value.medicationId) {
     <div class="field">
@@ -108,7 +106,7 @@
   medication.concentrations; track concentration.id) { @if
   (concentration.id.toString() == formGroup.value.medicationConcentrationId) {
   <p class="notes">{{ medication.notes }}</p>
-  @if (!defaultDose) {
+  @if (!defaultDoseKey) {
   <p class="unknown">Default dosage has not been set for this species</p>
   }
   <table>

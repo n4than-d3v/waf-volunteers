@@ -69,7 +69,11 @@ export class HospitalPatientMedicationSelectorComponent
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
 
   species: Species[] = [];
-  defaultDose: MedicationConcentrationSpeciesDose | null = null;
+
+  defaultDoseKey: string | null = null;
+  defaultDoseSpeciesId: number | null = null;
+  defaultDoseSpeciesType: number | null = null;
+
   subscription: Subscription;
 
   medications: Medication[] = [];
@@ -98,7 +102,6 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
     if (
       changes['speciesId'] ||
       changes['weightValue'] ||
@@ -109,9 +112,12 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   updateDefaults(medications: Medication[]) {
+    if (!medications.length) return;
+
     this.medications = medications;
-    this.defaultDose = null;
-    const medication = medications.find(
+    this.clearDefaultDose();
+
+    const medication = this.medications.find(
       (x) => x.id === Number(this.formGroup.value.medicationId)
     );
     if (!medication) return;
@@ -121,6 +127,7 @@ export class HospitalPatientMedicationSelectorComponent
     if (!medicationConcentration) return;
     const species = this.species.find((x) => x.id == Number(this.speciesId));
     if (!species) return;
+
     // First try to match on species
     for (const dose of medicationConcentration.speciesDoses) {
       if (!dose.species) continue;
@@ -128,7 +135,7 @@ export class HospitalPatientMedicationSelectorComponent
         this.updateDoseDefaults(dose);
       }
     }
-    if (this.defaultDose) return;
+    if (this.defaultDoseKey) return;
     // Otherwise match on species type
     for (const dose of medicationConcentration.speciesDoses) {
       if (!dose.speciesType) continue;
@@ -147,7 +154,7 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   private updateDoseDefaults(dose: MedicationConcentrationSpeciesDose) {
-    this.defaultDose = dose;
+    this.setDefaultDose(dose);
     const weight = this.getWeightKg();
     this.formGroup.controls['administrationMethodId'].setValue(
       dose.administrationMethod.id
@@ -195,6 +202,18 @@ export class HospitalPatientMedicationSelectorComponent
 
   getSpeciesType = getSpeciesType;
 
+  private clearDefaultDose() {
+    this.defaultDoseKey = null;
+    this.defaultDoseSpeciesId = null;
+    this.defaultDoseSpeciesType = null;
+  }
+
+  private setDefaultDose(item: MedicationConcentrationSpeciesDose) {
+    this.defaultDoseKey = this.getGroupKey(item);
+    this.defaultDoseSpeciesId = item.species ? item.species.id : null;
+    this.defaultDoseSpeciesType = item.speciesType;
+  }
+
   private getGroupKey(item: MedicationConcentrationSpeciesDose): string {
     return [
       item.doseMgKgRangeStart,
@@ -233,14 +252,13 @@ export class HospitalPatientMedicationSelectorComponent
       const group = map.get(key)!;
 
       group.key = key;
-      group.isDefault = group.isDefault || item === this.defaultDose;
+      group.isDefault = group.isDefault || key === this.defaultDoseKey;
 
       if (item.species) {
         group.species.push({
           name: item.species.name,
           highlight:
-            group.isDefault &&
-            item.species.id === this.defaultDose?.species?.id,
+            group.isDefault && item.species.id === this.defaultDoseSpeciesId,
         });
       }
 
@@ -248,8 +266,7 @@ export class HospitalPatientMedicationSelectorComponent
         group.species.push({
           name: getSpeciesType(item.speciesType),
           highlight:
-            group.isDefault &&
-            item.speciesType === this.defaultDose?.speciesType,
+            group.isDefault && item.speciesType === this.defaultDoseSpeciesType,
         });
       }
 

@@ -69,7 +69,6 @@ export class AdminUsersCreateComponent {
 
   save() {
     window.scrollTo(0, 0);
-    console.log(this.form);
     this.store.dispatch(
       createUser({
         user: {

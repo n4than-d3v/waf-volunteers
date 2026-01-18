@@ -41,8 +41,7 @@
   &.fields--inline {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
 
     .field {
       display: block;

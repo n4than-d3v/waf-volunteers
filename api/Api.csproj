@@ -30,4 +30,8 @@
 		<PackageReference Include="WebPush" Version="1.0.12" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Database\Entities\Learning\" />
+	</ItemGroup>
+
 </Project>

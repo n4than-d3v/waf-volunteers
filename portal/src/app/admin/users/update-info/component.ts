@@ -149,7 +149,6 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
 
   save() {
     window.scrollTo(0, 0);
-    console.log(this.form);
     this.store.dispatch(
       updateUser({
         user: {

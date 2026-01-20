@@ -46,9 +46,8 @@ export interface HospitalState {
   medications: ReadOnlyWrapper<Medication[]>;
   administrationMethods: ReadOnlyWrapper<AdministrationMethod[]>;
 
-  // List rechecks
-  listRechecks: ReadOnlyWrapper<ListRecheck[]>;
-  listPrescriptions: ReadOnlyWrapper<Prescription[]>;
+  // View daily tasks
+  dailyTasksReport: ReadOnlyWrapper<DailyTasksReport>;
   performRecheck: Task;
   administerPrescription: Task;
 }
@@ -57,9 +56,9 @@ export type TabCode =
   | 'DASHBOARD'
   | 'LIST_PATIENTS_BY_STATUS'
   | 'VIEW_PATIENT'
-  | 'LIST_RECHECKS'
-  | 'LIST_PRESCRIPTIONS'
-  | 'VIEW_STOCK';
+  | 'VIEW_DAILY_TASKS'
+  | 'VIEW_STOCK'
+  | 'VIEW_BOARDS';
 
 export interface Tab {
   code: TabCode;
@@ -96,6 +95,39 @@ export enum PatientStatus {
   ReceivingHomeCare = 4,
   ReadyForRelease = 5,
   Dispositioned = 6,
+}
+
+export interface DailyTasksReport {
+  rechecks: number;
+  prescriptions: number;
+  areas: DailyTasksReportArea[];
+}
+
+export interface DailyTasksReportArea {
+  name: string;
+  code: string;
+  rechecks: number;
+  prescriptions: number;
+  pens: DailyTasksReportAreaPen[];
+}
+
+export interface DailyTasksReportAreaPen {
+  code: string;
+  reference: string;
+  rechecks: number;
+  prescriptions: number;
+  patients: DailyTasksReportAreaPenPatient[];
+}
+
+export interface DailyTasksReportAreaPenPatient {
+  id: number;
+  reference: string;
+  uniqueIdentifier: string;
+  species: Species;
+  variant: SpeciesVariant;
+  rechecks: ListRecheck[];
+  prescriptionInstructions: PrescriptionInstruction[];
+  prescriptionMedications: PrescriptionMedication[];
 }
 
 export interface ListPatient {
@@ -260,7 +292,6 @@ export interface ListRecheck {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
-  hasPrescriptions: boolean;
 }
 
 export interface ListNote {
@@ -311,7 +342,6 @@ export interface PrescriptionInstruction extends TreatmentInstruction {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
-  hasRechecks: boolean;
 }
 
 export interface TreatmentInstruction {
@@ -593,9 +623,8 @@ export const initialHospitalState: HospitalState = {
   updateBasicDetails: createTask(),
   updateDiets: createTask(),
   updateTags: createTask(),
-  listRechecks: createReadOnlyWrapper<ListRecheck[]>(),
+  dailyTasksReport: createReadOnlyWrapper<DailyTasksReport>(),
   performRecheck: createTask(),
-  listPrescriptions: createReadOnlyWrapper<Prescription[]>(),
   administerPrescription: createTask(),
   addLabs: createTask(),
 };

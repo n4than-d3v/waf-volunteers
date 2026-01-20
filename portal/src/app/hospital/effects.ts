@@ -22,6 +22,7 @@ import {
   ListRecheck,
   PrescriptionInstruction,
   PrescriptionMedication,
+  DailyTasksReport,
 } from './state';
 import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -131,15 +132,9 @@ import {
   searchPatientSuccess,
   searchPatientError,
   setTab,
-  listRechecks,
-  listRechecksSuccess,
-  listRechecksError,
   performRecheck,
   performRecheckSuccess,
   performRecheckError,
-  listPrescriptions,
-  listPrescriptionsSuccess,
-  listPrescriptionsError,
   administerPrescriptionInstruction,
   administerPrescriptionSuccess,
   administerPrescriptionError,
@@ -155,6 +150,9 @@ import {
   addFaecalTest,
   addFaecalTestSuccess,
   addFaecalTestError,
+  viewDailyTasks,
+  viewDailyTasksSuccess,
+  viewDailyTasksError,
 } from './actions';
 
 @Injectable()
@@ -170,10 +168,10 @@ export class HospitalEffects {
       switchMap(() =>
         this.http.get<PatientCounts>('hospital/patients/status').pipe(
           map((patientCounts) => getPatientCountsSuccess({ patientCounts })),
-          catchError(() => of(getPatientCountsError()))
-        )
-      )
-    )
+          catchError(() => of(getPatientCountsError())),
+        ),
+      ),
+    ),
   );
 
   // Patients by status
@@ -186,10 +184,10 @@ export class HospitalEffects {
           .get<ListPatient[]>('hospital/patients/status/' + action.status)
           .pipe(
             map((patients) => getPatientsByStatusSuccess({ patients })),
-            catchError(() => of(getPatientsByStatusError()))
-          )
-      )
-    )
+            catchError(() => of(getPatientsByStatusError())),
+          ),
+      ),
+    ),
   );
 
   // Patient
@@ -200,10 +198,10 @@ export class HospitalEffects {
       switchMap((action) =>
         this.http.get<Patient>('hospital/patients/' + action.id).pipe(
           map((patient) => getPatientSuccess({ patient })),
-          catchError(() => of(getPatientError()))
-        )
-      )
-    )
+          catchError(() => of(getPatientError())),
+        ),
+      ),
+    ),
   );
 
   // Attitudes
@@ -214,10 +212,10 @@ export class HospitalEffects {
       switchMap((action) =>
         this.http.get<Attitude[]>('hospital/options/exams/attitudes').pipe(
           map((attitudes) => getAttitudesSuccess({ attitudes })),
-          catchError(() => of(getAttitudesError()))
-        )
-      )
-    )
+          catchError(() => of(getAttitudesError())),
+        ),
+      ),
+    ),
   );
 
   // BodyConditions
@@ -230,12 +228,12 @@ export class HospitalEffects {
           .get<BodyCondition[]>('hospital/options/exams/body-conditions')
           .pipe(
             map((bodyConditions) =>
-              getBodyConditionsSuccess({ bodyConditions })
+              getBodyConditionsSuccess({ bodyConditions }),
             ),
-            catchError(() => of(getBodyConditionsError()))
-          )
-      )
-    )
+            catchError(() => of(getBodyConditionsError())),
+          ),
+      ),
+    ),
   );
 
   // Dehydrations
@@ -248,10 +246,10 @@ export class HospitalEffects {
           .get<Dehydration[]>('hospital/options/exams/dehydrations')
           .pipe(
             map((dehydrations) => getDehydrationsSuccess({ dehydrations })),
-            catchError(() => of(getDehydrationsError()))
-          )
-      )
-    )
+            catchError(() => of(getDehydrationsError())),
+          ),
+      ),
+    ),
   );
 
   // MucousMembraneColours
@@ -261,17 +259,17 @@ export class HospitalEffects {
       ofType(getMucousMembraneColours),
       switchMap((action) =>
         this.http
-          .get<MucousMembraneColour[]>(
-            'hospital/options/exams/mucous-membrane-colours'
-          )
+          .get<
+            MucousMembraneColour[]
+          >('hospital/options/exams/mucous-membrane-colours')
           .pipe(
             map((mucousMembraneColours) =>
-              getMucousMembraneColoursSuccess({ mucousMembraneColours })
+              getMucousMembraneColoursSuccess({ mucousMembraneColours }),
             ),
-            catchError(() => of(getMucousMembraneColoursError()))
-          )
-      )
-    )
+            catchError(() => of(getMucousMembraneColoursError())),
+          ),
+      ),
+    ),
   );
 
   // MucousMembraneTextures
@@ -281,17 +279,17 @@ export class HospitalEffects {
       ofType(getMucousMembraneTextures),
       switchMap((action) =>
         this.http
-          .get<MucousMembraneTexture[]>(
-            'hospital/options/exams/mucous-membrane-textures'
-          )
+          .get<
+            MucousMembraneTexture[]
+          >('hospital/options/exams/mucous-membrane-textures')
           .pipe(
             map((mucousMembraneTextures) =>
-              getMucousMembraneTexturesSuccess({ mucousMembraneTextures })
+              getMucousMembraneTexturesSuccess({ mucousMembraneTextures }),
             ),
-            catchError(() => of(getMucousMembraneTexturesError()))
-          )
-      )
-    )
+            catchError(() => of(getMucousMembraneTexturesError())),
+          ),
+      ),
+    ),
   );
 
   // Diets
@@ -302,10 +300,10 @@ export class HospitalEffects {
       switchMap(() =>
         this.http.get<Diet[]>('hospital/husbandry/diets').pipe(
           map((diets) => getDietsSuccess({ diets })),
-          catchError(() => of(getDietsError()))
-        )
-      )
-    )
+          catchError(() => of(getDietsError())),
+        ),
+      ),
+    ),
   );
 
   // Tags
@@ -316,10 +314,10 @@ export class HospitalEffects {
       switchMap(() =>
         this.http.get<Tag[]>('hospital/husbandry/tags').pipe(
           map((tags) => getTagsSuccess({ tags })),
-          catchError(() => of(getTagsError()))
-        )
-      )
-    )
+          catchError(() => of(getTagsError())),
+        ),
+      ),
+    ),
   );
 
   // Disposition reasons
@@ -329,17 +327,17 @@ export class HospitalEffects {
       ofType(getDispositionReasons),
       switchMap(() =>
         this.http
-          .get<DispositionReason[]>(
-            'hospital/options/outcome/disposition-reasons'
-          )
+          .get<
+            DispositionReason[]
+          >('hospital/options/outcome/disposition-reasons')
           .pipe(
             map((dispositionReasons) =>
-              getDispositionReasonsSuccess({ dispositionReasons })
+              getDispositionReasonsSuccess({ dispositionReasons }),
             ),
-            catchError(() => of(getDispositionReasonsError()))
-          )
-      )
-    )
+            catchError(() => of(getDispositionReasonsError())),
+          ),
+      ),
+    ),
   );
 
   // Release types
@@ -352,10 +350,10 @@ export class HospitalEffects {
           .get<ReleaseType[]>('hospital/options/outcome/release-types')
           .pipe(
             map((releaseTypes) => getReleaseTypesSuccess({ releaseTypes })),
-            catchError(() => of(getReleaseTypesError()))
-          )
-      )
-    )
+            catchError(() => of(getReleaseTypesError())),
+          ),
+      ),
+    ),
   );
 
   // Transfer locations
@@ -365,17 +363,17 @@ export class HospitalEffects {
       ofType(getTransferLocations),
       switchMap(() =>
         this.http
-          .get<TransferLocation[]>(
-            'hospital/options/outcome/transfer-locations'
-          )
+          .get<
+            TransferLocation[]
+          >('hospital/options/outcome/transfer-locations')
           .pipe(
             map((transferLocations) =>
-              getTransferLocationsSuccess({ transferLocations })
+              getTransferLocationsSuccess({ transferLocations }),
             ),
-            catchError(() => of(getTransferLocationsError()))
-          )
-      )
-    )
+            catchError(() => of(getTransferLocationsError())),
+          ),
+      ),
+    ),
   );
 
   // Administration methods
@@ -385,17 +383,17 @@ export class HospitalEffects {
       ofType(getAdministrationMethods),
       switchMap(() =>
         this.http
-          .get<AdministrationMethod[]>(
-            'hospital/medications/administration-methods'
-          )
+          .get<
+            AdministrationMethod[]
+          >('hospital/medications/administration-methods')
           .pipe(
             map((administrationMethods) =>
-              getAdministrationMethodsSuccess({ administrationMethods })
+              getAdministrationMethodsSuccess({ administrationMethods }),
             ),
-            catchError(() => of(getAdministrationMethodsError()))
-          )
-      )
-    )
+            catchError(() => of(getAdministrationMethodsError())),
+          ),
+      ),
+    ),
   );
 
   // Medications
@@ -406,10 +404,10 @@ export class HospitalEffects {
       switchMap(() =>
         this.http.get<Medication[]>('hospital/medications').pipe(
           map((medications) => getMedicationsSuccess({ medications })),
-          catchError(() => of(getMedicationsError()))
-        )
-      )
-    )
+          catchError(() => of(getMedicationsError())),
+        ),
+      ),
+    ),
   );
   // Areas
 
@@ -419,10 +417,10 @@ export class HospitalEffects {
       switchMap(() =>
         this.http.get<Area[]>('hospital/locations').pipe(
           map((areas) => getAreasSuccess({ areas })),
-          catchError(() => of(getAreasError()))
-        )
-      )
-    )
+          catchError(() => of(getAreasError())),
+        ),
+      ),
+    ),
   );
 
   // Species
@@ -438,12 +436,12 @@ export class HospitalEffects {
                 ...s,
                 variants: s.variants.sort((a, b) => a.order - b.order),
               })),
-            })
+            }),
           ),
-          catchError(() => of(getSpeciesError()))
-        )
-      )
-    )
+          catchError(() => of(getSpeciesError())),
+        ),
+      ),
+    ),
   );
 
   // Perform exam
@@ -469,29 +467,29 @@ export class HospitalEffects {
                     dispositionReasonId: action.dispositionReasonId!,
                     onArrival: action.outcome === 'deadOnArrival',
                     putToSleep: action.outcome === 'pts',
-                  })
+                  }),
                 );
               } else if (action.outcome === 'release') {
                 actions.push(
                   markPatientReadyForRelease({
                     patientId: action.exam.patientId,
-                  })
+                  }),
                 );
               } else if (action.outcome === 'alive') {
                 actions.push(
                   movePatient({
                     patientId: action.exam.patientId,
                     penId: action.penId!,
-                  })
+                  }),
                 );
               }
 
               return actions;
             }),
-            catchError(() => of(performExamError()))
-          )
-      )
-    )
+            catchError(() => of(performExamError())),
+          ),
+      ),
+    ),
   );
 
   // Set disposition
@@ -504,19 +502,19 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/die`, action)
           .pipe(
             map(() => markPatientDeadSuccess({ patientId: action.patientId })),
-            catchError(() => of(markPatientDeadError()))
-          )
-      )
-    )
+            catchError(() => of(markPatientDeadError())),
+          ),
+      ),
+    ),
   );
 
   markPatientDeadSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientDeadSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   markPatientReadyForRelease$ = createEffect(() =>
@@ -526,25 +524,27 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/patients/${action.patientId}/ready-for-release`,
-            action
+            action,
           )
           .pipe(
             map(() =>
-              markPatientReadyForReleaseSuccess({ patientId: action.patientId })
+              markPatientReadyForReleaseSuccess({
+                patientId: action.patientId,
+              }),
             ),
-            catchError(() => of(markPatientReadyForReleaseError()))
-          )
-      )
-    )
+            catchError(() => of(markPatientReadyForReleaseError())),
+          ),
+      ),
+    ),
   );
 
   markPatientReadyForReleaseSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientReadyForReleaseSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   markPatientInCentre$ = createEffect(() =>
@@ -555,21 +555,21 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/inpatient`, action)
           .pipe(
             map(() =>
-              markPatientInCentreSuccess({ patientId: action.patientId })
+              markPatientInCentreSuccess({ patientId: action.patientId }),
             ),
-            catchError(() => of(markPatientInCentreError()))
-          )
-      )
-    )
+            catchError(() => of(markPatientInCentreError())),
+          ),
+      ),
+    ),
   );
 
   markPatientInCentreSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientInCentreSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   markPatientReleased$ = createEffect(() =>
@@ -580,21 +580,21 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/release`, action)
           .pipe(
             map(() =>
-              markPatientReleasedSuccess({ patientId: action.patientId })
+              markPatientReleasedSuccess({ patientId: action.patientId }),
             ),
-            catchError(() => of(markPatientReleasedError()))
-          )
-      )
-    )
+            catchError(() => of(markPatientReleasedError())),
+          ),
+      ),
+    ),
   );
 
   markPatientReleasedSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientReleasedSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   markPatientTransferred$ = createEffect(() =>
@@ -605,21 +605,21 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/transfer`, action)
           .pipe(
             map(() =>
-              markPatientTransferredSuccess({ patientId: action.patientId })
+              markPatientTransferredSuccess({ patientId: action.patientId }),
             ),
-            catchError(() => of(markPatientTransferredError()))
-          )
-      )
-    )
+            catchError(() => of(markPatientTransferredError())),
+          ),
+      ),
+    ),
   );
 
   markPatientTransferredSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientTransferredSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Move patient
@@ -632,19 +632,19 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/move`, action)
           .pipe(
             map(() => movePatientSuccess({ patientId: action.patientId })),
-            catchError(() => of(movePatientError()))
-          )
-      )
-    )
+            catchError(() => of(movePatientError())),
+          ),
+      ),
+    ),
   );
 
   movePatientSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(movePatientSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }), getAreas())
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true }), getAreas()),
+      ),
+    ),
   );
 
   // Add note
@@ -665,19 +665,19 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/note`, formData)
           .pipe(
             map(() => addNoteSuccess({ patientId: action.patientId })),
-            catchError(() => of(addNoteError()))
+            catchError(() => of(addNoteError())),
           );
-      })
-    )
+      }),
+    ),
   );
 
   addNoteSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addNoteSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   downloadNoteAttachment$ = createEffect(
@@ -690,7 +690,7 @@ export class HospitalEffects {
               `hospital/patients/${action.patientId}/notes/${action.noteId}/attachments/${action.attachment.id}`,
               {
                 responseType: 'blob',
-              }
+              },
             )
             .subscribe((blob) => {
               const url = window.URL.createObjectURL(blob);
@@ -702,9 +702,9 @@ export class HospitalEffects {
               window.URL.revokeObjectURL(url);
             });
           return of();
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   // Add faecal test
@@ -717,19 +717,19 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/faecal-test`, action)
           .pipe(
             map(() => addFaecalTestSuccess({ patientId: action.patientId })),
-            catchError(() => of(addFaecalTestError()))
-          )
-      )
-    )
+            catchError(() => of(addFaecalTestError())),
+          ),
+      ),
+    ),
   );
 
   addFaecalTestSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addFaecalTestSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Add blood test
@@ -748,19 +748,19 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/blood-test`, formData)
           .pipe(
             map(() => addBloodTestSuccess({ patientId: action.patientId })),
-            catchError(() => of(addBloodTestError()))
+            catchError(() => of(addBloodTestError())),
           );
-      })
-    )
+      }),
+    ),
   );
 
   addBloodTestSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addBloodTestSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   downloadBloodTestAttachment$ = createEffect(
@@ -773,7 +773,7 @@ export class HospitalEffects {
               `hospital/patients/${action.patientId}/blood-tests/${action.bloodTestId}/attachments/${action.attachment.id}`,
               {
                 responseType: 'blob',
-              }
+              },
             )
             .subscribe((blob) => {
               const url = window.URL.createObjectURL(blob);
@@ -785,9 +785,9 @@ export class HospitalEffects {
               window.URL.revokeObjectURL(url);
             });
           return of();
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   // Add recheck
@@ -800,19 +800,19 @@ export class HospitalEffects {
           .post(`hospital/patients/${action.patientId}/recheck`, action)
           .pipe(
             map(() => addRecheckSuccess({ patientId: action.patientId })),
-            catchError(() => of(addRecheckError()))
-          )
-      )
-    )
+            catchError(() => of(addRecheckError())),
+          ),
+      ),
+    ),
   );
 
   addRecheckSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addRecheckSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Add prescription instruction
@@ -824,25 +824,27 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/patients/${action.patientId}/prescriptions/instruction`,
-            action
+            action,
           )
           .pipe(
             map(() =>
-              addPrescriptionInstructionSuccess({ patientId: action.patientId })
+              addPrescriptionInstructionSuccess({
+                patientId: action.patientId,
+              }),
             ),
-            catchError(() => of(addPrescriptionInstructionError()))
-          )
-      )
-    )
+            catchError(() => of(addPrescriptionInstructionError())),
+          ),
+      ),
+    ),
   );
 
   addPrescriptionInstructionSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addPrescriptionInstructionSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Add prescription medication
@@ -854,25 +856,25 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/patients/${action.patientId}/prescriptions/medication`,
-            action
+            action,
           )
           .pipe(
             map(() =>
-              addPrescriptionMedicationSuccess({ patientId: action.patientId })
+              addPrescriptionMedicationSuccess({ patientId: action.patientId }),
             ),
-            catchError(() => of(addPrescriptionMedicationError()))
-          )
-      )
-    )
+            catchError(() => of(addPrescriptionMedicationError())),
+          ),
+      ),
+    ),
   );
 
   addPrescriptionMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addPrescriptionMedicationSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Remove recheck
@@ -885,19 +887,19 @@ export class HospitalEffects {
           .delete(`hospital/patients/recheck/${action.patientRecheckId}`)
           .pipe(
             map(() => removeRecheckSuccess({ patientId: action.patientId })),
-            catchError(() => of(removeRecheckError()))
-          )
-      )
-    )
+            catchError(() => of(removeRecheckError())),
+          ),
+      ),
+    ),
   );
 
   removeRecheckSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removeRecheckSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Remove prescription instruction
@@ -908,27 +910,27 @@ export class HospitalEffects {
       switchMap((action) =>
         this.http
           .delete(
-            `hospital/patients/prescriptions/instruction/${action.patientPrescriptionInstructionId}`
+            `hospital/patients/prescriptions/instruction/${action.patientPrescriptionInstructionId}`,
           )
           .pipe(
             map(() =>
               removePrescriptionInstructionSuccess({
                 patientId: action.patientId,
-              })
+              }),
             ),
-            catchError(() => of(removePrescriptionInstructionError()))
-          )
-      )
-    )
+            catchError(() => of(removePrescriptionInstructionError())),
+          ),
+      ),
+    ),
   );
 
   removePrescriptionInstructionSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removePrescriptionInstructionSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Remove prescription medication
@@ -939,27 +941,27 @@ export class HospitalEffects {
       switchMap((action) =>
         this.http
           .delete(
-            `hospital/patients/prescriptions/medication/${action.patientPrescriptionMedicationId}`
+            `hospital/patients/prescriptions/medication/${action.patientPrescriptionMedicationId}`,
           )
           .pipe(
             map(() =>
               removePrescriptionMedicationSuccess({
                 patientId: action.patientId,
-              })
+              }),
             ),
-            catchError(() => of(removePrescriptionMedicationError()))
-          )
-      )
-    )
+            catchError(() => of(removePrescriptionMedicationError())),
+          ),
+      ),
+    ),
   );
 
   removePrescriptionMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(removePrescriptionMedicationSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Update patient basic details
@@ -975,23 +977,23 @@ export class HospitalEffects {
               updatePatientBasicDetailsSuccess({
                 patientId: action.patientId,
                 update: action.update,
-              })
+              }),
             ),
             catchError(() =>
-              of(updatePatientBasicDetailsError({ update: action.update }))
-            )
-          )
-      )
-    )
+              of(updatePatientBasicDetailsError({ update: action.update })),
+            ),
+          ),
+      ),
+    ),
   );
 
   updatePatientBasicDetailsSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updatePatientBasicDetailsSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Request home care
@@ -1003,23 +1005,23 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/patients/${action.patientId}/request-home-care`,
-            action
+            action,
           )
           .pipe(
             map(() => requestHomeCareSuccess({ patientId: action.patientId })),
-            catchError(() => of(requestHomeCareError()))
-          )
-      )
-    )
+            catchError(() => of(requestHomeCareError())),
+          ),
+      ),
+    ),
   );
 
   requestHomeCareSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(requestHomeCareSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Home carer drop off
@@ -1031,23 +1033,23 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/home-care/${action.homeCareRequestId}/drop-off`,
-            action
+            action,
           )
           .pipe(
             map(() => homeCarerDropOffSuccess({ patientId: action.patientId })),
-            catchError(() => of(homeCarerDropOffError()))
-          )
-      )
-    )
+            catchError(() => of(homeCarerDropOffError())),
+          ),
+      ),
+    ),
   );
 
   homeCarerDropOffSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(homeCarerDropOffSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Send home care message
@@ -1059,28 +1061,28 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/home-care/${action.homeCareRequestId}/message`,
-            action
+            action,
           )
           .pipe(
             map(() =>
               sendHomeCareMessageSuccess({
                 patientId: action.patientId,
                 homeCareRequestId: action.homeCareRequestId,
-              })
+              }),
             ),
-            catchError(() => of(sendHomeCareMessageError()))
-          )
-      )
-    )
+            catchError(() => of(sendHomeCareMessageError())),
+          ),
+      ),
+    ),
   );
 
   sendHomeCareMessageSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendHomeCareMessageSuccess),
       switchMap((action) =>
-        of(getPatient({ id: action.patientId, silent: true }))
-      )
-    )
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
   );
 
   // Search patient
@@ -1090,21 +1092,23 @@ export class HospitalEffects {
       ofType(searchPatient),
       switchMap((action) =>
         this.http
-          .get<{ id: number; reference: string; species: string }>(
-            `hospital/patients/search?query=${action.search}`
-          )
+          .get<{
+            id: number;
+            reference: string;
+            species: string;
+          }>(`hospital/patients/search?query=${action.search}`)
           .pipe(
             map(({ id, reference, species }) =>
               searchPatientSuccess({
                 patientId: id,
                 reference,
                 species,
-              })
+              }),
             ),
-            catchError(() => of(searchPatientError()))
-          )
-      )
-    )
+            catchError(() => of(searchPatientError())),
+          ),
+      ),
+    ),
   );
 
   searchPatientSuccess$ = createEffect(() =>
@@ -1118,38 +1122,28 @@ export class HospitalEffects {
               title: `[${reference}] ${species}`,
               id: patientId,
             },
-          })
-        )
-      )
-    )
+          }),
+        ),
+      ),
+    ),
   );
 
-  // List rechecks
+  // View daily tasks
 
-  listRechecks$ = createEffect(() =>
+  viewDailyTasks$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(listRechecks),
+      ofType(viewDailyTasks),
       switchMap((action) =>
         this.http
-          .get<ListRecheck[]>(`hospital/tasks/rechecks?on=${action.date}`)
+          .get<DailyTasksReport>(`hospital/daily-tasks?on=${action.date}`)
           .pipe(
-            map((rechecks) =>
-              listRechecksSuccess({
-                rechecks: rechecks.sort((a, b) => {
-                  const penCompare = a.pen.reference.localeCompare(
-                    b.pen.reference
-                  );
-                  if (penCompare !== 0) {
-                    return penCompare;
-                  }
-                  return a.reference.localeCompare(b.reference);
-                }),
-              })
+            map((dailyTasksReport) =>
+              viewDailyTasksSuccess({ dailyTasksReport }),
             ),
-            catchError(() => of(listRechecksError()))
-          )
-      )
-    )
+            catchError(() => of(viewDailyTasksError())),
+          ),
+      ),
+    ),
   );
 
   // Perform recheck
@@ -1162,50 +1156,17 @@ export class HospitalEffects {
           .post(`hospital/patients/recheck/${action.recheckId}/perform`, action)
           .pipe(
             map(() => performRecheckSuccess({ date: action.date })),
-            catchError(() => of(performRecheckError()))
-          )
-      )
-    )
+            catchError(() => of(performRecheckError())),
+          ),
+      ),
+    ),
   );
 
   performRecheckSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(performRecheckSuccess),
-      switchMap((action) => of(listRechecks({ date: action.date })))
-    )
-  );
-
-  // List prescriptions
-
-  listPrescriptions$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(listPrescriptions),
-      switchMap((action) =>
-        this.http
-          .get<{
-            instructions: PrescriptionInstruction[];
-            medications: PrescriptionMedication[];
-          }>(`hospital/tasks/prescriptions?on=${action.date}`)
-          .pipe(
-            map(({ instructions, medications }) =>
-              listPrescriptionsSuccess({
-                prescriptions: [...instructions, ...medications].sort(
-                  (a, b) => {
-                    const penCompare = a.pen.reference.localeCompare(
-                      b.pen.reference
-                    );
-                    if (penCompare !== 0) {
-                      return penCompare;
-                    }
-                    return a.reference.localeCompare(b.reference);
-                  }
-                ),
-              })
-            ),
-            catchError(() => of(listPrescriptionsError()))
-          )
-      )
-    )
+      switchMap((action) => of(viewDailyTasks({ date: action.date }))),
+    ),
   );
 
   // Administer prescription
@@ -1217,14 +1178,14 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/patients/prescriptions/instruction/${action.prescriptionInstructionId}/administer`,
-            action
+            action,
           )
           .pipe(
             map(() => administerPrescriptionSuccess({ date: action.date })),
-            catchError(() => of(administerPrescriptionError()))
-          )
-      )
-    )
+            catchError(() => of(administerPrescriptionError())),
+          ),
+      ),
+    ),
   );
 
   administerPrescriptionMedication$ = createEffect(() =>
@@ -1234,20 +1195,20 @@ export class HospitalEffects {
         this.http
           .post(
             `hospital/patients/prescriptions/medication/${action.prescriptionMedicationId}/administer`,
-            action
+            action,
           )
           .pipe(
             map(() => administerPrescriptionSuccess({ date: action.date })),
-            catchError(() => of(administerPrescriptionError()))
-          )
-      )
-    )
+            catchError(() => of(administerPrescriptionError())),
+          ),
+      ),
+    ),
   );
 
   administerPrescriptionSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(administerPrescriptionSuccess),
-      switchMap((action) => of(listPrescriptions({ date: action.date })))
-    )
+      switchMap((action) => of(viewDailyTasks({ date: action.date }))),
+    ),
   );
 }

@@ -8,16 +8,13 @@
     <div class="tasks">
       <h2>Daily tasks</h2>
       <div class="items">
-        <div (click)="viewRechecks()" class="item">🩺 View rechecks</div>
-        <div (click)="viewPrescriptions()" class="item">
-          💊 View prescriptions
+        <div (click)="viewDailyTasks()" class="item no-select">
+          🩺 View daily tasks
         </div>
-      </div>
-    </div>
-    <div class="stock">
-      <h2>Stock</h2>
-      <div class="items">
-        <div (click)="viewStock()" class="item">📦 View stock</div>
+        <div (click)="viewStock()" class="item no-select">📦 View stock</div>
+        <div (click)="viewPatientBoards()" class="item no-select">
+          📋 View patient boards
+        </div>
       </div>
     </div>
   </div>
@@ -33,12 +30,12 @@
       ></hospital-list-patients-by-status>
       } @else if (tab.code === 'VIEW_PATIENT') {
       <hospital-patient [id]="tab.id!"></hospital-patient>
-      } @else if (tab.code === 'LIST_RECHECKS') {
-      <hospital-list-rechecks></hospital-list-rechecks>
-      } @else if (tab.code === 'LIST_PRESCRIPTIONS') {
-      <hospital-list-prescriptions></hospital-list-prescriptions>
+      } @else if (tab.code === 'VIEW_DAILY_TASKS') {
+      <hospital-daily-tasks></hospital-daily-tasks>
       } @else if (tab.code === 'VIEW_STOCK') {
       <hospital-stock-list></hospital-stock-list>
+      } @else if (tab.code === 'VIEW_BOARDS') {
+      <patient-board></patient-board>
       }
     </div>
     }

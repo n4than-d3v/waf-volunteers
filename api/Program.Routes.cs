@@ -404,14 +404,8 @@ public partial class Program
             .AddNote("Update or create species variant")
             .RequireAuthorization(vetPolicy);
 
-        var apiHospitalTasks = apiHospital.MapGroup("/tasks");
-
-        apiHospitalTasks.MapGet("/rechecks", (IMediator mediator, string on) => mediator.Send(new ViewRechecks { Date = DateOnly.Parse(on) }))
-            .AddNote("View list of rechecks on any given date (includes overdue)")
-            .RequireAuthorization(vetOrAuxPolicy);
-
-        apiHospitalTasks.MapGet("/prescriptions", (IMediator mediator, string on) => mediator.Send(new ViewPrescriptions { Date = DateOnly.Parse(on) }))
-            .AddNote("View list of prescriptions on any given date")
+        apiHospital.MapGet("/daily-tasks", (IMediator mediator, string on) => mediator.Send(new ViewDailyTasks { Date = DateOnly.Parse(on) }))
+            .AddNote("View list of rechecks and prescriptions, grouped by area, pen, and patient")
             .RequireAuthorization(vetOrAuxPolicy);
     }
 

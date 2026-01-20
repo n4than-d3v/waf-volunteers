@@ -1,0 +1,306 @@
+@if (performingRecheck) {
+<div class="recheck-form">
+  <h3>Perform recheck</h3>
+  <p>
+    🔗
+    <a
+      (click)="viewPatient(performingRecheck.reference, performingRecheck.species.name, performingRecheck.viewPatientId)"
+      >{{ performingRecheck.reference }}</a
+    >
+  </p>
+  <p>
+    🐾 {{ performingRecheck.species.name }} ({{ performingRecheck.variant.name
+    }})
+  </p>
+  <p>📍 {{ performingRecheck.pen.reference }}</p>
+  <p>🩺 {{ performingRecheck.description }}</p>
+  <div class="field">
+    <label for="comments">Comments</label>
+    <textarea
+      id="comments"
+      [(ngModel)]="comments[performingRecheck.id]"
+      rows="3"
+    ></textarea>
+  </div>
+  @if (performingRecheck.requireWeight) {
+  <div class="field require-weight">
+    <label for="weight">
+      Weight
+      <span class="required">*</span>
+    </label>
+    <div class="input-with-units">
+      <input
+        id="weight"
+        type="number"
+        [(ngModel)]="weightValue[performingRecheck.id]"
+        autocomplete="off"
+      />
+      <select id="weightUnit" [(ngModel)]="weightUnit[performingRecheck.id]">
+        <option value="1">g</option>
+        <option value="2">kg</option>
+      </select>
+    </div>
+  </div>
+  }
+  <div class="hint">
+    If you are using a shared device, please add your initials in the comment.
+  </div>
+  @if (invalid == performingRecheck.id) {
+  <div class="error">Please fill all required fields.</div>
+  }
+  <div class="buttons">
+    <button
+      (click)="performRecheck(performingRecheck)"
+      class="button button--secondary-invert"
+    >
+      ✅ Done
+    </button>
+    <button (click)="cancel()" class="button button--secondary-invert">
+      ⬅️ Back
+    </button>
+  </div>
+</div>
+} @else if (administeringPrescription) {
+<div class="prescription-form">
+  <h3>Administer prescription</h3>
+  <p>
+    🔗
+    <a
+      (click)="viewPatient(administeringPrescription.reference, administeringPrescription.species.name, administeringPrescription.viewPatientId)"
+      >{{ administeringPrescription.reference }}</a
+    >
+  </p>
+  <p>
+    🐾 {{ administeringPrescription.species.name }} ({{
+    administeringPrescription.variant.name }})
+  </p>
+  <p>📍 {{ administeringPrescription.pen.reference }}</p>
+
+  @if (isPrescriptionMedication(administeringPrescription)) {
+  <p>
+    💊 {{ administeringPrescription.medication.activeSubstance }} &middot; {{
+    administeringPrescription.medicationConcentration.form }}, {{
+    administeringPrescription.medicationConcentration.concentrationMgMl }} mg/ml
+  </p>
+  <p>
+    💉 {{ administeringPrescription.administrationMethod.description }} ({{
+    administeringPrescription.administrationMethod.code }}), {{
+    administeringPrescription.quantityValue }} {{
+    administeringPrescription.quantityUnit }}
+  </p>
+  @if (administeringPrescription.comments) {
+  <p>📋 {{ administeringPrescription.comments }}</p>
+  } } @else {
+  <p>📋 {{ administeringPrescription.instructions }}</p>
+  } @if (isPrescriptionMedication(administeringPrescription)) {
+  <div class="field">
+    <label for="comments-m-{{ administeringPrescription.id }}">Comments</label>
+    <textarea
+      id="comments-m-{{ administeringPrescription.id }}"
+      [(ngModel)]="comments['M'+administeringPrescription.id]"
+      rows="3"
+    ></textarea>
+  </div>
+  <div class="hint">
+    If you are using a shared device, please add your initials in the comment.
+  </div>
+  <div class="buttons">
+    <button
+      (click)="administerMedication(administeringPrescription.id, true)"
+      class="button button--secondary-invert"
+    >
+      💉✅ Success
+    </button>
+    <button
+      (click)="administerMedication(administeringPrescription.id, false)"
+      class="button button--secondary-invert"
+    >
+      💉❌ Fail
+    </button>
+    <button (click)="cancel()" class="button button--secondary-invert">
+      ⬅️ Back
+    </button>
+  </div>
+  } @else {
+  <div class="field">
+    <label for="comments-m-{{ administeringPrescription.id }}">Comments</label>
+    <textarea
+      id="comments-m-{{ administeringPrescription.id }}"
+      [(ngModel)]="comments['I'+administeringPrescription.id]"
+      rows="3"
+    ></textarea>
+  </div>
+  <div class="hint">
+    If you are using a shared device, please add your initials in the comment.
+  </div>
+  <div class="buttons">
+    <button
+      (click)="administerInstruction(administeringPrescription.id, true)"
+      class="button button--secondary-invert"
+    >
+      💉✅ Success
+    </button>
+    <button
+      (click)="administerInstruction(administeringPrescription.id, false)"
+      class="button button--secondary-invert"
+    >
+      💉❌ Fail
+    </button>
+    <button (click)="cancel()" class="button button--secondary-invert">
+      ⬅️ Back
+    </button>
+  </div>
+  }
+</div>
+} @else {
+<div class="field">
+  <label for="date">Date</label>
+  <input type="date" id="date" [(ngModel)]="date" (change)="changeDate()" />
+</div>
+@if (dailyTasksReport$ | async; as report) { @if (report.loading) {
+<spinner></spinner>
+} @if (report.error) {
+<div class="error">Error occurred</div>
+} @if (report.data) { @if (report.data.areas.length === 0) {
+<div class="nothing">
+  <h2>Nothing to do</h2>
+  <p>Looks like there's nothing to do on this date.</p>
+</div>
+} @for (area of report.data.areas; track area.code) {
+<div class="area">
+  <h2>
+    <span class="area-name">{{ area.name }}</span>
+    <span class="summary">
+      🩺 {{ area.rechecks }} 💊 {{ area.prescriptions }}
+    </span>
+  </h2>
+  <div class="pens">
+    @for (pen of area.pens; track pen.reference) {
+    <div class="pen">
+      <h3>
+        <span class="pen-reference">{{ pen.reference }}</span>
+        <span class="summary">
+          🩺 {{ pen.rechecks }} 💊 {{ pen.prescriptions }}
+        </span>
+      </h3>
+      <div class="patients">
+        @for (patient of pen.patients; track patient.id) {
+        <div class="patient">
+          <p>
+            🔗
+            <a
+              (click)="viewPatient(patient.reference, patient.species.name, patient.id)"
+              >{{ patient.reference }}</a
+            >
+          </p>
+          <p>🐾 {{ patient.species.name }} ({{ patient.variant.name }})</p>
+          <div class="tasks">
+            @if (patient.rechecks.length > 0 && performingRecheck === null) {
+            @for (recheck of patient.rechecks; track recheck.id) {
+            <div class="recheck">
+              <div>
+                <p>
+                  @if (recheck.due == date) { @if (recheck.rechecked) {
+                  <span class="done">Done</span>
+                  } @else {
+                  <span class="due">Due</span>
+                  } } @else {
+                  <span class="overdue">
+                    Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
+                  </span>
+                  }
+                </p>
+                <p>{{ getRecheckRoles(recheck.roles) }}</p>
+                <p>🩺 {{ recheck.description }}</p>
+                @if (!recheck.rechecked) {
+                <div>
+                  <button
+                    (click)="performingRecheck = recheck"
+                    class="button button--secondary-invert"
+                  >
+                    🩺 Perform
+                  </button>
+                </div>
+                } @else {
+                <div class="performed">
+                  <p>
+                    🧑‍⚕️ {{ recheck.rechecker?.firstName }} {{
+                    recheck.rechecker?.lastName }}
+                  </p>
+                  @if (recheck.comments) {
+                  <p>✏️ {{ recheck.comments }}</p>
+                  } @if (recheck.weightValue && recheck.weightUnit) {
+                  <p>
+                    ⚖️ {{ recheck.weightValue }} {{
+                    getWeightUnit(recheck.weightUnit) }}
+                  </p>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+            } } @if (patient.prescriptionInstructions.length > 0 ||
+            patient.prescriptionMedications.length > 0) { @for (prescription of
+            getPrescriptions(patient); track prescription.id) {
+            <div class="prescription">
+              <div>
+                <div>
+                  <p class="date">
+                    📅 {{ prescription.start | date: 'dd MMM yyyy'}} - {{
+                    prescription.end | date: 'dd MMM yyyy'}}
+                  </p>
+                  <p class="last-dose">🔁 {{ prescription.frequency }}</p>
+                </div>
+                @if (prescription.administrations &&
+                prescription.administrations.length > 0) {
+                <div>
+                  <p class="last-dose">
+                    ⏰ {{ getDurationSinceMostRecent(prescription) }} since last
+                    dose
+                  </p>
+                  <p>
+                    ⚡ {{ getMostRecent(prescription) | date: 'dd MMM yyyy
+                    HH:mm' }}
+                  </p>
+                </div>
+                }
+                <div class="description">
+                  @if (isPrescriptionMedication(prescription)) {
+                  <p>
+                    💊 {{ prescription.medication.activeSubstance }} &middot; {{
+                    prescription.medicationConcentration.form }}, {{
+                    prescription.medicationConcentration.concentrationMgMl }}
+                    mg/ml
+                  </p>
+                  <p>
+                    💉 {{ prescription.administrationMethod.description }} ({{
+                    prescription.administrationMethod.code }}), {{
+                    prescription.quantityValue }} {{ prescription.quantityUnit
+                    }}
+                  </p>
+                  @if (prescription.comments) {
+                  <p>📋 {{ prescription.comments }}</p>
+                  } } @else {
+                  <p>📋 {{ prescription.instructions }}</p>
+                  }
+                </div>
+                <div>
+                  <button
+                    (click)="administeringPrescription = prescription"
+                    class="button button--secondary-invert"
+                  >
+                    💉 Administer
+                  </button>
+                </div>
+              </div>
+            </div>
+            } }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+</div>
+} } } }

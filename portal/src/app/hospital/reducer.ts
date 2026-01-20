@@ -104,15 +104,9 @@ import {
   searchPatient,
   searchPatientSuccess,
   searchPatientError,
-  listRechecks,
-  listRechecksSuccess,
-  listRechecksError,
   performRecheck,
   performRecheckSuccess,
   performRecheckError,
-  listPrescriptions,
-  listPrescriptionsSuccess,
-  listPrescriptionsError,
   administerPrescriptionInstruction,
   administerPrescriptionMedication,
   administerPrescriptionSuccess,
@@ -125,6 +119,9 @@ import {
   addFaecalTestSuccess,
   addBloodTestSuccess,
   addFaecalTestError,
+  viewDailyTasks,
+  viewDailyTasksSuccess,
+  viewDailyTasksError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -618,7 +615,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         success: false,
         error: false,
       },
-    })
+    }),
   ),
   on(
     markPatientDeadSuccess,
@@ -633,7 +630,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         loading: false,
         success: true,
       },
-    })
+    }),
   ),
   on(
     markPatientDeadError,
@@ -648,7 +645,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         loading: false,
         error: true,
       },
-    })
+    }),
   ),
   // Move patient
   on(movePatient, (state) => ({
@@ -748,7 +745,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         loading: false,
         success: true,
       },
-    })
+    }),
   ),
   on(
     addPrescriptionInstructionError,
@@ -760,7 +757,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         loading: false,
         error: true,
       },
-    })
+    }),
   ),
   // Remove recheck
   on(removeRecheck, (state) => ({
@@ -808,7 +805,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         loading: false,
         success: true,
       },
-    })
+    }),
   ),
   on(
     removePrescriptionInstructionError,
@@ -820,7 +817,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         loading: false,
         error: true,
       },
-    })
+    }),
   ),
   // Update patient basic details
   on(updatePatientBasicDetails, (state, { update }) => ({
@@ -960,26 +957,26 @@ export const hospitalReducer = createReducer<HospitalState>(
     },
   })),
   // List rechecks
-  on(listRechecks, (state) => ({
+  on(viewDailyTasks, (state) => ({
     ...state,
-    listRechecks: {
-      ...state.listRechecks,
+    dailyTasksReport: {
+      ...state.dailyTasksReport,
       loading: true,
       error: false,
     },
   })),
-  on(listRechecksSuccess, (state, { rechecks }) => ({
+  on(viewDailyTasksSuccess, (state, { dailyTasksReport }) => ({
     ...state,
-    listRechecks: {
-      ...state.listRechecks,
-      data: rechecks,
+    dailyTasksReport: {
+      ...state.dailyTasksReport,
+      data: dailyTasksReport,
       loading: false,
     },
   })),
-  on(listRechecksError, (state) => ({
+  on(viewDailyTasksError, (state) => ({
     ...state,
-    listRechecks: {
-      ...state.listRechecks,
+    dailyTasksReport: {
+      ...state.dailyTasksReport,
       loading: false,
       error: true,
     },
@@ -1010,31 +1007,6 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: true,
     },
   })),
-  // List prescriptions
-  on(listPrescriptions, (state) => ({
-    ...state,
-    listPrescriptions: {
-      ...state.listPrescriptions,
-      loading: true,
-      error: false,
-    },
-  })),
-  on(listPrescriptionsSuccess, (state, { prescriptions }) => ({
-    ...state,
-    listPrescriptions: {
-      ...state.listPrescriptions,
-      data: prescriptions,
-      loading: false,
-    },
-  })),
-  on(listPrescriptionsError, (state) => ({
-    ...state,
-    listPrescriptions: {
-      ...state.listPrescriptions,
-      loading: false,
-      error: true,
-    },
-  })),
   // Administer prescription
   on(
     administerPrescriptionInstruction,
@@ -1047,7 +1019,7 @@ export const hospitalReducer = createReducer<HospitalState>(
         success: false,
         error: false,
       },
-    })
+    }),
   ),
   on(administerPrescriptionSuccess, (state) => ({
     ...state,
@@ -1090,5 +1062,5 @@ export const hospitalReducer = createReducer<HospitalState>(
       loading: false,
       error: true,
     },
-  }))
+  })),
 );

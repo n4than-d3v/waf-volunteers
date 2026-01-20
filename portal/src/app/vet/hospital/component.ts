@@ -8,11 +8,11 @@ import { AsyncPipe } from '@angular/common';
 import { HospitalListPatientByStatusComponent } from '../../hospital/list-patients-by-status/component';
 import { HospitalPatientComponent } from '../../hospital/patient/component';
 import { HospitalPatientSearchComponent } from '../../hospital/patient-search/component';
-import { HospitalListRechecks } from '../../hospital/list-rechecks/component';
 import { setTab } from '../../hospital/actions';
-import { HospitalListPrescriptions } from '../../hospital/list-prescriptions/component';
 import { HospitalStockListComponent } from '../../hospital/stock/list/component';
 import { setPage } from '../../hospital/stock/actions';
+import { HospitalDailyTasksComponent } from '../../hospital/daily-tasks/component';
+import { HospitalPatientBoardComponent } from '../../hospital/patient-board/component';
 
 @Component({
   selector: 'vet-hospital',
@@ -25,9 +25,9 @@ import { setPage } from '../../hospital/stock/actions';
     HospitalListPatientByStatusComponent,
     HospitalPatientComponent,
     HospitalPatientSearchComponent,
-    HospitalListRechecks,
-    HospitalListPrescriptions,
+    HospitalDailyTasksComponent,
     HospitalStockListComponent,
+    HospitalPatientBoardComponent,
   ],
 })
 export class VetHospitalComponent {
@@ -37,25 +37,25 @@ export class VetHospitalComponent {
     this.tab$ = this.store.select(selectTab);
   }
 
-  viewRechecks() {
+  viewPatientBoards() {
     this.store.dispatch(
       setTab({
         tab: {
-          code: 'LIST_RECHECKS',
-          title: 'View rechecks',
+          code: 'VIEW_BOARDS',
+          title: 'Patient boards',
         },
-      })
+      }),
     );
   }
 
-  viewPrescriptions() {
+  viewDailyTasks() {
     this.store.dispatch(
       setTab({
         tab: {
-          code: 'LIST_PRESCRIPTIONS',
-          title: 'View prescriptions',
+          code: 'VIEW_DAILY_TASKS',
+          title: 'Daily tasks',
         },
-      })
+      }),
     );
   }
 
@@ -63,7 +63,7 @@ export class VetHospitalComponent {
     this.store.dispatch(
       setPage({
         page: { pageType: 'dashboard' },
-      })
+      }),
     );
     this.store.dispatch(
       setTab({
@@ -71,7 +71,7 @@ export class VetHospitalComponent {
           code: 'VIEW_STOCK',
           title: 'Stock',
         },
-      })
+      }),
     );
   }
 }

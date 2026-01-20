@@ -23,6 +23,7 @@ import {
   Outcome,
   ListRecheck,
   Prescription,
+  DailyTasksReport,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -30,79 +31,79 @@ export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
 export const getPatientCounts = createAction('[HMS-V] Get patient counts');
 export const getPatientCountsSuccess = createAction(
   '[HMS-V] Get patient counts: success',
-  props<{ patientCounts: PatientCounts }>()
+  props<{ patientCounts: PatientCounts }>(),
 );
 export const getPatientCountsError = createAction(
-  '[HMS-V] Get patient counts: error'
+  '[HMS-V] Get patient counts: error',
 );
 
 export const getPatientsByStatus = createAction(
   '[HMS-V] Get patients by status',
-  props<{ status: PatientStatus }>()
+  props<{ status: PatientStatus }>(),
 );
 export const getPatientsByStatusSuccess = createAction(
   '[HMS-V] Get patients by status: success',
-  props<{ patients: ListPatient[] }>()
+  props<{ patients: ListPatient[] }>(),
 );
 export const getPatientsByStatusError = createAction(
-  '[HMS-V] Get patients by status: error'
+  '[HMS-V] Get patients by status: error',
 );
 
 export const getPatient = createAction(
   '[HMS-V] Get patient',
-  props<{ id: number; silent?: boolean }>()
+  props<{ id: number; silent?: boolean }>(),
 );
 export const getPatientSuccess = createAction(
   '[HMS-V] Get patient: success',
-  props<{ patient: Patient }>()
+  props<{ patient: Patient }>(),
 );
 export const getPatientError = createAction('[HMS-V] Get patient: error');
 
 export const getAttitudes = createAction('[HMS-V] Get attitudes');
 export const getAttitudesSuccess = createAction(
   '[HMS-V] Get attitudes: success',
-  props<{ attitudes: Attitude[] }>()
+  props<{ attitudes: Attitude[] }>(),
 );
 export const getAttitudesError = createAction('[HMS-V] Get attitudes: error');
 
 export const getBodyConditions = createAction('[HMS-V] Get bodyConditions');
 export const getBodyConditionsSuccess = createAction(
   '[HMS-V] Get bodyConditions: success',
-  props<{ bodyConditions: BodyCondition[] }>()
+  props<{ bodyConditions: BodyCondition[] }>(),
 );
 export const getBodyConditionsError = createAction(
-  '[HMS-V] Get bodyConditions: error'
+  '[HMS-V] Get bodyConditions: error',
 );
 
 export const getDehydrations = createAction('[HMS-V] Get dehydrations');
 export const getDehydrationsSuccess = createAction(
   '[HMS-V] Get dehydrations: success',
-  props<{ dehydrations: Dehydration[] }>()
+  props<{ dehydrations: Dehydration[] }>(),
 );
 export const getDehydrationsError = createAction(
-  '[HMS-V] Get dehydrations: error'
+  '[HMS-V] Get dehydrations: error',
 );
 
 export const getMucousMembraneColours = createAction(
-  '[HMS-V] Get mucousMembraneColours'
+  '[HMS-V] Get mucousMembraneColours',
 );
 export const getMucousMembraneColoursSuccess = createAction(
   '[HMS-V] Get mucousMembraneColours: success',
-  props<{ mucousMembraneColours: MucousMembraneColour[] }>()
+  props<{ mucousMembraneColours: MucousMembraneColour[] }>(),
 );
 export const getMucousMembraneColoursError = createAction(
-  '[HMS-V] Get mucousMembraneColours: error'
+  '[HMS-V] Get mucousMembraneColours: error',
 );
 
 export const getMucousMembraneTextures = createAction(
-  '[HMS-V] Get mucousMembraneTextures'
+  '[HMS-V] Get mucousMembraneTextures',
 );
 export const getMucousMembraneTexturesSuccess = createAction(
   '[HMS-V] Get mucousMembraneTextures: success',
-  props<{ mucousMembraneTextures: MucousMembraneTexture[] }>()
+  props<{ mucousMembraneTextures: MucousMembraneTexture[] }>(),
 );
 export const getMucousMembraneTexturesError = createAction(
-  '[HMS-V] Get mucousMembraneTextures: error'
+  '[HMS-V] Get mucousMembraneTextures: error',
 );
 
 // Diets
@@ -110,7 +111,7 @@ export const getMucousMembraneTexturesError = createAction(
 export const getDiets = createAction('[HMS-V] Get diets');
 export const getDietsSuccess = createAction(
   '[HMS-V] Get diets: success',
-  props<{ diets: Diet[] }>()
+  props<{ diets: Diet[] }>(),
 );
 export const getDietsError = createAction('[HMS-V] Get diets: error');
 
@@ -119,21 +120,21 @@ export const getDietsError = createAction('[HMS-V] Get diets: error');
 export const getTags = createAction('[HMS-V] Get tags');
 export const getTagsSuccess = createAction(
   '[HMS-V] Get tags: success',
-  props<{ tags: Tag[] }>()
+  props<{ tags: Tag[] }>(),
 );
 export const getTagsError = createAction('[HMS-V] Get tags: error');
 
 // Disposition reasons
 
 export const getDispositionReasons = createAction(
-  '[HMS-V] Get disposition reasons'
+  '[HMS-V] Get disposition reasons',
 );
 export const getDispositionReasonsSuccess = createAction(
   '[HMS-V] Get disposition reasons: success',
-  props<{ dispositionReasons: DispositionReason[] }>()
+  props<{ dispositionReasons: DispositionReason[] }>(),
 );
 export const getDispositionReasonsError = createAction(
-  '[HMS-V] Get disposition reasons: error'
+  '[HMS-V] Get disposition reasons: error',
 );
 
 // Release types
@@ -141,36 +142,36 @@ export const getDispositionReasonsError = createAction(
 export const getReleaseTypes = createAction('[HMS-V] Get release types');
 export const getReleaseTypesSuccess = createAction(
   '[HMS-V] Get release types: success',
-  props<{ releaseTypes: ReleaseType[] }>()
+  props<{ releaseTypes: ReleaseType[] }>(),
 );
 export const getReleaseTypesError = createAction(
-  '[HMS-V] Get release types: error'
+  '[HMS-V] Get release types: error',
 );
 
 // Transfer locations
 
 export const getTransferLocations = createAction(
-  '[HMS-V] Get transfer locations'
+  '[HMS-V] Get transfer locations',
 );
 export const getTransferLocationsSuccess = createAction(
   '[HMS-V] Get transfer locations: success',
-  props<{ transferLocations: TransferLocation[] }>()
+  props<{ transferLocations: TransferLocation[] }>(),
 );
 export const getTransferLocationsError = createAction(
-  '[HMS-V] Get transfer locations: error'
+  '[HMS-V] Get transfer locations: error',
 );
 
 // Administration methods
 
 export const getAdministrationMethods = createAction(
-  '[HMS-V] Get administration methods'
+  '[HMS-V] Get administration methods',
 );
 export const getAdministrationMethodsSuccess = createAction(
   '[HMS-V] Get administration methods: success',
-  props<{ administrationMethods: AdministrationMethod[] }>()
+  props<{ administrationMethods: AdministrationMethod[] }>(),
 );
 export const getAdministrationMethodsError = createAction(
-  '[HMS-V] Get administration methods: error'
+  '[HMS-V] Get administration methods: error',
 );
 
 // Medications
@@ -178,10 +179,10 @@ export const getAdministrationMethodsError = createAction(
 export const getMedications = createAction('[HMS-V] Get medications');
 export const getMedicationsSuccess = createAction(
   '[HMS-V] Get medications: success',
-  props<{ medications: Medication[] }>()
+  props<{ medications: Medication[] }>(),
 );
 export const getMedicationsError = createAction(
-  '[HMS-V] Get medications: error'
+  '[HMS-V] Get medications: error',
 );
 
 // Locations
@@ -189,7 +190,7 @@ export const getMedicationsError = createAction(
 export const getAreas = createAction('[HMS-V] Get areas');
 export const getAreasSuccess = createAction(
   '[HMS-V] Get areas: success',
-  props<{ areas: Area[] }>()
+  props<{ areas: Area[] }>(),
 );
 export const getAreasError = createAction('[HMS-V] Get areas: error');
 
@@ -198,7 +199,7 @@ export const getAreasError = createAction('[HMS-V] Get areas: error');
 export const getSpecies = createAction('[HMS-V] Get species');
 export const getSpeciesSuccess = createAction(
   '[HMS-V] Get species: success',
-  props<{ species: Species[] }>()
+  props<{ species: Species[] }>(),
 );
 export const getSpeciesError = createAction('[HMS-V] Get species: error');
 
@@ -211,7 +212,7 @@ export const performExam = createAction(
     outcome: Outcome;
     dispositionReasonId?: number;
     penId?: number;
-  }>()
+  }>(),
 );
 export const performExamSuccess = createAction('[HMS-V] Perform exam: success');
 export const performExamError = createAction('[HMS-V] Perform exam: error');
@@ -225,73 +226,73 @@ export const markPatientDead = createAction(
     dispositionReasonId: number;
     onArrival: boolean;
     putToSleep: boolean;
-  }>()
+  }>(),
 );
 export const markPatientDeadSuccess = createAction(
   '[HMS-V] Mark patient dead: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientDeadError = createAction(
-  '[HMS-V] Mark patient dead: error'
+  '[HMS-V] Mark patient dead: error',
 );
 
 export const markPatientReadyForRelease = createAction(
   '[HMS-V] Mark patient ready for release',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientReadyForReleaseSuccess = createAction(
   '[HMS-V] Mark patient ready for release: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientReadyForReleaseError = createAction(
-  '[HMS-V] Mark patient ready for release: error'
+  '[HMS-V] Mark patient ready for release: error',
 );
 
 export const markPatientInCentre = createAction(
   '[HMS-V] Mark patient in centre',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientInCentreSuccess = createAction(
   '[HMS-V] Mark patient in centre: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientInCentreError = createAction(
-  '[HMS-V] Mark patient in centre: error'
+  '[HMS-V] Mark patient in centre: error',
 );
 
 export const markPatientReleased = createAction(
   '[HMS-V] Mark patient as released',
-  props<{ patientId: number; releaseTypeId: number }>()
+  props<{ patientId: number; releaseTypeId: number }>(),
 );
 export const markPatientReleasedSuccess = createAction(
   '[HMS-V] Mark patient as released: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientReleasedError = createAction(
-  '[HMS-V] Mark patient as released: error'
+  '[HMS-V] Mark patient as released: error',
 );
 
 export const markPatientTransferred = createAction(
   '[HMS-V] Mark patient as transferred',
-  props<{ patientId: number; transferLocationId: number }>()
+  props<{ patientId: number; transferLocationId: number }>(),
 );
 export const markPatientTransferredSuccess = createAction(
   '[HMS-V] Mark patient as transferred: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const markPatientTransferredError = createAction(
-  '[HMS-V] Mark patient as transferred: error'
+  '[HMS-V] Mark patient as transferred: error',
 );
 
 // Move
 
 export const movePatient = createAction(
   '[HMS-V] Move patient',
-  props<{ patientId: number; penId: number }>()
+  props<{ patientId: number; penId: number }>(),
 );
 export const movePatientSuccess = createAction(
   '[HMS-V] Move patient: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const movePatientError = createAction('[HMS-V] Move patient: error');
 
@@ -305,11 +306,11 @@ export const addNote = createAction(
     weightUnit: number | null;
     comments: string;
     files: File[];
-  }>()
+  }>(),
 );
 export const addNoteSuccess = createAction(
   '[HMS-V] Add note: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const addNoteError = createAction('[HMS-V] Add note: error');
 
@@ -322,7 +323,7 @@ export const downloadNoteAttachment = createAction(
       id: number;
       fileName: string;
     };
-  }>()
+  }>(),
 );
 
 // Add faecal test
@@ -334,14 +335,14 @@ export const addFaecalTest = createAction(
     float: boolean | null;
     direct: boolean | null;
     comments: string;
-  }>()
+  }>(),
 );
 export const addFaecalTestSuccess = createAction(
   '[HMS-V] Add faecal test: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const addFaecalTestError = createAction(
-  '[HMS-V] Add faecal test: error'
+  '[HMS-V] Add faecal test: error',
 );
 
 // Add blood test
@@ -352,11 +353,11 @@ export const addBloodTest = createAction(
     patientId: number;
     comments: string;
     files: File[];
-  }>()
+  }>(),
 );
 export const addBloodTestSuccess = createAction(
   '[HMS-V] Add blood test: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const addBloodTestError = createAction('[HMS-V] Add blood test: error');
 
@@ -369,7 +370,7 @@ export const downloadBloodTestAttachment = createAction(
       id: number;
       fileName: string;
     };
-  }>()
+  }>(),
 );
 
 // Add recheck
@@ -382,11 +383,11 @@ export const addRecheck = createAction(
     description: string;
     due: string;
     requireWeight: boolean;
-  }>()
+  }>(),
 );
 export const addRecheckSuccess = createAction(
   '[HMS-V] Add recheck: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const addRecheckError = createAction('[HMS-V] Add recheck: error');
 
@@ -405,14 +406,14 @@ export const addPrescriptionMedication = createAction(
     medicationId: number;
     medicationConcentrationId: number;
     comments: string;
-  }>()
+  }>(),
 );
 export const addPrescriptionMedicationSuccess = createAction(
   '[HMS-V] Add prescription medication: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const addPrescriptionMedicationError = createAction(
-  '[HMS-V] Add prescription medication: error'
+  '[HMS-V] Add prescription medication: error',
 );
 
 // Add prescription instruction
@@ -425,14 +426,14 @@ export const addPrescriptionInstruction = createAction(
     end: string;
     frequency: string;
     instructions: string;
-  }>()
+  }>(),
 );
 export const addPrescriptionInstructionSuccess = createAction(
   '[HMS-V] Add prescription instruction: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const addPrescriptionInstructionError = createAction(
-  '[HMS-V] Add prescription instruction: error'
+  '[HMS-V] Add prescription instruction: error',
 );
 
 // Remove recheck
@@ -442,11 +443,11 @@ export const removeRecheck = createAction(
   props<{
     patientId: number;
     patientRecheckId: number;
-  }>()
+  }>(),
 );
 export const removeRecheckSuccess = createAction(
   '[HMS-V] Remove recheck: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const removeRecheckError = createAction('[HMS-V] Remove recheck: error');
 
@@ -457,14 +458,14 @@ export const removePrescriptionMedication = createAction(
   props<{
     patientId: number;
     patientPrescriptionMedicationId: number;
-  }>()
+  }>(),
 );
 export const removePrescriptionMedicationSuccess = createAction(
   '[HMS-V] Remove prescription medication: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const removePrescriptionMedicationError = createAction(
-  '[HMS-V] Remove prescription medication: error'
+  '[HMS-V] Remove prescription medication: error',
 );
 
 // Remove prescription instruction
@@ -474,14 +475,14 @@ export const removePrescriptionInstruction = createAction(
   props<{
     patientId: number;
     patientPrescriptionInstructionId: number;
-  }>()
+  }>(),
 );
 export const removePrescriptionInstructionSuccess = createAction(
   '[HMS-V] Remove prescription instruction: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const removePrescriptionInstructionError = createAction(
-  '[HMS-V] Remove prescription instruction: error'
+  '[HMS-V] Remove prescription instruction: error',
 );
 
 // Update basic details
@@ -500,15 +501,15 @@ export const updatePatientBasicDetails = createAction(
     sex: number;
     tagIds: number[];
     dietIds: number[];
-  }>()
+  }>(),
 );
 export const updatePatientBasicDetailsSuccess = createAction(
   '[HMS-V] Update patient basic details: success',
-  props<{ patientId: number; update: UpdatePatientBasicDetailsType }>()
+  props<{ patientId: number; update: UpdatePatientBasicDetailsType }>(),
 );
 export const updatePatientBasicDetailsError = createAction(
   '[HMS-V] Update patient basic details: error',
-  props<{ update: UpdatePatientBasicDetailsType }>()
+  props<{ update: UpdatePatientBasicDetailsType }>(),
 );
 
 // Request home care
@@ -518,14 +519,14 @@ export const requestHomeCare = createAction(
   props<{
     patientId: number;
     notes: string;
-  }>()
+  }>(),
 );
 export const requestHomeCareSuccess = createAction(
   '[HMS-V] Request home care: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const requestHomeCareError = createAction(
-  '[HMS-V] Request home care: error'
+  '[HMS-V] Request home care: error',
 );
 
 // Home carer drop-off
@@ -536,53 +537,54 @@ export const homeCarerDropOff = createAction(
     patientId: number;
     homeCareRequestId: number;
     penId: number;
-  }>()
+  }>(),
 );
 export const homeCarerDropOffSuccess = createAction(
   '[HMS-V] Home carer drop-off: success',
-  props<{ patientId: number }>()
+  props<{ patientId: number }>(),
 );
 export const homeCarerDropOffError = createAction(
-  '[HMS-V] Home carer drop-off: error'
+  '[HMS-V] Home carer drop-off: error',
 );
 
 // Send home care message
 
 export const sendHomeCareMessage = createAction(
   '[HMS-V] Send home care message',
-  props<{ patientId: number; homeCareRequestId: number; message: string }>()
+  props<{ patientId: number; homeCareRequestId: number; message: string }>(),
 );
 export const sendHomeCareMessageSuccess = createAction(
   '[HMS-V] Send home care message: success',
-  props<{ patientId: number; homeCareRequestId: number }>()
+  props<{ patientId: number; homeCareRequestId: number }>(),
 );
 export const sendHomeCareMessageError = createAction(
-  '[HMS-V] Send home care message: error'
+  '[HMS-V] Send home care message: error',
 );
 
 // Search for patient
 
 export const searchPatient = createAction(
   '[HMS-V] Search patient',
-  props<{ search: string }>()
+  props<{ search: string }>(),
 );
 export const searchPatientSuccess = createAction(
   '[HMS-V] Search patient: success',
-  props<{ patientId: number; reference: string; species: string }>()
+  props<{ patientId: number; reference: string; species: string }>(),
 );
 export const searchPatientError = createAction('[HMS-V] Search patient: error');
 
-// List rechecks
-
-export const listRechecks = createAction(
-  '[HMS-V] List rechecks',
-  props<{ date: string }>()
+// View daily tasks
+export const viewDailyTasks = createAction(
+  '[HMS-V] View daily tasks',
+  props<{ date: string }>(),
 );
-export const listRechecksSuccess = createAction(
-  '[HMS-V] List rechecks: success',
-  props<{ rechecks: ListRecheck[] }>()
+export const viewDailyTasksSuccess = createAction(
+  '[HMS-V] View daily tasks: success',
+  props<{ dailyTasksReport: DailyTasksReport }>(),
 );
-export const listRechecksError = createAction('[HMS-V] List rechecks: error');
+export const viewDailyTasksError = createAction(
+  '[HMS-V] View daily tasks: error',
+);
 
 // Perform recheck
 
@@ -594,28 +596,14 @@ export const performRecheck = createAction(
     comments: string;
     weightUnit: number | null;
     weightValue: number | null;
-  }>()
+  }>(),
 );
 export const performRecheckSuccess = createAction(
   '[HMS-V] Perform recheck: success',
-  props<{ date: string }>()
+  props<{ date: string }>(),
 );
 export const performRecheckError = createAction(
-  '[HMS-V] Perform recheck: error'
-);
-
-// List prescriptions
-
-export const listPrescriptions = createAction(
-  '[HMS-V] List prescriptions',
-  props<{ date: string }>()
-);
-export const listPrescriptionsSuccess = createAction(
-  '[HMS-V] List prescriptions: success',
-  props<{ prescriptions: Prescription[] }>()
-);
-export const listPrescriptionsError = createAction(
-  '[HMS-V] List prescriptions: error'
+  '[HMS-V] Perform recheck: error',
 );
 
 // Administer prescription
@@ -627,7 +615,7 @@ export const administerPrescriptionInstruction = createAction(
     prescriptionInstructionId: number;
     success: boolean;
     comments: string;
-  }>()
+  }>(),
 );
 export const administerPrescriptionMedication = createAction(
   '[HMS-V] Administer prescription medication',
@@ -636,12 +624,12 @@ export const administerPrescriptionMedication = createAction(
     prescriptionMedicationId: number;
     success: boolean;
     comments: string;
-  }>()
+  }>(),
 );
 export const administerPrescriptionSuccess = createAction(
   '[HMS-V] Administer prescription: success',
-  props<{ date: string }>()
+  props<{ date: string }>(),
 );
 export const administerPrescriptionError = createAction(
-  '[HMS-V] Administer prescription: error'
+  '[HMS-V] Administer prescription: error',
 );

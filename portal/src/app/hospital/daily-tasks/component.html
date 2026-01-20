@@ -153,15 +153,78 @@
   }
 </div>
 } @else {
-<div class="field">
-  <label for="date">Date</label>
-  <input type="date" id="date" [(ngModel)]="date" (change)="changeDate()" />
+<div class="filter">
+  <div>
+    <label for="date">Date</label>
+    <input type="date" id="date" [(ngModel)]="date" (change)="changeDate()" />
+  </div>
+  <div>
+    <p>Rechecks</p>
+    <div class="field">
+      <label for="showMeOverdueRechecks">Overdue</label>
+      <input
+        type="checkbox"
+        id="showMeOverdueRechecks"
+        [(ngModel)]="showMeOverdueRechecks"
+      />
+    </div>
+    <div class="field">
+      <label for="showMeDueRechecks">Due</label>
+      <input
+        type="checkbox"
+        id="showMeDueRechecks"
+        [(ngModel)]="showMeDueRechecks"
+      />
+    </div>
+    <div class="field">
+      <label for="showMeDoneRechecks">Done</label>
+      <input
+        type="checkbox"
+        id="showMeDoneRechecks"
+        [(ngModel)]="showMeDoneRechecks"
+      />
+    </div>
+  </div>
+  <div>
+    <p>Prescriptions</p>
+    <div class="field">
+      <label for="showMePrescriptions-all">All</label>
+      <input
+        type="radio"
+        id="showMePrescriptions-all"
+        [(ngModel)]="showMePrescriptions"
+        value="all"
+      />
+    </div>
+    <div class="field">
+      <label for="showMePrescriptions-none">None</label>
+      <input
+        type="radio"
+        id="showMePrescriptions-none"
+        [(ngModel)]="showMePrescriptions"
+        value="none"
+      />
+    </div>
+    <div class="field">
+      <label for="showMePrescriptions-notToday">Not administered today</label>
+      <input
+        type="radio"
+        id="showMePrescriptions-notToday"
+        [(ngModel)]="showMePrescriptions"
+        value="notToday"
+      />
+    </div>
+  </div>
 </div>
-@if (dailyTasksReport$ | async; as report) { @if (report.loading) {
+@if (dailyTasksReport$ | async; as report) { @if (performRecheckTask$ | async;
+as performRecheckTask) { @if (administerPrescriptionTask$ | async; as
+administerPrescriptionTask) { @if (report.loading || performRecheckTask.loading
+|| administerPrescriptionTask.loading) {
 <spinner></spinner>
-} @if (report.error) {
+} @else if (report.error || performRecheckTask.error ||
+administerPrescriptionTask.error) {
 <div class="error">Error occurred</div>
-} @if (report.data) { @if (report.data.areas.length === 0) {
+} } } @if (report.data) { @if (report.data.areas.length === 0) {
 <div class="nothing">
   <h2>Nothing to do</h2>
   <p>Looks like there's nothing to do on this date.</p>
@@ -194,6 +257,9 @@
             >
           </p>
           <p>🐾 {{ patient.species.name }} ({{ patient.variant.name }})</p>
+          @if (patient.uniqueIdentifier) {
+          <p>🎨 {{ patient.uniqueIdentifier }}</p>
+          }
           <div class="tasks">
             @if (patient.rechecks.length > 0 && performingRecheck === null) {
             @for (recheck of patient.rechecks; track recheck.id) {

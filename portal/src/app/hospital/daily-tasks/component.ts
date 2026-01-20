@@ -21,7 +21,11 @@ import {
   ReadOnlyWrapper,
   Task,
 } from '../state';
-import { selectDailyTasksReport, selectPerformRecheck } from '../selectors';
+import {
+  selectAdministerPrescription,
+  selectDailyTasksReport,
+  selectPerformRecheck,
+} from '../selectors';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
 
@@ -43,7 +47,13 @@ export class HospitalDailyTasksComponent implements OnInit {
 
   date: string = '';
 
+  showMeOverdueRechecks = true;
+  showMeDueRechecks = true;
+  showMeDoneRechecks = false;
+  showMePrescriptions: 'none' | 'all' | 'notToday' = 'notToday';
+
   performRecheckTask$: Observable<Task>;
+  administerPrescriptionTask$: Observable<Task>;
 
   performingRecheck: ListRecheck | null = null;
   administeringPrescription: Prescription | null = null;
@@ -56,6 +66,9 @@ export class HospitalDailyTasksComponent implements OnInit {
   constructor(private store: Store) {
     this.dailyTasksReport$ = this.store.select(selectDailyTasksReport);
     this.performRecheckTask$ = this.store.select(selectPerformRecheck);
+    this.administerPrescriptionTask$ = this.store.select(
+      selectAdministerPrescription,
+    );
     this.date = moment().toISOString().split('T')[0];
   }
 

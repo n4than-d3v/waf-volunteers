@@ -24,10 +24,12 @@ public class DroppedOffHomeCare : IRequest<IResult>
 public class DroppedOffHomeCareHandler : IRequestHandler<DroppedOffHomeCare, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IMediator _mediator;
 
-    public DroppedOffHomeCareHandler(IDatabaseRepository repository)
+    public DroppedOffHomeCareHandler(IDatabaseRepository repository, IMediator mediator)
     {
         _repository = repository;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(DroppedOffHomeCare request, CancellationToken cancellationToken)
@@ -35,17 +37,17 @@ public class DroppedOffHomeCareHandler : IRequestHandler<DroppedOffHomeCare, IRe
         var homeCareRequest = await _repository.Get<HomeCareRequest>(request.HomeCareRequestId, action: x => x.Include(y => y.Patient));
         if (homeCareRequest == null) return Results.BadRequest();
 
-        var pen = await _repository.Get<Pen>(request.PenId);
-        if (pen == null) return Results.BadRequest();
-
         var patient = homeCareRequest.Patient;
 
         patient.Status = PatientStatus.Inpatient;
-        patient.Pen = pen;
-
         homeCareRequest.Dropoff = DateTime.UtcNow;
 
         await _repository.SaveChangesAsync();
-        return Results.Accepted();
+
+        return await _mediator.Send(new Patients.MovePatient
+        {
+            PatientId = patient.Id,
+            PenId = request.PenId
+        }, cancellationToken);
     }
 }

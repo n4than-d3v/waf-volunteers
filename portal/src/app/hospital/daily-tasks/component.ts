@@ -12,6 +12,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {
   DailyTasksReport,
+  DailyTasksReportArea,
+  DailyTasksReportAreaPen,
   DailyTasksReportAreaPenPatient,
   getRecheckRoles,
   getWeightUnit,
@@ -50,7 +52,10 @@ export class HospitalDailyTasksComponent implements OnInit {
   showMeOverdueRechecks = true;
   showMeDueRechecks = true;
   showMeDoneRechecks = false;
-  showMePrescriptions: 'none' | 'all' | 'notToday' = 'notToday';
+  showMePrescriptions: 'none' | 'all' | 'notAdministeredInLast' =
+    'notAdministeredInLast';
+  showMePrescriptionsNotAdministeredInLastValue: number | null = 12;
+  showMePrescriptionsNotAdministeredInLastUnit: 'hours' | 'days' = 'hours';
 
   performRecheckTask$: Observable<Task>;
   administerPrescriptionTask$: Observable<Task>;
@@ -82,6 +87,64 @@ export class HospitalDailyTasksComponent implements OnInit {
 
   ngOnInit() {
     this.changeDate();
+  }
+
+  shouldShowArea(area: DailyTasksReportArea) {
+    return area.pens.some((pen) => this.shouldShowPen(pen));
+  }
+
+  shouldShowPen(pen: DailyTasksReportAreaPen) {
+    return pen.patients.some((patient) => this.shouldShowPatient(patient));
+  }
+
+  shouldShowPatient(patient: DailyTasksReportAreaPenPatient) {
+    return (
+      patient.rechecks.some((recheck) => this.shouldShowRecheck(recheck)) ||
+      patient.prescriptionInstructions.some((prescription) =>
+        this.shouldShowPrescription(prescription),
+      ) ||
+      patient.prescriptionMedications.some((prescription) =>
+        this.shouldShowPrescription(prescription),
+      )
+    );
+  }
+
+  shouldShowRecheck(recheck: ListRecheck) {
+    let status: 'due' | 'overdue' | 'done' =
+      recheck.due === this.date
+        ? recheck.rechecked
+          ? 'done'
+          : 'due'
+        : 'overdue';
+    return (
+      (this.showMeDoneRechecks && status === 'done') ||
+      (this.showMeDueRechecks && status === 'due') ||
+      (this.showMeOverdueRechecks && status === 'overdue')
+    );
+  }
+
+  shouldShowPrescription(prescription: Prescription) {
+    if (this.showMePrescriptions === 'all') return true;
+    else if (this.showMePrescriptions === 'none') return false;
+    else if (this.showMePrescriptions === 'notAdministeredInLast') {
+      const recent = this.getMostRecent(prescription);
+      if (!recent) return true;
+      const start = moment(recent);
+      const end = moment();
+      const duration = moment.duration(end.diff(start));
+      if (this.showMePrescriptionsNotAdministeredInLastUnit === 'hours')
+        return (
+          duration.asHours() <=
+          (this.showMePrescriptionsNotAdministeredInLastValue || 0)
+        );
+      else if (this.showMePrescriptionsNotAdministeredInLastUnit === 'days')
+        return (
+          duration.asDays() <=
+          (this.showMePrescriptionsNotAdministeredInLastValue || 0)
+        );
+    }
+    // Shouldn't be called, but default to show
+    return true;
   }
 
   viewPatient(reference: string, species: string, id: number) {

@@ -8,7 +8,35 @@ input[type="date"] {
 
 .filter {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
+  border: dotted 1px black;
+  background-color: white;
+  padding: 0.35rem 1rem 0.75rem 0.75rem;
+  max-width: max-content;
+
+  .administered-since-wrapper {
+    .time-select {
+      display: flex;
+      margin-left: 2.5rem;
+      margin-top: 0.125rem;
+    }
+
+    input[type="number"] {
+      max-width: 6ch;
+      padding: 0.25rem 0.5rem;
+      border-top-right-radius: 0rem;
+      border-bottom-right-radius: 0rem;
+    }
+
+    select {
+      max-width: 7.5rem;
+      padding: 0.25rem 0.5rem;
+      border-top-left-radius: 0rem;
+      border-bottom-left-radius: 0rem;
+      margin-left: -1px;
+      padding-bottom: 5px;
+    }
+  }
 }
 
 a {

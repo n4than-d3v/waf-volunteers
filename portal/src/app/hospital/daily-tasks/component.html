@@ -155,11 +155,11 @@
 } @else {
 <div class="filter">
   <div>
-    <label for="date">Date</label>
+    <label for="date"><strong>Date</strong></label>
     <input type="date" id="date" [(ngModel)]="date" (change)="changeDate()" />
   </div>
   <div>
-    <p>Rechecks</p>
+    <p><strong>Rechecks</strong></p>
     <div class="field">
       <label for="showMeOverdueRechecks">Overdue</label>
       <input
@@ -186,7 +186,7 @@
     </div>
   </div>
   <div>
-    <p>Prescriptions</p>
+    <p><strong>Prescriptions</strong></p>
     <div class="field">
       <label for="showMePrescriptions-all">All</label>
       <input
@@ -205,14 +205,32 @@
         value="none"
       />
     </div>
-    <div class="field">
-      <label for="showMePrescriptions-notToday">Not administered today</label>
-      <input
-        type="radio"
-        id="showMePrescriptions-notToday"
-        [(ngModel)]="showMePrescriptions"
-        value="notToday"
-      />
+    <div class="administered-since-wrapper">
+      <div class="field">
+        <label for="showMePrescriptions-notAdministeredInLast"
+          >Not administered in the last</label
+        >
+        <input
+          type="radio"
+          id="showMePrescriptions-notAdministeredInLast"
+          [(ngModel)]="showMePrescriptions"
+          value="notAdministeredInLast"
+        />
+      </div>
+      <div class="field time-select">
+        <input
+          type="number"
+          id="showMePrescriptionsNotAdministeredInLastValue"
+          [(ngModel)]="showMePrescriptionsNotAdministeredInLastValue"
+        />
+        <select
+          id="showMePrescriptionsNotAdministeredInLastUnit"
+          [(ngModel)]="showMePrescriptionsNotAdministeredInLastUnit"
+        >
+          <option>hours</option>
+          <option>days</option>
+        </select>
+      </div>
     </div>
   </div>
 </div>
@@ -229,7 +247,8 @@ administerPrescriptionTask.error) {
   <h2>Nothing to do</h2>
   <p>Looks like there's nothing to do on this date.</p>
 </div>
-} @for (area of report.data.areas; track area.code) {
+} @for (area of report.data.areas; track area.code) { @if (shouldShowArea(area))
+{
 <div class="area">
   <h2>
     <span class="area-name">{{ area.name }}</span>
@@ -238,7 +257,7 @@ administerPrescriptionTask.error) {
     </span>
   </h2>
   <div class="pens">
-    @for (pen of area.pens; track pen.reference) {
+    @for (pen of area.pens; track pen.reference) { @if (shouldShowPen(pen)) {
     <div class="pen">
       <h3>
         <span class="pen-reference">{{ pen.reference }}</span>
@@ -247,7 +266,8 @@ administerPrescriptionTask.error) {
         </span>
       </h3>
       <div class="patients">
-        @for (patient of pen.patients; track patient.id) {
+        @for (patient of pen.patients; track patient.id) { @if
+        (shouldShowPatient(patient)) {
         <div class="patient">
           <p>
             🔗
@@ -262,7 +282,8 @@ administerPrescriptionTask.error) {
           }
           <div class="tasks">
             @if (patient.rechecks.length > 0 && performingRecheck === null) {
-            @for (recheck of patient.rechecks; track recheck.id) {
+            @for (recheck of patient.rechecks; track recheck.id) { @if
+            (shouldShowRecheck(recheck)) {
             <div class="recheck">
               <div>
                 <p>
@@ -305,9 +326,10 @@ administerPrescriptionTask.error) {
                 }
               </div>
             </div>
-            } } @if (patient.prescriptionInstructions.length > 0 ||
+            } } } @if (patient.prescriptionInstructions.length > 0 ||
             patient.prescriptionMedications.length > 0) { @for (prescription of
-            getPrescriptions(patient); track prescription.id) {
+            getPrescriptions(patient); track prescription.id) { @if
+            (shouldShowPrescription(prescription)) {
             <div class="prescription">
               <div>
                 <div>
@@ -360,13 +382,13 @@ administerPrescriptionTask.error) {
                 </div>
               </div>
             </div>
-            } }
+            } } }
           </div>
         </div>
-        }
+        } }
       </div>
     </div>
-    }
+    } }
   </div>
 </div>
-} } } }
+} } } } }

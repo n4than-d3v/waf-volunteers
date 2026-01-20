@@ -85,7 +85,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                     }
                 }
 
-                var beaconInitialLocation = "BeaconPropReq";
+                var beaconInitialLocation = admission.entity.c_arrival_cage_pod?.FirstOrDefault() ?? "Not provided";
                 var initialLocation = await _repository.Get<InitialLocation>(x => x.Description == beaconInitialLocation);
                 initialLocation ??= new InitialLocation { Description = beaconInitialLocation };
 

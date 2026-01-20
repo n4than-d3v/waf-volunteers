@@ -23,6 +23,21 @@ public class Notice : Entity
         Content = content;
         Created = created;
         Roles = roles;
+        if (roles == AccountRoles.None)
+        {
+            Roles =
+                AccountRoles.BEACON_ANIMAL_HUSBANDRY |
+                AccountRoles.BEACON_RECEPTIONIST |
+                AccountRoles.BEACON_TEAM_LEADER |
+                AccountRoles.BEACON_VET |
+                AccountRoles.BEACON_VET_NURSE |
+                AccountRoles.BEACON_AUXILIARY |
+                AccountRoles.BEACON_WORK_EXPERIENCE |
+                AccountRoles.BEACON_ORPHAN_FEEDER |
+                AccountRoles.BEACON_RESCUER |
+                AccountRoles.BEACON_CENTRE_MAINTENANCE |
+                AccountRoles.BEACON_OFFICE_ADMIN;
+        }
     }
 
     #region Behaviours

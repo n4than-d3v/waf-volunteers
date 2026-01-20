@@ -27,6 +27,7 @@ public partial class BeaconService
             public string c_alternative_address { get; set; }
             public List<string> c_animal_found_at_different_address { get; set; }
             public List<string> c_reason_for_admission { get; set; }
+            public List<string> c_arrival_cage_pod { get; set; }
             public bool c_rescue { get; set; }
         }
 

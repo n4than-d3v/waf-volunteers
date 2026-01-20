@@ -8,7 +8,9 @@ input[type="date"] {
 
 .filter {
   display: flex;
-  gap: 2rem;
+  flex-wrap: wrap;
+  column-gap: 2rem;
+  row-gap: 1rem;
   border: dotted 1px black;
   background-color: white;
   padding: 0.35rem 1rem 0.75rem 0.75rem;

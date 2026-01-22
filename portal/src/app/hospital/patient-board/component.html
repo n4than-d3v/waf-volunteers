@@ -1,82 +1,63 @@
-@if (areas$ | async; as areas) { @if (patients$ | async; as patients) { @if
-(areas.loading || patients.loading) {
+@if (boards$ | async; as boards) { @if (boards.loading) {
 <spinner></spinner>
-} @else if (areas.error || patients.error) {
+} @else if (boards.error) {
 <div class="error">Error occurred</div>
-} @else if (areas.data && patients.data) {
-<div class="areas">
-  @for (area of areas.data; track area.id) { @if (settings[area.id] !== 'hidden'
-  && getPatientsInArea(patients.data, area).length > 0) {
-  <div class="area">
-    <div class="name">{{ area.name }}</div>
-    @if (settings[area.id] === 'all') {
-    <div class="pens">
-      @for (pen of area.pens; track pen.id) { @if
-      (getPatientsInPen(patients.data, pen).length > 0) {
-      <div class="pen">
-        <div class="reference">{{ pen.reference }}</div>
-        <div class="patients">
-          @for (patient of getPatientsInPen(patients.data, pen); track
-          patient.id) {
-          <div class="patient">
-            <div class="species">
-              {{ patient.speciesVariant?.friendlyName }}
-            </div>
-            @if (patient.diets.length > 0) {
-            <div class="diets">
-              @for (diet of patient.diets; track diet.id) {
-              <div class="diet">{{ diet.name }}</div>
-              }
-            </div>
-            } @if (patient.tags.length > 0) {
-            <div class="tags">
-              @for (tag of patient.tags; track tag.id) {
-              <div class="tag">{{ tag.name }}</div>
-              }
-            </div>
+} @else if (boards.data && (!viewingBoard)) {
+<div class="boards">
+  @for (board of boards.data; track board.id) {
+  <button (click)="viewBoard(board.id)" class="button button--primary">
+    {{ board.name }}
+  </button>
+  }
+</div>
+} } @if (board$ | async; as board) { @if (board.loading) {
+<spinner></spinner>
+} @else if (board.error) {
+<div class="error">Error occurred</div>
+} @else if (board.data && viewingBoard) {
+<h1>{{ board.data.board.name }}</h1>
+@if (board.data.board.messages != null && board.data.board.messages.length > 0)
+{
+<div class="messages">
+  @for (message of board.data.board.messages; track message.id) {
+  <p class="message">{{ message.message }}</p>
+  }
+</div>
+}
+<div class="area">
+  @for (area of board.data.areas; track area.area.id) {
+  <h2>{{ area.area.area.name }}</h2>
+  @if (area.summary != null && area.summary.length > 0) {
+  <div class="summary">
+    @for (summary of area.summary; track summary) {
+    <p>{{ summary }}</p>
+    }
+  </div>
+  } @else if (area.pens != null && area.pens.length > 0) {
+  <div class="pens">
+    @for (pen of area.pens; track pen.reference) {
+    <div class="pen">
+      <div class="location">{{ pen.reference }}</div>
+      <div class="patients">
+        @for (patient of pen.patients; track patient.id) {
+        <div class="patient">
+          <div class="name">{{ patient.speciesVariant?.friendlyName }}</div>
+          <div class="diets">
+            @for (diet of patient.diets; track diet.id) {
+            <span class="diet">{{ diet.name }}</span>
             }
           </div>
-          }
+          <div class="tags">
+            @for (tag of patient.tags; track tag.id) {
+            <span class="tag">{{ tag.name }}</span>
+            }
+          </div>
         </div>
+        }
       </div>
-      } }
-    </div>
-    } @else {
-    <div class="summary">
-      @for (patient of getPatientsInArea(patients.data!, area); track patient) {
-      <div class="patient">{{ patient }}</div>
-      }
     </div>
     }
   </div>
   } }
 </div>
-} } }
-<div class="edit">
-  @if (!editSettings) {
-  <div class="buttons">
-    <button (click)="editSettings = true" class="button button--secondary">
-      Settings
-    </button>
-  </div>
-  } @else { @if (areas$ | async;as areas) { @for (area of areas.data; track
-  area.id) {
-  <div class="field">
-    <label for="area-{{ area.id }}">{{ area.name }}</label>
-    <select id="area-{{ area.id }}" [(ngModel)]="copySettings[area.id]">
-      <option value="all">Show patients in each pen</option>
-      <option value="summary">Summarise patients in area</option>
-      <option value="hidden">Hide area from board</option>
-    </select>
-  </div>
-  } }
-  <div class="buttons">
-    <button (click)="setConfiguration()" class="button button--primary">
-      Save
-    </button>
-    <button (click)="editSettings = false" class="button button--secondary">
-      Back
-    </button>
-  </div>
-  }
-</div>
+} }

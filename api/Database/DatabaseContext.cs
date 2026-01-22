@@ -1,4 +1,5 @@
 ﻿using Api.Database.Entities.Account;
+using Api.Database.Entities.Hospital.Boards;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Admission;
@@ -86,6 +87,11 @@ public class DatabaseContext : DbContext
     public DbSet<PatientFaecalTest> PatientFaecalTests { get; set; }
     public DbSet<Species> Species { get; set; }
     public DbSet<SpeciesVariant> SpeciesVariants { get; set; }
+
+    // Patient boards
+    public DbSet<Board> Boards { get; set; }
+    public DbSet<BoardArea> BoardAreas { get; set; }
+    public DbSet<BoardMessage> BoardMessages { get; set; }
 
     // Stock
     public DbSet<StockItem> StockItems { get; set; }

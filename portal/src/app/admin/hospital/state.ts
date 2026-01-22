@@ -7,6 +7,7 @@ export interface AdminHospitalManagementState {
   medications: Wrapper<Medication>;
   areas: Wrapper<Area>;
   species: Wrapper<Species>;
+  boards: Wrapper<PatientBoard>;
 }
 
 export interface Wrapper<T> {
@@ -139,8 +140,7 @@ export interface UpdateSpeciesCommand extends CreateSpeciesCommand {
   id: number;
 }
 
-export interface UpdateSpeciesVariantCommand
-  extends CreateSpeciesVariantCommand {
+export interface UpdateSpeciesVariantCommand extends CreateSpeciesVariantCommand {
   id: number;
 }
 
@@ -171,6 +171,24 @@ export function getSpeciesType(type: SpeciesType) {
   }
 }
 
+export interface PatientBoard {
+  id: number;
+  name: string;
+  areas: PatientBoardArea[];
+}
+
+export interface PatientBoardArea {
+  id: number;
+  area: Area;
+  displayType: PatientBoardAreaDisplayType;
+}
+
+export enum PatientBoardAreaDisplayType {
+  Hidden = 0,
+  ShowPatients = 1,
+  SummarisePatients = 2,
+}
+
 const createWrapper = <T>(): Wrapper<T> => ({
   data: [],
   loading: false,
@@ -189,4 +207,5 @@ export const initialAdminHospitalManagementState: AdminHospitalManagementState =
     medications: createWrapper<Medication>(),
     areas: createWrapper<Area>(),
     species: createWrapper<Species>(),
+    boards: createWrapper<PatientBoard>(),
   };

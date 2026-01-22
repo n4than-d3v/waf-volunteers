@@ -35,6 +35,7 @@ using Api.Handlers.Hospital.Patients.Labs.Blood;
 using Api.Handlers.Hospital.Patients.Labs.Faecal;
 using Api.Handlers.Stock;
 using Api.Handlers.Learning;
+using Api.Handlers.Hospital.Boards;
 
 public partial class Program
 {
@@ -407,6 +408,24 @@ public partial class Program
         apiHospital.MapGet("/daily-tasks", (IMediator mediator, string on) => mediator.Send(new ViewDailyTasks { Date = DateOnly.Parse(on) }))
             .AddNote("View list of rechecks and prescriptions, grouped by area, pen, and patient")
             .RequireAuthorization(vetOrAuxPolicy);
+
+        var apiHospitalBoards = apiHospital.MapGroup("/boards");
+
+        apiHospitalBoards.MapGet("/", (IMediator mediator) => mediator.Send(new GetBoards()))
+            .AddNote("View list of patient boards")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalBoards.MapGet("/{id:int}", (IMediator mediator, int id) => mediator.Send(new GetBoard { Id = id }))
+            .AddNote("View a specific board")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalBoards.MapPost("/", (IMediator mediator, UpsertBoard request) => mediator.Send(request))
+            .AddNote("Vet or admin manages a board")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalBoards.MapPost("/{id:int}/message", (IMediator mediator, int id, AddBoardMessage request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet adds a message to appear on a board")
+            .RequireAuthorization(vetPolicy);
     }
 
     private static void RegisterAccountRoutes(RouteGroupBuilder api)

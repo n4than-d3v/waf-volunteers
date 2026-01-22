@@ -23,6 +23,8 @@ import {
   PrescriptionInstruction,
   PrescriptionMedication,
   DailyTasksReport,
+  PatientBoard,
+  ListPatientBoard,
 } from './state';
 import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -153,6 +155,12 @@ import {
   viewDailyTasks,
   viewDailyTasksSuccess,
   viewDailyTasksError,
+  viewPatientBoard,
+  viewPatientBoardSuccess,
+  viewPatientBoardError,
+  viewPatientBoards,
+  viewPatientBoardsSuccess,
+  viewPatientBoardsError,
 } from './actions';
 
 @Injectable()
@@ -1209,6 +1217,32 @@ export class HospitalEffects {
     this.actions$.pipe(
       ofType(administerPrescriptionSuccess),
       switchMap((action) => of(viewDailyTasks({ date: action.date }))),
+    ),
+  );
+
+  // View patient boards
+
+  viewPatientBoards$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(viewPatientBoards),
+      switchMap((action) =>
+        this.http.get<ListPatientBoard[]>(`hospital/boards`).pipe(
+          map((boards) => viewPatientBoardsSuccess({ boards })),
+          catchError(() => of(viewPatientBoardsError())),
+        ),
+      ),
+    ),
+  );
+
+  viewPatientBoard$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(viewPatientBoard),
+      switchMap((action) =>
+        this.http.get<PatientBoard>(`hospital/boards/${action.id}`).pipe(
+          map((board) => viewPatientBoardSuccess({ board })),
+          catchError(() => of(viewPatientBoardError())),
+        ),
+      ),
     ),
   );
 }

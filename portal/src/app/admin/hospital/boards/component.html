@@ -1,0 +1,110 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Patient boards</h1>
+
+<p>This controls what husbandry volunteers see around the hospital.</p>
+
+@if (!(adding || editing || addingMessage)) {
+<div class="buttons">
+  <button (click)="adding = true" class="button button--primary">
+    Create patient board
+  </button>
+</div>
+} @else if (adding || editing) {
+<section>
+  <h2>{{ adding ? 'Add' : 'Edit' }} patient board</h2>
+  <div class="field">
+    <label for="name">Name</label>
+    <input type="text" id="name" [(ngModel)]="name" />
+  </div>
+  @if (areas$ | async; as areas) {
+  <div class="areas">
+    @for (area of areas.data || []; track area.id) {
+    <div class="field">
+      <label for="area-{{ area.id }}">{{ area.name }}</label>
+      <select id="area-{{ area.id }}" [(ngModel)]="areaDisplayTypes[area.id]">
+        <option [value]="0">Hidden</option>
+        <option [value]="1">Show patients</option>
+        <option [value]="2">Summarise patients</option>
+      </select>
+    </div>
+    }
+  </div>
+  }
+  <div class="buttons">
+    <button (click)="saveBoard()" class="button button--primary">Save</button>
+    <button (click)="cancel()" class="button button--secondary">Cancel</button>
+  </div>
+</section>
+} @else if (addingMessage) {
+<section>
+  <h2>Add patient message</h2>
+  <div class="field">
+    <label for="message">Message</label>
+    <textarea rows="3" id="message" [(ngModel)]="message"></textarea>
+  </div>
+  <div class="field">
+    <label for="startDate">Start</label>
+    <div class="datetime">
+      <input type="date" id="startDate" [(ngModel)]="startDate" />
+      <input type="time" id="startTime" [(ngModel)]="startTime" />
+    </div>
+  </div>
+  <div class="field">
+    <label for="endDate">End</label>
+    <div class="datetime">
+      <input type="date" id="endDate" [(ngModel)]="endDate" />
+      <input type="time" id="endTime" [(ngModel)]="endTime" />
+    </div>
+  </div>
+  <div class="buttons">
+    <button (click)="addMessage()" class="button button--primary">Save</button>
+    <button (click)="cancel()" class="button button--secondary">Cancel</button>
+  </div>
+</section>
+} @if (boards$ | async; as boards) { @if (boards.loading) {
+<spinner></spinner>
+} @else if (boards.error) {
+<div class="error">Error occurred</div>
+} @else if (boards.data) {
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Areas</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (board of boards.data||[]; track board.id){
+    <tr>
+      <td>{{ board.name }}</td>
+      <td>
+        <div class="table-areas">
+          @for (area of board.areas; track area.id) {
+          <span
+            >{{ area.area.name }} @if (area.displayType === 0) { 🚫 } @else if
+            (area.displayType === 1) { 🏠 } @else if (area.displayType === 2) {
+            🏙️ }
+          </span>
+          }
+        </div>
+      </td>
+      <td>
+        <div class="buttons">
+          <button (click)="prepareEdit(board)" class="button button--secondary">
+            Edit
+          </button>
+          <button
+            (click)="prepareAddMessage(board)"
+            class="button button--secondary"
+          >
+            Add message
+          </button>
+        </div>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

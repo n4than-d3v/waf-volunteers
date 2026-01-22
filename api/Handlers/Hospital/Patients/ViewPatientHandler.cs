@@ -1,11 +1,9 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Account;
-using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace Api.Handlers.Hospital.Patients;
 

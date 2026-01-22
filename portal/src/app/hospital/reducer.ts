@@ -122,6 +122,12 @@ import {
   viewDailyTasks,
   viewDailyTasksSuccess,
   viewDailyTasksError,
+  viewPatientBoards,
+  viewPatientBoard,
+  viewPatientBoardsSuccess,
+  viewPatientBoardSuccess,
+  viewPatientBoardsError,
+  viewPatientBoardError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1059,6 +1065,54 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     addLabs: {
       ...state.addLabs,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(viewPatientBoards, (state) => ({
+    ...state,
+    boards: {
+      ...state.boards,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(viewPatientBoard, (state) => ({
+    ...state,
+    board: {
+      ...state.board,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(viewPatientBoardsSuccess, (state, { boards }) => ({
+    ...state,
+    boards: {
+      ...state.boards,
+      data: boards,
+      loading: false,
+    },
+  })),
+  on(viewPatientBoardSuccess, (state, { board }) => ({
+    ...state,
+    board: {
+      ...state.board,
+      data: board,
+      loading: false,
+    },
+  })),
+  on(viewPatientBoardsError, (state) => ({
+    ...state,
+    boards: {
+      ...state.boards,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(viewPatientBoardError, (state) => ({
+    ...state,
+    board: {
+      ...state.board,
       loading: false,
       error: true,
     },

@@ -188,3 +188,13 @@ export const selectAddLabs = createSelector(
   selectHospitalState,
   (state) => state.addLabs,
 );
+
+export const selectPatientBoards = createSelector(
+  selectHospitalState,
+  (state) => state.boards,
+);
+
+export const selectPatientBoard = createSelector(
+  selectHospitalState,
+  (state) => state.board,
+);

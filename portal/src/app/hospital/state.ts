@@ -50,6 +50,10 @@ export interface HospitalState {
   dailyTasksReport: ReadOnlyWrapper<DailyTasksReport>;
   performRecheck: Task;
   administerPrescription: Task;
+
+  // View patient boards
+  boards: ReadOnlyWrapper<ListPatientBoard[]>;
+  board: ReadOnlyWrapper<PatientBoard>;
 }
 
 export type TabCode =
@@ -577,6 +581,27 @@ export type Outcome =
   | 'deadOnArrival'
   | 'pts';
 
+export interface ListPatientBoard {
+  id: number;
+  name: string;
+}
+
+export interface PatientBoard {
+  board: { name: string; messages: { id: number; message: string }[] };
+  areas: PatientBoardArea[];
+}
+
+export interface PatientBoardArea {
+  area: { id: number; area: { name: string } };
+  summary: string[] | null;
+  pens: PatientBoardAreaPen[] | null;
+}
+
+export interface PatientBoardAreaPen {
+  reference: string;
+  patients: ListPatient[];
+}
+
 export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
   data: null,
   loading: false,
@@ -627,4 +652,6 @@ export const initialHospitalState: HospitalState = {
   performRecheck: createTask(),
   administerPrescription: createTask(),
   addLabs: createTask(),
+  boards: createReadOnlyWrapper<ListPatientBoard[]>(),
+  board: createReadOnlyWrapper<PatientBoard>(),
 };

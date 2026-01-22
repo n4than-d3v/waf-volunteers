@@ -91,6 +91,9 @@ import {
   updateTransferLocation,
   updateTransferLocationError,
   updateTransferLocationSuccess,
+  getBoards,
+  getBoardsSuccess,
+  getBoardsError,
 } from './actions';
 
 export const adminHospitalManagementReducer =
@@ -528,7 +531,7 @@ export const adminHospitalManagementReducer =
           loading: true,
           error: false,
         },
-      })
+      }),
     ),
     on(
       upsertMedicationSuccess,
@@ -541,7 +544,7 @@ export const adminHospitalManagementReducer =
           loading: false,
           updated: true,
         },
-      })
+      }),
     ),
     on(
       upsertMedicationError,
@@ -554,7 +557,7 @@ export const adminHospitalManagementReducer =
           loading: false,
           error: true,
         },
-      })
+      }),
     ),
     // Areas
     on(getAreas, (state) => ({
@@ -704,5 +707,29 @@ export const adminHospitalManagementReducer =
         loading: false,
         error: true,
       },
-    }))
+    })),
+    on(getBoards, (state) => ({
+      ...state,
+      boards: {
+        ...state.boards,
+        loading: true,
+        error: false,
+      },
+    })),
+    on(getBoardsSuccess, (state, { boards }) => ({
+      ...state,
+      boards: {
+        ...state.boards,
+        data: boards,
+        loading: false,
+      },
+    })),
+    on(getBoardsError, (state) => ({
+      ...state,
+      boards: {
+        ...state.boards,
+        loading: false,
+        error: true,
+      },
+    })),
   );

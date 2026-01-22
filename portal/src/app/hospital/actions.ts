@@ -24,6 +24,8 @@ import {
   ListRecheck,
   Prescription,
   DailyTasksReport,
+  PatientBoard,
+  ListPatientBoard,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -574,6 +576,7 @@ export const searchPatientSuccess = createAction(
 export const searchPatientError = createAction('[HMS-V] Search patient: error');
 
 // View daily tasks
+
 export const viewDailyTasks = createAction(
   '[HMS-V] View daily tasks',
   props<{ date: string }>(),
@@ -632,4 +635,27 @@ export const administerPrescriptionSuccess = createAction(
 );
 export const administerPrescriptionError = createAction(
   '[HMS-V] Administer prescription: error',
+);
+
+// View patient boards
+
+export const viewPatientBoards = createAction('[HMS-V] View patient boards');
+export const viewPatientBoardsSuccess = createAction(
+  '[HMS-V] View patient boards: success',
+  props<{ boards: ListPatientBoard[] }>(),
+);
+export const viewPatientBoardsError = createAction(
+  '[HMS-V] View patient boards: error',
+);
+
+export const viewPatientBoard = createAction(
+  '[HMS-V] View patient board',
+  props<{ id: number }>(),
+);
+export const viewPatientBoardSuccess = createAction(
+  '[HMS-V] View patient board: success',
+  props<{ board: PatientBoard }>(),
+);
+export const viewPatientBoardError = createAction(
+  '[HMS-V] View patient board: error',
 );

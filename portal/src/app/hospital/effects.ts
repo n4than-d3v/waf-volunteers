@@ -488,6 +488,7 @@ export class HospitalEffects {
                   movePatient({
                     patientId: action.exam.patientId,
                     penId: action.penId!,
+                    newAreaId: null,
                   }),
                 );
               }

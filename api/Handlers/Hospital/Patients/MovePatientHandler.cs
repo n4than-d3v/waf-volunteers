@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Handlers.Hospital.Locations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,7 @@ public class MovePatient : IRequest<IResult>
 {
     public int PatientId { get; set; }
     public int PenId { get; set; }
+    public int? NewAreaId { get; set; }
 
     public MovePatient WithId(int id)
     {
@@ -21,10 +23,12 @@ public class MovePatient : IRequest<IResult>
 public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IMediator _mediator;
 
-    public MovePatientHandler(IDatabaseRepository repository)
+    public MovePatientHandler(IDatabaseRepository repository, IMediator mediator)
     {
         _repository = repository;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(MovePatient request, CancellationToken cancellationToken)
@@ -51,6 +55,16 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
         patient.Pen = pen;
 
         await _repository.SaveChangesAsync();
+
+        if (request.NewAreaId.HasValue)
+        {
+            await _mediator.Send(new MovePen
+            {
+                Id = request.PenId,
+                AreaId = request.NewAreaId.Value
+            }, cancellationToken);
+        }
+
         return Results.NoContent();
     }
 }

@@ -10,11 +10,7 @@
   </button>
   }
 </div>
-} } @if (board$ | async; as board) { @if (board.loading) {
-<spinner></spinner>
-} @else if (board.error) {
-<div class="error">Error occurred</div>
-} @else if (board.data && viewingBoard) {
+} } @if (board$ | async; as board) { @if (board.data && viewingBoard) {
 <h1>{{ board.data.board.name }}</h1>
 @if (board.data.board.messages != null && board.data.board.messages.length > 0)
 {

@@ -46,6 +46,8 @@ export class HospitalPatientLocationComponent implements OnInit {
   moveForm = new FormGroup({
     areaId: new FormControl('', [Validators.required]),
     penId: new FormControl('', [Validators.required]),
+    movingPenToAnotherArea: new FormControl(false),
+    newAreaId: new FormControl(''),
   });
 
   moving = false;
@@ -70,13 +72,21 @@ export class HospitalPatientLocationComponent implements OnInit {
 
   move() {
     this.attemptedSave = true;
+    if (this.moveForm.value.movingPenToAnotherArea) {
+      this.moveForm.controls.newAreaId.addValidators(Validators.required);
+    }
+    this.moveForm.controls.newAreaId.updateValueAndValidity();
+    this.moveForm.updateValueAndValidity();
     if (!this.moveForm.valid) return;
     this.saving = true;
     this.store.dispatch(
       movePatient({
         patientId: this.patient.id,
         penId: Number(this.moveForm.value.penId),
-      })
+        newAreaId: this.moveForm.value.newAreaId
+          ? Number(this.moveForm.value.newAreaId)
+          : null,
+      }),
     );
     this.reset();
   }

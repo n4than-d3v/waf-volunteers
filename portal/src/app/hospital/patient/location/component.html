@@ -76,7 +76,34 @@
       } } } }}
     </select>
   </div>
-  @if (!saving) { @if (attemptedSave && !moveForm.valid) {
+  <div class="field">
+    <label for="movingPenToAnotherArea">
+      Moving this pen into another area
+    </label>
+    <input
+      type="checkbox"
+      id="movingPenToAnotherArea"
+      formControlName="movingPenToAnotherArea"
+    />
+  </div>
+  @if (moveForm.value.movingPenToAnotherArea) {
+  <div class="field">
+    <label for="newAreaId">
+      New area
+      <span class="required">*</span>
+    </label>
+    <select id="newAreaId" formControlName="newAreaId">
+      <option value=""></option>
+      @if (areas$ | async; as areas) { @if (areas.loading) {
+      <spinner />
+      } @else if (areas.error) {
+      <div class="error">Error occurred</div>
+      } @else if (areas.data) { @for (area of areas.data; track area.id) {
+      <option [value]="area.id">{{ area.name }}</option>
+      } }}
+    </select>
+  </div>
+  } @if (!saving) { @if (attemptedSave && !moveForm.valid) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">

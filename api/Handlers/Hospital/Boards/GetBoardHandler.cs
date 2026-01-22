@@ -91,7 +91,9 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             {
                 Reference = g.Key.PenReference,
                 Patients = g.ToList()
-            }).ToList();
+            })
+            .OrderBy(x => x.Reference)
+            .ToList();
     }
 
     private static List<string> GetPatientSummary(IReadOnlyList<Patient> areaPatients)

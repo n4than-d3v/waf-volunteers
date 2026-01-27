@@ -134,12 +134,12 @@ export class HospitalDailyTasksComponent implements OnInit {
       const duration = moment.duration(end.diff(start));
       if (this.showMePrescriptionsNotAdministeredInLastUnit === 'hours')
         return (
-          duration.asHours() <=
+          duration.asHours() >
           (this.showMePrescriptionsNotAdministeredInLastValue || 0)
         );
       else if (this.showMePrescriptionsNotAdministeredInLastUnit === 'days')
         return (
-          duration.asDays() <=
+          duration.asDays() >
           (this.showMePrescriptionsNotAdministeredInLastValue || 0)
         );
     }

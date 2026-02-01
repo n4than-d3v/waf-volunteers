@@ -20,7 +20,10 @@ PatientStatus.PendingInitialExam) {
   @if (isVet) {
   <section>
     <h3>Intake exam</h3>
-    <hospital-patient-exam [id]="patient.data.id"></hospital-patient-exam>
+    <hospital-patient-exam
+      [exam]="null"
+      [patientId]="patient.data.id"
+    ></hospital-patient-exam>
   </section>
   }
 </div>
@@ -107,6 +110,7 @@ PatientStatus.PendingInitialExam) {
   <h3>{{ exam.type === 1 ? 'Intake exam' : 'Follow-up exam' }}</h3>
   <hospital-patient-view-exam
     [exam]="exam"
+    [patient]="patient.data"
     [isVet]="isVet"
   ></hospital-patient-view-exam>
 </section>

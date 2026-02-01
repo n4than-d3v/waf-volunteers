@@ -128,6 +128,34 @@ import {
   viewPatientBoardSuccess,
   viewPatientBoardsError,
   viewPatientBoardError,
+  updateNote,
+  removeNote,
+  updateNoteSuccess,
+  removeNoteSuccess,
+  updateNoteError,
+  removeNoteError,
+  updateFaecalTest,
+  updateBloodTest,
+  updateFaecalTestSuccess,
+  updateBloodTestSuccess,
+  addBloodTestError,
+  updateFaecalTestError,
+  updateBloodTestError,
+  removeFaecalTest,
+  removeBloodTest,
+  removeFaecalTestSuccess,
+  removeBloodTestSuccess,
+  removeFaecalTestError,
+  removeBloodTestError,
+  updateRecheck,
+  updateRecheckSuccess,
+  updateRecheckError,
+  updatePrescriptionInstruction,
+  updatePrescriptionMedication,
+  updatePrescriptionInstructionSuccess,
+  updatePrescriptionMedicationSuccess,
+  updatePrescriptionInstructionError,
+  updatePrescriptionMedicationError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -679,8 +707,8 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: true,
     },
   })),
-  // Add note
-  on(addNote, (state) => ({
+  // Add, update, or remove notes
+  on(addNote, updateNote, removeNote, (state) => ({
     ...state,
     addNote: {
       ...state.addNote,
@@ -689,7 +717,7 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: false,
     },
   })),
-  on(addNoteSuccess, (state) => ({
+  on(addNoteSuccess, updateNoteSuccess, removeNoteSuccess, (state) => ({
     ...state,
     addNote: {
       ...state.addNote,
@@ -697,7 +725,7 @@ export const hospitalReducer = createReducer<HospitalState>(
       success: true,
     },
   })),
-  on(addNoteError, (state) => ({
+  on(addNoteError, updateNoteError, removeNoteError, (state) => ({
     ...state,
     addNote: {
       ...state.addNote,
@@ -705,8 +733,8 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: true,
     },
   })),
-  // Add recheck
-  on(addRecheck, (state) => ({
+  // Add or update recheck
+  on(addRecheck, updateRecheck, (state) => ({
     ...state,
     addRecheck: {
       ...state.addRecheck,
@@ -715,7 +743,7 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: false,
     },
   })),
-  on(addRecheckSuccess, (state) => ({
+  on(addRecheckSuccess, updateRecheckSuccess, (state) => ({
     ...state,
     addRecheck: {
       ...state.addRecheck,
@@ -723,7 +751,7 @@ export const hospitalReducer = createReducer<HospitalState>(
       success: true,
     },
   })),
-  on(addRecheckError, (state) => ({
+  on(addRecheckError, updateRecheckError, (state) => ({
     ...state,
     addRecheck: {
       ...state.addRecheck,
@@ -731,19 +759,27 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: true,
     },
   })),
-  // Add prescription
-  on(addPrescriptionInstruction, addPrescriptionMedication, (state) => ({
-    ...state,
-    addPrescription: {
-      ...state.addPrescription,
-      loading: true,
-      success: false,
-      error: false,
-    },
-  })),
+  // Add or update prescription
+  on(
+    addPrescriptionInstruction,
+    addPrescriptionMedication,
+    updatePrescriptionInstruction,
+    updatePrescriptionMedication,
+    (state) => ({
+      ...state,
+      addPrescription: {
+        ...state.addPrescription,
+        loading: true,
+        success: false,
+        error: false,
+      },
+    }),
+  ),
   on(
     addPrescriptionInstructionSuccess,
     addPrescriptionMedicationSuccess,
+    updatePrescriptionInstructionSuccess,
+    updatePrescriptionMedicationSuccess,
     (state) => ({
       ...state,
       addPrescription: {
@@ -756,6 +792,8 @@ export const hospitalReducer = createReducer<HospitalState>(
   on(
     addPrescriptionInstructionError,
     addPrescriptionMedicationError,
+    updatePrescriptionInstructionError,
+    updatePrescriptionMedicationError,
     (state) => ({
       ...state,
       addPrescription: {
@@ -1044,31 +1082,55 @@ export const hospitalReducer = createReducer<HospitalState>(
     },
   })),
   // Add faecal or blood tests
-  on(addFaecalTest, addBloodTest, (state) => ({
-    ...state,
-    addLabs: {
-      ...state.addLabs,
-      loading: true,
-      success: false,
-      error: false,
-    },
-  })),
-  on(addFaecalTestSuccess, addBloodTestSuccess, (state) => ({
-    ...state,
-    addLabs: {
-      ...state.addLabs,
-      loading: false,
-      success: true,
-    },
-  })),
-  on(addFaecalTestError, addFaecalTestError, (state) => ({
-    ...state,
-    addLabs: {
-      ...state.addLabs,
-      loading: false,
-      error: true,
-    },
-  })),
+  on(
+    addFaecalTest,
+    addBloodTest,
+    updateFaecalTest,
+    updateBloodTest,
+    removeFaecalTest,
+    removeBloodTest,
+    (state) => ({
+      ...state,
+      addLabs: {
+        ...state.addLabs,
+        loading: true,
+        success: false,
+        error: false,
+      },
+    }),
+  ),
+  on(
+    addFaecalTestSuccess,
+    addBloodTestSuccess,
+    updateFaecalTestSuccess,
+    updateBloodTestSuccess,
+    removeFaecalTestSuccess,
+    removeBloodTestSuccess,
+    (state) => ({
+      ...state,
+      addLabs: {
+        ...state.addLabs,
+        loading: false,
+        success: true,
+      },
+    }),
+  ),
+  on(
+    addFaecalTestError,
+    addBloodTestError,
+    updateFaecalTestError,
+    updateBloodTestError,
+    removeFaecalTestError,
+    removeBloodTestError,
+    (state) => ({
+      ...state,
+      addLabs: {
+        ...state.addLabs,
+        loading: false,
+        error: true,
+      },
+    }),
+  ),
   on(viewPatientBoards, (state) => ({
     ...state,
     boards: {

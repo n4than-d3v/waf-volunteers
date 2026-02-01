@@ -12,6 +12,8 @@ namespace Api.Handlers.Hospital.Exams;
 
 public class PerformExam : IRequest<IResult>
 {
+    public int? ExamId { get; set; } // If updating
+
     public int PatientId { get; set; }
     public int SpeciesId { get; set; }
     public int SpeciesVariantId { get; set; }
@@ -28,9 +30,16 @@ public class PerformExam : IRequest<IResult>
     public List<TreatmentMedication> TreatmentMedications { get; set; }
     public string Comments { get; set; }
 
-    public PerformExam WithId(int id)
+    public PerformExam WithId(int patientId)
     {
-        PatientId = id;
+        PatientId = patientId;
+        return this;
+    }
+
+    public PerformExam WithId(int patientId, int examId)
+    {
+        PatientId = patientId;
+        ExamId = examId;
         return this;
     }
 
@@ -55,13 +64,11 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
 {
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
-    private readonly IMediator _mediator;
 
-    public PerformExamHandler(IDatabaseRepository repository, IUserContext userContext, IMediator mediator)
+    public PerformExamHandler(IDatabaseRepository repository, IUserContext userContext)
     {
         _repository = repository;
         _userContext = userContext;
-        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(PerformExam request, CancellationToken cancellationToken)
@@ -111,29 +118,61 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
 
         bool isInitialExam = patient.Exams.Count == 0;
 
+        Exam? exam = null;
+
+        if (request.ExamId.HasValue)
+        {
+            exam = await _repository.Get<Exam>(request.ExamId.Value, tracking: true,
+                action: x => x
+                    .Include(y => y.Patient)
+                    .Include(y => y.Examiner)
+                    .Include(y => y.Species)
+                    .Include(y => y.SpeciesVariant)
+                    .Include(y => y.Attitude)
+                    .Include(y => y.BodyCondition)
+                    .Include(y => y.Dehydration)
+                    .Include(y => y.MucousMembraneColour)
+                    .Include(y => y.MucousMembraneTexture)
+                    .Include(y => y.TreatmentInstructions)
+                    .Include(y => y.TreatmentMedications));
+            if (exam == null) return Results.BadRequest();
+
+            isInitialExam = patient.Exams.Count == 1;
+
+            foreach (var treatment in exam.TreatmentInstructions)
+                _repository.Delete(treatment);
+            exam.TreatmentInstructions.Clear();
+
+            foreach (var treatment in exam.TreatmentMedications)
+                _repository.Delete(treatment);
+            exam.TreatmentMedications.Clear();
+        }
+        else
+        {
+            exam = new Exam();
+            _repository.Create(exam);
+        }
+
         var examType = isInitialExam ? ExamType.Intake : ExamType.Regular;
 
-        var exam = new Exam
-        {
-            Patient = patient,
-            Examiner = examiner,
-            Date = DateTime.UtcNow,
-            Type = examType,
-            Species = species,
-            SpeciesVariant = speciesVariant,
-            Sex = request.Sex,
-            WeightValue = request.WeightValue,
-            WeightUnit = request.WeightUnit,
-            Temperature = request.Temperature,
-            Attitude = attitude,
-            BodyCondition = bodyCondition,
-            Dehydration = dehydration,
-            MucousMembraneColour = mucousMembraneColour,
-            MucousMembraneTexture = mucousMembraneTexture,
-            TreatmentInstructions = [],
-            TreatmentMedications = [],
-            Comments = request.Comments
-        };
+        exam.Patient = patient;
+        exam.Examiner = examiner;
+        exam.Date = DateTime.UtcNow;
+        exam.Type = examType;
+        exam.Species = species;
+        exam.SpeciesVariant = speciesVariant;
+        exam.Sex = request.Sex;
+        exam.WeightValue = request.WeightValue;
+        exam.WeightUnit = request.WeightUnit;
+        exam.Temperature = request.Temperature;
+        exam.Attitude = attitude;
+        exam.BodyCondition = bodyCondition;
+        exam.Dehydration = dehydration;
+        exam.MucousMembraneColour = mucousMembraneColour;
+        exam.MucousMembraneTexture = mucousMembraneTexture;
+        exam.TreatmentInstructions = [];
+        exam.TreatmentMedications = [];
+        exam.Comments = request.Comments;
 
         foreach (var treatmentInstruction in request.TreatmentInstructions)
         {
@@ -176,7 +215,6 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
             patient.LastUpdatedDetails = DateTime.UtcNow;
         }
 
-        _repository.Create(exam);
         await _repository.SaveChangesAsync();
 
         return Results.Created();

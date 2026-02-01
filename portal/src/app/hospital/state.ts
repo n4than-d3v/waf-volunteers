@@ -548,6 +548,7 @@ export interface Species {
 }
 
 export interface Exam {
+  examId: number | null;
   patientId: number;
   speciesId: number;
   speciesVariantId: number;
@@ -579,7 +580,8 @@ export type Outcome =
   | 'release'
   | 'diedOnTable'
   | 'deadOnArrival'
-  | 'pts';
+  | 'pts'
+  | 'none';
 
 export interface ListPatientBoard {
   id: number;

@@ -8,6 +8,7 @@
         <th>Weight</th>
         <th>Note</th>
         <th>Attachment</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -31,6 +32,14 @@
           </button>
           } }
         </td>
+        <td>
+          @if (isVet && patient.status != PatientStatus.Dispositioned) {
+          <button (click)="prepareEdit(note)" class="button button--none">
+            ✏️
+          </button>
+          <button (click)="remove(note)" class="button button--none">🗑️</button>
+          }
+        </td>
       </tr>
       }
     </tbody>
@@ -39,7 +48,8 @@
   <p><em>No notes have been added for this patient.</em></p>
   }
   <div class="flex">
-    @if (!adding) { @if (patient.status != PatientStatus.Dispositioned) {
+    @if (!(adding || editing)) { @if (patient.status !=
+    PatientStatus.Dispositioned) {
     <button (click)="adding = true" class="button button--secondary-invert">
       📝 Add note
     </button>
@@ -69,13 +79,18 @@
         </select>
       </div>
     </div>
+    @if (adding) {
     <div class="field">
       <label for="files">Attachment</label>
       <input id="files" type="file" (change)="onFileChange($event)" />
     </div>
-    @if (!saving) {
+    } @if (!saving) {
     <div class="buttons">
+      @if (adding) {
       <button (click)="add()" class="button button--primary">Save</button>
+      } @else if (editing) {
+      <button (click)="edit()" class="button button--primary">Save</button>
+      }
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     } }

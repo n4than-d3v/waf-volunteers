@@ -34,6 +34,9 @@
         <td>{{ recheck.comments }}</td>
         <td>
           @if (isVet && patient.status != PatientStatus.Dispositioned) {
+          <button (click)="prepareEdit(recheck)" class="button button--none">
+            ✏️
+          </button>
           <button (click)="remove(recheck.id)" class="button button--none">
             🗑️
           </button>
@@ -47,8 +50,8 @@
   <p><em>No rechecks have been added for this patient.</em></p>
   }
   <div class="flex">
-    @if (!adding) { @if (isVet && patient.status != PatientStatus.Dispositioned)
-    {
+    @if (!(adding || editing)) { @if (isVet && patient.status !=
+    PatientStatus.Dispositioned) {
     <button (click)="adding = true" class="button button--secondary-invert">
       🩺 Add recheck
     </button>
@@ -95,7 +98,11 @@
     <div class="error">Please fill in all required fields</div>
     }
     <div class="buttons">
+      @if (adding) {
       <button (click)="add()" class="button button--primary">Save</button>
+      } @else if (editing) {
+      <button (click)="edit()" class="button button--primary">Save</button>
+      }
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     } }

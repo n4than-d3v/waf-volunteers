@@ -9,6 +9,7 @@
       <th>Tester</th>
       <th>Comments</th>
       <th>Attachment</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -28,6 +29,19 @@
         </button>
         } }
       </td>
+      <td>
+        @if (isVet && patient.status != PatientStatus.Dispositioned) {
+        <button
+          (click)="prepareEditBloodTest(test)"
+          class="button button--none"
+        >
+          ✏️
+        </button>
+        <button (click)="removeBloodTest(test)" class="button button--none">
+          🗑️
+        </button>
+        }
+      </td>
     </tr>
     }
   </tbody>
@@ -42,6 +56,7 @@
       <th>Float</th>
       <th>Direct</th>
       <th>Comments</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -52,12 +67,25 @@
       <td>{{ formatPosNeg(test.float) }}</td>
       <td>{{ formatPosNeg(test.direct) }}</td>
       <td>{{ test.comments }}</td>
+      <td>
+        @if (isVet && patient.status != PatientStatus.Dispositioned) {
+        <button
+          (click)="prepareEditFaecalTest(test)"
+          class="button button--none"
+        >
+          ✏️
+        </button>
+        <button (click)="removeFaecalTest(test)" class="button button--none">
+          🗑️
+        </button>
+        }
+      </td>
     </tr>
     }
   </tbody>
 </table>
-} @if (!(addingBlood || addingFaecal)) { @if (isVet && patient.status !=
-PatientStatus.Dispositioned) {
+} @if (!(addingBlood || addingFaecal || updatingBlood || updatingFaecal)) { @if
+(isVet && patient.status != PatientStatus.Dispositioned) {
 <div class="buttons">
   <button (click)="addingBlood = true" class="button button--secondary-invert">
     🩸 Add blood test
@@ -66,7 +94,7 @@ PatientStatus.Dispositioned) {
     💩 Add faecal test
   </button>
 </div>
-} } @else if (addingBlood) {
+} } @else if (addingBlood || updatingBlood) {
 <form [formGroup]="bloodForm">
   <div class="flex">
     <div class="field">
@@ -79,21 +107,28 @@ PatientStatus.Dispositioned) {
         rows="3"
       ></textarea>
     </div>
+    @if (addingBlood) {
     <div class="field">
       <label for="files">Attachment</label>
       <input id="files" type="file" (change)="onFileChange($event)" />
     </div>
-    @if (!saving) {
+    } @if (!saving) {
     <div class="buttons">
+      @if (addingBlood) {
       <button (click)="addBloodTest()" class="button button--primary">
         Save
       </button>
+      } @else if (updatingBlood) {
+      <button (click)="updateBloodTest()" class="button button--primary">
+        Save
+      </button>
+      }
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     }
   </div>
 </form>
-} @else if (addingFaecal) {
+} @else if (addingFaecal || updatingFaecal) {
 <form [formGroup]="faecalForm">
   <div class="flex">
     <div class="field">
@@ -124,9 +159,15 @@ PatientStatus.Dispositioned) {
     </div>
     @if (!saving) {
     <div class="buttons">
+      @if (addingFaecal) {
       <button (click)="addFaecalTest()" class="button button--primary">
         Save
       </button>
+      } @else if (updatingFaecal) {
+      <button (click)="updateFaecalTest()" class="button button--primary">
+        Save
+      </button>
+      }
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     }

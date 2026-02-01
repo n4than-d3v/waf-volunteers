@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import {
   getRecheckRoles,
   getWeightUnit,
+  ListRecheck,
   Patient,
   PatientStatus,
   Task,
@@ -15,7 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { addNote, addRecheck, removeRecheck } from '../../actions';
+import { addRecheck, removeRecheck, updateRecheck } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { selectAddRecheck, selectRemoveRecheck } from '../../selectors';
@@ -48,6 +49,7 @@ export class HospitalPatientRechecksComponent {
   PatientStatus = PatientStatus;
 
   adding = false;
+  editing: number | null = null;
   saving = false;
   attemptedSave = false;
 
@@ -60,6 +62,33 @@ export class HospitalPatientRechecksComponent {
     requireWeight: new FormControl(false),
   });
 
+  prepareEdit(recheck: ListRecheck) {
+    this.editing = recheck.id;
+    this.recheckForm.patchValue({
+      roles: String(recheck.roles),
+      description: recheck.description,
+      due: recheck.due,
+      requireWeight: recheck.requireWeight,
+    });
+  }
+
+  edit() {
+    this.attemptedSave = true;
+    if (!this.recheckForm.valid) return;
+    this.saving = true;
+    this.store.dispatch(
+      updateRecheck({
+        id: this.editing!,
+        patientId: this.patient.id,
+        roles: Number(this.recheckForm.value.roles),
+        description: this.recheckForm.value.description!,
+        due: this.recheckForm.value.due!,
+        requireWeight: this.recheckForm.value.requireWeight!,
+      }),
+    );
+    this.reset();
+  }
+
   add() {
     this.attemptedSave = true;
     if (!this.recheckForm.valid) return;
@@ -71,13 +100,14 @@ export class HospitalPatientRechecksComponent {
         description: this.recheckForm.value.description!,
         due: this.recheckForm.value.due!,
         requireWeight: this.recheckForm.value.requireWeight!,
-      })
+      }),
     );
     this.reset();
   }
 
   reset() {
     this.adding = false;
+    this.editing = null;
     this.attemptedSave = false;
     this.removing = null;
     this.saving = false;
@@ -90,7 +120,7 @@ export class HospitalPatientRechecksComponent {
       removeRecheck({
         patientId: this.patient.id,
         patientRecheckId,
-      })
+      }),
     );
     this.reset();
   }

@@ -36,6 +36,12 @@ patient.prescriptionMedications.length === 0) {
       <td>
         @if (isVet && patient.status != PatientStatus.Dispositioned) {
         <button
+          (click)="prepareEditInstruction(prescription)"
+          class="button button--none"
+        >
+          ✏️
+        </button>
+        <button
           (click)="removeInstruction(prescription.id)"
           class="button button--none"
         >
@@ -87,6 +93,12 @@ patient.prescriptionMedications.length === 0) {
       <td>
         @if (isVet && patient.status != PatientStatus.Dispositioned) {
         <button
+          (click)="prepareEditMedication(prescription)"
+          class="button button--none"
+        >
+          ✏️
+        </button>
+        <button
           (click)="removeMedication(prescription.id)"
           class="button button--none"
         >
@@ -121,8 +133,9 @@ patient.prescriptionMedications.length === 0) {
     } } }
   </tbody>
 </table>
-} @if (!(addingMedication || addingInstruction)) { @if (isVet && patient.status
-!= PatientStatus.Dispositioned) {
+} @if (!(addingMedication || addingInstruction || editingMedication ||
+editingInstruction)) { @if (isVet && patient.status !=
+PatientStatus.Dispositioned) {
 <div class="buttons">
   <button
     (click)="addingMedication = true"
@@ -137,7 +150,7 @@ patient.prescriptionMedications.length === 0) {
     📋 Add other
   </button>
 </div>
-} } @else if (addingMedication) {
+} } @else if (addingMedication || editingMedication) {
 <form [formGroup]="prescriptionMedicationForm">
   <div class="fields">
     <div class="field">
@@ -159,12 +172,6 @@ patient.prescriptionMedications.length === 0) {
       </label>
       <input id="end" type="date" formControlName="end" autocomplete="off" />
     </div>
-    <div class="field">
-      <hospital-patient-prescriptions-frequency
-        [id]="'frequency'"
-        [formGroup]="prescriptionMedicationForm"
-      ></hospital-patient-prescriptions-frequency>
-    </div>
   </div>
   <div class="fields">
     <hospital-patient-medication-selector
@@ -175,18 +182,32 @@ patient.prescriptionMedications.length === 0) {
       [formGroup]="prescriptionMedicationForm"
     ></hospital-patient-medication-selector>
   </div>
+  <div class="fields">
+    <div class="field">
+      <hospital-patient-prescriptions-frequency
+        [id]="'frequency'"
+        [formGroup]="prescriptionMedicationForm"
+      ></hospital-patient-prescriptions-frequency>
+    </div>
+  </div>
   @if (!saving) { @if (attemptedSave && !prescriptionMedicationForm.valid) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">
+    @if (addingMedication) {
     <button (click)="addMedication()" class="button button--primary">
       Save
     </button>
+    } @else if (editingMedication) {
+    <button (click)="editMedication()" class="button button--primary">
+      Save
+    </button>
+    }
     <button (click)="reset()" class="button button--secondary">Back</button>
   </div>
   }
 </form>
-} @else if (addingInstruction) {
+} @else if (addingInstruction || editingInstruction) {
 <form [formGroup]="prescriptionInstructionForm">
   <div class="fields">
     <div class="field">
@@ -231,9 +252,15 @@ patient.prescriptionMedications.length === 0) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">
+    @if (addingInstruction) {
     <button (click)="addInstruction()" class="button button--primary">
       Save
     </button>
+    } @else if (editingInstruction) {
+    <button (click)="editInstruction()" class="button button--primary">
+      Save
+    </button>
+    }
     <button (click)="reset()" class="button button--secondary">Back</button>
   </div>
   }

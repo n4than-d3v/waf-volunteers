@@ -3,7 +3,7 @@ using Api.Database.Entities.Hospital.Patients;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Handlers.Hospital.Patients;
+namespace Api.Handlers.Hospital.Patients.Notes;
 
 public class DownloadNoteAttachment : IRequest<IResult>
 {

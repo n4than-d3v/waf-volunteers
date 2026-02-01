@@ -23,6 +23,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 import {
   AdministrationMethod,
+  getWeightUnit,
   Medication,
   MedicationConcentrationSpeciesDose,
   ReadOnlyWrapper,
@@ -74,20 +75,31 @@ export class HospitalPatientMedicationSelectorComponent
   defaultDoseSpeciesId: number | null = null;
   defaultDoseSpeciesType: number | null = null;
 
-  subscription: Subscription;
+  speciesSubscription: Subscription;
+  medicationSubscription: Subscription;
 
   medications: Medication[] = [];
 
   constructor(private store: Store) {
     this.medications$ = this.store.select(selectMedications);
+
     this.administrationMethods$ = this.store.select(
-      selectAdministrationMethods
+      selectAdministrationMethods,
     );
-    this.subscription = this.store
+
+    this.speciesSubscription = this.store
       .select(selectSpecies)
       .subscribe((species) => {
         if (!species.data) return;
         this.species = species.data;
+      });
+
+    this.medicationSubscription = this.store
+      .select(selectMedications)
+      .subscribe((medications) => {
+        if (!medications.data) return;
+        this.medications = medications.data;
+        this.updateDefaults(this.medications, false);
       });
   }
 
@@ -98,7 +110,8 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.speciesSubscription.unsubscribe();
+    this.medicationSubscription.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -107,22 +120,23 @@ export class HospitalPatientMedicationSelectorComponent
       changes['weightValue'] ||
       changes['weightUnit']
     ) {
-      this.updateDefaults(this.medications);
+      this.updateDefaults(this.medications, false);
     }
   }
 
-  updateDefaults(medications: Medication[]) {
+  updateDefaults(medications: Medication[], update: boolean = true) {
     if (!medications.length) return;
+    if (!this.formGroup) return;
 
     this.medications = medications;
     this.clearDefaultDose();
 
     const medication = this.medications.find(
-      (x) => x.id === Number(this.formGroup.value.medicationId)
+      (x) => x.id === Number(this.formGroup.value.medicationId),
     );
     if (!medication) return;
     const medicationConcentration = medication.concentrations.find(
-      (x) => x.id === Number(this.formGroup.value.medicationConcentrationId)
+      (x) => x.id === Number(this.formGroup.value.medicationConcentrationId),
     );
     if (!medicationConcentration) return;
     const species = this.species.find((x) => x.id == Number(this.speciesId));
@@ -132,7 +146,7 @@ export class HospitalPatientMedicationSelectorComponent
     for (const dose of medicationConcentration.speciesDoses) {
       if (!dose.species) continue;
       if (dose.species.id === species.id) {
-        this.updateDoseDefaults(dose);
+        this.updateDoseDefaults(dose, update);
       }
     }
     if (this.defaultDoseKey) return;
@@ -140,7 +154,7 @@ export class HospitalPatientMedicationSelectorComponent
     for (const dose of medicationConcentration.speciesDoses) {
       if (!dose.speciesType) continue;
       if (dose.speciesType === species.speciesType) {
-        this.updateDoseDefaults(dose);
+        this.updateDoseDefaults(dose, update);
       }
     }
   }
@@ -149,19 +163,34 @@ export class HospitalPatientMedicationSelectorComponent
     const weight = this.getWeightKg();
     const doseMlKg = Number(this.formGroup.value.rangeSelection);
     this.formGroup.controls['quantityValue'].setValue(
-      Math.round(doseMlKg * weight * 100) / 100
+      Math.round(doseMlKg * weight * 100) / 100,
     );
   }
 
-  private updateDoseDefaults(dose: MedicationConcentrationSpeciesDose) {
+  private setRangeDefault() {
+    const weight = this.getWeightKg();
+    const quantity = this.formGroup.controls['quantityValue'].value;
+    if (!quantity) return;
+    this.formGroup.controls['rangeSelection'].setValue(
+      String(Math.round((Number(quantity) / weight) * 100) / 100),
+    );
+  }
+
+  private updateDoseDefaults(
+    dose: MedicationConcentrationSpeciesDose,
+    update: boolean = true,
+  ) {
     this.setDefaultDose(dose);
+    this.setRangeDefault();
+    if (!update) return;
+
     const weight = this.getWeightKg();
     this.formGroup.controls['administrationMethodId'].setValue(
-      dose.administrationMethod.id
+      dose.administrationMethod.id,
     );
     this.formGroup.controls['rangeSelection'].setValue(dose.doseMlKgRangeEnd);
     this.formGroup.controls['quantityValue'].setValue(
-      Math.round(dose.doseMlKgRangeEnd * weight * 100) / 100
+      Math.round(dose.doseMlKgRangeEnd * weight * 100) / 100,
     );
     this.formGroup.controls['quantityUnit'].setValue('ml');
     if (this.formGroup.controls['frequency']) {
@@ -227,7 +256,7 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   groupMedicationDoses(
-    items: MedicationConcentrationSpeciesDose[]
+    items: MedicationConcentrationSpeciesDose[],
   ): MedicationConcentrationSpeciesDoses[] {
     const map = new Map<string, MedicationConcentrationSpeciesDoses>();
 

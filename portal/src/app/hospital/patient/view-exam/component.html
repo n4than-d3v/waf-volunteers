@@ -1,3 +1,9 @@
+@if (editing) {
+<hospital-patient-exam
+  [exam]="exam"
+  [patientId]="patient.id"
+></hospital-patient-exam>
+} @else {
 <div class="row">
   <table>
     <tbody>
@@ -119,4 +125,8 @@
     }
   </tbody>
 </table>
+}
+<button (click)="editing = true" class="button button--secondary-invert">
+  ✏️ Edit
+</button>
 }

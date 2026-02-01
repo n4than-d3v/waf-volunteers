@@ -1,8 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   AdministrationMethod,
+  getWeightUnit,
   Patient,
   PatientStatus,
+  Prescription,
+  PrescriptionInstruction,
+  PrescriptionMedication,
   ReadOnlyWrapper,
   Task,
 } from '../../state';
@@ -21,6 +25,8 @@ import {
   getAdministrationMethods,
   removePrescriptionInstruction,
   removePrescriptionMedication,
+  updatePrescriptionInstruction,
+  updatePrescriptionMedication,
 } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { HospitalPatientMedicationSelectorComponent } from '../medication-selector/component';
@@ -62,7 +68,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   constructor(private store: Store) {
     this.administrationMethods$ = this.store.select(
-      selectAdministrationMethods
+      selectAdministrationMethods,
     );
     this.addTask$ = this.store.select(selectAddPrescription);
     this.removeTask$ = this.store.select(selectRemovePrescription);
@@ -74,6 +80,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   addingInstruction = false;
   addingMedication = false;
+  editingInstruction: number | null = null;
+  editingMedication: number | null = null;
 
   saving = false;
   attemptedSave = false;
@@ -108,9 +116,114 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     this.saving = false;
     this.addingInstruction = false;
     this.addingMedication = false;
+    this.editingInstruction = null;
+    this.editingMedication = null;
     this.attemptedSave = false;
     this.prescriptionInstructionForm.reset();
     this.prescriptionMedicationForm.reset();
+  }
+
+  prepareEditInstruction(prescription: PrescriptionInstruction) {
+    this.editingInstruction = prescription.id;
+    this.prescriptionInstructionForm.patchValue({
+      ...prescription,
+      ...this.getFrequency(prescription),
+    });
+  }
+
+  prepareEditMedication(prescription: PrescriptionMedication) {
+    this.editingMedication = prescription.id;
+    this.prescriptionMedicationForm.patchValue({
+      start: prescription.start,
+      end: prescription.end,
+      medicationId: String(prescription.medication.id),
+      medicationConcentrationId: String(
+        prescription.medicationConcentration.id,
+      ),
+      administrationMethodId: String(prescription.administrationMethod.id),
+      comments: prescription.comments,
+      quantityUnit: prescription.quantityUnit,
+      quantityValue: String(prescription.quantityValue),
+      frequency: prescription.frequency,
+      ...this.getFrequency(prescription),
+    });
+  }
+
+  editMedication() {
+    this.attemptedSave = true;
+    if (!this.prescriptionMedicationForm.valid) return;
+    this.saving = true;
+    this.store.dispatch(
+      updatePrescriptionMedication({
+        id: this.editingMedication!,
+        ...this.getPrescriptionMedication(),
+      }),
+    );
+    this.reset();
+  }
+
+  editInstruction() {
+    this.attemptedSave = true;
+    if (!this.prescriptionInstructionForm.valid) return;
+    this.saving = true;
+    this.store.dispatch(
+      updatePrescriptionInstruction({
+        id: this.editingInstruction!,
+        ...this.getPrescriptionInstruction(),
+      }),
+    );
+    this.reset();
+  }
+
+  private getFrequency(prescription: Prescription) {
+    let frequencyType, frequencyX, frequencyY;
+
+    if (prescription.frequency === 'One time') {
+      frequencyType = 'once';
+    } else {
+      frequencyType = prescription.frequency.startsWith('Every')
+        ? 'interval'
+        : 'rate';
+      const split = prescription.frequency
+        .replace('Every ', '')
+        .replace('times per ', '')
+        .split(' ');
+      frequencyX = split[0];
+      frequencyY = split[1];
+    }
+
+    return { frequencyType, frequencyX, frequencyY };
+  }
+
+  private getPrescriptionInstruction() {
+    return {
+      patientId: this.patient.id,
+      start: this.prescriptionInstructionForm.value.start!,
+      end: this.prescriptionInstructionForm.value.end!,
+      frequency: this.prescriptionInstructionForm.value.frequency!,
+      instructions: this.prescriptionInstructionForm.value.instructions || '',
+    };
+  }
+
+  private getPrescriptionMedication() {
+    return {
+      patientId: this.patient.id,
+      start: this.prescriptionMedicationForm.value.start!,
+      end: this.prescriptionMedicationForm.value.end!,
+      frequency: this.prescriptionMedicationForm.value.frequency!,
+      quantityValue: Number(
+        this.prescriptionMedicationForm.value.quantityValue!,
+      ),
+      quantityUnit: this.prescriptionMedicationForm.value.quantityUnit!,
+      administrationMethodId: Number(
+        this.prescriptionMedicationForm.value.administrationMethodId!,
+      ),
+      medicationId: Number(this.prescriptionMedicationForm.value.medicationId!),
+      medicationConcentrationId: Number(
+        this.prescriptionMedicationForm.value.medicationConcentrationId!,
+      ),
+      comments: this.prescriptionMedicationForm.value.comments || '',
+    };
   }
 
   addMedication() {
@@ -119,25 +232,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     this.saving = true;
     this.store.dispatch(
       addPrescriptionMedication({
-        patientId: this.patient.id,
-        start: this.prescriptionMedicationForm.value.start!,
-        end: this.prescriptionMedicationForm.value.end!,
-        frequency: this.prescriptionMedicationForm.value.frequency!,
-        quantityValue: Number(
-          this.prescriptionMedicationForm.value.quantityValue!
-        ),
-        quantityUnit: this.prescriptionMedicationForm.value.quantityUnit!,
-        administrationMethodId: Number(
-          this.prescriptionMedicationForm.value.administrationMethodId!
-        ),
-        medicationId: Number(
-          this.prescriptionMedicationForm.value.medicationId!
-        ),
-        medicationConcentrationId: Number(
-          this.prescriptionMedicationForm.value.medicationConcentrationId!
-        ),
-        comments: this.prescriptionMedicationForm.value.comments || '',
-      })
+        ...this.getPrescriptionMedication(),
+      }),
     );
     this.reset();
   }
@@ -148,12 +244,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     this.saving = true;
     this.store.dispatch(
       addPrescriptionInstruction({
-        patientId: this.patient.id,
-        start: this.prescriptionInstructionForm.value.start!,
-        end: this.prescriptionInstructionForm.value.end!,
-        frequency: this.prescriptionInstructionForm.value.frequency!,
-        instructions: this.prescriptionInstructionForm.value.instructions || '',
-      })
+        ...this.getPrescriptionInstruction(),
+      }),
     );
     this.reset();
   }
@@ -163,7 +255,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
       removePrescriptionInstruction({
         patientId: this.patient.id,
         patientPrescriptionInstructionId,
-      })
+      }),
     );
     this.reset();
   }
@@ -173,7 +265,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
       removePrescriptionMedication({
         patientId: this.patient.id,
         patientPrescriptionMedicationId,
-      })
+      }),
     );
     this.reset();
   }

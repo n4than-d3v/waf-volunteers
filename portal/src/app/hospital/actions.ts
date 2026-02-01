@@ -316,6 +316,39 @@ export const addNoteSuccess = createAction(
 );
 export const addNoteError = createAction('[HMS-V] Add note: error');
 
+// Update note
+
+export const updateNote = createAction(
+  '[HMS-V] Update note',
+  props<{
+    id: number;
+    patientId: number;
+    weightValue: number | null;
+    weightUnit: number | null;
+    comments: string;
+  }>(),
+);
+export const updateNoteSuccess = createAction(
+  '[HMS-V] Update note: success',
+  props<{ patientId: number }>(),
+);
+export const updateNoteError = createAction('[HMS-V] Update note: error');
+
+// Remove note
+
+export const removeNote = createAction(
+  '[HMS-V] Remove note',
+  props<{
+    id: number;
+    patientId: number;
+  }>(),
+);
+export const removeNoteSuccess = createAction(
+  '[HMS-V] Remove note: success',
+  props<{ patientId: number }>(),
+);
+export const removeNoteError = createAction('[HMS-V] Remove note: error');
+
 export const downloadNoteAttachment = createAction(
   '[HMS-V] Download note attachment',
   props<{
@@ -347,6 +380,43 @@ export const addFaecalTestError = createAction(
   '[HMS-V] Add faecal test: error',
 );
 
+// Update faecal test
+
+export const updateFaecalTest = createAction(
+  '[HMS-V] Update faecal test',
+  props<{
+    id: number;
+    patientId: number;
+    float: boolean | null;
+    direct: boolean | null;
+    comments: string;
+  }>(),
+);
+export const updateFaecalTestSuccess = createAction(
+  '[HMS-V] Update faecal test: success',
+  props<{ patientId: number }>(),
+);
+export const updateFaecalTestError = createAction(
+  '[HMS-V] Update faecal test: error',
+);
+
+// Remove faecal test
+
+export const removeFaecalTest = createAction(
+  '[HMS-V] Remove faecal test',
+  props<{
+    id: number;
+    patientId: number;
+  }>(),
+);
+export const removeFaecalTestSuccess = createAction(
+  '[HMS-V] Remove faecal test: success',
+  props<{ patientId: number }>(),
+);
+export const removeFaecalTestError = createAction(
+  '[HMS-V] Remove faecal test: error',
+);
+
 // Add blood test
 
 export const addBloodTest = createAction(
@@ -362,6 +432,41 @@ export const addBloodTestSuccess = createAction(
   props<{ patientId: number }>(),
 );
 export const addBloodTestError = createAction('[HMS-V] Add blood test: error');
+
+// Update blood test
+
+export const updateBloodTest = createAction(
+  '[HMS-V] Update blood test',
+  props<{
+    id: number;
+    patientId: number;
+    comments: string;
+  }>(),
+);
+export const updateBloodTestSuccess = createAction(
+  '[HMS-V] Update blood test: success',
+  props<{ patientId: number }>(),
+);
+export const updateBloodTestError = createAction(
+  '[HMS-V] Update blood test: error',
+);
+
+// Remove blood test
+
+export const removeBloodTest = createAction(
+  '[HMS-V] Remove blood test',
+  props<{
+    id: number;
+    patientId: number;
+  }>(),
+);
+export const removeBloodTestSuccess = createAction(
+  '[HMS-V] Remove blood test: success',
+  props<{ patientId: number }>(),
+);
+export const removeBloodTestError = createAction(
+  '[HMS-V] Remove blood test: error',
+);
 
 export const downloadBloodTestAttachment = createAction(
   '[HMS-V] Download blood test attachment',
@@ -393,6 +498,25 @@ export const addRecheckSuccess = createAction(
 );
 export const addRecheckError = createAction('[HMS-V] Add recheck: error');
 
+// Update recheck
+
+export const updateRecheck = createAction(
+  '[HMS-V] Update recheck',
+  props<{
+    id: number;
+    patientId: number;
+    roles: number;
+    description: string;
+    due: string;
+    requireWeight: boolean;
+  }>(),
+);
+export const updateRecheckSuccess = createAction(
+  '[HMS-V] Update recheck: success',
+  props<{ patientId: number }>(),
+);
+export const updateRecheckError = createAction('[HMS-V] Update recheck: error');
+
 // Add prescription medication
 
 export const addPrescriptionMedication = createAction(
@@ -418,6 +542,32 @@ export const addPrescriptionMedicationError = createAction(
   '[HMS-V] Add prescription medication: error',
 );
 
+// Update prescription medication
+
+export const updatePrescriptionMedication = createAction(
+  '[HMS-V] Update prescription medication',
+  props<{
+    id: number;
+    patientId: number;
+    start: string;
+    end: string;
+    frequency: string;
+    quantityValue: number;
+    quantityUnit: string;
+    administrationMethodId: number;
+    medicationId: number;
+    medicationConcentrationId: number;
+    comments: string;
+  }>(),
+);
+export const updatePrescriptionMedicationSuccess = createAction(
+  '[HMS-V] Update prescription medication: success',
+  props<{ patientId: number }>(),
+);
+export const updatePrescriptionMedicationError = createAction(
+  '[HMS-V] Update prescription medication: error',
+);
+
 // Add prescription instruction
 
 export const addPrescriptionInstruction = createAction(
@@ -436,6 +586,27 @@ export const addPrescriptionInstructionSuccess = createAction(
 );
 export const addPrescriptionInstructionError = createAction(
   '[HMS-V] Add prescription instruction: error',
+);
+
+// Update prescription instruction
+
+export const updatePrescriptionInstruction = createAction(
+  '[HMS-V] Update prescription instruction',
+  props<{
+    id: number;
+    patientId: number;
+    start: string;
+    end: string;
+    frequency: string;
+    instructions: string;
+  }>(),
+);
+export const updatePrescriptionInstructionSuccess = createAction(
+  '[HMS-V] Update prescription instruction: success',
+  props<{ patientId: number }>(),
+);
+export const updatePrescriptionInstructionError = createAction(
+  '[HMS-V] Update prescription instruction: error',
 );
 
 // Remove recheck

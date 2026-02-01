@@ -13,6 +13,7 @@ import {
   BodyCondition,
   Dehydration,
   DispositionReason,
+  ListExam,
   MucousMembraneColour,
   MucousMembraneTexture,
   Outcome,
@@ -76,7 +77,8 @@ import { HospitalPatientAutocompleteComponent } from '../autocomplete/component'
   ],
 })
 export class HospitalPatientExamComponent implements OnInit {
-  @Input({ required: true }) id!: number;
+  @Input({ required: true }) exam!: ListExam | null;
+  @Input({ required: true }) patientId!: number;
 
   attitudes$: Observable<ReadOnlyWrapper<Attitude[]>>;
   bodyConditions$: Observable<ReadOnlyWrapper<BodyCondition[]>>;
@@ -136,15 +138,15 @@ export class HospitalPatientExamComponent implements OnInit {
     this.bodyConditions$ = this.store.select(selectBodyConditions);
     this.dehydrations$ = this.store.select(selectDehydrations);
     this.mucousMembraneColours$ = this.store.select(
-      selectMucousMembraneColours
+      selectMucousMembraneColours,
     );
     this.mucousMembraneTextures$ = this.store.select(
-      selectMucousMembraneTextures
+      selectMucousMembraneTextures,
     );
     this.species$ = this.store.select(selectSpecies);
     this.dispositionReasons$ = this.store.select(selectDispositionReasons);
     this.administrationMethods$ = this.store.select(
-      selectAdministrationMethods
+      selectAdministrationMethods,
     );
     this.areas$ = this.store.select(selectAreas);
     this.performExamTask$ = this.store.select(selectPerformExam);
@@ -159,7 +161,7 @@ export class HospitalPatientExamComponent implements OnInit {
     this.examForm.controls.treatmentInstructions.push(
       new FormGroup({
         instructions: new FormControl<string | null>('', [Validators.required]),
-      })
+      }),
     );
   }
 
@@ -179,7 +181,7 @@ export class HospitalPatientExamComponent implements OnInit {
           Validators.required,
         ]),
         comments: new FormControl<string | null>(''),
-      })
+      }),
     );
   }
 
@@ -195,27 +197,29 @@ export class HospitalPatientExamComponent implements OnInit {
 
   performExam() {
     this.attemptedSave = true;
-    this.examForm.controls.penId.clearValidators();
-    this.examForm.controls.dispositionReasonId.clearValidators();
-    if (this.examForm.controls.outcome.value === 'alive') {
-      this.examForm.controls.penId.setValidators([Validators.required]);
-    } else if (
-      this.examForm.controls.outcome.value === 'diedOnTable' ||
-      this.examForm.controls.outcome.value === 'deadOnArrival' ||
-      this.examForm.controls.outcome.value === 'pts'
-    ) {
-      this.examForm.controls.dispositionReasonId.setValidators([
-        Validators.required,
-      ]);
+    if (this.exam === null) {
+      this.examForm.controls.penId.clearValidators();
+      this.examForm.controls.dispositionReasonId.clearValidators();
+      if (this.examForm.controls.outcome.value === 'alive') {
+        this.examForm.controls.penId.setValidators([Validators.required]);
+      } else if (
+        this.examForm.controls.outcome.value === 'diedOnTable' ||
+        this.examForm.controls.outcome.value === 'deadOnArrival' ||
+        this.examForm.controls.outcome.value === 'pts'
+      ) {
+        this.examForm.controls.dispositionReasonId.setValidators([
+          Validators.required,
+        ]);
+      }
+      this.examForm.controls.penId.updateValueAndValidity({
+        onlySelf: true,
+        emitEvent: true,
+      });
+      this.examForm.controls.dispositionReasonId.updateValueAndValidity({
+        onlySelf: true,
+        emitEvent: true,
+      });
     }
-    this.examForm.controls.penId.updateValueAndValidity({
-      onlySelf: true,
-      emitEvent: true,
-    });
-    this.examForm.controls.dispositionReasonId.updateValueAndValidity({
-      onlySelf: true,
-      emitEvent: true,
-    });
     this.examForm.updateValueAndValidity({
       onlySelf: true,
       emitEvent: true,
@@ -225,10 +229,11 @@ export class HospitalPatientExamComponent implements OnInit {
     this.store.dispatch(
       performExam({
         exam: {
-          patientId: this.id,
+          examId: this.exam?.id || null,
+          patientId: this.patientId,
           speciesId: Number(this.examForm.controls.speciesId.value),
           speciesVariantId: Number(
-            this.examForm.controls.speciesVariantId.value
+            this.examForm.controls.speciesVariantId.value,
           ),
           sex: Number(this.examForm.controls.sex.value),
           weightValue: this.examForm.controls.weightValue.value
@@ -272,14 +277,17 @@ export class HospitalPatientExamComponent implements OnInit {
             })),
           comments: this.examForm.controls.comments.value || '',
         },
-        outcome: this.examForm.controls.outcome.value as Outcome,
+        outcome:
+          this.exam !== null
+            ? 'none' // if updating the exam, always set outcome to none
+            : (this.examForm.controls.outcome.value as Outcome),
         dispositionReasonId: this.examForm.controls.dispositionReasonId.value
           ? Number(this.examForm.controls.dispositionReasonId.value)
           : undefined,
         penId: this.examForm.controls.penId.value
           ? Number(this.examForm.controls.penId.value)
           : undefined,
-      })
+      }),
     );
   }
 
@@ -293,5 +301,45 @@ export class HospitalPatientExamComponent implements OnInit {
     this.store.dispatch(getDispositionReasons());
     this.store.dispatch(getAdministrationMethods());
     this.store.dispatch(getAreas());
+    this.prepareEdit();
+  }
+
+  private prepareEdit() {
+    if (!this.exam) return;
+    this.exam.treatmentInstructions.map((_) => this.addTreatmentInstruction());
+    this.exam.treatmentMedications.map((_) => this.addTreatmentMedication());
+    this.examForm.patchValue({
+      speciesId: String(this.exam.species.id),
+      speciesVariantId: String(this.exam.speciesVariant.id),
+      sex: String(this.exam.sex),
+      weightValue: this.exam.weightValue ? String(this.exam.weightValue) : null,
+      weightUnit: this.exam.weightUnit ? String(this.exam.weightUnit) : null,
+      temperature: this.exam.temperature ? String(this.exam.temperature) : null,
+      attitudeId: this.exam.attitude?.id ? String(this.exam.attitude.id) : null,
+      bodyConditionId: this.exam.bodyCondition?.id
+        ? String(this.exam.bodyCondition.id)
+        : null,
+      dehydrationId: this.exam.dehydration?.id
+        ? String(this.exam.dehydration.id)
+        : null,
+      mucousMembraneColourId: this.exam.mucousMembraneColour?.id
+        ? String(this.exam.mucousMembraneColour.id)
+        : null,
+      mucousMembraneTextureId: this.exam.mucousMembraneTexture?.id
+        ? String(this.exam.mucousMembraneTexture.id)
+        : null,
+      treatmentInstructions: this.exam.treatmentInstructions.map((ti) => ({
+        instructions: ti.instructions || '',
+      })),
+      treatmentMedications: this.exam.treatmentMedications.map((tm) => ({
+        quantityValue: String(tm.quantityValue),
+        quantityUnit: tm.quantityUnit || '',
+        medicationId: String(tm.medication.id),
+        medicationConcentrationId: String(tm.medicationConcentration.id),
+        administrationMethodId: String(tm.administrationMethod.id),
+        comments: tm.comments || '',
+      })),
+      comments: this.exam.comments || '',
+    });
   }
 }

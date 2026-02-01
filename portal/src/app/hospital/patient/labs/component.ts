@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import {
   ListBloodTest,
-  ListNote,
+  ListFaecalTest,
   Patient,
   PatientStatus,
   Task,
@@ -18,7 +18,10 @@ import {
   addBloodTest,
   addFaecalTest,
   downloadBloodTestAttachment,
-  downloadNoteAttachment,
+  removeBloodTest,
+  removeFaecalTest,
+  updateBloodTest,
+  updateFaecalTest,
 } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
@@ -50,7 +53,9 @@ export class HospitalPatientLabsComponent {
   PatientStatus = PatientStatus;
 
   addingFaecal = false;
+  updatingFaecal: number | null = null;
   addingBlood = false;
+  updatingBlood: number | null = null;
   saving = false;
 
   faecalForm = new FormGroup({
@@ -76,6 +81,70 @@ export class HospitalPatientLabsComponent {
     this.bloodForm.controls.files.setValue(Array.from(files));
   }
 
+  prepareEditFaecalTest(test: ListFaecalTest) {
+    this.updatingFaecal = test.id;
+    this.faecalForm.patchValue({
+      float: test.float != null ? (test.float! ? 'P' : 'N') : null,
+      direct: test.direct != null ? (test.direct! ? 'P' : 'N') : null,
+      comments: test.comments,
+    });
+  }
+
+  updateFaecalTest() {
+    this.saving = true;
+    const float = this.faecalForm.value.float || '';
+    const direct = this.faecalForm.value.direct || '';
+    this.store.dispatch(
+      updateFaecalTest({
+        id: this.updatingFaecal!,
+        patientId: this.patient.id,
+        float: float ? float === 'P' : null,
+        direct: direct ? direct === 'P' : null,
+        comments: this.faecalForm.value.comments || '',
+      }),
+    );
+    this.reset();
+  }
+
+  removeFaecalTest(test: ListFaecalTest) {
+    this.store.dispatch(
+      removeFaecalTest({
+        id: test.id,
+        patientId: this.patient.id,
+      }),
+    );
+    this.reset();
+  }
+
+  prepareEditBloodTest(test: ListBloodTest) {
+    this.updatingBlood = test.id;
+    this.bloodForm.patchValue({
+      comments: test.comments,
+    });
+  }
+
+  updateBloodTest() {
+    this.saving = true;
+    this.store.dispatch(
+      updateBloodTest({
+        id: this.updatingBlood!,
+        patientId: this.patient.id,
+        comments: this.bloodForm.value.comments || '',
+      }),
+    );
+    this.reset();
+  }
+
+  removeBloodTest(test: ListBloodTest) {
+    this.store.dispatch(
+      removeBloodTest({
+        id: test.id,
+        patientId: this.patient.id,
+      }),
+    );
+    this.reset();
+  }
+
   addFaecalTest() {
     this.saving = true;
     const float = this.faecalForm.value.float || '';
@@ -86,7 +155,7 @@ export class HospitalPatientLabsComponent {
         float: float ? float === 'P' : null,
         direct: direct ? direct === 'P' : null,
         comments: this.faecalForm.value.comments || '',
-      })
+      }),
     );
     this.reset();
   }
@@ -98,21 +167,21 @@ export class HospitalPatientLabsComponent {
         patientId: this.patient.id,
         comments: this.bloodForm.value.comments || '',
         files: this.bloodForm.value.files || [],
-      })
+      }),
     );
     this.reset();
   }
 
   download(
     bloodTest: ListBloodTest,
-    attachment: { id: number; fileName: string }
+    attachment: { id: number; fileName: string },
   ) {
     this.store.dispatch(
       downloadBloodTestAttachment({
         patientId: this.patient.id,
         bloodTestId: bloodTest.id,
         attachment,
-      })
+      }),
     );
   }
 
@@ -120,6 +189,8 @@ export class HospitalPatientLabsComponent {
     this.saving = false;
     this.addingFaecal = false;
     this.addingBlood = false;
+    this.updatingBlood = null;
+    this.updatingFaecal = null;
     this.faecalForm.reset();
     this.bloodForm.reset();
   }

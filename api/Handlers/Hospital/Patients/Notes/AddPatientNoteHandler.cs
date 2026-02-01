@@ -5,7 +5,7 @@ using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Services;
 using MediatR;
 
-namespace Api.Handlers.Hospital.Patients;
+namespace Api.Handlers.Hospital.Patients.Notes;
 
 public class AddPatientNote : IRequest<IResult>
 {

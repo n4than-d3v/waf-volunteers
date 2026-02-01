@@ -161,6 +161,33 @@ import {
   viewPatientBoards,
   viewPatientBoardsSuccess,
   viewPatientBoardsError,
+  updateNote,
+  updateNoteSuccess,
+  updateNoteError,
+  removeNote,
+  removeNoteSuccess,
+  removeNoteError,
+  updateFaecalTest,
+  updateFaecalTestSuccess,
+  updateFaecalTestError,
+  removeFaecalTest,
+  removeFaecalTestSuccess,
+  removeFaecalTestError,
+  updateBloodTest,
+  updateBloodTestSuccess,
+  updateBloodTestError,
+  removeBloodTest,
+  removeBloodTestSuccess,
+  removeBloodTestError,
+  updateRecheck,
+  updateRecheckSuccess,
+  updateRecheckError,
+  updatePrescriptionInstruction,
+  updatePrescriptionInstructionSuccess,
+  updatePrescriptionInstructionError,
+  updatePrescriptionMedication,
+  updatePrescriptionMedicationSuccess,
+  updatePrescriptionMedicationError,
 } from './actions';
 
 @Injectable()
@@ -491,6 +518,13 @@ export class HospitalEffects {
                     newAreaId: null,
                   }),
                 );
+              } else if (action.outcome === 'none') {
+                actions.push(
+                  getPatient({
+                    id: action.exam.patientId,
+                    silent: false,
+                  }),
+                );
               }
 
               return actions;
@@ -689,6 +723,54 @@ export class HospitalEffects {
     ),
   );
 
+  // Update note
+
+  updateNote$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateNote),
+      switchMap((action) =>
+        this.http.put(`hospital/patients/note/${action.id}`, action).pipe(
+          map(() => updateNoteSuccess({ patientId: action.patientId })),
+          catchError(() => of(updateNoteError())),
+        ),
+      ),
+    ),
+  );
+
+  updateNoteSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateNoteSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  // Remove note
+
+  removeNote$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeNote),
+      switchMap((action) =>
+        this.http.delete(`hospital/patients/note/${action.id}`).pipe(
+          map(() => removeNoteSuccess({ patientId: action.patientId })),
+          catchError(() => of(removeNoteError())),
+        ),
+      ),
+    ),
+  );
+
+  removeNoteSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeNoteSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  // Download note attachment
+
   downloadNoteAttachment$ = createEffect(
     () =>
       this.actions$.pipe(
@@ -741,6 +823,54 @@ export class HospitalEffects {
     ),
   );
 
+  // Update faecal test
+
+  updateFaecalTest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateFaecalTest),
+      switchMap((action) =>
+        this.http
+          .put(`hospital/patients/faecal-test/${action.id}`, action)
+          .pipe(
+            map(() => updateFaecalTestSuccess({ patientId: action.patientId })),
+            catchError(() => of(updateFaecalTestError())),
+          ),
+      ),
+    ),
+  );
+
+  updateFaecalTestSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateFaecalTestSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  // Remove faecal test
+
+  removeFaecalTest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeFaecalTest),
+      switchMap((action) =>
+        this.http.delete(`hospital/patients/faecal-test/${action.id}`).pipe(
+          map(() => removeFaecalTestSuccess({ patientId: action.patientId })),
+          catchError(() => of(removeFaecalTestError())),
+        ),
+      ),
+    ),
+  );
+
+  removeFaecalTestSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeFaecalTestSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
   // Add blood test
 
   addBloodTest$ = createEffect(() =>
@@ -771,6 +901,54 @@ export class HospitalEffects {
       ),
     ),
   );
+
+  // Update blood test
+
+  updateBloodTest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateBloodTest),
+      switchMap((action) =>
+        this.http.put(`hospital/patients/blood-test/${action.id}`, action).pipe(
+          map(() => updateBloodTestSuccess({ patientId: action.patientId })),
+          catchError(() => of(updateBloodTestError())),
+        ),
+      ),
+    ),
+  );
+
+  updateBloodTestSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateBloodTestSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  // Remove blood test
+
+  removeBloodTest$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeBloodTest),
+      switchMap((action) =>
+        this.http.delete(`hospital/patients/blood-test/${action.id}`).pipe(
+          map(() => removeBloodTestSuccess({ patientId: action.patientId })),
+          catchError(() => of(removeBloodTestError())),
+        ),
+      ),
+    ),
+  );
+
+  removeBloodTestSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeBloodTestSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  // Download blood test attachment
 
   downloadBloodTestAttachment$ = createEffect(
     () =>
@@ -824,6 +1002,29 @@ export class HospitalEffects {
     ),
   );
 
+  // Update recheck
+
+  updateRecheck$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateRecheck),
+      switchMap((action) =>
+        this.http.put(`hospital/patients/recheck/${action.id}`, action).pipe(
+          map(() => updateRecheckSuccess({ patientId: action.patientId })),
+          catchError(() => of(updateRecheckError())),
+        ),
+      ),
+    ),
+  );
+
+  updateRecheckSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateRecheckSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
   // Add prescription instruction
 
   addPrescriptionInstruction$ = createEffect(() =>
@@ -856,6 +1057,38 @@ export class HospitalEffects {
     ),
   );
 
+  // Update prescription instruction
+
+  updatePrescriptionInstruction$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePrescriptionInstruction),
+      switchMap((action) =>
+        this.http
+          .put(
+            `hospital/patients/prescriptions/instruction/${action.id}`,
+            action,
+          )
+          .pipe(
+            map(() =>
+              updatePrescriptionInstructionSuccess({
+                patientId: action.patientId,
+              }),
+            ),
+            catchError(() => of(updatePrescriptionInstructionError())),
+          ),
+      ),
+    ),
+  );
+
+  updatePrescriptionInstructionSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePrescriptionInstructionSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
   // Add prescription medication
 
   addPrescriptionMedication$ = createEffect(() =>
@@ -880,6 +1113,38 @@ export class HospitalEffects {
   addPrescriptionMedicationSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addPrescriptionMedicationSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  // Update prescription medication
+
+  updatePrescriptionMedication$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePrescriptionMedication),
+      switchMap((action) =>
+        this.http
+          .put(
+            `hospital/patients/prescriptions/medication/${action.id}`,
+            action,
+          )
+          .pipe(
+            map(() =>
+              updatePrescriptionMedicationSuccess({
+                patientId: action.patientId,
+              }),
+            ),
+            catchError(() => of(updatePrescriptionMedicationError())),
+          ),
+      ),
+    ),
+  );
+
+  updatePrescriptionMedicationSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePrescriptionMedicationSuccess),
       switchMap((action) =>
         of(getPatient({ id: action.patientId, silent: true })),
       ),

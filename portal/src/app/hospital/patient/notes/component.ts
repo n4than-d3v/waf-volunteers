@@ -14,7 +14,12 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { addNote, downloadNoteAttachment } from '../../actions';
+import {
+  addNote,
+  downloadNoteAttachment,
+  removeNote,
+  updateNote,
+} from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { selectAddNote } from '../../selectors';
@@ -45,6 +50,7 @@ export class HospitalPatientNotesComponent {
   PatientStatus = PatientStatus;
 
   adding = false;
+  editing: number | null = null;
   saving = false;
 
   noteForm = new FormGroup({
@@ -57,6 +63,43 @@ export class HospitalPatientNotesComponent {
   onFileChange(event: any) {
     const files = event.target.files as FileList;
     this.noteForm.controls.files.setValue(Array.from(files));
+  }
+
+  prepareEdit(note: ListNote) {
+    this.editing = note.id;
+    this.noteForm.patchValue({
+      weightValue: note.weightValue ? String(note.weightValue) : null,
+      weightUnit: note.weightUnit ? String(note.weightUnit) : null,
+      comments: note.comments,
+    });
+  }
+
+  edit() {
+    this.saving = true;
+    this.store.dispatch(
+      updateNote({
+        id: this.editing!,
+        patientId: this.patient.id,
+        weightValue: this.noteForm.value.weightValue
+          ? Number(this.noteForm.value.weightValue)
+          : null,
+        weightUnit: this.noteForm.value.weightUnit
+          ? Number(this.noteForm.value.weightUnit)
+          : null,
+        comments: this.noteForm.value.comments || '',
+      }),
+    );
+    this.reset();
+  }
+
+  remove(note: ListNote) {
+    this.store.dispatch(
+      removeNote({
+        id: note.id,
+        patientId: this.patient.id,
+      }),
+    );
+    this.reset();
   }
 
   add() {
@@ -72,7 +115,7 @@ export class HospitalPatientNotesComponent {
           : null,
         comments: this.noteForm.value.comments || '',
         files: this.noteForm.value.files || [],
-      })
+      }),
     );
     this.reset();
   }
@@ -83,13 +126,14 @@ export class HospitalPatientNotesComponent {
         patientId: this.patient.id,
         noteId: note.id,
         attachment,
-      })
+      }),
     );
   }
 
   reset() {
     this.saving = false;
     this.adding = false;
+    this.editing = null;
     this.noteForm.reset();
   }
 

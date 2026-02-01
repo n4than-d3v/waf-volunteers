@@ -36,6 +36,7 @@ using Api.Handlers.Hospital.Patients.Labs.Faecal;
 using Api.Handlers.Stock;
 using Api.Handlers.Learning;
 using Api.Handlers.Hospital.Boards;
+using Api.Handlers.Hospital.Patients.Notes;
 
 public partial class Program
 {
@@ -164,6 +165,10 @@ public partial class Program
             .AddNote("Vet performs initial exam")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalPatient.MapPut("/{patientId:int}/exam/{examId:int}", (IMediator mediator, int patientId, int examId, PerformExam request) => mediator.Send(request.WithId(patientId, examId)))
+            .AddNote("Vet updates initial exam")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalPatient.MapPost("/{id:int}/request-home-care", (IMediator mediator, int id, RequireHomeCare request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet requests home care for patient")
             .RequireAuthorization(vetPolicy);
@@ -192,6 +197,10 @@ public partial class Program
             .AddNote("Create prescription instruction")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalPatient.MapPut("/prescriptions/instruction/{id:int}", (IMediator mediator, int id, UpdateInstructionPrescription request) => mediator.Send(request.WithId(id)))
+            .AddNote("Update prescription instruction")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalPatient.MapDelete("/prescriptions/instruction/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveInstructionPrescription { PrescriptionInstructionId = id }))
             .AddNote("Remove prescription instruction")
             .RequireAuthorization(vetPolicy);
@@ -204,6 +213,10 @@ public partial class Program
             .AddNote("Create prescription medication")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalPatient.MapPut("/prescriptions/medication/{id:int}", (IMediator mediator, int id, UpdateMedicationPrescription request) => mediator.Send(request.WithId(id)))
+            .AddNote("Update prescription medication")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalPatient.MapDelete("/prescriptions/medication/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveMedicationPrescription { PrescriptionMedicationId = id }))
             .AddNote("Remove prescription medication")
             .RequireAuthorization(vetPolicy);
@@ -214,6 +227,10 @@ public partial class Program
 
         apiHospitalPatient.MapPost("/{id:int}/recheck", (IMediator mediator, int id, AddRecheck request) => mediator.Send(request.WithId(id)))
             .AddNote("Create recheck")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPut("/recheck/{id:int}", (IMediator mediator, int id, UpdateRecheck request) => mediator.Send(request.WithId(id)))
+            .AddNote("Update recheck")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalPatient.MapDelete("/recheck/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveRecheck { PatientRecheckId = id }))
@@ -246,12 +263,28 @@ public partial class Program
             .AddNote("Vet or aux adds a note")
             .RequireAuthorization(vetOrAuxPolicy);
 
+        apiHospitalPatient.MapPut("/note/{id:int}", (IMediator mediator, int id, UpdatePatientNote request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet or aux edits a note")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapDelete("/note/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemovePatientNote { Id = id }))
+            .AddNote("Vet or aux deletes a note")
+            .RequireAuthorization(vetOrAuxPolicy);
+
         apiHospitalPatient.MapGet("/{patientId:int}/notes/{noteId:int}/attachments/{attachmentId:int}", (IMediator mediator, int patientId, int noteId, int attachmentId) => mediator.Send(new DownloadNoteAttachment { PatientId = patientId, NoteId = noteId, AttachmentId = attachmentId }))
             .AddNote("Vet or aux downloads note attachment")
             .RequireAuthorization(vetOrAuxPolicy);
 
         apiHospitalPatient.MapPost("/{id:int}/faecal-test", (IMediator mediator, int id, AddFaecalTest request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet adds a faecal test")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPut("/faecal-test/{id:int}", (IMediator mediator, int id, UpdateFaecalTest request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet updates a faecal test")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapDelete("/faecal-test/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveFaecalTest { Id = id }))
+            .AddNote("Vet removes a faecal test")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalPatient.MapPost("/{id:int}/blood-test", async (IMediator mediator, HttpRequest httpReq) =>
@@ -269,6 +302,14 @@ public partial class Program
             return await mediator.Send(request);
         })
             .AddNote("Vet adds a blood test")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapPut("/blood-test/{id:int}", (IMediator mediator, int id, UpdateBloodTest request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet updates a blood test")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient.MapDelete("/blood-test/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveBloodTest { Id = id }))
+            .AddNote("Vet removes a blood test")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalPatient.MapGet("/{patientId:int}/blood-tests/{bloodTestId:int}/attachments/{attachmentId:int}", (IMediator mediator, int patientId, int bloodTestId, int attachmentId) => mediator.Send(new DownloadBloodTestAttachment { PatientId = patientId, BloodTestId = bloodTestId, AttachmentId = attachmentId }))

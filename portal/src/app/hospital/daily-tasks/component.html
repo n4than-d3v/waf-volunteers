@@ -188,49 +188,28 @@
   <div>
     <p><strong>Prescriptions</strong></p>
     <div class="field">
-      <label for="showMePrescriptions-all">All</label>
+      <label for="showMeNotDuePrescriptions">Not due today</label>
       <input
-        type="radio"
-        id="showMePrescriptions-all"
-        [(ngModel)]="showMePrescriptions"
-        value="all"
+        type="checkbox"
+        id="showMeNotDuePrescriptions"
+        [(ngModel)]="showMeNotDuePrescriptions"
       />
     </div>
     <div class="field">
-      <label for="showMePrescriptions-none">None</label>
+      <label for="showMeDuePrescriptions">Due</label>
       <input
-        type="radio"
-        id="showMePrescriptions-none"
-        [(ngModel)]="showMePrescriptions"
-        value="none"
+        type="checkbox"
+        id="showMeDuePrescriptions"
+        [(ngModel)]="showMeDuePrescriptions"
       />
     </div>
-    <div class="administered-since-wrapper">
-      <div class="field">
-        <label for="showMePrescriptions-notAdministeredInLast"
-          >Not administered in the last</label
-        >
-        <input
-          type="radio"
-          id="showMePrescriptions-notAdministeredInLast"
-          [(ngModel)]="showMePrescriptions"
-          value="notAdministeredInLast"
-        />
-      </div>
-      <div class="field time-select">
-        <input
-          type="number"
-          id="showMePrescriptionsNotAdministeredInLastValue"
-          [(ngModel)]="showMePrescriptionsNotAdministeredInLastValue"
-        />
-        <select
-          id="showMePrescriptionsNotAdministeredInLastUnit"
-          [(ngModel)]="showMePrescriptionsNotAdministeredInLastUnit"
-        >
-          <option>hours</option>
-          <option>days</option>
-        </select>
-      </div>
+    <div class="field">
+      <label for="showMeDonePrescriptions">Done</label>
+      <input
+        type="checkbox"
+        id="showMeDonePrescriptions"
+        [(ngModel)]="showMeDonePrescriptions"
+      />
     </div>
   </div>
 </div>
@@ -281,108 +260,149 @@ administerPrescriptionTask.error) {
           <p>🎨 {{ patient.uniqueIdentifier }}</p>
           }
           <div class="tasks">
-            @if (patient.rechecks.length > 0 && performingRecheck === null) {
-            @for (recheck of patient.rechecks; track recheck.id) { @if
-            (shouldShowRecheck(recheck)) {
-            <div class="recheck">
-              <div>
-                <p>
-                  @if (recheck.due == date) { @if (recheck.rechecked) {
-                  <span class="done">Done</span>
-                  } @else {
-                  <span class="due">Due</span>
-                  } } @else {
-                  <span class="overdue">
-                    Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
-                  </span>
+            @if (shouldShowRechecks(patient)) {
+            <table class="rechecks">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>For</th>
+                  <th>Recheck</th>
+                  @if (showMeDoneRechecks) {
+                  <th>Weight</th>
+                  <th>Comments</th>
                   }
-                </p>
-                <p>{{ getRecheckRoles(recheck.roles) }}</p>
-                <p>📋 {{ recheck.description }}</p>
-                @if (!recheck.rechecked) {
-                <div>
-                  <button
-                    (click)="performingRecheck = recheck"
-                    class="button button--secondary-invert"
-                  >
-                    🩺 Perform
-                  </button>
-                </div>
-                } @else {
-                <div class="performed">
-                  <p>
-                    🧑‍⚕️ {{ recheck.rechecker?.firstName }} {{
-                    recheck.rechecker?.lastName }}
-                  </p>
-                  @if (recheck.comments) {
-                  <p>✏️ {{ recheck.comments }}</p>
-                  } @if (recheck.weightValue && recheck.weightUnit) {
-                  <p>
-                    ⚖️ {{ recheck.weightValue }} {{
-                    getWeightUnit(recheck.weightUnit) }}
-                  </p>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (recheck of patient.rechecks; track recheck.id) { @if
+                (shouldShowRecheck(recheck)) {
+                <tr>
+                  <td>
+                    @if (recheck.due == date) { @if (recheck.rechecked) {
+                    <span class="done">Done</span>
+                    } @else {
+                    <span class="due">Due</span>
+                    } } @else {
+                    <span class="overdue">
+                      Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
+                    </span>
+                    }
+                  </td>
+                  <td>{{ getRecheckRoles(recheck.roles) }}</td>
+                  <td>{{ recheck.description }}</td>
+                  @if (showMeDoneRechecks) {
+                  <td>
+                    @if (recheck.weightValue && recheck.weightUnit) { {{
+                    recheck.weightValue }} {{ getWeightUnit(recheck.weightUnit)
+                    }} }
+                  </td>
+                  <td>{{ recheck.comments }}</td>
                   }
-                </div>
-                }
-              </div>
-            </div>
-            } } } @if (patient.prescriptionInstructions.length > 0 ||
-            patient.prescriptionMedications.length > 0) { @for (prescription of
-            getPrescriptions(patient); track prescription.id) { @if
-            (shouldShowPrescription(prescription)) {
-            <div class="prescription">
-              <div>
-                <div>
-                  <p class="date">
-                    📅 {{ prescription.start | date: 'dd MMM yyyy'}} - {{
-                    prescription.end | date: 'dd MMM yyyy'}}
-                  </p>
-                  <p class="last-dose">🔁 {{ prescription.frequency }}</p>
-                </div>
-                @if (prescription.administrations &&
-                prescription.administrations.length > 0) {
-                <div>
-                  <p class="last-dose">
-                    ⏰ {{ getDurationSinceMostRecent(prescription) }} since last
-                    dose
-                  </p>
-                  <p>
-                    ⚡ {{ getMostRecent(prescription) | date: 'dd MMM yyyy
-                    HH:mm' }}
-                  </p>
-                </div>
-                }
-                <div class="description">
+                  <td>
+                    @if (!recheck.rechecked) {
+                    <div class="buttons buttons--check">
+                      <button
+                        (click)="performingRecheck = recheck"
+                        class="button button--secondary-invert"
+                      >
+                        🩺
+                      </button>
+                    </div>
+                    }
+                  </td>
+                </tr>
+                } }
+              </tbody>
+            </table>
+            } @if (shouldShowPrescriptions(patient)) {
+            <table class="prescriptions">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Frequency</th>
+                  <th>Last dose</th>
+                  <th colspan="3">Prescription</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (prescription of getPrescriptions(patient); track
+                prescription.id) { @if (shouldShowPrescription(prescription)) {
+                <tr>
+                  <td>
+                    @if (getPrescriptionStatus(prescription) === 'due') {
+                    <span class="due">Due</span>
+                    } @else if (getPrescriptionStatus(prescription) === 'done')
+                    {
+                    <span class="done">Done</span>
+                    } @else {
+                    <span class="not-today"> Not due today </span>
+                    }
+                  </td>
+                  <td>
+                    {{ prescription.frequency }}<br />
+                    <span class="date">
+                      {{ prescription.start | date: 'dd MMM yyyy'}} - {{
+                      prescription.end | date: 'dd MMM yyyy'}}</span
+                    >
+                  </td>
+                  <td>
+                    @if (getMostRecent(prescription) !== '') { {{
+                    getDurationSinceMostRecent(prescription) }} ago<br />
+                    <span class="date">
+                      {{ getMostRecent(prescription) | date: 'dd MMM yyyy HH:mm'
+                      }}
+                    </span>
+                    }
+                  </td>
                   @if (isPrescriptionMedication(prescription)) {
-                  <p>
-                    💊 {{ prescription.medication.activeSubstance }} &middot; {{
-                    prescription.medicationConcentration.form }}, {{
+                  <td>
+                    {{ prescription.medication.activeSubstance }}<br />
+                    <span class="brands">
+                      {{ getBrands(prescription.medication) }}
+                    </span>
+                  </td>
+                  <td>
+                    {{ prescription.medicationConcentration.form }}, {{
                     prescription.medicationConcentration.concentrationMgMl }}
-                    mg/ml
-                  </p>
-                  <p>
-                    💉 {{ prescription.administrationMethod.description }} ({{
-                    prescription.administrationMethod.code }}), {{
-                    prescription.quantityValue }} {{ prescription.quantityUnit
-                    }}
-                  </p>
-                  @if (prescription.comments) {
-                  <p>📋 {{ prescription.comments }}</p>
-                  } } @else {
-                  <p>📋 {{ prescription.instructions }}</p>
+                    mg/ml<br />
+                    {{ prescription.administrationMethod.description }} ({{
+                    prescription.administrationMethod.code }})
+                  </td>
+                  <td class="quantity">
+                    {{ prescription.quantityValue }} {{
+                    prescription.quantityUnit }}
+                  </td>
+                  } @else {
+                  <td colspan="3">{{ prescription.instructions }}</td>
                   }
-                </div>
-                <div>
-                  <button
-                    (click)="administeringPrescription = prescription"
-                    class="button button--secondary-invert"
-                  >
-                    💉 Administer
-                  </button>
-                </div>
-              </div>
-            </div>
-            } } }
+                  <td>
+                    <div class="buttons buttons--check">
+                      @for (i of
+                      getOutstandingAdministrationsCount(prescription); track i)
+                      {
+                      <button
+                        (click)="administeringPrescription = prescription"
+                        class="button button--secondary-invert"
+                      >
+                        💉
+                      </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+                @if (isPrescriptionMedication(prescription) &&
+                prescription.comments) {
+                <tr>
+                  <td colspan="3"></td>
+                  <td colspan="3">{{ prescription.comments }}</td>
+                  <td></td>
+                </tr>
+                } } }
+              </tbody>
+            </table>
+            }
           </div>
         </div>
         } }

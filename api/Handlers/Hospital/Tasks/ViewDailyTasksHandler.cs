@@ -6,6 +6,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Api.Handlers.Hospital.Patients;
 using Api.Database.Entities.Hospital.Locations;
+using Api.Database.Entities.Hospital.Patients.Medications;
 
 namespace Api.Handlers.Hospital.Tasks;
 
@@ -162,14 +163,20 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
                 x.Start <= date && date <= x.End, tracking: false, Action);
 
         foreach (var medication in medications)
+        {
+            medication.SetToday(date);
             if (medication.Administrations?.Any() ?? false)
                 foreach (var administration in medication.Administrations)
                     administration.Administrator?.CleanUser(_encryptionService);
+        }
 
         foreach (var instruction in instructions)
+        {
+            instruction.SetToday(date);
             if (instruction.Administrations?.Any() ?? false)
                 foreach (var administration in instruction.Administrations)
                     administration.Administrator?.CleanUser(_encryptionService);
+        }
 
         return (instructions, medications);
     }

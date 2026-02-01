@@ -18,6 +18,7 @@ import {
   getRecheckRoles,
   getWeightUnit,
   ListRecheck,
+  Medication,
   Prescription,
   PrescriptionMedication,
   ReadOnlyWrapper,
@@ -52,10 +53,9 @@ export class HospitalDailyTasksComponent implements OnInit {
   showMeOverdueRechecks = true;
   showMeDueRechecks = true;
   showMeDoneRechecks = false;
-  showMePrescriptions: 'none' | 'all' | 'notAdministeredInLast' =
-    'notAdministeredInLast';
-  showMePrescriptionsNotAdministeredInLastValue: number | null = 12;
-  showMePrescriptionsNotAdministeredInLastUnit: 'hours' | 'days' = 'hours';
+  showMeDuePrescriptions = true;
+  showMeDonePrescriptions = false;
+  showMeNotDuePrescriptions = false;
 
   performRecheckTask$: Observable<Task>;
   administerPrescriptionTask$: Observable<Task>;
@@ -99,14 +99,12 @@ export class HospitalDailyTasksComponent implements OnInit {
 
   shouldShowPatient(patient: DailyTasksReportAreaPenPatient) {
     return (
-      patient.rechecks.some((recheck) => this.shouldShowRecheck(recheck)) ||
-      patient.prescriptionInstructions.some((prescription) =>
-        this.shouldShowPrescription(prescription),
-      ) ||
-      patient.prescriptionMedications.some((prescription) =>
-        this.shouldShowPrescription(prescription),
-      )
+      this.shouldShowRechecks(patient) || this.shouldShowPrescriptions(patient)
     );
+  }
+
+  shouldShowRechecks(patient: DailyTasksReportAreaPenPatient) {
+    return patient.rechecks.some((recheck) => this.shouldShowRecheck(recheck));
   }
 
   shouldShowRecheck(recheck: ListRecheck) {
@@ -123,28 +121,32 @@ export class HospitalDailyTasksComponent implements OnInit {
     );
   }
 
+  shouldShowPrescriptions(patient: DailyTasksReportAreaPenPatient) {
+    return (
+      patient.prescriptionInstructions.some((prescription) =>
+        this.shouldShowPrescription(prescription),
+      ) ||
+      patient.prescriptionMedications.some((prescription) =>
+        this.shouldShowPrescription(prescription),
+      )
+    );
+  }
+
+  getPrescriptionStatus(prescription: Prescription): 'due' | 'done' | 'notDue' {
+    return prescription.administerToday === 0
+      ? 'notDue'
+      : prescription.administeredToday < prescription.administerToday
+        ? 'due'
+        : 'done';
+  }
+
   shouldShowPrescription(prescription: Prescription) {
-    if (this.showMePrescriptions === 'all') return true;
-    else if (this.showMePrescriptions === 'none') return false;
-    else if (this.showMePrescriptions === 'notAdministeredInLast') {
-      const recent = this.getMostRecent(prescription);
-      if (!recent) return true;
-      const start = moment(recent);
-      const end = moment();
-      const duration = moment.duration(end.diff(start));
-      if (this.showMePrescriptionsNotAdministeredInLastUnit === 'hours')
-        return (
-          duration.asHours() >
-          (this.showMePrescriptionsNotAdministeredInLastValue || 0)
-        );
-      else if (this.showMePrescriptionsNotAdministeredInLastUnit === 'days')
-        return (
-          duration.asDays() >
-          (this.showMePrescriptionsNotAdministeredInLastValue || 0)
-        );
-    }
-    // Shouldn't be called, but default to show
-    return true;
+    const status = this.getPrescriptionStatus(prescription);
+    return (
+      (this.showMeDonePrescriptions && status === 'done') ||
+      (this.showMeDuePrescriptions && status === 'due') ||
+      (this.showMeNotDuePrescriptions && status === 'notDue')
+    );
   }
 
   viewPatient(reference: string, species: string, id: number) {
@@ -195,6 +197,7 @@ export class HospitalDailyTasksComponent implements OnInit {
     );
     this.cancel();
   }
+
   administerInstruction(prescriptionInstructionId: number, success: boolean) {
     this.store.dispatch(
       administerPrescriptionInstruction({
@@ -225,10 +228,21 @@ export class HospitalDailyTasksComponent implements OnInit {
       ...patient.prescriptionMedications,
     ];
   }
+
+  getOutstandingAdministrationsCount(prescription: Prescription) {
+    return Array.from({
+      length: prescription.administerToday - prescription.administeredToday,
+    });
+  }
+
+  getBrands(medication: Medication) {
+    return medication.brands.join(', ');
+  }
+
   getMostRecent(prescription: Prescription) {
-    if (prescription.administrations.length === 0) return '';
-    return prescription.administrations[prescription.administrations.length - 1]
-      .administered;
+    const success = prescription.administrations.filter((x) => x.success);
+    if (success.length === 0) return '';
+    return success[success.length - 1].administered;
   }
 
   getDurationSinceMostRecent(prescription: Prescription) {

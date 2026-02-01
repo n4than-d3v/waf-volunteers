@@ -346,6 +346,9 @@ export interface PrescriptionInstruction extends TreatmentInstruction {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
+
+  administerToday: number;
+  administeredToday: number;
 }
 
 export interface TreatmentInstruction {
@@ -365,7 +368,9 @@ export interface PrescriptionMedication extends TreatmentMedication {
   variant: SpeciesVariant;
   pen: Pen;
   uniqueIdentifier: string;
-  hasRechecks: boolean;
+
+  administerToday: number;
+  administeredToday: number;
 }
 
 export interface TreatmentMedication {

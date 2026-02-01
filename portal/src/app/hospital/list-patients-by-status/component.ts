@@ -12,13 +12,14 @@ import { selectPatientsByStatus } from '../../hospital/selectors';
 import { getPatientsByStatus, setTab } from '../actions';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import moment from 'moment';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'hospital-list-patients-by-status',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, DatePipe],
+  imports: [AsyncPipe, DatePipe, FormsModule],
 })
 export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   @Input() set status(status: PatientStatus) {
@@ -27,6 +28,8 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   }
 
   _status: PatientStatus | null = null;
+
+  search = '';
 
   PatientStatus = PatientStatus;
   getDisposition = getDisposition;
@@ -37,6 +40,27 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store) {
     this.patients$ = this.store.select(selectPatientsByStatus);
+  }
+
+  showPatient(patient: ListPatient) {
+    if (!this.search) return true;
+    const filters = [
+      patient.reference,
+      patient.suspectedSpecies?.description,
+      patient.initialLocation?.description,
+      ...patient.admissionReasons?.map((x) => x.description),
+      patient.species?.name,
+      patient.speciesVariant?.name,
+      patient.speciesVariant?.friendlyName,
+      patient.pen?.reference,
+      patient.area?.name,
+      ...patient.homeCareRequests?.map(
+        (x) => x.responder?.firstName + ' ' + x.responder?.lastName,
+      ),
+    ];
+    return filters.some(
+      (x) => x && x.toUpperCase().includes(this.search.toUpperCase()),
+    );
   }
 
   duration(patient: ListPatient) {
@@ -69,7 +93,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
             patient.species?.name || patient.suspectedSpecies.description
           }`,
         },
-      })
+      }),
     );
   }
 

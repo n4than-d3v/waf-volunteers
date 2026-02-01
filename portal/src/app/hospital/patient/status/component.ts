@@ -10,7 +10,7 @@ import {
   Task,
   TransferLocation,
 } from '../../state';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -48,6 +48,7 @@ import { HospitalPatientAutocompleteComponent } from '../autocomplete/component'
   styleUrls: ['./component.scss'],
   imports: [
     AsyncPipe,
+    DatePipe,
     SpinnerComponent,
     HospitalPatientAutocompleteComponent,
     FormsModule,
@@ -150,7 +151,7 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(
       markPatientInCentre({
         patientId: this.patient.id,
-      })
+      }),
     );
     this.reset();
   }
@@ -161,7 +162,7 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(
       markPatientReadyForRelease({
         patientId: this.patient.id,
-      })
+      }),
     );
     this.reset();
   }
@@ -174,7 +175,7 @@ export class HospitalPatientStatusComponent implements OnInit {
       markPatientReleased({
         patientId: this.patient.id,
         releaseTypeId: Number(this.releaseForm.value.releaseTypeId!),
-      })
+      }),
     );
     this.reset();
   }
@@ -187,7 +188,7 @@ export class HospitalPatientStatusComponent implements OnInit {
       markPatientTransferred({
         patientId: this.patient.id,
         transferLocationId: Number(this.transferForm.value.transferLocationId!),
-      })
+      }),
     );
     this.reset();
   }
@@ -202,7 +203,7 @@ export class HospitalPatientStatusComponent implements OnInit {
         dispositionReasonId: Number(this.deadForm.value.dispositionReasonId!),
         onArrival: false,
         putToSleep: this.updating === 'pts',
-      })
+      }),
     );
     this.reset();
   }
@@ -215,7 +216,7 @@ export class HospitalPatientStatusComponent implements OnInit {
       requestHomeCare({
         patientId: this.patient.id,
         notes: this.homeCareForm.value.notes || '',
-      })
+      }),
     );
     this.reset();
   }

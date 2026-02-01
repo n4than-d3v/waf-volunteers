@@ -30,6 +30,10 @@
         <td>Disposition reason</td>
         <td>{{ patient.dispositionReason.description }}</td>
       </tr>
+      <tr>
+        <td>Disposition date</td>
+        <td>{{ patient.dispositioned | date: 'dd MMM yyyy HH:mm' }}</td>
+      </tr>
       } @else if (patient.releaseType) {
       <tr>
         <td>Release type</td>

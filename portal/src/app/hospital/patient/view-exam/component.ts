@@ -1,5 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { getSex, getWeightUnit, ListExam, Patient } from '../../state';
+import {
+  getSex,
+  getWeightUnit,
+  ListExam,
+  Patient,
+  PatientStatus,
+} from '../../state';
 import { DatePipe } from '@angular/common';
 import { HospitalPatientExamComponent } from '../exam/component';
 
@@ -19,4 +25,6 @@ export class HospitalPatientViewExamComponent {
 
   getSex = getSex;
   getWeightUnit = getWeightUnit;
+
+  PatientStatus = PatientStatus;
 }

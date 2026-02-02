@@ -114,7 +114,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                         {
                             Title = "Urgent! Last-minute cancellation",
                             Body = message
-                        });
+                        }, recipient.Id);
                     }
                 }
             }
@@ -128,8 +128,10 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
             {
                 Title = "Shift cancellation",
                 Body = $"You have cancelled your shift for {request.Date.DayOfWeek} {time.Name.ToLower()} on {request.Date:dd MMMM yyyy}"
-            });
+            }, account.Id);
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

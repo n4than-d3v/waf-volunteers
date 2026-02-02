@@ -69,9 +69,11 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
                 {
                     Title = "Home care message",
                     Body = $"You have received a new message regarding patient {homeCareRequest.Reference}"
-                });
+                }, account.Id);
             }
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.Created();
     }

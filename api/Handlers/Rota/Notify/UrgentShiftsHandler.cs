@@ -68,9 +68,11 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
                 {
                     Title = "Urgent shifts",
                     Body = $"We need your help on {string.Join(" and ", notify)}. Please can you spare a few hours to attend an urgent shift?"
-                });
+                }, account.Id);
             }
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

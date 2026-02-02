@@ -73,12 +73,14 @@ public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
                 {
                     Title = "Notice",
                     Body = request.Title
-                });
+                }, account.Id);
             }
             catch
             {
             }
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

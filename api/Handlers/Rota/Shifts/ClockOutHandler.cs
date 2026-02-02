@@ -53,8 +53,10 @@ public class ClockOutHandler : IRequestHandler<ClockOut, IResult>
             {
                 Title = "Shift departure",
                 Body = $"Hi, thank you for coming in! We clocked you out at {now.ToShortTimeString()}."
-            });
+            }, account.Id);
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

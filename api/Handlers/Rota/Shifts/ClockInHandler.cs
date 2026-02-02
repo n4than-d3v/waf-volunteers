@@ -63,8 +63,10 @@ public class ClockInHandler : IRequestHandler<ClockIn, IResult>
             {
                 Title = "Shift arrival",
                 Body = $"Hi, thank you for coming in! We clocked you in at {now.ToShortTimeString()}."
-            });
+            }, account.Id);
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

@@ -73,9 +73,11 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
                 {
                     Title = "Home care required",
                     Body = $"{species} requires home care. Can you please help?"
-                });
+                }, account.Id);
             }
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.Created();
     }

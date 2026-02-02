@@ -52,7 +52,9 @@ public class SubscribeHandler : IRequestHandler<Subscribe, IResult>
         {
             Title = "Notifications enabled",
             Body = "Thank you for enabling notifications"
-        });
+        }, user.Id);
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

@@ -68,9 +68,11 @@ public class NotConfirmedNextShiftHandler : IRequestHandler<NotConfirmedNextShif
                 {
                     Title = "Upcoming shift not confirmed",
                     Body = $"We noticed you have not yet confirmed whether you are coming in on {string.Join(" and ", notify)}. Please can you update your availability on the rota? Thank you!"
-                });
+                }, account.Id);
             }
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

@@ -65,8 +65,10 @@ public class AssignAreaHandler : IRequestHandler<AssignArea, IResult>
             {
                 Title = "Area assignment",
                 Body = $"You have been assigned to {assignableArea.Name} for your {attendance.Date.DayOfWeek} {attendance.Time.Name.ToLower()} shift on {attendance.Date:dd MMMM yyyy}"
-            });
+            }, account.Id);
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

@@ -80,8 +80,10 @@ public class ConfirmShiftHandler : IRequestHandler<ConfirmShift, IResult>
             {
                 Title = "Shift confirmation",
                 Body = $"Thank you! You have signed up for {request.Date.DayOfWeek} {time.Name.ToLower()} on {request.Date:dd MMMM yyyy}"
-            });
+            }, account.Id);
         }
+
+        await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
     }

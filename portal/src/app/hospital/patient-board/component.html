@@ -15,9 +15,28 @@
 @if (board.data.board.messages != null && board.data.board.messages.length > 0)
 {
 <div class="messages">
-  @for (message of board.data.board.messages; track message.id) {
+  @for (message of board.data.board.messages; track message.id) { @if
+  (message.emergency) {
+  <div id="emergency-alert" class="alert-active">
+    <div class="alert-overlay"></div>
+    <div class="alert-box">
+      <div class="alert-header">
+        <span class="alert-title">🚨 EMERGENCY 🚨</span>
+      </div>
+      <div class="alert-body">
+        <h1>{{ message.message }}</h1>
+        <p>
+          <strong>
+            This is a critical alert message.<br />
+            Please follow instructions immediately.
+          </strong>
+        </p>
+      </div>
+    </div>
+  </div>
+  } @else {
   <p class="message">{{ message.message }}</p>
-  }
+  } }
 </div>
 }
 <div class="area">

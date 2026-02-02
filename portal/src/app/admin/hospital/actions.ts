@@ -362,7 +362,13 @@ export const upsertBoardError = createAction('[HMS-A] Upsert board: error');
 
 export const addBoardMessage = createAction(
   '[HMS-A] Add board message',
-  props<{ id: number; message: string; start: string; end: string }>(),
+  props<{
+    id: number;
+    message: string;
+    start: string;
+    end: string;
+    emergency: boolean;
+  }>(),
 );
 export const addBoardMessageSuccess = createAction(
   '[HMS-A] Add board message: success',

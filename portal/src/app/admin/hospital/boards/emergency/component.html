@@ -1,0 +1,50 @@
+<a class="back-link" [routerLink]="'../../../'">Back</a>
+
+<h1>🚨 Emergency 🚨</h1>
+
+<p>This feature is only to be used in emergencies.</p>
+<p>
+  It will show a very intrusive alert on all patient boards, halting operations
+  for 15 minutes, unless otherwise specified.
+</p>
+
+<section>
+  <h2>Emergency broadcast</h2>
+  <div class="field">
+    <label for="emergencyType">Emergency</label>
+    <select
+      id="emergencyType"
+      [(ngModel)]="emergencyType"
+      (change)="updateEmergencyType()"
+    >
+      <option></option>
+      <option>Fire</option>
+      <option>Natural disaster</option>
+      <option>Security</option>
+      <option>Other</option>
+    </select>
+  </div>
+  @if (emergencyType) {
+  <div class="field">
+    <label for="message">Message</label>
+    <textarea rows="3" id="message" [(ngModel)]="message"></textarea>
+  </div>
+  <div class="field">
+    <label for="startDate">Start</label>
+    <div class="datetime">
+      <input type="date" id="startDate" [(ngModel)]="startDate" />
+      <input type="time" id="startTime" [(ngModel)]="startTime" />
+    </div>
+  </div>
+  <div class="field">
+    <label for="endDate">End</label>
+    <div class="datetime">
+      <input type="date" id="endDate" [(ngModel)]="endDate" />
+      <input type="time" id="endTime" [(ngModel)]="endTime" />
+    </div>
+  </div>
+  <div class="buttons">
+    <button (click)="addMessage()" class="button button--primary">Save</button>
+  </div>
+  }
+</section>

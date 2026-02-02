@@ -9,6 +9,12 @@
   <button (click)="adding = true" class="button button--primary">
     Create patient board
   </button>
+  <button
+    (click)="prepareAddMessageForAllBoards()"
+    class="button button--secondary"
+  >
+    Add message to all patient boards
+  </button>
 </div>
 } @else if (adding || editing) {
 <section>
@@ -38,7 +44,7 @@
 </section>
 } @else if (addingMessage) {
 <section>
-  <h2>Add patient message</h2>
+  <h2>Add patient board message</h2>
   <div class="field">
     <label for="message">Message</label>
     <textarea rows="3" id="message" [(ngModel)]="message"></textarea>

@@ -10,4 +10,6 @@ public class BoardMessage : Entity
     public string Message { get; set; }
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
+
+    public bool Emergency { get; set; }
 }

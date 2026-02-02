@@ -464,6 +464,10 @@ public partial class Program
             .AddNote("Vet or admin manages a board")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalBoards.MapPost("/message", (IMediator mediator, AddBoardMessage request) => mediator.Send(request))
+            .AddNote("Vet adds a message to appear on all boards")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalBoards.MapPost("/{id:int}/message", (IMediator mediator, int id, AddBoardMessage request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet adds a message to appear on a board")
             .RequireAuthorization(vetPolicy);

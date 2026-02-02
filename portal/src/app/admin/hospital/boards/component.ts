@@ -3,12 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { addBoardMessage, getAreas, getBoards, upsertBoard } from '../actions';
 import { Observable } from 'rxjs';
-import {
-  Area,
-  PatientBoard,
-  PatientBoardAreaDisplayType,
-  Wrapper,
-} from '../state';
+import { Area, PatientBoard, Wrapper } from '../state';
 import { selectAreas, selectBoards } from '../selectors';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,17 +34,24 @@ export class AdminHospitalBoardsComponent implements OnInit {
   endDate = '';
   endTime = '';
 
-  resetStart() {
-    const now = moment().toISOString().split('T');
-    this.startDate = now[0];
-    const time = now[1].split(':');
-    this.startTime = time[0] + ':' + time[1];
+  private resetDateRange() {
+    const start = moment();
+    const startSplit = start.toISOString().split('T');
+    const startSplitTime = startSplit[1].split(':');
+    this.startDate = startSplit[0];
+    this.startTime = startSplitTime[0] + ':' + startSplitTime[1];
+
+    const end = start.add(30, 'minutes');
+    const endSplit = end.toISOString().split('T');
+    const endSplitTime = endSplit[1].split(':');
+    this.endDate = endSplit[0];
+    this.endTime = endSplitTime[0] + ':' + endSplitTime[1];
   }
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
     this.boards$ = this.store.select(selectBoards);
-    this.resetStart();
+    this.resetDateRange();
   }
 
   prepareEdit(board: PatientBoard) {
@@ -59,6 +61,10 @@ export class AdminHospitalBoardsComponent implements OnInit {
       this.areaDisplayTypes[String(area.area.id)] = String(area.displayType);
     }
     this.editing = board.id;
+  }
+
+  prepareAddMessageForAllBoards() {
+    this.addingMessage = -1;
   }
 
   prepareAddMessage(board: PatientBoard) {
@@ -72,6 +78,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
         message: this.message,
         start: this.startDate + 'T' + this.startTime + 'Z',
         end: this.endDate + 'T' + this.endTime + 'Z',
+        emergency: false,
       }),
     );
     this.cancel();
@@ -98,9 +105,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
     this.name = '';
     this.areaDisplayTypes = {};
     this.message = '';
-    this.resetStart();
-    this.endDate = '';
-    this.endTime = '';
+    this.resetDateRange();
   }
 
   ngOnInit() {

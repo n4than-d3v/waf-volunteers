@@ -595,7 +595,14 @@ export interface ListPatientBoard {
 }
 
 export interface PatientBoard {
-  board: { name: string; messages: { id: number; message: string }[] };
+  board: {
+    name: string;
+    messages: {
+      id: number;
+      message: string;
+      emergency: boolean;
+    }[];
+  };
   areas: PatientBoardArea[];
 }
 

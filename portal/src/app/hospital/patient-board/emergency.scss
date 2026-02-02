@@ -1,0 +1,83 @@
+/* Full-page overlay */
+#emergency-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: none;
+}
+
+#emergency-alert.alert-active {
+  display: block;
+}
+
+/* Dark background overlay */
+.alert-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(0.125rem); /* 2px */
+}
+
+/* Centered alert box */
+.alert-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 56.25rem; /* 900px */
+  background: #0b0b0b;
+  border: 0.25rem solid #ff0000; /* 4px */
+  box-shadow: 0 0 2.5rem rgba(255, 0, 0, 0.7); /* 40px */
+  padding: 1.25rem; /* 20px */
+  color: #fff;
+  text-align: center;
+}
+
+/* Header */
+.alert-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 0rem solid #ff0000; /* 2px */
+  padding-bottom: 0.625rem; /* 10px */
+  margin-bottom: 0.9375rem; /* 15px */
+}
+
+.alert-title {
+  animation: pulse 1s infinite;
+  font-size: 2rem; /* 26px */
+  font-weight: 900;
+  letter-spacing: 0.1875rem; /* 3px */
+}
+
+/* Body */
+.alert-body h1 {
+  font-size: 2.625rem; /* 42px */
+  margin: 0 0 0.625rem; /* 10px */
+  text-transform: uppercase;
+  color: #ff3838;
+}
+
+.alert-body p {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.5;
+  margin: 0.625rem 0; /* 10px */
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% {
+    text-shadow: 0 0 0rem #ff0000;
+  } /* 8px */
+  50% {
+    text-shadow: 0 0 2rem #ff0000;
+  } /* 30px */
+  100% {
+    text-shadow: 0 0 0rem #ff0000;
+  } /* 8px */
+}

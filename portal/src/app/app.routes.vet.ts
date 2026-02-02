@@ -14,6 +14,7 @@ import { isVet } from './authentication/guards';
 import { AuxDevPlanTasksComponent } from './vet/aux-dev-plans/tasks/component';
 import { AuxDevPlanLearnersComponent } from './vet/aux-dev-plans/learners/component';
 import { AdminHospitalBoardsComponent } from './admin/hospital/boards/component';
+import { AdminHospitalBoardsEmergencyComponent } from './admin/hospital/boards/emergency/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -63,6 +64,10 @@ export const routes: Routes = [
       {
         path: 'boards',
         component: AdminHospitalBoardsComponent,
+      },
+      {
+        path: 'emergency',
+        component: AdminHospitalBoardsEmergencyComponent,
       },
     ],
   },

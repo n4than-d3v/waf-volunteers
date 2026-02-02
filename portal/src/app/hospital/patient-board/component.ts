@@ -12,7 +12,7 @@ import { viewPatientBoard, viewPatientBoards } from '../actions';
   selector: 'patient-board',
   standalone: true,
   templateUrl: './component.html',
-  styleUrls: ['./component.scss'],
+  styleUrls: ['./component.scss', './emergency.scss'],
   imports: [AsyncPipe, SpinnerComponent, FormsModule],
 })
 export class HospitalPatientBoardComponent implements OnInit, OnDestroy {

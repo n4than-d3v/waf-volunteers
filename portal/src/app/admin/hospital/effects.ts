@@ -731,10 +731,17 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(addBoardMessage),
       switchMap((action) =>
-        this.http.post(`hospital/boards/${action.id}/message`, action).pipe(
-          switchMap((_) => of(addBoardMessageSuccess(), getBoards())),
-          catchError(() => of(addBoardMessageError())),
-        ),
+        this.http
+          .post(
+            action.id === -1
+              ? `hospital/boards/message`
+              : `hospital/boards/${action.id}/message`,
+            { ...action, id: null },
+          )
+          .pipe(
+            switchMap((_) => of(addBoardMessageSuccess(), getBoards())),
+            catchError(() => of(addBoardMessageError())),
+          ),
       ),
     ),
   );

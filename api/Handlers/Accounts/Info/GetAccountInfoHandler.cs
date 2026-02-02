@@ -53,7 +53,8 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
             cars,
             roles = user.Roles,
             status = user.Status,
-            subscribed = !string.IsNullOrWhiteSpace(subscription)
+            subscribed = !string.IsNullOrWhiteSpace(subscription),
+            subscription
         });
     }
 }

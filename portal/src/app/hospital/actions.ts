@@ -21,14 +21,16 @@ import {
   Species,
   Exam,
   Outcome,
-  ListRecheck,
-  Prescription,
   DailyTasksReport,
   PatientBoard,
   ListPatientBoard,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
+export const delayedSetTab = createAction(
+  '[HMS-V] Delayed switch tab',
+  props<{ tab: Tab }>(),
+);
 
 export const getPatientCounts = createAction('[HMS-V] Get patient counts');
 export const getPatientCountsSuccess = createAction(

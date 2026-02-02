@@ -57,6 +57,7 @@ export interface HospitalState {
 }
 
 export type TabCode =
+  | ''
   | 'DASHBOARD'
   | 'LIST_PATIENTS_BY_STATUS'
   | 'VIEW_PATIENT'

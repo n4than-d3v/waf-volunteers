@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Observable, timeInterval } from 'rxjs';
 import { Tab } from '../../hospital/state';
 import { Store } from '@ngrx/store';
@@ -30,7 +30,7 @@ import { HospitalPatientBoardComponent } from '../../hospital/patient-board/comp
     HospitalPatientBoardComponent,
   ],
 })
-export class VetHospitalComponent {
+export class VetHospitalComponent implements OnDestroy {
   tab$: Observable<Tab>;
 
   constructor(private store: Store) {
@@ -70,6 +70,17 @@ export class VetHospitalComponent {
         tab: {
           code: 'VIEW_STOCK',
           title: 'Stock',
+        },
+      }),
+    );
+  }
+
+  ngOnDestroy() {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'DASHBOARD',
+          title: 'Dashboard',
         },
       }),
     );

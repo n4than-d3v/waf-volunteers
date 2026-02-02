@@ -26,7 +26,7 @@ import {
   PatientBoard,
   ListPatientBoard,
 } from './state';
-import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
+import { catchError, delay, map, mergeMap, of, switchMap } from 'rxjs';
 import {
   getPatient,
   getPatientCounts,
@@ -188,12 +188,23 @@ import {
   updatePrescriptionMedication,
   updatePrescriptionMedicationSuccess,
   updatePrescriptionMedicationError,
+  delayedSetTab,
 } from './actions';
 
 @Injectable()
 export class HospitalEffects {
   actions$ = inject(Actions);
   http = inject(HttpClient);
+
+  // Set tab
+
+  setTab$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(setTab),
+      delay(100),
+      map((action) => delayedSetTab({ tab: action.tab })),
+    ),
+  );
 
   // Patient counts
 

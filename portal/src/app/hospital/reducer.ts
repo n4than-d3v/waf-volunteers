@@ -156,11 +156,16 @@ import {
   updatePrescriptionMedicationSuccess,
   updatePrescriptionInstructionError,
   updatePrescriptionMedicationError,
+  delayedSetTab,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
   initialHospitalState,
-  on(setTab, (state, { tab }) => ({
+  on(setTab, (state) => ({
+    ...state,
+    tab: { code: '', title: '' },
+  })),
+  on(delayedSetTab, (state, { tab }) => ({
     ...state,
     tab: { ...tab },
   })),

@@ -88,6 +88,7 @@ a {
     gap: 0.5rem;
 
     .pen {
+      max-width: max-content;
       border: solid 1px rgb(198, 198, 198);
 
       h3 {

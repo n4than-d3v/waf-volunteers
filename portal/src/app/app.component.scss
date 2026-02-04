@@ -37,12 +37,58 @@ footer {
 .logo {
   position: relative;
 
-  #xmas-easter-egg {
+  .easter-egg {
     position: absolute;
     width: 2.5rem;
     height: 2.5rem;
+  }
+
+  #ee-xmas {
     transform: rotate(30deg);
     top: -1rem;
     right: -2.25rem;
+  }
+
+  #ee-valentines {
+    transform: rotate(8deg);
+    top: -0.5rem;
+    right: -1.2rem;
+  }
+
+  #ee-easter {
+    top: 0.5rem;
+    right: -2.5rem;
+  }
+
+  #ee-halloween-hand {
+    bottom: -0.77rem;
+    right: -2.6rem;
+  }
+
+  #ee-halloween-ghost {
+    left: 1.2rem;
+    top: -0.6rem;
+  }
+
+  #ee-halloween-hat {
+    transform: rotate(30deg);
+    top: -1rem;
+    right: -2.25rem;
+  }
+
+  #ee-newyear-balloons {
+    bottom: -0.5rem;
+    right: -2.75rem;
+  }
+
+  #ee-newyear-confetti {
+    left: -1.5rem;
+    top: -1.3rem;
+    transform: rotate(90deg);
+  }
+
+  #ee-pancake {
+    bottom: 1.25rem;
+    right: -3rem;
   }
 }

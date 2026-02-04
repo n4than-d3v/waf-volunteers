@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   standalone: true,
-  selector: 'easter-eggs-snowflakes',
+  selector: 'easter-eggs-flakes',
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
   imports: [CommonModule],
 })
-export class EasterEggsSnowflakesComponent {
+export class EasterEggsFlakesComponent {
   flakes = Array(60);
+
+  @Input({ required: true }) img!: string;
 }

@@ -2,26 +2,94 @@
   <header>
     <a class="logo" [routerLink]="'./'">
       <img src="images/header.svg" alt="Wildlife Aid Foundation" />
-      @if (easterEggs.xmas) {
-      <img
-        id="xmas-easter-egg"
-        src="images/easter-eggs/santa-hat.svg"
-        alt="Xmas easter egg"
-      />
+      @if (easterEggs.christmas) {
+        <img
+          id="ee-xmas"
+          class="easter-egg"
+          src="images/easter-eggs/santa-hat.svg"
+          alt="Xmas easter egg"
+        />
+      } @else if (easterEggs.valentines) {
+        <img
+          id="ee-valentines"
+          class="easter-egg"
+          src="images/easter-eggs/valentines.svg"
+          alt="Valentines easter egg"
+        />
+      } @else if (easterEggs.easter) {
+        <img
+          id="ee-easter"
+          class="easter-egg"
+          src="images/easter-eggs/bunny.svg"
+          alt="Easter easter egg"
+        />
+      } @else if (easterEggs.halloween) {
+        <img
+          id="ee-halloween-hat"
+          class="easter-egg"
+          src="images/easter-eggs/halloween-hat.svg"
+          alt="Halloween (hat) easter egg"
+        />
+        <img
+          id="ee-halloween-ghost"
+          class="easter-egg"
+          src="images/easter-eggs/halloween-ghost.svg"
+          alt="Halloween (ghost) easter egg"
+        />
+        <img
+          id="ee-halloween-hand"
+          class="easter-egg"
+          src="images/easter-eggs/halloween-hand.svg"
+          alt="Halloween (hand) easter egg"
+        />
+      } @else if (easterEggs.newYear) {
+        <img
+          id="ee-newyear-balloons"
+          class="easter-egg"
+          src="images/easter-eggs/balloons.svg"
+          alt="New year (balloon) easter egg"
+        />
+        <img
+          id="ee-newyear-confetti"
+          class="easter-egg"
+          src="images/easter-eggs/confetti.svg"
+          alt="New year (confetti) easter egg"
+        />
+      } @else if (easterEggs.pancakeDay) {
+        <img
+          id="ee-pancake"
+          class="easter-egg"
+          src="images/easter-eggs/pancakes.svg"
+          alt="Pancake day easter egg"
+        />
       }
     </a>
-    @if (!(router.url.includes('/login') ||
-    router.url.includes('/clocking/dashboard'))) {
-    <div class="sign-out">
-      <a [routerLink]="'./'" (click)="signOut()">
-        <img src="images/sign-out.svg" alt="Sign out" />
-      </a>
-    </div>
+    @if (
+      !(
+        router.url.includes("/login") ||
+        router.url.includes("/clocking/dashboard")
+      )
+    ) {
+      <div class="sign-out">
+        <a [routerLink]="'./'" (click)="signOut()">
+          <img src="images/sign-out.svg" alt="Sign out" />
+        </a>
+      </div>
     }
   </header>
   <main>
-    @if (easterEggs.xmas) {
-    <easter-eggs-snowflakes></easter-eggs-snowflakes>
+    @if (easterEggs.christmas) {
+      <easter-eggs-flakes [img]="'snowflake'"></easter-eggs-flakes>
+    } @else if (easterEggs.valentines) {
+      <easter-eggs-flakes [img]="'heart'"></easter-eggs-flakes>
+    } @else if (easterEggs.easter) {
+      <easter-eggs-flakes [img]="'egg'"></easter-eggs-flakes>
+    } @else if (easterEggs.halloween) {
+      <easter-eggs-flakes [img]="'pumpkin'"></easter-eggs-flakes>
+    } @else if (easterEggs.newYear) {
+      <easter-eggs-flakes [img]="'balloon'"></easter-eggs-flakes>
+    } @else if (easterEggs.pancakeDay) {
+      <easter-eggs-flakes [img]="'pancakes'"></easter-eggs-flakes>
     }
     <router-outlet />
   </main>

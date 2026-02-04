@@ -94,8 +94,6 @@ export class HospitalPatientExamComponent implements OnInit {
   performExamTask$: Observable<Task>;
   setDispositionTask$: Observable<Task>;
 
-  areaId: string | null = null;
-
   attemptedSave = false;
   saving = false;
 

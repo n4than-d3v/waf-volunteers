@@ -4,6 +4,7 @@
   background-color: #f2f2f2;
 
   .sidebar {
+    max-width: max-content;
     background-color: #e2e2e2;
     border-right: solid 1px black;
 
@@ -40,6 +41,18 @@
     margin-top: 0.75rem;
     margin-right: 1.25rem;
     min-height: calc(100vh - 9rem);
+
+    .header {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+
+      button {
+        padding: 0rem;
+        margin: 0rem;
+        font-size: 1.5rem;
+      }
+    }
 
     .content {
       padding: 0.75rem 0rem;

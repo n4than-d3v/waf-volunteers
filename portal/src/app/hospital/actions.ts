@@ -32,6 +32,8 @@ export const delayedSetTab = createAction(
   props<{ tab: Tab }>(),
 );
 
+export const backTab = createAction('[HMS-V] Back tab');
+
 export const getPatientCounts = createAction('[HMS-V] Get patient counts');
 export const getPatientCountsSuccess = createAction(
   '[HMS-V] Get patient counts: success',

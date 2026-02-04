@@ -1,5 +1,6 @@
 export interface HospitalState {
   tab: Tab;
+  tabHistory: Tab[];
 
   patientCounts: ReadOnlyWrapper<PatientCounts>;
   patientsByStatus: ReadOnlyWrapper<ListPatient[]>;
@@ -631,6 +632,7 @@ export const createTask = (): Task => ({
 
 export const initialHospitalState: HospitalState = {
   tab: { code: 'DASHBOARD', title: 'Dashboard' },
+  tabHistory: [{ code: 'DASHBOARD', title: 'Dashboard' }],
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
   patientsByStatus: createReadOnlyWrapper<ListPatient[]>(),
   patient: createReadOnlyWrapper<Patient>(),

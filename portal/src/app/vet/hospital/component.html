@@ -21,7 +21,9 @@
   <div class="container">
     @if (tab$ | async; as tab) {
     <div class="header">
-      <h2>{{ tab.title }}</h2>
+      @if (tabHistory$ | async; as tabHistory) { @if (tabHistory.length > 1) {
+      <button (click)="back()" class="button button--none">⬅️</button> } }
+      <h2>{{ tab.title }}&nbsp;</h2>
     </div>
     <div class="content">
       @if (tab.code === 'LIST_PATIENTS_BY_STATUS') {

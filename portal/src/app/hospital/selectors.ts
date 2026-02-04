@@ -9,6 +9,11 @@ export const selectTab = createSelector(
   (state) => state.tab,
 );
 
+export const selectTabHistory = createSelector(
+  selectHospitalState,
+  (state) => state.tabHistory,
+);
+
 export const selectPatientCounts = createSelector(
   selectHospitalState,
   (state) => state.patientCounts,

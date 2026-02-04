@@ -157,6 +157,7 @@ import {
   updatePrescriptionInstructionError,
   updatePrescriptionMedicationError,
   delayedSetTab,
+  backTab,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -168,7 +169,19 @@ export const hospitalReducer = createReducer<HospitalState>(
   on(delayedSetTab, (state, { tab }) => ({
     ...state,
     tab: { ...tab },
+    tabHistory: [...state.tabHistory, tab],
   })),
+  on(backTab, (state) => {
+    const history = [...state.tabHistory];
+    history.pop();
+    const lastTab = history[history.length - 1];
+
+    return {
+      ...state,
+      tab: lastTab ? { ...lastTab } : state.tab,
+      tabHistory: [...history],
+    };
+  }),
   // Patient counts
   on(getPatientCounts, (state) => ({
     ...state,

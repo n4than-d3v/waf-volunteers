@@ -2,13 +2,13 @@ import { Component, OnDestroy } from '@angular/core';
 import { Observable, timeInterval } from 'rxjs';
 import { Tab } from '../../hospital/state';
 import { Store } from '@ngrx/store';
-import { selectTab } from '../../hospital/selectors';
+import { selectTab, selectTabHistory } from '../../hospital/selectors';
 import { HospitalPatientByStatusComponent } from '../../hospital/patient-by-status/component';
 import { AsyncPipe } from '@angular/common';
 import { HospitalListPatientByStatusComponent } from '../../hospital/list-patients-by-status/component';
 import { HospitalPatientComponent } from '../../hospital/patient/component';
 import { HospitalPatientSearchComponent } from '../../hospital/patient-search/component';
-import { setTab } from '../../hospital/actions';
+import { backTab, setTab } from '../../hospital/actions';
 import { HospitalStockListComponent } from '../../hospital/stock/list/component';
 import { setPage } from '../../hospital/stock/actions';
 import { HospitalDailyTasksComponent } from '../../hospital/daily-tasks/component';
@@ -32,9 +32,15 @@ import { HospitalPatientBoardComponent } from '../../hospital/patient-board/comp
 })
 export class VetHospitalComponent implements OnDestroy {
   tab$: Observable<Tab>;
+  tabHistory$: Observable<Tab[]>;
 
   constructor(private store: Store) {
     this.tab$ = this.store.select(selectTab);
+    this.tabHistory$ = this.store.select(selectTabHistory);
+  }
+
+  back() {
+    this.store.dispatch(backTab());
   }
 
   viewPatientBoards() {

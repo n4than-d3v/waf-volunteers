@@ -56,6 +56,7 @@ export class AdminHospitalTransferLocationsComponent implements OnInit {
     this.updating = true;
     this.updatingTransferLocation = transferLocation;
     this.form.controls.description.setValue(transferLocation.description);
+    window.scroll(0, 0);
   }
 
   cancel() {
@@ -71,7 +72,7 @@ export class AdminHospitalTransferLocationsComponent implements OnInit {
         transferLocation: {
           description: this.form.controls.description.value || '',
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -83,7 +84,7 @@ export class AdminHospitalTransferLocationsComponent implements OnInit {
           id: this.updatingTransferLocation!.id,
           description: this.form.controls.description.value || '',
         },
-      })
+      }),
     );
     this.cancel();
   }

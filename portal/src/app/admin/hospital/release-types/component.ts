@@ -56,6 +56,7 @@ export class AdminHospitalReleaseTypesComponent implements OnInit {
     this.updating = true;
     this.updatingReleaseType = releaseType;
     this.form.controls.description.setValue(releaseType.description);
+    window.scroll(0, 0);
   }
 
   cancel() {
@@ -71,7 +72,7 @@ export class AdminHospitalReleaseTypesComponent implements OnInit {
         releaseType: {
           description: this.form.controls.description.value || '',
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -83,7 +84,7 @@ export class AdminHospitalReleaseTypesComponent implements OnInit {
           id: this.updatingReleaseType!.id,
           description: this.form.controls.description.value || '',
         },
-      })
+      }),
     );
     this.cancel();
   }

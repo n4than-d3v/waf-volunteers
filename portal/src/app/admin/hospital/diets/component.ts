@@ -60,7 +60,10 @@ export class AdminHospitalDietsComponent implements OnInit {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  constructor(private store: Store, private sanitizer: DomSanitizer) {
+  constructor(
+    private store: Store,
+    private sanitizer: DomSanitizer,
+  ) {
     this.diets$ = this.store.select(selectDiets);
   }
 
@@ -76,9 +79,10 @@ export class AdminHospitalDietsComponent implements OnInit {
     this.updatingDiet = diet;
     this.form.controls.name.setValue(diet.name);
     this.form.controls.description.setValue(
-      toHTML(JSON.parse(diet.description))
+      toHTML(JSON.parse(diet.description)),
     );
     this.editor = new Editor();
+    window.scroll(0, 0);
   }
 
   cancel() {
@@ -103,7 +107,7 @@ export class AdminHospitalDietsComponent implements OnInit {
           name: this.form.controls.name.value || '',
           description: JSON.stringify(jsonDoc),
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -118,7 +122,7 @@ export class AdminHospitalDietsComponent implements OnInit {
           name: this.form.controls.name.value || '',
           description: JSON.stringify(jsonDoc),
         },
-      })
+      }),
     );
     this.cancel();
   }

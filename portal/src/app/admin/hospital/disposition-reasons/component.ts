@@ -64,7 +64,10 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  constructor(private store: Store, private sanitizer: DomSanitizer) {
+  constructor(
+    private store: Store,
+    private sanitizer: DomSanitizer,
+  ) {
     this.dispositionReasons$ = this.store.select(selectDispositionReasons);
   }
 
@@ -81,6 +84,7 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
     this.form.controls.description.setValue(dispositionReason.description);
     this.form.controls.communication.setValue(dispositionReason.communication);
     this.editor = new Editor();
+    window.scroll(0, 0);
   }
 
   cancel() {
@@ -100,7 +104,7 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
           description: this.form.controls.description.value || '',
           communication: htmlContent,
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -114,7 +118,7 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
           description: this.form.controls.description.value || '',
           communication: htmlContent,
         },
-      })
+      }),
     );
     this.cancel();
   }

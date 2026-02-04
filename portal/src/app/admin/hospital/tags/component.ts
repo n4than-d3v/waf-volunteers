@@ -60,7 +60,10 @@ export class AdminHospitalTagsComponent implements OnInit {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  constructor(private store: Store, private sanitizer: DomSanitizer) {
+  constructor(
+    private store: Store,
+    private sanitizer: DomSanitizer,
+  ) {
     this.tags$ = this.store.select(selectTags);
   }
 
@@ -76,9 +79,10 @@ export class AdminHospitalTagsComponent implements OnInit {
     this.updatingTag = tag;
     this.form.controls.name.setValue(tag.name);
     this.form.controls.description.setValue(
-      toHTML(JSON.parse(tag.description))
+      toHTML(JSON.parse(tag.description)),
     );
     this.editor = new Editor();
+    window.scroll(0, 0);
   }
 
   cancel() {
@@ -103,7 +107,7 @@ export class AdminHospitalTagsComponent implements OnInit {
           name: this.form.controls.name.value || '',
           description: JSON.stringify(jsonDoc),
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -118,7 +122,7 @@ export class AdminHospitalTagsComponent implements OnInit {
           name: this.form.controls.name.value || '',
           description: JSON.stringify(jsonDoc),
         },
-      })
+      }),
     );
     this.cancel();
   }

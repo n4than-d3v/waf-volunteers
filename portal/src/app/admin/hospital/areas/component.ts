@@ -69,6 +69,7 @@ export class AdminHospitalAreasComponent implements OnInit {
     this.creatingArea = false;
     this.creatingPen = true;
     this.creatingPenForArea = area;
+    window.scroll(0, 0);
   }
 
   beginMovePen(id: number) {
@@ -92,7 +93,7 @@ export class AdminHospitalAreasComponent implements OnInit {
           code: this.areaForm.controls.code.value || '',
           name: this.areaForm.controls.name.value || '',
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -104,7 +105,7 @@ export class AdminHospitalAreasComponent implements OnInit {
           areaId: this.creatingPenForArea!.id,
           code: this.penForm.controls.code.value || '',
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -114,7 +115,7 @@ export class AdminHospitalAreasComponent implements OnInit {
       movePen({
         penId: this.movingPen!,
         areaId: Number(this.movePenForm.value.areaId),
-      })
+      }),
     );
     this.cancel();
   }
@@ -124,7 +125,7 @@ export class AdminHospitalAreasComponent implements OnInit {
       changePenStatus({
         penId: id,
         enabled,
-      })
+      }),
     );
   }
 
@@ -133,7 +134,7 @@ export class AdminHospitalAreasComponent implements OnInit {
       changeAreaStatus({
         areaId: id,
         enabled,
-      })
+      }),
     );
   }
 

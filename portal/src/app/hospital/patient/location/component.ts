@@ -19,6 +19,7 @@ import { Store } from '@ngrx/store';
 import { selectAreas, selectMovePatient } from '../../selectors';
 import { getAreas, movePatient } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
+import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
 @Component({
   selector: 'hospital-patient-location',
@@ -31,6 +32,7 @@ import { SpinnerComponent } from '../../../shared/spinner/component';
     SpinnerComponent,
     FormsModule,
     ReactiveFormsModule,
+    HospitalPatientAutocompleteComponent,
   ],
 })
 export class HospitalPatientLocationComponent implements OnInit {
@@ -61,6 +63,34 @@ export class HospitalPatientLocationComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(getAreas());
+  }
+
+  convertAreas(areas: Area[], showEmpty = true) {
+    return areas
+      .filter((x) => !x.deleted)
+      .map((area) => ({
+        id: area.id,
+        display: showEmpty
+          ? area.empty
+            ? `🟩 [${area.code}] ${area.name} (empty pens)`
+            : `🟨 [${area.code}] ${area.name} (all pens in use)`
+          : area.name,
+      }));
+  }
+
+  convertPens(areas: Area[]) {
+    const area = areas
+      .filter((x) => !x.deleted)
+      .find((x) => String(x.id) == this.moveForm.value.areaId);
+    if (!area) return [];
+    return area.pens
+      .filter((x) => !x.deleted)
+      .map((pen) => ({
+        id: pen.id,
+        display: pen.empty
+          ? `🟩 ${pen.reference} (empty)`
+          : `🟨 ${pen.reference} (in use)`,
+      }));
   }
 
   reset() {

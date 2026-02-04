@@ -41,11 +41,10 @@ export class HospitalPatientAutocompleteComponent implements OnInit {
 
   item: { id: number; display: string; aka?: string } | null = null;
 
-  private getFirstInList() {
-    const first = document.querySelector(
-      `#${this.id}-selector ul li:first-child`
+  private getNthInList(nth: number) {
+    return document.querySelector(
+      `#${this.id}-selector ul li:nth-child(${nth})`,
     ) as any;
-    return first;
   }
 
   ngOnInit() {
@@ -56,14 +55,24 @@ export class HospitalPatientAutocompleteComponent implements OnInit {
     this.selectItem(initialItem, {});
   }
 
+  currentSelection = 0;
+  arrowKeyPress(event: KeyboardEvent) {
+    if (!event.keyCode) return;
+    if (event.keyCode === 40) {
+      this.currentSelection++;
+      this.getNthInList(this.currentSelection)?.focus();
+      event.preventDefault();
+    } else if (event.keyCode === 38) {
+      this.currentSelection--;
+      this.getNthInList(this.currentSelection)?.focus();
+      event.preventDefault();
+    }
+  }
+
   onKeyDown(event: KeyboardEvent) {
     if (event.keyCode) {
       if (event.keyCode == 13 /* Enter */) {
-        this.getFirstInList()?.click();
-        event.preventDefault();
-        return;
-      } else if (event.keyCode == 9 /* Tab */) {
-        this.getFirstInList()?.focus();
+        this.getNthInList(1)?.click();
         event.preventDefault();
         return;
       }
@@ -80,7 +89,7 @@ export class HospitalPatientAutocompleteComponent implements OnInit {
     this.searchResults = this.items.filter(
       (x) =>
         x.display.toUpperCase().includes(search.toUpperCase()) ||
-        (x.aka && x.aka.toUpperCase().includes(search.toUpperCase()))
+        (x.aka && x.aka.toUpperCase().includes(search.toUpperCase())),
     );
   }
 

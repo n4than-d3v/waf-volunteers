@@ -130,6 +130,7 @@ export class HospitalPatientExamComponent implements OnInit {
     comments: new FormControl(''),
     outcome: new FormControl('alive', [Validators.required]),
     dispositionReasonId: new FormControl(''),
+    areaId: new FormControl(''),
     penId: new FormControl(''),
   });
 
@@ -155,6 +156,32 @@ export class HospitalPatientExamComponent implements OnInit {
 
   convertSpecies(species: Species[]) {
     return species.map((x) => ({ id: x.id, display: x.name }));
+  }
+
+  convertAreas(areas: Area[]) {
+    return areas
+      .filter((x) => !x.deleted)
+      .map((area) => ({
+        id: area.id,
+        display: area.empty
+          ? `🟩 [${area.code}] ${area.name} (empty pens)`
+          : `🟨 [${area.code}] ${area.name} (all pens in use)`,
+      }));
+  }
+
+  convertPens(areas: Area[]) {
+    const area = areas
+      .filter((x) => !x.deleted)
+      .find((x) => String(x.id) == this.examForm.value.areaId);
+    if (!area) return [];
+    return area.pens
+      .filter((x) => !x.deleted)
+      .map((pen) => ({
+        id: pen.id,
+        display: pen.empty
+          ? `🟩 ${pen.reference} (empty)`
+          : `🟨 ${pen.reference} (in use)`,
+      }));
   }
 
   addTreatmentInstruction() {

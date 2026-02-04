@@ -1,4 +1,9 @@
-<div [formGroup]="formGroup" class="wrapper" [class.inline]="inline">
+<div
+  [formGroup]="formGroup"
+  class="wrapper"
+  [class.inline]="inline"
+  (keydown)="arrowKeyPress($event)"
+>
   @if (label) {
   <label for="{{ id }}">
     {{ label }}

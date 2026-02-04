@@ -524,6 +524,7 @@ export interface Pen {
   id: number;
   code: string;
   reference: string;
+  deleted: boolean;
 
   // Only available on getAreas()
   empty: boolean;
@@ -533,6 +534,7 @@ export interface Area {
   id: number;
   name: string;
   code: string;
+  deleted: boolean;
   pens: Pen[];
 
   // Only available on getAreas()

@@ -338,49 +338,44 @@
       @if (examForm.controls.outcome.value === 'alive') {
       <div class="fields fields--inline">
         <div class="field">
-          <label for="area">
+          <label for="areaId">
             Area
             <span class="required">*</span>
           </label>
-          <select
-            id="area"
-            [(ngModel)]="areaId"
-            [ngModelOptions]="{standalone: true}"
-          >
-            <option value=""></option>
-            @if (areas$ | async; as areas) { @if (areas.loading) {
-            <spinner />
-            } @else if (areas.error) {
-            <div class="error">Error occurred</div>
-            } @else if (areas.data) { @for (area of areas.data; track area.id) {
-            <option [value]="area.id">
-              @if (area.empty) { 🟩 {{ area.name }} (Empty pens) } @else { 🟨 {{
-              area.name }} (All pens in use) }
-            </option>
-            } }}
-          </select>
+          @if (areas$ | async; as areas) { @if (areas.loading) {
+          <spinner />
+          } @else if (areas.error) {
+          <div class="error">Error occurred</div>
+          } @else if (areas.data) {
+          <hospital-patient-autocomplete
+            [id]="'areaId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'areaId'"
+            [formGroup]="examForm"
+            [items]="convertAreas(areas.data)"
+          ></hospital-patient-autocomplete>
+          } }
         </div>
         <div class="field">
-          <label for="pen">
+          <label for="penId">
             Pen
             <span class="required">*</span>
           </label>
-          <select id="pen" formControlName="penId">
-            @if (!areaId) {
-            <option value="">Select area</option>
-            } @if (areas$ | async; as areas) { @if (areas.loading) {
-            <spinner />
-            } @else if (areas.error) {
-            <div class="error">Error occurred</div>
-            } @else if (areas.data) { @for (area of areas.data; track area.id) {
-            @if (area.id.toString() == areaId) { @for (pen of area.pens; track
-            pen.id) {
-            <option [value]="pen.id">
-              @if (pen.empty) { 🟩 {{ pen.reference }} (Empty) } @else { 🟨 {{
-              pen.reference }} (In use) }
-            </option>
-            } } } }}
-          </select>
+          @if (areas$ | async; as areas) { @if (areas.loading) {
+          <spinner />
+          } @else if (areas.error) {
+          <div class="error">Error occurred</div>
+          } @else if (areas.data) {
+          <hospital-patient-autocomplete
+            [id]="'penId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'penId'"
+            [formGroup]="examForm"
+            [items]="convertPens(areas.data)"
+          ></hospital-patient-autocomplete>
+          } }
         </div>
       </div>
       } @else if (examForm.controls.outcome.value === 'diedOnTable' ||

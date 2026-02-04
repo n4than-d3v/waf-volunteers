@@ -40,41 +40,40 @@
       Area
       <span class="required">*</span>
     </label>
-    <select id="area" formControlName="areaId">
-      <option value=""></option>
-      @if (areas$ | async; as areas) { @if (areas.loading) {
-      <spinner />
-      } @else if (areas.error) {
-      <div class="error">Error occurred</div>
-      } @else if (areas.data) { @for (area of areas.data; track area.id) {
-      <option [value]="area.id">
-        @if (area.empty) { 🟩 {{ area.name }} (Empty pens) } @else { 🟨 {{
-        area.name }} (All pens in use) }
-      </option>
-      } }}
-    </select>
+    @if (areas$ | async; as areas) { @if (areas.loading) {
+    <spinner />
+    } @else if (areas.error) {
+    <div class="error">Error occurred</div>
+    } @else if (areas.data) {
+    <hospital-patient-autocomplete
+      [id]="'areaId'"
+      [inline]="true"
+      [label]="''"
+      [control]="'areaId'"
+      [formGroup]="moveForm"
+      [items]="convertAreas(areas.data)"
+    ></hospital-patient-autocomplete>
+    } }
   </div>
   <div class="field">
     <label for="pen">
       Pen
       <span class="required">*</span>
     </label>
-    <select id="pen" formControlName="penId">
-      @if (!moveForm.value.areaId) {
-      <option value="">Select area</option>
-      } @if (areas$ | async; as areas) { @if (areas.loading) {
-      <spinner />
-      } @else if (areas.error) {
-      <div class="error">Error occurred</div>
-      } @else if (areas.data) { @for (area of areas.data; track area.id) { @if
-      (area.id.toString() == moveForm.value.areaId) { @for (pen of area.pens;
-      track pen.id) {
-      <option [value]="pen.id">
-        @if (pen.empty) { 🟩 {{ pen.reference }} (Empty) } @else { 🟨 {{
-        pen.reference }} (In use) }
-      </option>
-      } } } }}
-    </select>
+    @if (areas$ | async; as areas) { @if (areas.loading) {
+    <spinner />
+    } @else if (areas.error) {
+    <div class="error">Error occurred</div>
+    } @else if (areas.data) {
+    <hospital-patient-autocomplete
+      [id]="'penId'"
+      [inline]="true"
+      [label]="''"
+      [control]="'penId'"
+      [formGroup]="moveForm"
+      [items]="convertPens(areas.data)"
+    ></hospital-patient-autocomplete>
+    } }
   </div>
   <div class="field">
     <label for="movingPenToAnotherArea">
@@ -92,16 +91,20 @@
       New area
       <span class="required">*</span>
     </label>
-    <select id="newAreaId" formControlName="newAreaId">
-      <option value=""></option>
-      @if (areas$ | async; as areas) { @if (areas.loading) {
-      <spinner />
-      } @else if (areas.error) {
-      <div class="error">Error occurred</div>
-      } @else if (areas.data) { @for (area of areas.data; track area.id) {
-      <option [value]="area.id">{{ area.name }}</option>
-      } }}
-    </select>
+    @if (areas$ | async; as areas) { @if (areas.loading) {
+    <spinner />
+    } @else if (areas.error) {
+    <div class="error">Error occurred</div>
+    } @else if (areas.data) {
+    <hospital-patient-autocomplete
+      [id]="'newAreaId'"
+      [inline]="true"
+      [label]="''"
+      [control]="'newAreaId'"
+      [formGroup]="moveForm"
+      [items]="convertAreas(areas.data, false)"
+    ></hospital-patient-autocomplete>
+    } }
   </div>
   } @if (!saving) { @if (attemptedSave && !moveForm.valid) {
   <div class="error">Please fill in all required fields</div>

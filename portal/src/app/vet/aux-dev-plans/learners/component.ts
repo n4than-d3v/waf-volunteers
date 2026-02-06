@@ -28,7 +28,7 @@ export class AuxDevPlanLearnersComponent implements OnInit {
 
   witnessForm = new FormGroup({
     notes: new FormControl(''),
-    signedOff: new FormControl(false),
+    signedOff: new FormControl(false, { nonNullable: true }),
   });
 
   constructor(private store: Store) {
@@ -54,7 +54,7 @@ export class AuxDevPlanLearnersComponent implements OnInit {
         performerId: this.witnessingLearner!.id,
         notes: this.witnessForm.value.notes || '',
         signedOff: this.witnessForm.value.signedOff!,
-      })
+      }),
     );
     this.cancel();
   }

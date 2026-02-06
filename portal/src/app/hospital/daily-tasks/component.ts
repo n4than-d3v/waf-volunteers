@@ -53,6 +53,10 @@ export class HospitalDailyTasksComponent implements OnInit {
   showMeOverdueRechecks = true;
   showMeDueRechecks = true;
   showMeDoneRechecks = false;
+
+  showMeVeterinarianRechecks = true;
+  showMeTechnicianRechecks = true;
+
   showMeDuePrescriptions = true;
   showMeDonePrescriptions = false;
   showMeNotDuePrescriptions = false;
@@ -89,6 +93,10 @@ export class HospitalDailyTasksComponent implements OnInit {
     this.changeDate();
   }
 
+  shouldShowAreas(report: DailyTasksReport) {
+    return report.areas.some((area) => this.shouldShowArea(area));
+  }
+
   shouldShowArea(area: DailyTasksReportArea) {
     return area.pens.some((pen) => this.shouldShowPen(pen));
   }
@@ -114,6 +122,10 @@ export class HospitalDailyTasksComponent implements OnInit {
           ? 'done'
           : 'due'
         : 'overdue';
+    let roles = getRecheckRoles(recheck.roles);
+    if (roles === 'Veterinarian' && !this.showMeVeterinarianRechecks)
+      return false;
+    if (roles === 'Technician' && !this.showMeTechnicianRechecks) return false;
     return (
       (this.showMeDoneRechecks && status === 'done') ||
       (this.showMeDueRechecks && status === 'due') ||

@@ -24,6 +24,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
 @Component({
   selector: 'hospital-patient-details',
@@ -37,6 +38,7 @@ import {
     SpinnerComponent,
     FormsModule,
     ReactiveFormsModule,
+    HospitalPatientAutocompleteComponent,
   ],
 })
 export class HospitalPatientDetailsComponent implements OnInit {
@@ -68,6 +70,10 @@ export class HospitalPatientDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(getSpecies());
+  }
+
+  convertSpecies(species: Species[]) {
+    return species.map((x) => ({ id: x.id, display: x.name }));
   }
 
   getSex() {
@@ -115,7 +121,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
         // Not updating tags or diets (yet)
         tagIds: this.patient.tags.map((x) => x.id),
         dietIds: this.patient.diets.map((x) => x.id),
-      })
+      }),
     );
     this.reset();
   }

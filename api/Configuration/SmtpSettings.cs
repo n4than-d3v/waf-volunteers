@@ -5,6 +5,7 @@ public class SmtpSettings
     public string TenantId { get; set; }
     public SmtpSettingsClient Client { get; set; }
     public SmtpSettingsSender Sender { get; set; }
+    public SmtpSettingsSender Drafter { get; set; }
 }
 
 public class SmtpSettingsClient

@@ -48,7 +48,7 @@ export class HospitalPatientLocationComponent implements OnInit {
   moveForm = new FormGroup({
     areaId: new FormControl('', [Validators.required]),
     penId: new FormControl('', [Validators.required]),
-    movingPenToAnotherArea: new FormControl(false),
+    movingPenToAnotherArea: new FormControl(false, { nonNullable: true }),
     newAreaId: new FormControl(''),
   });
 

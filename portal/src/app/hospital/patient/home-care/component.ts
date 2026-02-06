@@ -30,6 +30,7 @@ import {
   selectDropOffHomeCare,
   selectMessageHomeCare,
 } from '../../selectors';
+import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
 @Component({
   selector: 'hospital-patient-home-care',
@@ -42,6 +43,7 @@ import {
     SpinnerComponent,
     FormsModule,
     ReactiveFormsModule,
+    HospitalPatientAutocompleteComponent,
   ],
 })
 export class HospitalPatientHomeCareComponent implements OnInit {
@@ -90,7 +92,7 @@ export class HospitalPatientHomeCareComponent implements OnInit {
         patientId: this.patient.id,
         homeCareRequestId,
         penId: Number(this.dropOffForm.value.penId),
-      })
+      }),
     );
     this.reset();
   }
@@ -104,9 +106,35 @@ export class HospitalPatientHomeCareComponent implements OnInit {
         patientId: this.patient.id,
         homeCareRequestId,
         message: this.messageForm.value.message || '',
-      })
+      }),
     );
     this.reset();
+  }
+
+  convertAreas(areas: Area[]) {
+    return areas
+      .filter((x) => !x.deleted)
+      .map((area) => ({
+        id: area.id,
+        display: area.empty
+          ? `🟩 [${area.code}] ${area.name} (empty pens)`
+          : `🟨 [${area.code}] ${area.name} (all pens in use)`,
+      }));
+  }
+
+  convertPens(areas: Area[]) {
+    const area = areas
+      .filter((x) => !x.deleted)
+      .find((x) => String(x.id) == this.dropOffForm.value.areaId);
+    if (!area) return [];
+    return area.pens
+      .filter((x) => !x.deleted)
+      .map((pen) => ({
+        id: pen.id,
+        display: pen.empty
+          ? `🟩 ${pen.reference} (empty)`
+          : `🟨 ${pen.reference} (in use)`,
+      }));
   }
 
   reset() {

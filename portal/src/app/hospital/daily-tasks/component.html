@@ -160,29 +160,51 @@
   </div>
   <div>
     <p><strong>Rechecks</strong></p>
-    <div class="field">
-      <label for="showMeOverdueRechecks">Overdue</label>
-      <input
-        type="checkbox"
-        id="showMeOverdueRechecks"
-        [(ngModel)]="showMeOverdueRechecks"
-      />
-    </div>
-    <div class="field">
-      <label for="showMeDueRechecks">Due</label>
-      <input
-        type="checkbox"
-        id="showMeDueRechecks"
-        [(ngModel)]="showMeDueRechecks"
-      />
-    </div>
-    <div class="field">
-      <label for="showMeDoneRechecks">Done</label>
-      <input
-        type="checkbox"
-        id="showMeDoneRechecks"
-        [(ngModel)]="showMeDoneRechecks"
-      />
+    <div class="subfilter">
+      <div>
+        <div class="field">
+          <label for="showMeOverdueRechecks">Overdue</label>
+          <input
+            type="checkbox"
+            id="showMeOverdueRechecks"
+            [(ngModel)]="showMeOverdueRechecks"
+          />
+        </div>
+        <div class="field">
+          <label for="showMeDueRechecks">Due</label>
+          <input
+            type="checkbox"
+            id="showMeDueRechecks"
+            [(ngModel)]="showMeDueRechecks"
+          />
+        </div>
+        <div class="field">
+          <label for="showMeDoneRechecks">Done</label>
+          <input
+            type="checkbox"
+            id="showMeDoneRechecks"
+            [(ngModel)]="showMeDoneRechecks"
+          />
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label for="showMeVeterinarianRechecks">Veterinarian</label>
+          <input
+            type="checkbox"
+            id="showMeVeterinarianRechecks"
+            [(ngModel)]="showMeVeterinarianRechecks"
+          />
+        </div>
+        <div class="field">
+          <label for="showMeTechnicianRechecks">Technician</label>
+          <input
+            type="checkbox"
+            id="showMeTechnicianRechecks"
+            [(ngModel)]="showMeTechnicianRechecks"
+          />
+        </div>
+      </div>
     </div>
   </div>
   <div>
@@ -221,10 +243,12 @@ administerPrescriptionTask) { @if (report.loading || performRecheckTask.loading
 } @else if (report.error || performRecheckTask.error ||
 administerPrescriptionTask.error) {
 <div class="error">Error occurred</div>
-} } } @if (report.data) { @if (report.data.areas.length === 0) {
+} } } @if (report.data) { @if (!shouldShowAreas(report.data)) {
 <div class="nothing">
   <h2>Nothing to do</h2>
-  <p>Looks like there's nothing to do on this date.</p>
+  <p>
+    Looks like there's nothing to do based on the selected filters on this date.
+  </p>
 </div>
 } @for (area of report.data.areas; track area.code) { @if (shouldShowArea(area))
 {

@@ -274,7 +274,9 @@ export function getWeightUnit(weightUnit: number | null): string {
   }
 }
 
-export function getRecheckRoles(roles: number): string {
+export function getRecheckRoles(
+  roles: number,
+): 'Veterinarian' | 'Technician' | '' {
   if (roles === 1) return 'Veterinarian';
   if (roles === 2) return 'Technician';
   return '';

@@ -52,17 +52,16 @@
         Species
         <span class="required">*</span>
       </label>
-      <select id="species" formControlName="speciesId">
-        <option value=""></option>
-        @if (species$ | async; as specieses) { @if (specieses.loading) {
-        <spinner />
-        } @else if (specieses.error) {
-        <div class="error">Error occurred</div>
-        } @else if (specieses.data) { @for (species of specieses.data; track
-        species.id) {
-        <option [value]="species.id">{{ species.name }}</option>
-        } } }
-      </select>
+      @if (species$ | async; as species) { @if (species.data) {
+      <hospital-patient-autocomplete
+        [id]="'speciesId'"
+        [inline]="true"
+        [label]="''"
+        [control]="'speciesId'"
+        [formGroup]="detailsForm"
+        [items]="convertSpecies(species.data)"
+      ></hospital-patient-autocomplete>
+      } }
     </div>
     <div class="field">
       <label for="species">

@@ -16,6 +16,12 @@ input[type="date"] {
   padding: 0.35rem 1rem 0.75rem 0.75rem;
   max-width: max-content;
 
+  .subfilter {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+  }
+
   .administered-since-wrapper {
     .time-select {
       display: flex;

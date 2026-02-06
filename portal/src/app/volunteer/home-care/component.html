@@ -13,7 +13,7 @@ requests.data; track request.id) {
 <div class="request">
   <div>
     <p>
-      <strong>{{ request.variant.name }}</strong>
+      <strong>{{ request.variant.friendlyName }}</strong>
     </p>
     @if (request.notes) {
     <p>{{ request.notes }}</p>
@@ -71,7 +71,7 @@ requests.data; track request.id) {
 <div class="request">
   <div>
     <p>
-      <strong>{{ request.variant.name }}</strong>
+      <strong>{{ request.variant.friendlyName }}</strong>
     </p>
     <p>Patient reference <strong>{{ request.reference }}</strong></p>
     <p>Pickup location <strong>{{ request.pen.reference }}</strong></p>

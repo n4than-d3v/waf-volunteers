@@ -16,6 +16,8 @@ public interface IBeaconService
 
 public partial class BeaconService : IBeaconService
 {
+    private static readonly DateTime _live = new(2026, 02, 09, 00, 00, 00);
+
     private readonly HttpClient _client;
     private readonly BeaconSettings _settings;
 
@@ -84,7 +86,8 @@ public partial class BeaconService : IBeaconService
             var response = await _client.GetAsync($"entities/c_patient_admissions?page={page}&per_page=200&sort_by=created_at&sort_direction=desc");
             var results = await response.Content.ReadFromJsonAsync<BeaconPatientAdmissionsFilterResults>();
             var relevant = results.results.Where(x =>
-                after <= x.entity.created_at && (
+                after <= x.entity.created_at &&
+                _live <= x.entity.created_at && (
                 (!string.IsNullOrWhiteSpace(x.entity.c_specific_animal)) ||
                 (!string.IsNullOrWhiteSpace(x.entity.c_other_animal)) ||
                 x.entity.c_animal.Any(y => y != "N/A"))

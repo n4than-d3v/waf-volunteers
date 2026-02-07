@@ -8,6 +8,7 @@ table {
     border-left: none;
     border-right: none;
     align-content: flex-start;
+    max-width: 35rem;
   }
 
   th {
@@ -17,6 +18,13 @@ table {
   tr {
     background-color: transparent !important;
   }
+}
+
+.load-more {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--theme-color-5);
+  cursor: pointer;
 }
 
 input,

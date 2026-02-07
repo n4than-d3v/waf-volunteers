@@ -13,7 +13,8 @@
     </tr>
   </thead>
   <tbody>
-    @for (test of patient.bloodTests; track test.id) {
+    @for (test of patient.bloodTests; let index = $index; track test.id) { @if
+    (index < maxBloodIndex) {
     <tr>
       <td>{{ test.tested | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>{{ test.tester.firstName }} {{ test.tester.lastName }}</td>
@@ -43,10 +44,14 @@
         }
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
-} @if (patient.faecalTests.length > 0) {
+@if (maxBloodIndex < patient.bloodTests.length) {
+<p>
+  <a class="load-more" (click)="maxBloodIndex += 5"> Load more... </a>
+</p>
+} } @if (patient.faecalTests.length > 0) {
 <h4>Faecal tests</h4>
 <table>
   <thead>
@@ -60,7 +65,8 @@
     </tr>
   </thead>
   <tbody>
-    @for (test of patient.faecalTests; track test.id) {
+    @for (test of patient.faecalTests; let index = $index; track test.id) { @if
+    (index < maxFaecalIndex) {
     <tr>
       <td>{{ test.tested | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>{{ test.tester.firstName }} {{ test.tester.lastName }}</td>
@@ -81,11 +87,15 @@
         }
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
-} @if (!(addingBlood || addingFaecal || updatingBlood || updatingFaecal)) { @if
-(isVet && patient.status != PatientStatus.Dispositioned) {
+@if (maxFaecalIndex < patient.faecalTests.length) {
+<p>
+  <a class="load-more" (click)="maxFaecalIndex += 5"> Load more... </a>
+</p>
+} } @if (!(addingBlood || addingFaecal || updatingBlood || updatingFaecal)) {
+@if (isVet && patient.status != PatientStatus.Dispositioned) {
 <div class="buttons">
   <button (click)="addingBlood = true" class="button button--secondary-invert">
     🩸 Add blood test

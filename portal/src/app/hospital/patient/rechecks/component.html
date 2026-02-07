@@ -14,7 +14,8 @@
       </tr>
     </thead>
     <tbody>
-      @for (recheck of patient.rechecks; track recheck.id) {
+      @for (recheck of patient.rechecks; let index = $index; track recheck.id) {
+      @if (index < maxIndex) {
       <tr>
         <td>{{ recheck.due | date: 'dd MMM yyyy' }}</td>
         <td>{{ getRecheckRoles(recheck.roles) }}</td>
@@ -43,10 +44,14 @@
           }
         </td>
       </tr>
-      }
+      } }
     </tbody>
   </table>
-  } @else {
+  @if (maxIndex < patient.rechecks.length) {
+  <p>
+    <a class="load-more" (click)="maxIndex += 5">Load more...</a>
+  </p>
+  } } @else {
   <p><em>No rechecks have been added for this patient.</em></p>
   }
   <div class="flex">

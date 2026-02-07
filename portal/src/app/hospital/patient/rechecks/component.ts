@@ -48,6 +48,8 @@ export class HospitalPatientRechecksComponent {
 
   PatientStatus = PatientStatus;
 
+  maxIndex = 5;
+
   adding = false;
   editing: number | null = null;
   saving = false;

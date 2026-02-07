@@ -12,7 +12,8 @@
       </tr>
     </thead>
     <tbody>
-      @for (note of patient.notes; track note.id) {
+      @for (note of patient.notes; let index = $index; track note.id) { @if
+      (index < maxIndex) {
       <tr>
         <td>{{ note.noted | date: 'dd MMM yyyy HH:mm' }}</td>
         <td>{{ note.noter.firstName }} {{ note.noter.lastName }}</td>
@@ -41,10 +42,14 @@
           }
         </td>
       </tr>
-      }
+      } }
     </tbody>
   </table>
-  } @else {
+  @if (maxIndex < patient.notes.length) {
+  <p>
+    <a class="load-more" (click)="maxIndex += 5"> Load more... </a>
+  </p>
+  } } @else {
   <p><em>No notes have been added for this patient.</em></p>
   }
   <div class="flex">

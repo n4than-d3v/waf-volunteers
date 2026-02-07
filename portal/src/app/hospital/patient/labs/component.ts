@@ -52,6 +52,9 @@ export class HospitalPatientLabsComponent {
 
   PatientStatus = PatientStatus;
 
+  maxFaecalIndex = 5;
+  maxBloodIndex = 5;
+
   addingFaecal = false;
   updatingFaecal: number | null = null;
   addingBlood = false;

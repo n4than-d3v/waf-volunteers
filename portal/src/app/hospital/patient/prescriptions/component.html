@@ -25,8 +25,8 @@ patient.prescriptionMedications.length === 0) {
     </tr>
   </thead>
   <tbody>
-    @for (prescription of patient.prescriptionInstructions; track
-    prescription.id) {
+    @for (prescription of patient.prescriptionInstructions; let index = $index;
+    track prescription.id) { @if (index < maxIndex) {
     <tr>
       <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
@@ -73,8 +73,9 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ administration.comments }}</td>
       <td></td>
     </tr>
-    } } } @for (prescription of patient.prescriptionMedications; track
-    prescription.id) {
+    } } } } @for (prescription of patient.prescriptionMedications; let index =
+    $index; track prescription.id) { @if (index < maxIndex -
+    patient.prescriptionInstructions.length) {
     <tr>
       <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
@@ -130,10 +131,15 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ administration.comments }}</td>
       <td></td>
     </tr>
-    } } }
+    } } } }
   </tbody>
 </table>
-} @if (!(addingMedication || addingInstruction || editingMedication ||
+@if (maxIndex < patient.prescriptionInstructions.length +
+patient.prescriptionMedications.length) {
+<p>
+  <a class="load-more" (click)="maxIndex += 5">Load more...</a>
+</p>
+} } @if (!(addingMedication || addingInstruction || editingMedication ||
 editingInstruction)) { @if (isVet && patient.status !=
 PatientStatus.Dispositioned) {
 <div class="buttons">

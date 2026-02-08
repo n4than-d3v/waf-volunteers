@@ -9,15 +9,14 @@ import {
 import { Store } from '@ngrx/store';
 import { selectPatientCounts } from '../../hospital/selectors';
 import { getPatientCounts, setTab } from '../actions';
-import { AsyncPipe } from '@angular/common';
-import { SpinnerComponent } from '../../shared/spinner/component';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'hospital-patient-by-status',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, DecimalPipe],
 })
 export class HospitalPatientByStatusComponent implements OnInit, OnDestroy {
   patientCounts$: Observable<ReadOnlyWrapper<PatientCounts>>;
@@ -55,7 +54,7 @@ export class HospitalPatientByStatusComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       setTab({
         tab: { code: 'LIST_PATIENTS_BY_STATUS', title, id: status },
-      })
+      }),
     );
   }
 

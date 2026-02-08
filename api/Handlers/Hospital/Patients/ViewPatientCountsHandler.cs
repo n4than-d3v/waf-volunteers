@@ -1,5 +1,6 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Outcome;
 using MediatR;
 
 namespace Api.Handlers.Hospital.Patients;
@@ -20,14 +21,24 @@ public class ViewPatientCountsHandler : IRequestHandler<ViewPatientCounts, IResu
     public async Task<IResult> Handle(ViewPatientCounts request, CancellationToken cancellationToken)
     {
         var patients = await _repository.GetAll<Patient>(x => true, tracking: false);
+
+        var statuses = patients.GroupBy(x => x.Status).ToDictionary(x => x.Key, x => x.Count());
+
+        statuses.TryGetValue(PatientStatus.PendingInitialExam, out var pendingInitialExam);
+        statuses.TryGetValue(PatientStatus.Inpatient, out var inpatient);
+        statuses.TryGetValue(PatientStatus.PendingHomeCare, out var pendingHomeCare);
+        statuses.TryGetValue(PatientStatus.ReceivingHomeCare, out var receivingHomeCare);
+        statuses.TryGetValue(PatientStatus.ReadyForRelease, out var readyForRelease);
+        statuses.TryGetValue(PatientStatus.Dispositioned, out var dispositioned);
+
         return Results.Ok(new
         {
-            PendingInitialExam = patients.Count(x => x.Status == PatientStatus.PendingInitialExam),
-            Inpatient = patients.Count(x => x.Status == PatientStatus.Inpatient),
-            PendingHomeCare = patients.Count(x => x.Status == PatientStatus.PendingHomeCare),
-            ReceivingHomeCare = patients.Count(x => x.Status == PatientStatus.ReceivingHomeCare),
-            ReadyForRelease = patients.Count(x => x.Status == PatientStatus.ReadyForRelease),
-            Dispositioned = patients.Count(x => x.Status == PatientStatus.Dispositioned)
+            pendingInitialExam,
+            inpatient,
+            pendingHomeCare,
+            receivingHomeCare,
+            readyForRelease,
+            dispositioned
         });
     }
 }

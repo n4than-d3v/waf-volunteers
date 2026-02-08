@@ -26,8 +26,47 @@ th {
 
 .filter {
   margin-bottom: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 
-  input {
+  input,
+  select {
     padding: 0.25rem 0.5rem;
+  }
+
+  select {
+    width: 6ch;
+  }
+}
+
+.pagination {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+
+  button {
+    min-width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+
+    &.active {
+      background: var(--theme-primary);
+      color: white;
+      border-color: var(--theme-primary);
+      font-weight: 600;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    &.nav {
+      font-weight: bold;
+    }
   }
 }

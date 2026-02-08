@@ -4,7 +4,39 @@
 <div class="filter">
   <div class="field">
     <label for="search">Filter</label>
-    <input type="text" id="search" autocomplete="off" [(ngModel)]="search" />
+    <input
+      type="text"
+      id="search"
+      autocomplete="off"
+      (input)="search$.next($any($event.target).value)"
+    />
+  </div>
+  <div class="field">
+    <label for="pageSize">Page size</label>
+    <select
+      [ngModel]="pageSize$ | async"
+      (ngModelChange)="pageSize$.next($event)"
+    >
+      <option [value]="25">25</option>
+      <option [value]="50">50</option>
+      <option [value]="100">100</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="pages">&nbsp;</label>
+    @if (totalPages$ | async; as totalPages) {
+    <div class="pagination">
+      <button class="nav" (click)="prevPage()" [disabled]="page === 1">
+        &larr;
+      </button>
+      @for (p of pages(totalPages); track p) {
+      <button (click)="goToPage(p)" [class.active]="p === page">{{ p }}</button>
+      }
+      <button class="nav" (click)="nextPage()" [disabled]="page === totalPages">
+        &rarr;
+      </button>
+    </div>
+    }
   </div>
 </div>
 @if (_status === PatientStatus.PendingInitialExam) {
@@ -19,8 +51,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) { @if
-    (showPatient(patient)) {
+    @for (patient of patients.data; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -30,7 +61,7 @@
       <td>{{ patient.initialLocation.description }}</td>
       <td>{{ formatAdmissionReasons(patient) }}</td>
     </tr>
-    } }
+    }
   </tbody>
 </table>
 } @else if (_status === PatientStatus.Inpatient || _status
@@ -47,8 +78,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) { @if
-    (showPatient(patient)) {
+    @for (patient of patients.data; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -65,7 +95,7 @@
         }
       </td>
     </tr>
-    } }
+    }
   </tbody>
 </table>
 } @else if (_status === PatientStatus.PendingHomeCare) {
@@ -81,8 +111,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) { @if
-    (showPatient(patient)) {
+    @for (patient of patients.data; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -95,7 +124,7 @@
         {{ patient.homeCareRequests[0]?.requested | date: 'dd MMM yyyy HH:mm' }}
       </td>
     </tr>
-    } }
+    }
   </tbody>
 </table>
 } @else if (_status === PatientStatus.ReceivingHomeCare) {
@@ -111,8 +140,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) { @if
-    (showPatient(patient)) {
+    @for (patient of patients.data; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -129,7 +157,7 @@
         request.responder?.firstName }} {{ request.responder?.lastName }} }
       </td>
     </tr>
-    } }
+    }
   </tbody>
 </table>
 } @else if (_status === PatientStatus.Dispositioned) {
@@ -145,8 +173,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) { @if
-    (showPatient(patient)) {
+    @for (patient of patients.data; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -157,7 +184,7 @@
       <td>{{ patient.dispositioned | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>{{ getDisposition(patient) }}</td>
     </tr>
-    } }
+    }
   </tbody>
 </table>
 } } }

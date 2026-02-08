@@ -227,7 +227,9 @@ export class HospitalEffects {
       ofType(getPatientsByStatus),
       switchMap((action) =>
         this.http
-          .get<ListPatient[]>('hospital/patients/status/' + action.status)
+          .get<
+            ListPatient[]
+          >(`hospital/patients/status/${action.status}?search=${action.search}&page=${action.page}&pageSize=${action.pageSize}`)
           .pipe(
             map((patients) => getPatientsByStatusSuccess({ patients })),
             catchError(() => of(getPatientsByStatusError())),

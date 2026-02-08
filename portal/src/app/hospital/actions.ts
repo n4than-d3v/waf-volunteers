@@ -45,7 +45,12 @@ export const getPatientCountsError = createAction(
 
 export const getPatientsByStatus = createAction(
   '[HMS-V] Get patients by status',
-  props<{ status: PatientStatus }>(),
+  props<{
+    status: PatientStatus;
+    search: string;
+    page: number;
+    pageSize: number;
+  }>(),
 );
 export const getPatientsByStatusSuccess = createAction(
   '[HMS-V] Get patients by status: success',

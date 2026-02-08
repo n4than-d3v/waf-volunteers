@@ -39,9 +39,6 @@ public class SearchPatientsHandler : IRequestHandler<SearchPatients, IResult>
             patient ??= await _repository.Get<Patient>(x => x.Reference == reference, tracking: false, action: x => x.IncludeAdmission().IncludeBasicDetails());
         }
 
-        // WRMD reference
-        patient ??= await _repository.Get<Patient>(x => x.Reference == request.Search || x.Reference == "WRMD-" + request.Search, tracking: false, action: x => x.IncludeAdmission().IncludeBasicDetails());
-
         // Search by name
         patient ??= await _repository.Get<Patient>(x => x.Name != null && x.Name.ToUpper().Contains(request.Search), tracking: false, action: x => x.IncludeAdmission().IncludeBasicDetails());
 

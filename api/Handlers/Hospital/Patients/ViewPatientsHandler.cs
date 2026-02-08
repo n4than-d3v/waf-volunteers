@@ -37,12 +37,13 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
                     y.Status == request.Status &&
                     (
                         request.Search == "" ||
-                        y.Reference.ToUpper().Contains(request.Search.ToUpper()) ||
+                        y.Reference.ToUpper().Contains(request.Search) ||
+                        (y.Name != null && y.Name.ToUpper().Contains(request.Search)) ||
                         (y.SuspectedSpecies != null && y.SuspectedSpecies.Description.ToUpper().Contains(request.Search)) ||
                         (y.InitialLocation != null && y.InitialLocation.Description.ToUpper().Contains(request.Search)) ||
                         (y.Species != null && y.Species.Name.ToUpper().Contains(request.Search)) ||
                         (y.SpeciesVariant != null && y.SpeciesVariant.FriendlyName.ToUpper().Contains(request.Search)) ||
-                        (y.Pen != null && y.Pen.Area != null && (y.Pen.Area.Code + "-"+ y.Pen.Code).ToUpper().Contains(request.Search))
+                        (y.Pen != null && y.Pen.Area != null && (y.Pen.Area.Code + "-" + y.Pen.Code).ToUpper().Contains(request.Search))
                     )
                 )
                 .OrderByDescending(x => x.Admitted)

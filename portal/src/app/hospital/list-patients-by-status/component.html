@@ -26,6 +26,9 @@
     <label for="pages">&nbsp;</label>
     @if (totalPages$ | async; as totalPages) {
     <div class="pagination">
+      <button class="nav" (click)="goToPage(1)" [disabled]="page === 1">
+        &#x219E;
+      </button>
       <button class="nav" (click)="prevPage()" [disabled]="page === 1">
         &larr;
       </button>
@@ -34,6 +37,13 @@
       }
       <button class="nav" (click)="nextPage()" [disabled]="page === totalPages">
         &rarr;
+      </button>
+      <button
+        class="nav"
+        (click)="goToPage(totalPages)"
+        [disabled]="page === totalPages"
+      >
+        &#x21A0;
       </button>
     </div>
     }

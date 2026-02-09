@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import {
+  addRecheck,
   administerPrescriptionInstruction,
   administerPrescriptionMedication,
   performRecheck,
   setTab,
+  undoAdministerPrescriptionInstruction,
+  undoAdministerPrescriptionMedication,
   viewDailyTasks,
 } from '../actions';
 import moment from 'moment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {
+  Administration,
   DailyTasksReport,
   DailyTasksReportArea,
   DailyTasksReportAreaPen,
@@ -31,6 +35,7 @@ import {
 } from '../selectors';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
+import { TokenProvider } from '../../shared/token.provider';
 
 @Component({
   selector: 'hospital-daily-tasks',
@@ -45,34 +50,48 @@ import { SpinnerComponent } from '../../shared/spinner/component';
     ReactiveFormsModule,
   ],
 })
-export class HospitalDailyTasksComponent implements OnInit {
+export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
+  private readonly LS_KEY = 'hospital-daily-tasks-show-me';
+
   dailyTasksReport$: Observable<ReadOnlyWrapper<DailyTasksReport>>;
 
   date: string = '';
 
-  showMeOverdueRechecks = true;
-  showMeDueRechecks = true;
-  showMeDoneRechecks = false;
+  showMe = {
+    overdueRechecks: true,
+    dueRechecks: true,
+    doneRechecks: false,
+    veterinarianRechecks: true,
+    technicianRechecks: true,
+    duePrescriptions: true,
+    donePrescriptions: false,
+    notDuePrescriptions: false,
+  };
 
-  showMeVeterinarianRechecks = true;
-  showMeTechnicianRechecks = true;
-
-  showMeDuePrescriptions = true;
-  showMeDonePrescriptions = false;
-  showMeNotDuePrescriptions = false;
+  isVet = false;
 
   performRecheckTask$: Observable<Task>;
   administerPrescriptionTask$: Observable<Task>;
 
   performingRecheck: ListRecheck | null = null;
   administeringPrescription: Prescription | null = null;
+  undoPrescriptionAdministration: Administration | null = null;
   invalid: number | null = null;
 
   comments: any = {};
   weightValue: any = {};
   weightUnit: any = {};
 
-  constructor(private store: Store) {
+  isAddingRecheck = false;
+  newRecheckDue: any = {};
+  newRecheckRoles: any = {};
+  newRecheckRequireWeight: any = {};
+  newRecheckDescription: any = {};
+
+  constructor(
+    private store: Store,
+    private tokenProvider: TokenProvider,
+  ) {
     this.dailyTasksReport$ = this.store.select(selectDailyTasksReport);
     this.performRecheckTask$ = this.store.select(selectPerformRecheck);
     this.administerPrescriptionTask$ = this.store.select(
@@ -90,7 +109,16 @@ export class HospitalDailyTasksComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.isVet = this.tokenProvider.isVet() || this.tokenProvider.isAdmin();
     this.changeDate();
+    const showMeFromStorage = localStorage.getItem(this.LS_KEY);
+    if (showMeFromStorage) {
+      this.showMe = JSON.parse(showMeFromStorage);
+    }
+  }
+
+  ngOnDestroy() {
+    localStorage.setItem(this.LS_KEY, JSON.stringify(this.showMe));
   }
 
   shouldShowAreas(report: DailyTasksReport) {
@@ -123,13 +151,13 @@ export class HospitalDailyTasksComponent implements OnInit {
           : 'due'
         : 'overdue';
     let roles = getRecheckRoles(recheck.roles);
-    if (roles === 'Veterinarian' && !this.showMeVeterinarianRechecks)
+    if (roles === 'Veterinarian' && !this.showMe.veterinarianRechecks)
       return false;
-    if (roles === 'Technician' && !this.showMeTechnicianRechecks) return false;
+    if (roles === 'Technician' && !this.showMe.technicianRechecks) return false;
     return (
-      (this.showMeDoneRechecks && status === 'done') ||
-      (this.showMeDueRechecks && status === 'due') ||
-      (this.showMeOverdueRechecks && status === 'overdue')
+      (this.showMe.doneRechecks && status === 'done') ||
+      (this.showMe.dueRechecks && status === 'due') ||
+      (this.showMe.overdueRechecks && status === 'overdue')
     );
   }
 
@@ -155,9 +183,9 @@ export class HospitalDailyTasksComponent implements OnInit {
   shouldShowPrescription(prescription: Prescription) {
     const status = this.getPrescriptionStatus(prescription);
     return (
-      (this.showMeDonePrescriptions && status === 'done') ||
-      (this.showMeDuePrescriptions && status === 'due') ||
-      (this.showMeNotDuePrescriptions && status === 'notDue')
+      (this.showMe.donePrescriptions && status === 'done') ||
+      (this.showMe.duePrescriptions && status === 'due') ||
+      (this.showMe.notDuePrescriptions && status === 'notDue')
     );
   }
 
@@ -177,9 +205,15 @@ export class HospitalDailyTasksComponent implements OnInit {
     this.invalid = null;
     this.performingRecheck = null;
     this.administeringPrescription = null;
+    this.undoPrescriptionAdministration = null;
     this.comments = {};
     this.weightUnit = {};
     this.weightValue = {};
+    this.isAddingRecheck = false;
+    this.newRecheckDue = {};
+    this.newRecheckRoles = {};
+    this.newRecheckRequireWeight = {};
+    this.newRecheckDescription = {};
   }
 
   getRecheckRoles = getRecheckRoles;
@@ -190,6 +224,17 @@ export class HospitalDailyTasksComponent implements OnInit {
     if (
       recheck.requireWeight &&
       !(this.weightUnit[recheck.id] && this.weightValue[recheck.id])
+    ) {
+      this.invalid = recheck.id;
+      return;
+    }
+    if (
+      this.isAddingRecheck &&
+      !(
+        this.newRecheckDue[recheck.id] &&
+        this.newRecheckRoles[recheck.id] &&
+        this.newRecheckDescription[recheck.id]
+      )
     ) {
       this.invalid = recheck.id;
       return;
@@ -207,6 +252,17 @@ export class HospitalDailyTasksComponent implements OnInit {
           : null,
       }),
     );
+    if (this.isAddingRecheck) {
+      this.store.dispatch(
+        addRecheck({
+          due: this.newRecheckDue[recheck.id],
+          roles: Number(this.newRecheckRoles[recheck.id]),
+          requireWeight: this.newRecheckRequireWeight[recheck.id] || false,
+          description: this.newRecheckDescription[recheck.id],
+          patientId: recheck.viewPatientId,
+        }),
+      );
+    }
     this.cancel();
   }
 
@@ -217,6 +273,34 @@ export class HospitalDailyTasksComponent implements OnInit {
         date: this.date,
         comments: this.comments['I' + prescriptionInstructionId] || '',
         success,
+      }),
+    );
+    this.cancel();
+  }
+
+  askUndoPrescriptionAdministration(
+    prescription: Prescription,
+    administration: Administration,
+  ) {
+    this.administeringPrescription = prescription;
+    this.undoPrescriptionAdministration = administration;
+  }
+
+  undoPrescriptionInstruction(administrationId: number) {
+    this.store.dispatch(
+      undoAdministerPrescriptionInstruction({
+        date: this.date,
+        administrationId,
+      }),
+    );
+    this.cancel();
+  }
+
+  undoPrescriptionMedication(administrationId: number) {
+    this.store.dispatch(
+      undoAdministerPrescriptionMedication({
+        date: this.date,
+        administrationId,
       }),
     );
     this.cancel();

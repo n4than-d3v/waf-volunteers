@@ -51,15 +51,14 @@ main:not(:has([data-prevent-main-padding])) {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
 
-  input {
-    max-width: max-content;
+  input[type="checkbox"],
+  input[type="radio"] {
     accent-color: var(--theme-primary);
-    transform: scale(1.5);
-    margin-right: 0.75rem;
-    margin-left: 0.3rem;
+    order: -1;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.25rem;
   }
 }
 

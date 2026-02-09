@@ -13,6 +13,7 @@ public interface IBeaconService
     Task<BeaconVolunteersFilterResults> GetFormerVolunteersAsync();
     Task<BeaconPatientAdmissionsFilterResults> GetPatientAdmissionsAsync(DateTime after);
     Task UpdatePatientDispositionAsync(int id, BeaconDisposition disposition);
+    Task UpdatePatientReferenceAsync(int id, string reference);
 }
 
 public partial class BeaconService : IBeaconService
@@ -99,6 +100,20 @@ public partial class BeaconService : IBeaconService
             page++;
         }
         return allResults;
+    }
+
+    public async Task UpdatePatientReferenceAsync(int id, string reference)
+    {
+        try
+        {
+            await _client.PatchAsJsonAsync($"entity/c_patient_admissions/{id}", new
+            {
+                c_id_number = reference
+            });
+        }
+        catch
+        {
+        }
     }
 
     public async Task UpdatePatientDispositionAsync(int id, BeaconDisposition disposition)

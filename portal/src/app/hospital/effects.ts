@@ -189,6 +189,10 @@ import {
   updatePrescriptionMedicationSuccess,
   updatePrescriptionMedicationError,
   delayedSetTab,
+  undoAdministerPrescriptionInstruction,
+  undoAdministerPrescriptionSuccess,
+  undoAdministerPrescriptionError,
+  undoAdministerPrescriptionMedication,
 } from './actions';
 
 @Injectable()
@@ -1495,6 +1499,47 @@ export class HospitalEffects {
   administerPrescriptionSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(administerPrescriptionSuccess),
+      switchMap((action) => of(viewDailyTasks({ date: action.date }))),
+    ),
+  );
+
+  // Undo administer prescription
+
+  undoAdministerPrescriptionInstruction$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(undoAdministerPrescriptionInstruction),
+      switchMap((action) =>
+        this.http
+          .delete(
+            `hospital/patients/prescriptions/instruction/administration/${action.administrationId}`,
+          )
+          .pipe(
+            map(() => undoAdministerPrescriptionSuccess({ date: action.date })),
+            catchError(() => of(undoAdministerPrescriptionError())),
+          ),
+      ),
+    ),
+  );
+
+  undoAdministerPrescriptionMedication$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(undoAdministerPrescriptionMedication),
+      switchMap((action) =>
+        this.http
+          .delete(
+            `hospital/patients/prescriptions/medication/administration/${action.administrationId}`,
+          )
+          .pipe(
+            map(() => undoAdministerPrescriptionSuccess({ date: action.date })),
+            catchError(() => of(undoAdministerPrescriptionError())),
+          ),
+      ),
+    ),
+  );
+
+  undoAdministerPrescriptionSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(undoAdministerPrescriptionSuccess),
       switchMap((action) => of(viewDailyTasks({ date: action.date }))),
     ),
   );

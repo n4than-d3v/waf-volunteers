@@ -158,6 +158,10 @@ import {
   updatePrescriptionMedicationError,
   delayedSetTab,
   backTab,
+  undoAdministerPrescriptionInstruction,
+  undoAdministerPrescriptionMedication,
+  undoAdministerPrescriptionSuccess,
+  undoAdministerPrescriptionError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1073,6 +1077,8 @@ export const hospitalReducer = createReducer<HospitalState>(
   on(
     administerPrescriptionInstruction,
     administerPrescriptionMedication,
+    undoAdministerPrescriptionInstruction,
+    undoAdministerPrescriptionMedication,
     (state) => ({
       ...state,
       administerPrescription: {
@@ -1083,15 +1089,19 @@ export const hospitalReducer = createReducer<HospitalState>(
       },
     }),
   ),
-  on(administerPrescriptionSuccess, (state) => ({
-    ...state,
-    administerPrescription: {
-      ...state.administerPrescription,
-      loading: false,
-      success: true,
-    },
-  })),
-  on(administerPrescriptionError, (state) => ({
+  on(
+    administerPrescriptionSuccess,
+    undoAdministerPrescriptionSuccess,
+    (state) => ({
+      ...state,
+      administerPrescription: {
+        ...state.administerPrescription,
+        loading: false,
+        success: true,
+      },
+    }),
+  ),
+  on(administerPrescriptionError, undoAdministerPrescriptionError, (state) => ({
     ...state,
     administerPrescription: {
       ...state.administerPrescription,

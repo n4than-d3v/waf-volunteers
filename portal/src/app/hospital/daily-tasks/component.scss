@@ -60,6 +60,7 @@ a {
 
   &.buttons--check button {
     padding: 0.125rem 0.25rem;
+    margin-top: 0.25rem !important;
   }
 }
 
@@ -72,6 +73,14 @@ a {
   border: solid 2px var(--theme-primary);
   padding: 0.5rem 1rem 0.75rem 1rem;
   max-width: max-content;
+}
+
+.schedule-another-recheck {
+  margin-bottom: 0.75rem;
+}
+
+.new-recheck-description {
+  margin-bottom: 0.75rem;
 }
 
 .area {

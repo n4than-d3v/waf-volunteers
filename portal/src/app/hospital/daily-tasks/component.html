@@ -45,7 +45,56 @@
   <div class="hint">
     If you are using a shared device, please add your initials in the comment.
   </div>
-  @if (invalid == performingRecheck.id) {
+  @if (isVet) {
+  <div class="field schedule-another-recheck">
+    <label for="isAddingRecheck"> Schedule another recheck </label>
+    <input id="isAddingRecheck" type="checkbox" [(ngModel)]="isAddingRecheck" />
+  </div>
+  @if (isAddingRecheck) {
+  <div class="field">
+    <label for="due">
+      Due
+      <span class="required">*</span>
+    </label>
+    <input
+      id="due"
+      type="date"
+      [(ngModel)]="newRecheckDue[performingRecheck.id]"
+      autocomplete="off"
+    />
+  </div>
+  <div class="field">
+    <label for="roles">
+      For
+      <span class="required">*</span>
+    </label>
+    <select id="roles" [(ngModel)]="newRecheckRoles[performingRecheck.id]">
+      <option value="1">Veterinarian</option>
+      <option value="2">Technician</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="requireWeight"> Require weight </label>
+    <input
+      type="checkbox"
+      id="requireWeight"
+      [(ngModel)]="newRecheckRequireWeight[performingRecheck.id]"
+    />
+  </div>
+  <div class="field new-recheck-description">
+    <label for="description">
+      Description
+      <span class="required">*</span>
+    </label>
+    <textarea
+      id="description"
+      type="text"
+      [(ngModel)]="newRecheckDescription[performingRecheck.id]"
+      autocomplete="off"
+      rows="3"
+    ></textarea>
+  </div>
+  } } @if (invalid == performingRecheck.id) {
   <div class="error">Please fill all required fields.</div>
   }
   <div class="buttons">
@@ -60,7 +109,7 @@
     </button>
   </div>
 </div>
-} @else if (administeringPrescription) {
+} @else if (administeringPrescription && !undoPrescriptionAdministration) {
 <div class="prescription-form">
   <h3>Administer prescription</h3>
   <p>
@@ -152,6 +201,66 @@
   </div>
   }
 </div>
+} @else if (administeringPrescription && undoPrescriptionAdministration) {
+<div class="prescription-form">
+  <h3>Undo prescription administration</h3>
+  <p>
+    🔗
+    <a
+      (click)="viewPatient(administeringPrescription.reference, administeringPrescription.species.name, administeringPrescription.viewPatientId)"
+      >{{ administeringPrescription.reference }}</a
+    >
+  </p>
+  <p>
+    🐾 {{ administeringPrescription.species.name }} ({{
+    administeringPrescription.variant.name }})
+  </p>
+  <p>📍 {{ administeringPrescription.pen.reference }}</p>
+
+  @if (isPrescriptionMedication(administeringPrescription)) {
+  <p>
+    💊 {{ administeringPrescription.medication.activeSubstance }} &middot; {{
+    administeringPrescription.medicationConcentration.form }}, {{
+    administeringPrescription.medicationConcentration.concentrationMgMl }} mg/ml
+  </p>
+  <p>
+    💉 {{ administeringPrescription.administrationMethod.description }} ({{
+    administeringPrescription.administrationMethod.code }}), {{
+    administeringPrescription.quantityValue }} {{
+    administeringPrescription.quantityUnit }}
+  </p>
+  @if (administeringPrescription.comments) {
+  <p>📋 {{ administeringPrescription.comments }}</p>
+  } } @else {
+  <p>📋 {{ administeringPrescription.instructions }}</p>
+  } @if (undoPrescriptionAdministration.comments) {
+  <p>📝 {{ undoPrescriptionAdministration.comments }}</p>
+  } @if (isPrescriptionMedication(administeringPrescription)) {
+  <div class="buttons">
+    <button
+      (click)="undoPrescriptionMedication(undoPrescriptionAdministration.id)"
+      class="button button--secondary-invert"
+    >
+      💉❌ Undo
+    </button>
+    <button (click)="cancel()" class="button button--secondary-invert">
+      ⬅️ Back
+    </button>
+  </div>
+  } @else {
+  <div class="buttons">
+    <button
+      (click)="undoPrescriptionInstruction(undoPrescriptionAdministration.id)"
+      class="button button--secondary-invert"
+    >
+      💉❌ Undo
+    </button>
+    <button (click)="cancel()" class="button button--secondary-invert">
+      ⬅️ Back
+    </button>
+  </div>
+  }
+</div>
 } @else {
 <div class="filter">
   <div>
@@ -167,7 +276,7 @@
           <input
             type="checkbox"
             id="showMeOverdueRechecks"
-            [(ngModel)]="showMeOverdueRechecks"
+            [(ngModel)]="showMe.overdueRechecks"
           />
         </div>
         <div class="field">
@@ -175,7 +284,7 @@
           <input
             type="checkbox"
             id="showMeDueRechecks"
-            [(ngModel)]="showMeDueRechecks"
+            [(ngModel)]="showMe.dueRechecks"
           />
         </div>
         <div class="field">
@@ -183,7 +292,7 @@
           <input
             type="checkbox"
             id="showMeDoneRechecks"
-            [(ngModel)]="showMeDoneRechecks"
+            [(ngModel)]="showMe.doneRechecks"
           />
         </div>
       </div>
@@ -193,7 +302,7 @@
           <input
             type="checkbox"
             id="showMeVeterinarianRechecks"
-            [(ngModel)]="showMeVeterinarianRechecks"
+            [(ngModel)]="showMe.veterinarianRechecks"
           />
         </div>
         <div class="field">
@@ -201,7 +310,7 @@
           <input
             type="checkbox"
             id="showMeTechnicianRechecks"
-            [(ngModel)]="showMeTechnicianRechecks"
+            [(ngModel)]="showMe.technicianRechecks"
           />
         </div>
       </div>
@@ -214,7 +323,7 @@
       <input
         type="checkbox"
         id="showMeNotDuePrescriptions"
-        [(ngModel)]="showMeNotDuePrescriptions"
+        [(ngModel)]="showMe.notDuePrescriptions"
       />
     </div>
     <div class="field">
@@ -222,7 +331,7 @@
       <input
         type="checkbox"
         id="showMeDuePrescriptions"
-        [(ngModel)]="showMeDuePrescriptions"
+        [(ngModel)]="showMe.duePrescriptions"
       />
     </div>
     <div class="field">
@@ -230,7 +339,7 @@
       <input
         type="checkbox"
         id="showMeDonePrescriptions"
-        [(ngModel)]="showMeDonePrescriptions"
+        [(ngModel)]="showMe.donePrescriptions"
       />
     </div>
   </div>
@@ -291,7 +400,7 @@ administerPrescriptionTask.error) {
                   <th>Status</th>
                   <th>For</th>
                   <th>Recheck</th>
-                  @if (showMeDoneRechecks) {
+                  @if (showMe.doneRechecks) {
                   <th>Weight</th>
                   <th>Comments</th>
                   }
@@ -315,7 +424,7 @@ administerPrescriptionTask.error) {
                   </td>
                   <td>{{ getRecheckRoles(recheck.roles) }}</td>
                   <td>{{ recheck.description }}</td>
-                  @if (showMeDoneRechecks) {
+                  @if (showMe.doneRechecks) {
                   <td>
                     @if (recheck.weightValue && recheck.weightUnit) { {{
                     recheck.weightValue }} {{ getWeightUnit(recheck.weightUnit)
@@ -403,14 +512,22 @@ administerPrescriptionTask.error) {
                   }
                   <td>
                     <div class="buttons buttons--check">
-                      @for (i of
+                      @for (administration of prescription.administrations;
+                      track administration.id) { @if (administration.success) {
+                      <button
+                        (click)="askUndoPrescriptionAdministration(prescription, administration)"
+                        class="button button--secondary-invert"
+                      >
+                        ✔️
+                      </button>
+                      } } @for (i of
                       getOutstandingAdministrationsCount(prescription); track i)
                       {
                       <button
                         (click)="administeringPrescription = prescription"
                         class="button button--secondary-invert"
                       >
-                        💉
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       </button>
                       }
                     </div>

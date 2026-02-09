@@ -817,6 +817,30 @@ export const administerPrescriptionError = createAction(
   '[HMS-V] Administer prescription: error',
 );
 
+// Undo administer prescription
+
+export const undoAdministerPrescriptionInstruction = createAction(
+  '[HMS-V] Undo administer prescription instruction',
+  props<{
+    date: string;
+    administrationId: number;
+  }>(),
+);
+export const undoAdministerPrescriptionMedication = createAction(
+  '[HMS-V] Undo administer prescription medication',
+  props<{
+    date: string;
+    administrationId: number;
+  }>(),
+);
+export const undoAdministerPrescriptionSuccess = createAction(
+  '[HMS-V] Undo administer prescription: success',
+  props<{ date: string }>(),
+);
+export const undoAdministerPrescriptionError = createAction(
+  '[HMS-V] Undo administer prescription: error',
+);
+
 // View patient boards
 
 export const viewPatientBoards = createAction('[HMS-V] View patient boards');

@@ -125,6 +125,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
 
                 _repository.Create(patient);
                 await _repository.SaveChangesAsync();
+                await _beaconService.UpdatePatientReferenceAsync(admission.entity.id, reference);
             }
 
             return Results.Created();

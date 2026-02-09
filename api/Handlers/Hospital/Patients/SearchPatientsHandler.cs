@@ -22,6 +22,7 @@ public class SearchPatientsHandler : IRequestHandler<SearchPatients, IResult>
     public async Task<IResult> Handle(SearchPatients request, CancellationToken cancellationToken)
     {
         Patient? patient = null;
+        request.Search = request.Search?.ToUpper() ?? string.Empty;
 
         // Patient id without year
         if (int.TryParse(request.Search, out int number))

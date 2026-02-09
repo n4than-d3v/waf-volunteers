@@ -209,6 +209,10 @@ public partial class Program
             .AddNote("Administer prescription instruction")
             .RequireAuthorization(vetOrAuxPolicy);
 
+        apiHospitalPatient.MapDelete("/prescriptions/instruction/administration/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveInstructionPrescriptionAdministration { AdministrationId = id }))
+            .AddNote("Remove prescription instruction administration")
+            .RequireAuthorization(vetOrAuxPolicy);
+
         apiHospitalPatient.MapPost("/{id:int}/prescriptions/medication", (IMediator mediator, int id, AddMedicationPrescription request) => mediator.Send(request.WithId(id)))
             .AddNote("Create prescription medication")
             .RequireAuthorization(vetPolicy);
@@ -223,6 +227,10 @@ public partial class Program
 
         apiHospitalPatient.MapPost("/prescriptions/medication/{id:int}/administer", (IMediator mediator, int id, PerformMedicationPrescription request) => mediator.Send(request.WithId(id)))
             .AddNote("Administer prescription medication")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalPatient.MapDelete("/prescriptions/medication/administration/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveMedicationPrescriptionAdministration { AdministrationId = id }))
+            .AddNote("Remove prescription medication administration")
             .RequireAuthorization(vetOrAuxPolicy);
 
         apiHospitalPatient.MapPost("/{id:int}/recheck", (IMediator mediator, int id, AddRecheck request) => mediator.Send(request.WithId(id)))

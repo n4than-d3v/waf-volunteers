@@ -98,11 +98,11 @@
       <td>{{ patient.pen?.reference }} {{ patient.uniqueIdentifier }}</td>
       <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
-        {{ duration(patient) }} @if (patient.isLongTerm) {
+        @if (patient.isLongTerm) {
         <span class="long-term">Long term</span>
         } @if (patient.isOutdated) {
         <span class="outdated">Outdated</span>
-        }
+        } {{ duration(patient) }}
       </td>
     </tr>
     }

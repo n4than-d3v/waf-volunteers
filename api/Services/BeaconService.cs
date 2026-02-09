@@ -12,6 +12,7 @@ public interface IBeaconService
     Task<BeaconVolunteersFilterResults> GetActiveVolunteersAsync();
     Task<BeaconVolunteersFilterResults> GetFormerVolunteersAsync();
     Task<BeaconPatientAdmissionsFilterResults> GetPatientAdmissionsAsync(DateTime after);
+    Task UpdatePatientDispositionAsync(int id, BeaconDisposition disposition);
 }
 
 public partial class BeaconService : IBeaconService
@@ -98,5 +99,31 @@ public partial class BeaconService : IBeaconService
             page++;
         }
         return allResults;
+    }
+
+    public async Task UpdatePatientDispositionAsync(int id, BeaconDisposition disposition)
+    {
+        try
+        {
+            string dispositionString = "";
+            if (disposition == BeaconDisposition.Released) dispositionString = "Released";
+            else if (disposition == BeaconDisposition.PTS) dispositionString = "PTS";
+            else if (disposition == BeaconDisposition.Died) dispositionString = "Died";
+            else if (disposition == BeaconDisposition.Transfer) dispositionString = "Transfer";
+
+            await _client.PatchAsJsonAsync($"entity/c_patient_admissions/{id}", new
+            {
+                c_date_of_final_outcome = DateTime.Now,
+                c_final_outcome = new List<string> { dispositionString }
+            });
+        }
+        catch
+        {
+        }
+    }
+
+    public enum BeaconDisposition
+    {
+        Released, PTS, Died, Transfer
     }
 }

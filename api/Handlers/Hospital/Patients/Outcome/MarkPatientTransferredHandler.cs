@@ -23,11 +23,13 @@ public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransfer
 {
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
+    private readonly IBeaconService _beaconService;
 
-    public MarkPatientTransferredHandler(IDatabaseRepository repository, IUserContext userContext)
+    public MarkPatientTransferredHandler(IDatabaseRepository repository, IUserContext userContext, IBeaconService beaconService)
     {
         _repository = repository;
         _userContext = userContext;
+        _beaconService = beaconService;
     }
 
     public async Task<IResult> Handle(MarkPatientTransferred request, CancellationToken cancellationToken)
@@ -48,6 +50,12 @@ public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransfer
         patient.TransferLocation = transferLocation;
 
         await _repository.SaveChangesAsync();
+
+        if (patient.BeaconId != 0)
+        {
+            await _beaconService.UpdatePatientDispositionAsync(patient.BeaconId, BeaconService.BeaconDisposition.Transfer);
+        }
+
         return Results.NoContent();
     }
 }

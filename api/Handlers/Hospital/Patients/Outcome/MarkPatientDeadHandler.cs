@@ -28,13 +28,16 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
     private readonly IUserContext _userContext;
     private readonly IEncryptionService _encryptionService;
     private readonly IEmailService _emailService;
+    private readonly IBeaconService _beaconService;
 
-    public MarkPatientDeadHandler(IDatabaseRepository repository, IUserContext userContext, IEncryptionService encryptionService, IEmailService emailService)
+    public MarkPatientDeadHandler(IDatabaseRepository repository, IUserContext userContext,
+        IEncryptionService encryptionService, IEmailService emailService, IBeaconService beaconService)
     {
         _repository = repository;
         _userContext = userContext;
         _encryptionService = encryptionService;
         _emailService = emailService;
+        _beaconService = beaconService;
     }
 
     public async Task<IResult> Handle(MarkPatientDead request, CancellationToken cancellationToken)
@@ -70,6 +73,12 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         }
 
         await _repository.SaveChangesAsync();
+
+        if (patient.BeaconId != 0)
+        {
+            await _beaconService.UpdatePatientDispositionAsync(patient.BeaconId, request.PutToSleep
+                ? BeaconService.BeaconDisposition.PTS : BeaconService.BeaconDisposition.Died);
+        }
 
         if (patient.Admitter == null) return Results.NoContent();
         var admitter = patient.Admitter;

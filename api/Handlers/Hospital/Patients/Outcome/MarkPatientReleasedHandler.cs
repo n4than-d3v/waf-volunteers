@@ -23,11 +23,13 @@ public class MarkPatientReleasedHandler : IRequestHandler<MarkPatientReleased, I
 {
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
+    private readonly IBeaconService _beaconService;
 
-    public MarkPatientReleasedHandler(IDatabaseRepository repository, IUserContext userContext)
+    public MarkPatientReleasedHandler(IDatabaseRepository repository, IUserContext userContext, IBeaconService beaconService)
     {
         _repository = repository;
         _userContext = userContext;
+        _beaconService = beaconService;
     }
 
     public async Task<IResult> Handle(MarkPatientReleased request, CancellationToken cancellationToken)
@@ -48,6 +50,12 @@ public class MarkPatientReleasedHandler : IRequestHandler<MarkPatientReleased, I
         patient.ReleaseType = releaseType;
 
         await _repository.SaveChangesAsync();
+
+        if (patient.BeaconId != 0)
+        {
+            await _beaconService.UpdatePatientDispositionAsync(patient.BeaconId, BeaconService.BeaconDisposition.Released);
+        }
+
         return Results.NoContent();
     }
 }

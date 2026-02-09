@@ -41,6 +41,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             var yearEnd = yearStart.AddYears(1).AddSeconds(-1);
             var allPatientsAdmittedThisYear = await _repository.GetAll<Patient>(x => yearStart <= x.Admitted && x.Admitted <= yearEnd, tracking: false);
             var admittedThisYear = allPatientsAdmittedThisYear.Count;
+            if (year == 2026) admittedThisYear += 2;
 
             foreach (var admission in beaconAdmissions.results.OrderBy(x => x.entity.created_at))
             {

@@ -41,6 +41,27 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
 
         patient.DecryptProperties(_encryptionService);
 
+        if (patient.Movements?.Any() ?? false)
+            patient.Movements = [.. patient.Movements.OrderByDescending(x => x.Moved)];
+
+        if (patient.Notes?.Any() ?? false)
+            patient.Notes = [.. patient.Notes.OrderByDescending(x => x.Noted)];
+
+        if (patient.BloodTests?.Any() ?? false)
+            patient.BloodTests = [.. patient.BloodTests.OrderByDescending(x => x.Tested)];
+
+        if (patient.FaecalTests?.Any() ?? false)
+            patient.FaecalTests = [.. patient.FaecalTests.OrderByDescending(x => x.Tested)];
+
+        if (patient.Rechecks?.Any() ?? false)
+            patient.Rechecks = [.. patient.Rechecks.OrderByDescending(x => x.Due)];
+
+        if (patient.PrescriptionInstructions?.Any() ?? false)
+            patient.PrescriptionInstructions = [.. patient.PrescriptionInstructions.OrderByDescending(x => x.Start)];
+
+        if (patient.PrescriptionMedications?.Any() ?? false)
+            patient.PrescriptionMedications = [.. patient.PrescriptionMedications.OrderByDescending(x => x.Start)];
+
         return Results.Ok(patient);
     }
 }

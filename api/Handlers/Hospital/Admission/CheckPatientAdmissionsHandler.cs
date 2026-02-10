@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Admission;
+using Api.Handlers.Hospital.Patients;
 using Api.Migrations;
 using Api.Services;
 using MediatR;
@@ -33,7 +34,8 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             var beaconAdmissions = await _beaconService.GetPatientAdmissionsAsync(since);
             var beaconAdmissionsIds = beaconAdmissions.results.Select(x => x.entity.id).ToList();
 
-            var patients = await _repository.GetAll<Patient>(x => beaconAdmissionsIds.Contains(x.BeaconId), tracking: false);
+            var patients = await _repository.GetAll<Patient>(x => beaconAdmissionsIds.Contains(x.BeaconId), tracking: true,
+                action: x => x.IncludeAdmission());
 
             var year = DateTime.UtcNow.Year;
             var yearStart = new DateTime(year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -48,8 +50,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 if (patient != null)
                 {
                     // If patient already exists, attempt to update details
-                    if (await UpdatePatientInfo(patient, admission))
-                        await _repository.SaveChangesAsync();
+                    await UpdatePatientInfo(patient, admission);
                     continue;
                 }
 
@@ -63,7 +64,6 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 {
                     BeaconId = admission.entity.id,
                     Admitted = admission.entity.created_at,
-
                     Reference = reference,
                     Status = PatientStatus.PendingInitialExam,
                     Salt = patientSalt
@@ -76,6 +76,8 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 await _beaconService.UpdatePatientReferenceAsync(admission.entity.id, reference);
             }
 
+            await _repository.SaveChangesAsync();
+
             return Results.Created();
         }
         catch (Exception e)
@@ -84,7 +86,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
         }
     }
 
-    private async Task<bool> UpdatePatientInfo(Patient patient, BeaconService.BeaconPatientAdmissionsFilterResults.Result admission)
+    private async Task UpdatePatientInfo(Patient patient, BeaconService.BeaconPatientAdmissionsFilterResults.Result admission)
     {
         Admitter? admitter = null;
         if (admission.entity.c_person.Count == 1)
@@ -144,39 +146,10 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
         var foundAt = admission.entity.c_animal_found_at_different_address.Any(x => x == "Yes") ? (admission.entity.c_alternative_address ?? "Unknown") : "Address";
         var encryptedFoundAt = _encryptionService.Encrypt(foundAt, patient.Salt);
 
-        bool changed = false;
-
-        if (patient.Id == default)
-        {
-            changed = true;
-        }
-        else
-        {
-            changed = patient.Admitter?.Id != admitter?.Id ||
-                patient.FoundAt != encryptedFoundAt ||
-                patient.InitialLocation?.Id != initialLocation?.Id ||
-                patient.SuspectedSpecies?.Id != suspectedSpecies?.Id ||
-                string.Join(", ",
-                    (patient.AdmissionReasons ?? [])
-                    .OrderBy(x => x.Id)
-                    .Select(x => x.Id)
-                ) !=
-                string.Join(", ",
-                    (patientAdmissionReasons ?? [])
-                    .OrderBy(x => x.Id)
-                    .Select(x => x.Id)
-                );
-        }
-
-        if (changed)
-        {
-            patient.Admitter = admitter;
-            patient.FoundAt = encryptedFoundAt;
-            patient.InitialLocation = initialLocation;
-            patient.SuspectedSpecies = suspectedSpecies;
-            patient.AdmissionReasons = patientAdmissionReasons;
-        }
-
-        return changed;
+        patient.Admitter = admitter;
+        patient.FoundAt = encryptedFoundAt;
+        patient.InitialLocation = initialLocation;
+        patient.SuspectedSpecies = suspectedSpecies;
+        patient.AdmissionReasons = patientAdmissionReasons;
     }
 }

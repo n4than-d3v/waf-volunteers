@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Admission;
+using Api.Migrations;
 using Api.Services;
 using MediatR;
 
@@ -34,8 +35,6 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
 
             var patients = await _repository.GetAll<Patient>(x => beaconAdmissionsIds.Contains(x.BeaconId), tracking: false);
 
-            if (beaconAdmissionsIds.Count == patients.Count) return Results.NoContent();
-
             var year = DateTime.UtcNow.Year;
             var yearStart = new DateTime(year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var yearEnd = yearStart.AddYears(1).AddSeconds(-1);
@@ -46,82 +45,30 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             foreach (var admission in beaconAdmissions.results.OrderBy(x => x.entity.created_at))
             {
                 var patient = patients.FirstOrDefault(x => x.BeaconId == admission.entity.id);
-                if (patient != null) continue;
-
-                Admitter? admitter = null;
-                if (admission.entity.c_person.Count == 1)
+                if (patient != null)
                 {
-                    var personId = admission.entity.c_person.Single();
-                    var person = admission.references.Single(x => x.entity.id == personId);
-                    admitter = await _repository.Get<Admitter>(x => x.BeaconId == personId);
-                    if (admitter == null)
-                    {
-                        var admitterSalt = _encryptionService.GenerateSalt();
-                        admitter = new Admitter
-                        {
-                            BeaconId = personId,
-                            FullName = _encryptionService.Encrypt(person.entity.name.full, admitterSalt),
-                            Address = _encryptionService.Encrypt("", admitterSalt),
-                            Email = _encryptionService.Encrypt("", admitterSalt),
-                            Telephone = _encryptionService.Encrypt("", admitterSalt),
-                            Salt = admitterSalt
-                        };
-                        var address = person.entity.address.FirstOrDefault(x => x.is_primary);
-                        if (address != null)
-                        {
-                            var addressArray = new string[] { address.address_line_one, address.address_line_two, address.address_line_three, address.city, address.region };
-                            var addressString = string.Join(", ", addressArray.Where(x => !string.IsNullOrWhiteSpace(x)));
-                            admitter.Address = _encryptionService.Encrypt(addressString, admitterSalt);
-                        }
-                        var email = person.entity.emails.FirstOrDefault(x => x.is_primary);
-                        if (email != null)
-                        {
-                            admitter.Email = _encryptionService.Encrypt(email.email, admitterSalt);
-                        }
-                        var telephone = person.entity.phone_numbers.FirstOrDefault(x => x.is_primary);
-                        if (telephone != null)
-                        {
-                            admitter.Telephone = _encryptionService.Encrypt(telephone.number, admitterSalt);
-                        }
-                    }
+                    // If patient already exists, attempt to update details
+                    await UpdatePatientInfo(patient, admission);
+                    continue;
                 }
 
-                var beaconInitialLocation = admission.entity.c_arrival_cage_pod?.FirstOrDefault() ?? "Not provided";
-                var initialLocation = await _repository.Get<InitialLocation>(x => x.Description == beaconInitialLocation);
-                initialLocation ??= new InitialLocation { Description = beaconInitialLocation };
-
-                var beaconSuspectedSpecies = admission.entity.c_animal.FirstOrDefault() ?? admission.entity.c_specific_animal ?? admission.entity.c_other_animal;
-                var suspectedSpecies = await _repository.Get<SuspectedSpecies>(x => x.Description == beaconSuspectedSpecies);
-                suspectedSpecies ??= new SuspectedSpecies { Description = beaconSuspectedSpecies };
-
-                var patientAdmissionReasons = new List<AdmissionReason>();
-                var admissionReasons = await _repository.GetAll<AdmissionReason>(x => true);
-                foreach (var beaconAdmissionReason in admission.entity.c_reason_for_admission)
-                {
-                    var admissionReason = admissionReasons.SingleOrDefault(x => x.Description == beaconAdmissionReason);
-                    admissionReason ??= new AdmissionReason { Description = beaconAdmissionReason };
-                    patientAdmissionReasons.Add(admissionReason);
-                }
+                // Otherwise if patient doesn't exist, create a new patient
+                var patientSalt = _encryptionService.GenerateSalt();
 
                 admittedThisYear++;
                 var reference = $"{year - 2000}-{admittedThisYear}";
-
-                var foundAt = admission.entity.c_animal_found_at_different_address.Any(x => x == "Yes") ? (admission.entity.c_alternative_address ?? "Unknown") : "Address";
-                var patientSalt = _encryptionService.GenerateSalt();
 
                 patient = new Patient
                 {
                     BeaconId = admission.entity.id,
                     Admitted = admission.entity.created_at,
-                    Admitter = admitter,
-                    FoundAt = _encryptionService.Encrypt(foundAt, patientSalt),
-                    InitialLocation = initialLocation,
-                    SuspectedSpecies = suspectedSpecies,
-                    AdmissionReasons = patientAdmissionReasons,
+
                     Reference = reference,
                     Status = PatientStatus.PendingInitialExam,
                     Salt = patientSalt
                 };
+
+                await UpdatePatientInfo(patient, admission);
 
                 _repository.Create(patient);
                 await _repository.SaveChangesAsync();
@@ -134,5 +81,71 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
         {
             return Results.Problem();
         }
+    }
+
+    private async Task UpdatePatientInfo(Patient patient, BeaconService.BeaconPatientAdmissionsFilterResults.Result admission)
+    {
+        Admitter? admitter = null;
+        if (admission.entity.c_person.Count == 1)
+        {
+            var personId = admission.entity.c_person.Single();
+            var person = admission.references.Single(x => x.entity.id == personId);
+            admitter = await _repository.Get<Admitter>(x => x.BeaconId == personId);
+            if (admitter == null)
+            {
+                var admitterSalt = _encryptionService.GenerateSalt();
+                admitter = new Admitter
+                {
+                    BeaconId = personId,
+                    FullName = _encryptionService.Encrypt(person.entity.name.full, admitterSalt),
+                    Address = _encryptionService.Encrypt("", admitterSalt),
+                    Email = _encryptionService.Encrypt("", admitterSalt),
+                    Telephone = _encryptionService.Encrypt("", admitterSalt),
+                    Salt = admitterSalt
+                };
+                var address = person.entity.address.FirstOrDefault(x => x.is_primary);
+                if (address != null)
+                {
+                    var addressArray = new string[] { address.address_line_one, address.address_line_two, address.address_line_three, address.city, address.region };
+                    var addressString = string.Join(", ", addressArray.Where(x => !string.IsNullOrWhiteSpace(x)));
+                    admitter.Address = _encryptionService.Encrypt(addressString, admitterSalt);
+                }
+                var email = person.entity.emails.FirstOrDefault(x => x.is_primary);
+                if (email != null)
+                {
+                    admitter.Email = _encryptionService.Encrypt(email.email, admitterSalt);
+                }
+                var telephone = person.entity.phone_numbers.FirstOrDefault(x => x.is_primary);
+                if (telephone != null)
+                {
+                    admitter.Telephone = _encryptionService.Encrypt(telephone.number, admitterSalt);
+                }
+            }
+        }
+
+        var beaconInitialLocation = admission.entity.c_arrival_cage_pod?.FirstOrDefault() ?? "Not provided";
+        var initialLocation = await _repository.Get<InitialLocation>(x => x.Description == beaconInitialLocation);
+        initialLocation ??= new InitialLocation { Description = beaconInitialLocation };
+
+        var beaconSuspectedSpecies = admission.entity.c_animal.FirstOrDefault() ?? admission.entity.c_specific_animal ?? admission.entity.c_other_animal;
+        var suspectedSpecies = await _repository.Get<SuspectedSpecies>(x => x.Description == beaconSuspectedSpecies);
+        suspectedSpecies ??= new SuspectedSpecies { Description = beaconSuspectedSpecies };
+
+        var patientAdmissionReasons = new List<AdmissionReason>();
+        var admissionReasons = await _repository.GetAll<AdmissionReason>(x => true);
+        foreach (var beaconAdmissionReason in admission.entity.c_reason_for_admission)
+        {
+            var admissionReason = admissionReasons.SingleOrDefault(x => x.Description == beaconAdmissionReason);
+            admissionReason ??= new AdmissionReason { Description = beaconAdmissionReason };
+            patientAdmissionReasons.Add(admissionReason);
+        }
+
+        var foundAt = admission.entity.c_animal_found_at_different_address.Any(x => x == "Yes") ? (admission.entity.c_alternative_address ?? "Unknown") : "Address";
+
+        patient.Admitter = admitter;
+        patient.FoundAt = _encryptionService.Encrypt(foundAt, patient.Salt);
+        patient.InitialLocation = initialLocation;
+        patient.SuspectedSpecies = suspectedSpecies;
+        patient.AdmissionReasons = patientAdmissionReasons;
     }
 }

@@ -512,15 +512,16 @@ administerPrescriptionTask.error) {
                   }
                   <td>
                     <div class="buttons buttons--check">
-                      @for (administration of prescription.administrations;
-                      track administration.id) { @if (administration.success) {
+                      @for (administration of
+                      getTodayPrescriptionAdministrations(prescription); track
+                      administration.id) {
                       <button
                         (click)="askUndoPrescriptionAdministration(prescription, administration)"
                         class="button button--secondary-invert"
                       >
                         ✔️
                       </button>
-                      } } @for (i of
+                      } @for (i of
                       getOutstandingAdministrationsCount(prescription); track i)
                       {
                       <button

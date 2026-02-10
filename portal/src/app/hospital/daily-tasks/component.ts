@@ -266,6 +266,14 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
     this.cancel();
   }
 
+  getTodayPrescriptionAdministrations(prescription: Prescription) {
+    const today = moment(this.date);
+    return prescription.administrations.filter(
+      (admin) =>
+        admin.success && moment(admin.administered).isSame(today, 'day'),
+    );
+  }
+
   administerInstruction(prescriptionInstructionId: number, success: boolean) {
     this.store.dispatch(
       administerPrescriptionInstruction({

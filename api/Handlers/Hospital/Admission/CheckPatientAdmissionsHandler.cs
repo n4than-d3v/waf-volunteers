@@ -48,7 +48,8 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 if (patient != null)
                 {
                     // If patient already exists, attempt to update details
-                    await UpdatePatientInfo(patient, admission);
+                    if (await UpdatePatientInfo(patient, admission))
+                        await _repository.SaveChangesAsync();
                     continue;
                 }
 
@@ -83,7 +84,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
         }
     }
 
-    private async Task UpdatePatientInfo(Patient patient, BeaconService.BeaconPatientAdmissionsFilterResults.Result admission)
+    private async Task<bool> UpdatePatientInfo(Patient patient, BeaconService.BeaconPatientAdmissionsFilterResults.Result admission)
     {
         Admitter? admitter = null;
         if (admission.entity.c_person.Count == 1)
@@ -141,11 +142,41 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
         }
 
         var foundAt = admission.entity.c_animal_found_at_different_address.Any(x => x == "Yes") ? (admission.entity.c_alternative_address ?? "Unknown") : "Address";
+        var encryptedFoundAt = _encryptionService.Encrypt(foundAt, patient.Salt);
 
-        patient.Admitter = admitter;
-        patient.FoundAt = _encryptionService.Encrypt(foundAt, patient.Salt);
-        patient.InitialLocation = initialLocation;
-        patient.SuspectedSpecies = suspectedSpecies;
-        patient.AdmissionReasons = patientAdmissionReasons;
+        bool changed = false;
+
+        if (patient.Id == default)
+        {
+            changed = true;
+        }
+        else
+        {
+            changed = patient.Admitter?.Id != admitter?.Id ||
+                patient.FoundAt != encryptedFoundAt ||
+                patient.InitialLocation?.Id != initialLocation?.Id ||
+                patient.SuspectedSpecies?.Id != suspectedSpecies?.Id ||
+                string.Join(", ",
+                    (patient.AdmissionReasons ?? [])
+                    .OrderBy(x => x.Id)
+                    .Select(x => x.Id)
+                ) !=
+                string.Join(", ",
+                    (patientAdmissionReasons ?? [])
+                    .OrderBy(x => x.Id)
+                    .Select(x => x.Id)
+                );
+        }
+
+        if (changed)
+        {
+            patient.Admitter = admitter;
+            patient.FoundAt = encryptedFoundAt;
+            patient.InitialLocation = initialLocation;
+            patient.SuspectedSpecies = suspectedSpecies;
+            patient.AdmissionReasons = patientAdmissionReasons;
+        }
+
+        return changed;
     }
 }

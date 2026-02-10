@@ -22,6 +22,7 @@ public class Patient : Entity
     public InitialLocation InitialLocation { get; set; }
     public SuspectedSpecies SuspectedSpecies { get; set; }
     public List<AdmissionReason> AdmissionReasons { get; set; }
+    public bool IsRescue { get; set; }
 
     #endregion
 

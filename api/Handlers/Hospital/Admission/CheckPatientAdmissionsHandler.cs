@@ -151,5 +151,6 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
         patient.InitialLocation = initialLocation;
         patient.SuspectedSpecies = suspectedSpecies;
         patient.AdmissionReasons = patientAdmissionReasons;
+        patient.IsRescue = admission.entity.c_rescue;
     }
 }

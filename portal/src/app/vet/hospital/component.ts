@@ -13,6 +13,7 @@ import { HospitalStockListComponent } from '../../hospital/stock/list/component'
 import { setPage } from '../../hospital/stock/actions';
 import { HospitalDailyTasksComponent } from '../../hospital/daily-tasks/component';
 import { HospitalPatientBoardComponent } from '../../hospital/patient-board/component';
+import { HospitalDashboardComponent } from '../../hospital/dashboard/component';
 
 @Component({
   selector: 'vet-hospital',
@@ -21,6 +22,7 @@ import { HospitalPatientBoardComponent } from '../../hospital/patient-board/comp
   styleUrls: ['./component.scss'],
   imports: [
     AsyncPipe,
+    HospitalDashboardComponent,
     HospitalPatientByStatusComponent,
     HospitalListPatientByStatusComponent,
     HospitalPatientComponent,

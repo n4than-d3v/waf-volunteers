@@ -27,6 +27,17 @@ export class HospitalPatientByStatusComponent implements OnInit, OnDestroy {
     this.patientCounts$ = this.store.select(selectPatientCounts);
   }
 
+  viewDashboard() {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'DASHBOARD',
+          title: 'Dashboard',
+        },
+      }),
+    );
+  }
+
   changeTab(status: PatientStatus) {
     let title = '...';
     switch (status) {

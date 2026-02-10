@@ -24,6 +24,7 @@ import {
   DailyTasksReport,
   PatientBoard,
   ListPatientBoard,
+  Dashboard,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -33,6 +34,13 @@ export const delayedSetTab = createAction(
 );
 
 export const backTab = createAction('[HMS-V] Back tab');
+
+export const getDashboard = createAction('[HMS-V] Get dashboard');
+export const getDashboardSuccess = createAction(
+  '[HMS-V] Get dashboard: success',
+  props<{ dashboard: Dashboard }>(),
+);
+export const getDashboardError = createAction('[HMS-V] Get dashboard: error');
 
 export const getPatientCounts = createAction('[HMS-V] Get patient counts');
 export const getPatientCountsSuccess = createAction(

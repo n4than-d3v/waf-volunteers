@@ -14,6 +14,8 @@ public interface IDatabaseRepository
     void Create<TEntity>(ICollection<TEntity> entities) where TEntity : Entity;
     void Delete<TEntity>(TEntity entity) where TEntity : Entity;
     Task SaveChangesAsync();
+
+    public IQueryable<TEntity> Query<TEntity>() where TEntity : Entity;
 }
 
 public class DatabaseRepository : IDatabaseRepository
@@ -34,6 +36,9 @@ public class DatabaseRepository : IDatabaseRepository
         IQueryable<TEntity> queryable = (action != null) ? action(set) : set.AsQueryable();
         return tracking ? queryable : queryable.AsNoTracking();
     }
+
+    public IQueryable<TEntity> Query<TEntity>() where TEntity : Entity
+        => GetQueryable<TEntity>(false, null);
 
     public async Task<TEntity?> Get<TEntity>(int id, bool tracking, Func<DbSet<TEntity>, IQueryable<TEntity>>? action) where TEntity : Entity =>
          await GetQueryable<TEntity>(tracking, action).FirstOrDefaultAsync(x => x.Id == id);

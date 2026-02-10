@@ -162,6 +162,9 @@ import {
   undoAdministerPrescriptionMedication,
   undoAdministerPrescriptionSuccess,
   undoAdministerPrescriptionError,
+  getDashboard,
+  getDashboardSuccess,
+  getDashboardError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -170,11 +173,22 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     tab: { code: '', title: '' },
   })),
-  on(delayedSetTab, (state, { tab }) => ({
-    ...state,
-    tab: { ...tab },
-    tabHistory: [...state.tabHistory, tab],
-  })),
+  on(delayedSetTab, (state, { tab }) => {
+    if (state.tabHistory.length > 0) {
+      const prevTab = state.tabHistory[state.tabHistory.length - 1];
+      if (prevTab.code === tab.code && prevTab.id === tab.id) {
+        return {
+          ...state,
+          tab: { ...tab },
+        };
+      }
+    }
+    return {
+      ...state,
+      tab: { ...tab },
+      tabHistory: [...state.tabHistory, tab],
+    };
+  }),
   on(backTab, (state) => {
     const history = [...state.tabHistory];
     history.pop();
@@ -186,6 +200,31 @@ export const hospitalReducer = createReducer<HospitalState>(
       tabHistory: [...history],
     };
   }),
+  // Dashboard
+  on(getDashboard, (state) => ({
+    ...state,
+    dashboard: {
+      ...state.dashboard,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getDashboardSuccess, (state, { dashboard }) => ({
+    ...state,
+    dashboard: {
+      ...state.dashboard,
+      data: dashboard,
+      loading: false,
+    },
+  })),
+  on(getDashboardError, (state) => ({
+    ...state,
+    dashboard: {
+      ...state.dashboard,
+      loading: false,
+      error: true,
+    },
+  })),
   // Patient counts
   on(getPatientCounts, (state) => ({
     ...state,

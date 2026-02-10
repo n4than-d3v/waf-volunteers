@@ -37,6 +37,7 @@ using Api.Handlers.Stock;
 using Api.Handlers.Learning;
 using Api.Handlers.Hospital.Boards;
 using Api.Handlers.Hospital.Patients.Notes;
+using Api.Handlers.Hospital.Reports;
 
 public partial class Program
 {
@@ -105,6 +106,10 @@ public partial class Program
     private static void RegisterHospitalRoutes(RouteGroupBuilder api)
     {
         var apiHospital = api.MapGroup("/hospital");
+
+        apiHospital.MapGet("/dashboard", (IMediator mediator) => mediator.Send(new GetDashboard()))
+            .AddNote("View hospital dashboard")
+            .RequireAuthorization(signedInPolicy);
 
         apiHospital.MapPost("/refresh-admissions", (IMediator mediator, CheckPatientAdmissions request) => mediator.Send(request))
             .AddNote("Refresh patient admissions");

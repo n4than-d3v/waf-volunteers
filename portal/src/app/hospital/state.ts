@@ -2,6 +2,8 @@ export interface HospitalState {
   tab: Tab;
   tabHistory: Tab[];
 
+  dashboard: ReadOnlyWrapper<Dashboard>;
+
   patientCounts: ReadOnlyWrapper<PatientCounts>;
   patientsByStatus: ReadOnlyWrapper<ListPatient[]>;
 
@@ -83,6 +85,17 @@ export interface ReadOnlyWrapper<T> {
   data: T | null;
   loading: boolean;
   error: boolean;
+}
+
+export interface Dashboard {
+  speciesRescues: { [year: number]: { [species: string]: number[] } };
+  patientAdmissionsByDate: { [year: number]: { [date: string]: number } };
+  patientsByAdmissionReason: { [year: number]: { [reason: string]: number } };
+  patientsBySpecies: { [year: number]: { [species: string]: number } };
+  patientsByDisposition: { [year: number]: { [disposition: number]: number } };
+  patientsBySpeciesDisposition: {
+    [year: number]: { [species: string]: number[] };
+  };
 }
 
 export interface PatientCounts {
@@ -637,6 +650,7 @@ export const createTask = (): Task => ({
 export const initialHospitalState: HospitalState = {
   tab: { code: 'DASHBOARD', title: 'Dashboard' },
   tabHistory: [{ code: 'DASHBOARD', title: 'Dashboard' }],
+  dashboard: createReadOnlyWrapper<Dashboard>(),
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
   patientsByStatus: createReadOnlyWrapper<ListPatient[]>(),
   patient: createReadOnlyWrapper<Patient>(),

@@ -25,6 +25,7 @@ import {
   DailyTasksReport,
   PatientBoard,
   ListPatientBoard,
+  Dashboard,
 } from './state';
 import { catchError, delay, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -193,6 +194,9 @@ import {
   undoAdministerPrescriptionSuccess,
   undoAdministerPrescriptionError,
   undoAdministerPrescriptionMedication,
+  getDashboard,
+  getDashboardSuccess,
+  getDashboardError,
 } from './actions';
 
 @Injectable()
@@ -207,6 +211,20 @@ export class HospitalEffects {
       ofType(setTab),
       delay(100),
       map((action) => delayedSetTab({ tab: action.tab })),
+    ),
+  );
+
+  // Dashboard
+
+  getDashboard$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getDashboard),
+      switchMap(() =>
+        this.http.get<Dashboard>('hospital/dashboard').pipe(
+          map((dashboard) => getDashboardSuccess({ dashboard })),
+          catchError(() => of(getDashboardError())),
+        ),
+      ),
     ),
   );
 

@@ -1,0 +1,40 @@
+@if (dashboard$ | async; as dashboard) { @if (dashboard.loading) {
+<spinner></spinner>
+} @else if (dashboard.error) {
+<div class="error">Error occurred</div>
+} @else if (dashboard.data) {
+<h3>Admissions</h3>
+<hospital-dashboard-daily-admissions
+  [dashboard]="dashboard.data"
+></hospital-dashboard-daily-admissions>
+
+<div class="sections">
+  <section>
+    <h3>Dispositions</h3>
+    <hospital-dashboard-admissions-by-disposition
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-admissions-by-disposition>
+  </section>
+
+  <section>
+    <h3>Admission reasons</h3>
+    <hospital-dashboard-admissions-by-reason
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-admissions-by-reason>
+  </section>
+
+  <section>
+    <h3>Rescues</h3>
+    <hospital-dashboard-admissions-by-species-rescues
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-admissions-by-species-rescues>
+  </section>
+
+  <section>
+    <h3>Species</h3>
+    <hospital-dashboard-admissions-by-species-disposition
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-admissions-by-species-disposition>
+  </section>
+</div>
+} }

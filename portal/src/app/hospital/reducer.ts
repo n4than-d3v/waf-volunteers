@@ -251,11 +251,11 @@ export const hospitalReducer = createReducer<HospitalState>(
     },
   })),
   // Patients by status
-  on(getPatientsByStatus, (state) => ({
+  on(getPatientsByStatus, (state, { silent }) => ({
     ...state,
     patientsByStatus: {
       ...state.patientsByStatus,
-      loading: true,
+      loading: silent ? false : true,
       error: false,
     },
   })),

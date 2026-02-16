@@ -40,7 +40,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         var patients = await _repository.GetAll<Patient>(
             x =>
-                (x.Status == PatientStatus.Inpatient || x.Status == PatientStatus.PendingHomeCare) &&
+                (x.Status == PatientStatus.Inpatient || x.Status == PatientStatus.PendingHomeCare || x.Status == PatientStatus.ReadyForRelease) &&
                 x.Pen != null && showAreas.Contains(x.Pen.Area.Id), tracking: false,
             x => x.AsSplitQuery().IncludeBasicDetails().IncludeHusbandry());
 

@@ -255,7 +255,7 @@ public static class ViewPatientExtensions
     public static IQueryable<Patient> IncludeOutcome(this IQueryable<Patient> x)
     {
         return x
-            .Include(y => y.DispositionReason)
+            .Include(y => y.DispositionReasons)
             .Include(y => y.ReleaseType)
             .Include(y => y.TransferLocation)
             .Include(y => y.Dispositioner);

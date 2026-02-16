@@ -189,7 +189,7 @@ export interface ListPatient {
   diets: Diet[];
   disposition: Disposition | null;
   dispositioned: string | null;
-  dispositionReason: DispositionReason | null;
+  dispositionReasons: DispositionReason[];
   releaseType: ReleaseType | null;
   transferLocation: TransferLocation | null;
   dispositioner: {} | null;

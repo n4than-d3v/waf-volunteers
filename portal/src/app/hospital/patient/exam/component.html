@@ -387,20 +387,46 @@
             Disposition reason
             <span class="required">*</span>
           </label>
-          <select id="dispositionReason" formControlName="dispositionReasonId">
-            <option value=""></option>
-            @if (dispositionReasons$ | async; as dispositionReasons) { @if
-            (dispositionReasons.loading) {
-            <spinner />
-            } @else if (dispositionReasons.error) {
-            <div class="error">Error occurred</div>
-            } @else if (dispositionReasons.data) { @for (dispositionReason of
-            dispositionReasons.data; track dispositionReason.id) {
-            <option [value]="dispositionReason.id">
-              {{ dispositionReason.description }}
-            </option>
-            } }}
-          </select>
+          @if (dispositionReasons$ | async; as dispositionReasons) { @if
+          (dispositionReasons.data) {
+          <div
+            formArrayName="dispositionReasonIds"
+            *ngFor="
+              let dispositionReason of
+                examForm.controls.dispositionReasonIds.controls;
+              let i = index
+          "
+          >
+            <div [formGroupName]="i" class="reason-wrapper">
+              <hospital-patient-autocomplete
+                [id]="'reason' + i"
+                [inline]="true"
+                [label]="''"
+                [control]="'reason'"
+                [formGroup]="dispositionReason"
+                [items]="convertDispositionReasons(dispositionReasons.data)"
+              ></hospital-patient-autocomplete>
+              @if (i === examForm.controls.dispositionReasonIds.controls.length
+              - 1) {
+              <button
+                type="button"
+                class="button button--none"
+                (click)="addDispositionReason()"
+              >
+                ➕
+              </button>
+              } @if (i !== 0) {
+              <button
+                type="button"
+                class="button button--none"
+                (click)="removeDispositionReason(i)"
+              >
+                ➖
+              </button>
+              }
+            </div>
+          </div>
+          } }
         </div>
       </div>
       }

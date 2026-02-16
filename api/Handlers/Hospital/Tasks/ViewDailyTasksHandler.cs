@@ -137,10 +137,10 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
     private async Task<IReadOnlyList<PatientRecheck>> GetRechecks(DateOnly date)
     {
         var overdue = await _repository.GetAll<PatientRecheck>(x =>
-            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
+            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare || x.Patient.Status == PatientStatus.ReadyForRelease) &&
                 x.Due < date && x.Rechecked == null, tracking: false, Action);
         var due = await _repository.GetAll<PatientRecheck>(x =>
-            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
+            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare || x.Patient.Status == PatientStatus.ReadyForRelease) &&
                 x.Due == date, tracking: false, Action);
 
         var rechecks = new List<PatientRecheck>();
@@ -156,10 +156,10 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
     private async Task<(IReadOnlyList<PatientPrescriptionInstruction>, IReadOnlyList<PatientPrescriptionMedication>)> GetPrescriptions(DateOnly date)
     {
         var instructions = await _repository.GetAll<PatientPrescriptionInstruction>(x =>
-            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
+            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare || x.Patient.Status == PatientStatus.ReadyForRelease) &&
                 x.Start <= date && date <= x.End, tracking: false, Action);
         var medications = await _repository.GetAll<PatientPrescriptionMedication>(x =>
-            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare) &&
+            (x.Patient.Status == PatientStatus.Inpatient || x.Patient.Status == PatientStatus.PendingHomeCare || x.Patient.Status == PatientStatus.ReadyForRelease) &&
                 x.Start <= date && date <= x.End, tracking: false, Action);
 
         foreach (var medication in medications)

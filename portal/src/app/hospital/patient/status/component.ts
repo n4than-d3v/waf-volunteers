@@ -10,7 +10,7 @@ import {
   Task,
   TransferLocation,
 } from '../../state';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -33,6 +33,7 @@ import {
   requestHomeCare,
 } from '../../actions';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   FormsModule,
@@ -49,6 +50,7 @@ import { HospitalPatientAutocompleteComponent } from '../autocomplete/component'
   imports: [
     AsyncPipe,
     DatePipe,
+    CommonModule,
     SpinnerComponent,
     HospitalPatientAutocompleteComponent,
     FormsModule,
@@ -70,7 +72,9 @@ export class HospitalPatientStatusComponent implements OnInit {
   getDisposition = getDisposition;
 
   deadForm = new FormGroup({
-    dispositionReasonId: new FormControl('', [Validators.required]),
+    dispositionReasonIds: new FormArray<
+      FormGroup<{ reason: FormControl<string | null> }>
+    >([]),
   });
 
   releaseForm = new FormGroup({
@@ -109,6 +113,23 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(getDispositionReasons());
     this.store.dispatch(getReleaseTypes());
     this.store.dispatch(getTransferLocations());
+    this.addDispositionReason();
+  }
+
+  addDispositionReason() {
+    this.deadForm.controls.dispositionReasonIds.push(
+      new FormGroup({
+        reason: new FormControl<string | null>(null, Validators.required),
+      }),
+    );
+  }
+
+  removeDispositionReason(id: number) {
+    this.deadForm.controls.dispositionReasonIds.removeAt(id);
+  }
+
+  formatDispositionReasons(reason: DispositionReason[]) {
+    return reason.map((r) => r.description).join(', ');
   }
 
   convertDispositionReasons(dispositionReasons: DispositionReason[]) {
@@ -200,7 +221,9 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(
       markPatientDead({
         patientId: this.patient.id,
-        dispositionReasonId: Number(this.deadForm.value.dispositionReasonId!),
+        dispositionReasonIds: this.deadForm.value.dispositionReasonIds!.map(
+          (x) => Number(x.reason!),
+        ),
         onArrival: false,
         putToSleep: this.updating === 'pts',
       }),

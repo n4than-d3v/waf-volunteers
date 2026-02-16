@@ -22,5 +22,8 @@ public partial class Program
         builder.Services.Configure<BeaconSettings>(
             builder.Configuration.GetSection("Beacon")
         );
+        builder.Services.Configure<FileSettings>(
+            builder.Configuration.GetSection("Files")
+        );
     }
 }

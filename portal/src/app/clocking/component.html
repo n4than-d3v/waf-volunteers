@@ -187,6 +187,11 @@
       <h3>Not coming</h3>
       <p>{{ getNotComing(shift) }}</p>
     </div>
+    } @if (isAnyoneNotConfirmed(shift)) {
+    <div class="unconfirmed">
+      <h3>Unconfirmed</h3>
+      <p>{{ getNotConfirmed(shift) }}</p>
+    </div>
     }
   </div>
 </div>

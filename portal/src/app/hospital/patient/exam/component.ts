@@ -127,7 +127,9 @@ export class HospitalPatientExamComponent implements OnInit {
     >([]),
     comments: new FormControl(''),
     outcome: new FormControl('alive', [Validators.required]),
-    dispositionReasonId: new FormControl(''),
+    dispositionReasonIds: new FormArray<
+      FormGroup<{ reason: FormControl<string | null> }>
+    >([]),
     areaId: new FormControl(''),
     penId: new FormControl(''),
   });
@@ -220,30 +222,72 @@ export class HospitalPatientExamComponent implements OnInit {
     this.examForm.controls.treatmentInstructions.updateValueAndValidity();
   }
 
+  addDispositionReason() {
+    this.examForm.controls.dispositionReasonIds.push(
+      new FormGroup({
+        reason: new FormControl<string | null>(null, Validators.required),
+      }),
+    );
+  }
+
+  removeDispositionReason(id: number) {
+    this.examForm.controls.dispositionReasonIds.removeAt(id);
+  }
+
+  convertDispositionReasons(dispositionReasons: DispositionReason[]) {
+    return dispositionReasons.map((x) => ({
+      id: x.id,
+      display: x.description,
+    }));
+  }
+
   performExam() {
     this.attemptedSave = true;
     if (this.exam === null) {
       this.examForm.controls.penId.clearValidators();
-      this.examForm.controls.dispositionReasonId.clearValidators();
+      for (
+        let i = 0;
+        i < this.examForm.controls.dispositionReasonIds.length;
+        i++
+      ) {
+        this.examForm.controls.dispositionReasonIds
+          .at(i)
+          .controls.reason.clearValidators();
+      }
       if (this.examForm.controls.outcome.value === 'alive') {
         this.examForm.controls.penId.setValidators([Validators.required]);
+        this.examForm.controls.dispositionReasonIds.clear();
       } else if (
         this.examForm.controls.outcome.value === 'diedOnTable' ||
         this.examForm.controls.outcome.value === 'deadOnArrival' ||
         this.examForm.controls.outcome.value === 'pts'
       ) {
-        this.examForm.controls.dispositionReasonId.setValidators([
-          Validators.required,
-        ]);
+        for (
+          let i = 0;
+          i < this.examForm.controls.dispositionReasonIds.length;
+          i++
+        ) {
+          this.examForm.controls.dispositionReasonIds
+            .at(i)
+            .controls.reason.setValidators([Validators.required]);
+        }
       }
       this.examForm.controls.penId.updateValueAndValidity({
         onlySelf: true,
         emitEvent: true,
       });
-      this.examForm.controls.dispositionReasonId.updateValueAndValidity({
-        onlySelf: true,
-        emitEvent: true,
-      });
+      for (
+        let i = 0;
+        i < this.examForm.controls.dispositionReasonIds.length;
+        i++
+      ) {
+        this.examForm.controls.dispositionReasonIds
+          .at(i)
+          .controls.reason.updateValueAndValidity({
+            onlySelf: true,
+            emitEvent: true,
+          });
+      }
     }
     this.examForm.updateValueAndValidity({
       onlySelf: true,
@@ -306,8 +350,12 @@ export class HospitalPatientExamComponent implements OnInit {
           this.exam !== null
             ? 'none' // if updating the exam, always set outcome to none
             : (this.examForm.controls.outcome.value as Outcome),
-        dispositionReasonId: this.examForm.controls.dispositionReasonId.value
-          ? Number(this.examForm.controls.dispositionReasonId.value)
+        dispositionReasonIds: (
+          this.examForm.controls.dispositionReasonIds.value || []
+        ).length
+          ? this.examForm.controls.dispositionReasonIds.value.map((x) =>
+              Number(x.reason!),
+            )
           : undefined,
         penId: this.examForm.controls.penId.value
           ? Number(this.examForm.controls.penId.value)
@@ -327,6 +375,7 @@ export class HospitalPatientExamComponent implements OnInit {
     this.store.dispatch(getAdministrationMethods());
     this.store.dispatch(getAreas());
     this.prepareEdit();
+    this.addDispositionReason();
   }
 
   private prepareEdit() {

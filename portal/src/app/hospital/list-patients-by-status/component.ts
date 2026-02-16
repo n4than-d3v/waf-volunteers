@@ -13,7 +13,6 @@ import {
   PatientCounts,
   PatientStatus,
   ReadOnlyWrapper,
-  TabCode,
 } from '../../hospital/state';
 import { Store } from '@ngrx/store';
 import {
@@ -24,26 +23,21 @@ import { getPatientsByStatus, setTab } from '../actions';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import moment from 'moment';
 import { FormsModule } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, skip } from 'rxjs/operators';
+import { SpinnerComponent } from '../../shared/spinner/component';
 
 @Component({
   selector: 'hospital-list-patients-by-status',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, DatePipe, FormsModule],
+  imports: [AsyncPipe, DatePipe, SpinnerComponent, FormsModule],
 })
 export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   @Input() set status(status: PatientStatus) {
     this._status = status;
-    this.store.dispatch(
-      getPatientsByStatus({
-        status,
-        search: '',
-        page: 1,
-        pageSize: this.pageSize$.getValue(),
-      }),
-    );
+    console.log('initial set status');
+    this.dispatch(false);
   }
 
   _status: PatientStatus | null = null;
@@ -154,21 +148,24 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
 
   nextPage() {
     this.page++;
-    this.dispatch();
+    console.log('nextPage');
+    this.dispatch(false);
   }
 
   prevPage() {
     if (this.page === 1) return;
     this.page--;
-    this.dispatch();
+    console.log('prevPage');
+    this.dispatch(false);
   }
 
   goToPage(page: number) {
     this.page = page;
-    this.dispatch();
+    console.log('goToPage');
+    this.dispatch(false);
   }
 
-  private dispatch() {
+  private dispatch(silent: boolean) {
     if (!this._status) return;
 
     this.store.dispatch(
@@ -177,6 +174,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
         search: this.search$.getValue(),
         page: this.page,
         pageSize: this.pageSize$.getValue(),
+        silent,
       }),
     );
   }
@@ -187,18 +185,20 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.search$
-        .pipe(debounceTime(300), distinctUntilChanged())
+        .pipe(skip(1), debounceTime(300), distinctUntilChanged())
         .subscribe((_) => {
           if (!this._status) return;
           this.page = 1;
-          this.dispatch();
+          console.log('search');
+          this.dispatch(false);
         }),
     );
 
     this.subscription.add(
-      this.pageSize$.subscribe((_) => {
+      this.pageSize$.pipe(skip(1)).subscribe((_) => {
         this.page = 1; // reset page
-        this.dispatch();
+        console.log('pageSize');
+        this.dispatch(false);
       }),
     );
 
@@ -206,13 +206,19 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
       this.totalPages$.subscribe((totalPages) => {
         if (this.page > totalPages) {
           this.page = totalPages;
-          this.dispatch();
+          console.log('totalPages');
+          this.dispatch(false);
         }
       }),
     );
 
     // Auto-refresh every 10 seconds
-    this.subscription.add(timer(0, 10_000).subscribe(() => this.dispatch()));
+    this.subscription.add(
+      timer(10_000, 10_000).subscribe(() => {
+        console.log('silent refresh');
+        this.dispatch(true);
+      }),
+    );
   }
 
   ngOnDestroy() {

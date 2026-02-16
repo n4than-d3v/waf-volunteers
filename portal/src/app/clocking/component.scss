@@ -83,6 +83,19 @@ h3 {
   }
 }
 
+.unconfirmed {
+  h3 {
+    margin-top: 0.5rem;
+    color: #632828;
+  }
+
+  p {
+    margin-top: -0.25rem;
+    font-size: 1rem;
+    color: #632828;
+  }
+}
+
 .cars {
   display: flex;
   gap: 0.5rem;

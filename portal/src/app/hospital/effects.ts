@@ -534,7 +534,7 @@ export class HospitalEffects {
                 actions.push(
                   markPatientDead({
                     patientId: action.exam.patientId,
-                    dispositionReasonId: action.dispositionReasonId!,
+                    dispositionReasonIds: action.dispositionReasonIds!,
                     onArrival: action.outcome === 'deadOnArrival',
                     putToSleep: action.outcome === 'pts',
                   }),

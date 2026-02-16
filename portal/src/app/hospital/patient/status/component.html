@@ -22,17 +22,13 @@
   <table>
     <tbody>
       <tr>
-        <td>Status</td>
-        <td>{{ getDisposition(patient) }}</td>
+        <td>Date dispositioned</td>
+        <td>{{ patient.dispositioned | date: 'dd MMM yyyy HH:mm' }}</td>
       </tr>
-      @if (patient.dispositionReason) {
+      @if (patient.dispositionReasons) {
       <tr>
         <td>Disposition reason</td>
-        <td>{{ patient.dispositionReason.description }}</td>
-      </tr>
-      <tr>
-        <td>Disposition date</td>
-        <td>{{ patient.dispositioned | date: 'dd MMM yyyy HH:mm' }}</td>
+        <td>{{ formatDispositionReasons(patient.dispositionReasons) }}</td>
       </tr>
       } @else if (patient.releaseType) {
       <tr>
@@ -124,14 +120,43 @@
           </label>
           @if (dispositionReasons$ | async; as dispositionReasons) { @if
           (dispositionReasons.data) {
-          <hospital-patient-autocomplete
-            [id]="'dispositionReasonId'"
-            [inline]="true"
-            [label]="''"
-            [control]="'dispositionReasonId'"
-            [formGroup]="deadForm"
-            [items]="convertDispositionReasons(dispositionReasons.data)"
-          ></hospital-patient-autocomplete>
+          <div
+            formArrayName="dispositionReasonIds"
+            *ngFor="
+              let dispositionReason of
+                deadForm.controls.dispositionReasonIds.controls;
+              let i = index
+          "
+          >
+            <div [formGroupName]="i" class="reason-wrapper">
+              <hospital-patient-autocomplete
+                [id]="'reason' + i"
+                [inline]="true"
+                [label]="''"
+                [control]="'reason'"
+                [formGroup]="dispositionReason"
+                [items]="convertDispositionReasons(dispositionReasons.data)"
+              ></hospital-patient-autocomplete>
+              @if (i === deadForm.controls.dispositionReasonIds.controls.length
+              - 1) {
+              <button
+                type="button"
+                class="button button--none"
+                (click)="addDispositionReason()"
+              >
+                ➕
+              </button>
+              } @if (i !== 0) {
+              <button
+                type="button"
+                class="button button--none"
+                (click)="removeDispositionReason(i)"
+              >
+                ➖
+              </button>
+              }
+            </div>
+          </div>
           } }
         </div>
       </div>

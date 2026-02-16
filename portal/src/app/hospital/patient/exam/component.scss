@@ -12,6 +12,17 @@
   }
 }
 
+.reason-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.25rem;
+
+  button {
+    margin-top: 0rem !important;
+  }
+}
+
 .buttons {
   display: flex;
   gap: 0.5rem;

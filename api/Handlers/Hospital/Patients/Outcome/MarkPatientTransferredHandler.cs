@@ -43,6 +43,7 @@ public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransfer
         var transferLocation = await _repository.Get<TransferLocation>(request.TransferLocationId);
         if (transferLocation == null) return Results.BadRequest();
 
+        patient.DispositionReasons?.Clear();
         patient.Disposition = Disposition.Transferred;
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;

@@ -10,7 +10,7 @@ namespace Api.Handlers.Hospital.Patients.Outcome;
 public class MarkPatientDead : IRequest<IResult>
 {
     public int PatientId { get; set; }
-    public int DispositionReasonId { get; set; }
+    public int[] DispositionReasonIds { get; set; }
 
     public bool PutToSleep { get; set; }
     public bool OnArrival { get; set; }
@@ -49,12 +49,17 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         var dispositioner = await _repository.Get<Account>(_userContext.Id);
         if (dispositioner == null) return Results.BadRequest();
 
-        var dispositionReason = await _repository.Get<DispositionReason>(request.DispositionReasonId);
-        if (dispositionReason == null) return Results.BadRequest();
+        var dispositionReasons = new List<DispositionReason>();
+        foreach (var dispositionReasonId in request.DispositionReasonIds)
+        {
+            var dispositionReason = await _repository.Get<DispositionReason>(dispositionReasonId);
+            if (dispositionReason == null) return Results.BadRequest();
+            dispositionReasons.Add(dispositionReason);
+        }
 
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;
-        patient.DispositionReason = dispositionReason;
+        patient.DispositionReasons = dispositionReasons;
         patient.Status = PatientStatus.Dispositioned;
 
         bool before24Hrs = patient.Dispositioned <= patient.Admitted.AddHours(24);
@@ -87,7 +92,7 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
         var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
 
-        var communication = dispositionReason.Communication
+        var communication = dispositionReasons.First().Communication
             .Replace("%NAME%", admitterFullName)
             .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown")
             .Replace("%ADMITTED%", $"{patient.Admitted:dddd d MMMM}");

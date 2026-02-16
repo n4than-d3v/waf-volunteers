@@ -77,12 +77,23 @@ export class ClockingComponent implements OnInit {
   }
 
   isAnyoneNotComing(shift: ClockingRota) {
-    return shift.volunteers.some((x) => !x.confirmed);
+    return shift.volunteers.some((x) => x.confirmed === false);
+  }
+
+  isAnyoneNotConfirmed(shift: ClockingRota) {
+    return shift.volunteers.some((x) => x.confirmed === null);
   }
 
   getNotComing(shift: ClockingRota) {
     return shift.volunteers
-      .filter((x) => !x.confirmed)
+      .filter((x) => x.confirmed === false)
+      .map((x) => x.fullName)
+      .join(', ');
+  }
+
+  getNotConfirmed(shift: ClockingRota) {
+    return shift.volunteers
+      .filter((x) => x.confirmed === null)
       .map((x) => x.fullName)
       .join(', ');
   }
@@ -125,7 +136,7 @@ export class ClockingComponent implements OnInit {
       visitorClockIn({
         name: this.visitorName,
         car: this.visitorCar || '',
-      })
+      }),
     );
     this.reset();
   }
@@ -135,7 +146,7 @@ export class ClockingComponent implements OnInit {
       clockIn({
         attendanceId: volunteer.attendanceId!,
         car: car || '',
-      })
+      }),
     );
     this.reset();
   }
@@ -145,13 +156,13 @@ export class ClockingComponent implements OnInit {
       this.store.dispatch(
         clockOut({
           attendanceId: volunteer.attendanceId,
-        })
+        }),
       );
     } else if (volunteer.visitorId) {
       this.store.dispatch(
         visitorClockOut({
           id: volunteer.visitorId,
-        })
+        }),
       );
     }
     this.selectedVolunteer = volunteer;

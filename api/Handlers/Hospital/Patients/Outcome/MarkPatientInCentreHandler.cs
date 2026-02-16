@@ -38,7 +38,7 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
         patient.Disposition = null;
         patient.Dispositioner = null;
         patient.Dispositioned = null;
-        patient.DispositionReason = null;
+        patient.DispositionReasons?.Clear();
 
         await _repository.SaveChangesAsync();
         return Results.NoContent();

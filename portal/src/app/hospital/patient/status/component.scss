@@ -10,6 +10,13 @@
   }
 }
 
+.reason-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
 table:not(:has(thead)) tbody {
   td {
     font-size: 1.125rem;

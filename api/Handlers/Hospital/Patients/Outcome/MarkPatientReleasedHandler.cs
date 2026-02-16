@@ -43,6 +43,7 @@ public class MarkPatientReleasedHandler : IRequestHandler<MarkPatientReleased, I
         var releaseType = await _repository.Get<ReleaseType>(request.ReleaseTypeId);
         if (releaseType == null) return Results.BadRequest();
 
+        patient.DispositionReasons?.Clear();
         patient.Disposition = Disposition.Released;
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;

@@ -1,4 +1,6 @@
-@if (patients$ | async; as patients) { @if (patients.error) {
+@if (patients$ | async; as patients) { @if (patients.loading) {
+<spinner></spinner>
+} @else if (patients.error) {
 <div class="error">Error occurred</div>
 } @else if (patients.data) {
 <div class="filter">

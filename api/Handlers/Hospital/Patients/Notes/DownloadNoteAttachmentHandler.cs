@@ -1,7 +1,10 @@
-﻿using Api.Database;
+﻿using Api.Configuration;
+using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Notices;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Api.Handlers.Hospital.Patients.Notes;
 
@@ -15,10 +18,12 @@ public class DownloadNoteAttachment : IRequest<IResult>
 public class DownloadNoteAttachmentHandler : IRequestHandler<DownloadNoteAttachment, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly string _rootDirectory;
 
-    public DownloadNoteAttachmentHandler(IDatabaseRepository repository)
+    public DownloadNoteAttachmentHandler(IDatabaseRepository repository, IOptions<FileSettings> fileSettings)
     {
         _repository = repository;
+        _rootDirectory = fileSettings.Value.RootDirectory;
     }
 
     public async Task<IResult> Handle(DownloadNoteAttachment request, CancellationToken cancellationToken)
@@ -29,10 +34,16 @@ public class DownloadNoteAttachmentHandler : IRequestHandler<DownloadNoteAttachm
         if (attachment.PatientNote.Id != request.NoteId) return Results.BadRequest();
         if (attachment.PatientNote.Patient.Id != request.PatientId) return Results.BadRequest();
 
+        var filePath = Path.Combine(_rootDirectory, "patientNotes", attachment.PatientNote.Id.ToString(), attachment.FileName);
+        if (!File.Exists(filePath)) return Results.NotFound();
+
+        var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
         return Results.File(
-            attachment.Data,
+            stream,
             attachment.ContentType,
-            attachment.FileName
+            attachment.FileName,
+            enableRangeProcessing: true
         );
     }
 }

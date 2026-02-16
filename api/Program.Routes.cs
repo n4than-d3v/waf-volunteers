@@ -114,6 +114,9 @@ public partial class Program
         apiHospital.MapPost("/refresh-admissions", (IMediator mediator, CheckPatientAdmissions request) => mediator.Send(request))
             .AddNote("Refresh patient admissions");
 
+        apiHospital.MapPost("/export-attachments-to-disk", (IMediator mediator, ExportAttachmentsToDisk request) => mediator.Send(request))
+            .AddNote("Export attachments to disk");
+
         var apiHospitalOptions = apiHospital.MapGroup("/options");
 
         var apiHospitalOptionsExams = apiHospitalOptions.MapGroup("/exams");

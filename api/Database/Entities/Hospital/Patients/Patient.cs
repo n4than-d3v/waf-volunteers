@@ -68,7 +68,7 @@ public class Patient : Entity
 
     public Disposition? Disposition { get; set; }
     public DateTime? Dispositioned { get; set; }
-    public DispositionReason? DispositionReason { get; set; }
+    public List<DispositionReason> DispositionReasons { get; set; }
     public ReleaseType? ReleaseType { get; set; }
     public TransferLocation? TransferLocation { get; set; }
     public Dispositioner? Dispositioner { get; set; }

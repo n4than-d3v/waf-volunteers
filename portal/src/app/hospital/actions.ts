@@ -58,6 +58,7 @@ export const getPatientsByStatus = createAction(
     search: string;
     page: number;
     pageSize: number;
+    silent: boolean;
   }>(),
 );
 export const getPatientsByStatusSuccess = createAction(
@@ -229,7 +230,7 @@ export const performExam = createAction(
   props<{
     exam: Exam;
     outcome: Outcome;
-    dispositionReasonId?: number;
+    dispositionReasonIds?: number[];
     penId?: number;
   }>(),
 );
@@ -242,7 +243,7 @@ export const markPatientDead = createAction(
   '[HMS-V] Mark patient dead',
   props<{
     patientId: number;
-    dispositionReasonId: number;
+    dispositionReasonIds: number[];
     onArrival: boolean;
     putToSleep: boolean;
   }>(),

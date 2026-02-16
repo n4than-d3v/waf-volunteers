@@ -91,13 +91,13 @@ requests.data; track request.id) {
   </div>
   } @else if (viewingMessages == request.id) {
   <div class="chat-container">
+    @if (messages$ | async; as messages) { @if (messages.loading) {
+    <spinner></spinner>
+    } @else if (messages.error) {
+    <div class="error">Error occurred</div>
+    } @else if (messages.data && messages.data.length > 0) {
     <div class="chat">
-      @if (messages$ | async; as messages) { @if (messages.loading) {
-      <spinner></spinner>
-      } @else if (messages.error) {
-      <div class="error">Error occurred</div>
-      } @else if (messages.data) { @for (message of messages.data; track
-      message.id) {
+      @for (message of messages.data; track message.id) {
       <div class="message" [class.message--me]="message.me">
         <div class="content">{{ message.message }}</div>
         <div class="underneath">
@@ -108,8 +108,9 @@ requests.data; track request.id) {
           <div class="date">{{ message.date | date: 'dd MMM yyyy HH:mm' }}</div>
         </div>
       </div>
-      } } }
+      }
     </div>
+    } }
     <div class="send">
       <form [formGroup]="messageForm">
         <textarea id="message" formControlName="message"></textarea>

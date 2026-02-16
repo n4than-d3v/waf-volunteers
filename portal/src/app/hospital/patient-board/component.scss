@@ -20,60 +20,66 @@ h1 {
   }
 }
 
-.area {
-  h2 {
-    margin-bottom: 0.25rem;
-  }
+.areas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 
-  .summary {
-    margin-bottom: 0.5rem;
-  }
+  .area {
+    h2 {
+      margin-bottom: 0.25rem;
+    }
 
-  .pens {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 0.5rem;
+    .summary {
+      margin-bottom: 0.5rem;
+    }
 
-    .pen {
-      border: solid 2px rgb(60, 60, 60);
-      margin-right: -2px;
-      margin-top: -2px;
+    .pens {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
 
-      .location {
-        background-color: rgb(214, 214, 214);
-        border-bottom: solid 2px rgb(60, 60, 60);
-        padding: 0.25rem 0.5rem;
-        font-weight: bold;
-        font-size: 1.25rem;
-      }
+      .pen {
+        border: solid 2px rgb(60, 60, 60);
+        margin-right: -2px;
+        margin-top: -2px;
 
-      .patients {
-        padding: 0.5rem;
-        padding-top: 0.25rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        .location {
+          background-color: rgb(214, 214, 214);
+          border-bottom: solid 2px rgb(60, 60, 60);
+          padding: 0.25rem 0.5rem;
+          font-weight: bold;
+          font-size: 1.25rem;
+        }
 
-        .patient {
-          .diets,
-          .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.25rem;
-            margin-top: 0.25rem;
+        .patients {
+          padding: 0.5rem;
+          padding-top: 0.25rem;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
 
-            .diet,
-            .tag {
-              color: white;
-              padding: 0.125rem 0.25rem;
-            }
+          .patient {
+            .diets,
+            .tags {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 0.25rem;
+              margin-top: 0.25rem;
 
-            .diet {
-              background-color: var(--theme-color-5);
-            }
+              .diet,
+              .tag {
+                color: white;
+                padding: 0.125rem 0.25rem;
+              }
 
-            .tag {
-              background-color: var(--theme-color-2);
+              .diet {
+                background-color: var(--theme-color-5);
+              }
+
+              .tag {
+                background-color: var(--theme-color-2);
+              }
             }
           }
         }

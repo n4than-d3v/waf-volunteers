@@ -5,6 +5,7 @@ using Api.Handlers.Hospital.Patients;
 using Api.Migrations;
 using Api.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Handlers.Hospital.Admission;
 
@@ -40,9 +41,17 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             var year = DateTime.UtcNow.Year;
             var yearStart = new DateTime(year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var yearEnd = yearStart.AddYears(1).AddSeconds(-1);
-            var allPatientsAdmittedThisYear = await _repository.GetAll<Patient>(x => yearStart <= x.Admitted && x.Admitted <= yearEnd, tracking: false);
-            var admittedThisYear = allPatientsAdmittedThisYear.Count;
-            if (year == 2026) admittedThisYear += 2;
+            var latestPatientAdmittedThisYear = await _repository.Query<Patient>()
+                .Where(x => x.Reference.StartsWith($"{year - 2000}-"))
+                .OrderByDescending(x => x.Admitted)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            var admittedThisYear = 0;
+            if (latestPatientAdmittedThisYear != null)
+            {
+                var latestReference = latestPatientAdmittedThisYear.Reference.Split('-');
+                _ = int.TryParse(latestReference[1], out admittedThisYear);
+            }
 
             foreach (var admission in beaconAdmissions.results.OrderBy(x => x.entity.created_at))
             {
@@ -51,6 +60,13 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 {
                     // If patient already exists, attempt to update details
                     await UpdatePatientInfo(patient, admission);
+
+                    // If name is "VOID" and patient HAS NOT BEEN EXAMINED, delete patient record
+                    if (admission.entity.c_name == "VOID" && patient.Status == PatientStatus.PendingInitialExam)
+                    {
+                        _repository.Delete(patient);
+                    }
+
                     continue;
                 }
 

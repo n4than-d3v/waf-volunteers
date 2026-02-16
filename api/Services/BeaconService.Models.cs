@@ -19,6 +19,7 @@ public partial class BeaconService
         {
             public int id { get; set; }
             public DateTime created_at { get; set; }
+            public string c_name { get; set; }
             public string c_id_number { get; set; }
             public List<int> c_person { get; set; }
             public List<string> c_animal { get; set; }

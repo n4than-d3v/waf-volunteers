@@ -81,9 +81,7 @@ export class HospitalDashboardAdmissionsByReasonComponent
       return {
         label: year,
         data: values,
-        borderColor: colour,
-        backgroundColor: hexToRgba(colour, 0.35),
-        borderWidth: 2,
+        backgroundColor: hexToRgba(colour, 0.6),
       };
     });
 
@@ -105,8 +103,8 @@ export class HospitalDashboardAdmissionsByReasonComponent
           tooltip: { mode: 'index', intersect: false },
         },
         scales: {
-          x: { stacked: false },
-          y: { stacked: false, beginAtZero: true },
+          x: { stacked: true },
+          y: { stacked: true, beginAtZero: true },
         },
       },
     };

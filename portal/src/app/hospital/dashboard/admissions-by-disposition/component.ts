@@ -80,9 +80,8 @@ export class HospitalDashboardAdmissionsByDispositionComponent
       return {
         label: year,
         data: values,
-        borderColor: colour, // FULL opacity border
-        backgroundColor: hexToRgba(colour, 0.35), // TRANSPARENT fill
-        borderWidth: 2, // same as admissions
+        backgroundColor: hexToRgba(colour, 0.6),
+        maxBarThickness: 25,
       };
     });
 
@@ -104,8 +103,8 @@ export class HospitalDashboardAdmissionsByDispositionComponent
           tooltip: { mode: 'index', intersect: false },
         },
         scales: {
-          x: { stacked: false },
-          y: { stacked: false, beginAtZero: true },
+          x: { stacked: true },
+          y: { stacked: true, beginAtZero: true },
         },
       },
     };

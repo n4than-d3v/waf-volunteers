@@ -8,9 +8,10 @@ import { SpinnerComponent } from '../../shared/spinner/component';
 import { AsyncPipe } from '@angular/common';
 import { HospitalDashboardChartAdmissionsComponent } from './daily-admissions/component';
 import { HospitalDashboardAdmissionsByReasonComponent } from './admissions-by-reason/component';
-import { HospitalDashboardAdmissionsBySpeciesDispositionComponent } from './admissions-by-species-disposition/component';
+import { HospitalDashboardAdmissionsBySpeciesSurvivalComponent } from './admissions-by-species-survival/component';
 import { HospitalDashboardAdmissionsByDispositionComponent } from './admissions-by-disposition/component';
 import { HospitalDashboardAdmissionsBySpeciesRescuesComponent } from './admissions-by-species-rescue/component';
+import { HospitalDashboardAdmissionsBySpeciesEarlyLateMortalityComponent } from './admissions-by-species-early-late-mortality/component';
 
 @Component({
   selector: 'hospital-dashboard',
@@ -24,7 +25,8 @@ import { HospitalDashboardAdmissionsBySpeciesRescuesComponent } from './admissio
     HospitalDashboardAdmissionsByDispositionComponent,
     HospitalDashboardAdmissionsByReasonComponent,
     HospitalDashboardAdmissionsBySpeciesRescuesComponent,
-    HospitalDashboardAdmissionsBySpeciesDispositionComponent,
+    HospitalDashboardAdmissionsBySpeciesSurvivalComponent,
+    HospitalDashboardAdmissionsBySpeciesEarlyLateMortalityComponent,
   ],
 })
 export class HospitalDashboardComponent implements OnInit {

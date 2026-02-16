@@ -31,10 +31,17 @@
   </section>
 
   <section>
-    <h3>Species</h3>
-    <hospital-dashboard-admissions-by-species-disposition
+    <h3>Species survival</h3>
+    <hospital-dashboard-admissions-by-species-survival
       [dashboard]="dashboard.data"
-    ></hospital-dashboard-admissions-by-species-disposition>
+    ></hospital-dashboard-admissions-by-species-survival>
+  </section>
+
+  <section>
+    <h3>Early vs late mortality</h3>
+    <hospital-dashboard-admissions-by-species-early-late-mortality
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-admissions-by-species-early-late-mortality>
   </section>
 </div>
 } }

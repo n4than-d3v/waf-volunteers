@@ -9,7 +9,4 @@ public class PatientNoteAttachment : Entity
 
     public string FileName { get; set; }
     public string ContentType { get; set; }
-
-    [JsonIgnore]
-    public byte[] Data { get; set; }
 }

@@ -70,12 +70,13 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     if (!this.search) return true;
     const term = this.search.toUpperCase().replaceAll(' ', '');
     const fullName = profile.firstName + profile.lastName;
+    const usernameMatch = profile.username.toUpperCase().includes(term);
     const nameMatch = fullName.toUpperCase().includes(term);
     const carMatch =
       profile.cars &&
       profile.cars.find((car) =>
         car.toUpperCase().replaceAll(' ', '').includes(term),
       );
-    return nameMatch || carMatch;
+    return usernameMatch || nameMatch || carMatch;
   }
 }

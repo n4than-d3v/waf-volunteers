@@ -59,7 +59,13 @@
         />
       </div>
       <div class="buttons">
-        <button class="button button--primary" (click)="submit()">Login</button>
+        <button
+          class="button button--primary"
+          (click)="submit()"
+          [disabled]="!form.valid"
+        >
+          Login
+        </button>
         <a [routerLink]="'/forgot-password'" class="button button--secondary">
           Forgot password
         </a>

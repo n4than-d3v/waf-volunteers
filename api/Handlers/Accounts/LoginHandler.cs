@@ -37,8 +37,8 @@ public class LoginHandler : IRequestHandler<Login, IResult>
     {
         try
         {
-            var username = request.Username.ToLowerInvariant();
-            var user = await _repository.Get<Account>(x => x.Username == username, tracking: false);
+            var username = request.Username.ToLowerInvariant().Trim();
+            var user = await _repository.Get<Account>(x => x.Username == username);
             if (user == null)
             {
                 var reference = await RecordFailure(request, LoginFailureBreakpoint.NoUserWithUsername);
@@ -57,6 +57,9 @@ public class LoginHandler : IRequestHandler<Login, IResult>
                 var reference = await RecordFailure(request, LoginFailureBreakpoint.StatusIsNotActive);
                 return Results.BadRequest(new { reference });
             }
+
+            user.SetLastLoggedIn(DateTime.UtcNow);
+            await _repository.SaveChangesAsync();
 
             var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
             var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
@@ -77,12 +80,13 @@ public class LoginHandler : IRequestHandler<Login, IResult>
     {
         var salt = _encryptionService.GenerateSalt();
         var reference = GenerateLoginFailureReference();
+        var username = request.Username.ToLowerInvariant().Trim();
         var passwordHash = _hashService.Hash(request.Password);
 
         _repository.Create(new LoginFailure
         {
             Reference = reference,
-            Username = _encryptionService.Encrypt(request.Username, salt),
+            Username = _encryptionService.Encrypt(username, salt),
             Password = _encryptionService.Encrypt(request.Password, salt),
             PasswordHash = passwordHash,
             Breakpoint = breakpoint,

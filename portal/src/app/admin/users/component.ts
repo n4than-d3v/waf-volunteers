@@ -8,7 +8,7 @@ import {
   selectProfilesError,
   selectProfilesLoading,
 } from './selectors';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { getUsers, runBeaconSync } from './actions';
 import { AdminUsersRoleComponent } from './roles.component';
 import { AdminUsersStatusComponent } from './status.component';
@@ -22,6 +22,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./component.scss'],
   imports: [
     AsyncPipe,
+    DatePipe,
     RouterLink,
     AdminUsersRoleComponent,
     AdminUsersStatusComponent,
@@ -73,7 +74,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     const carMatch =
       profile.cars &&
       profile.cars.find((car) =>
-        car.toUpperCase().replaceAll(' ', '').includes(term)
+        car.toUpperCase().replaceAll(' ', '').includes(term),
       );
     return nameMatch || carMatch;
   }

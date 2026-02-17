@@ -46,6 +46,7 @@
     <tr>
       <th>Login</th>
       <th>Full name</th>
+      <th>Last login</th>
       <th>Notifications</th>
       <th>Roles</th>
       <th>Status</th>
@@ -57,6 +58,7 @@
     <tr>
       <td>{{ user.username }}</td>
       <td>{{ user.firstName }} {{ user.lastName }}</td>
+      <td>{{ user.lastLoggedIn | date: 'dd MMM yyyy HH:mm'}}</td>
       <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
       <!--
       <td>

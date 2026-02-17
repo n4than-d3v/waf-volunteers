@@ -14,6 +14,7 @@ export interface ProfileSummary {
   username: string;
   firstName: string;
   lastName: string;
+  lastLoggedIn: string | null;
   email: string;
   cars?: string[];
   subscribed?: boolean;

@@ -58,6 +58,10 @@ h2 {
     button {
       flex: 1;
     }
+
+    button[disabled] {
+      filter: contrast(0.5);
+    }
   }
 }
 

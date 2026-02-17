@@ -59,6 +59,8 @@ export class LoginComponent implements OnInit {
   }
 
   submit() {
+    if (!this.form.valid) return;
+
     this.store.dispatch(
       login({
         username: this.form.controls.username.value,

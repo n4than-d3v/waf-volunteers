@@ -5,13 +5,17 @@ export const selectLoginState = createFeatureSelector<LoginState>('login');
 
 export const selectLoginToken = createSelector(
   selectLoginState,
-  (state) => state.token
+  (state) => state.token,
 );
 export const selectLoginLoading = createSelector(
   selectLoginState,
-  (state) => state.loading
+  (state) => state.loading,
 );
 export const selectLoginError = createSelector(
   selectLoginState,
-  (state) => state.error
+  (state) => state.error,
+);
+export const selectLoginErrorMessage = createSelector(
+  selectLoginState,
+  (state) => state.errorMessage,
 );

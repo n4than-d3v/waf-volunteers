@@ -69,7 +69,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
         catch (Exception e)
         {
             var reference = await RecordFailure(request, LoginFailureBreakpoint.UnhandledError, e);
-            return Results.BadRequest();
+            return Results.BadRequest(new { reference });
         }
     }
 

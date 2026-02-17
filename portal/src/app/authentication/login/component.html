@@ -7,7 +7,11 @@
     @if (loading$ | async) {
     <spinner></spinner>
     } @if (error$ | async) {
-    <div class="error">Login failed</div>
+    <div class="error">
+      Login failed @if (errorMessage$ | async; as errorMessage) {
+      <span class="error-code">Error code: {{ errorMessage }}</span>
+      }
+    </div>
     } @if (!isPwa) {
     <div class="error center">
       <p>

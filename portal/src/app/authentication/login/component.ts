@@ -2,7 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { selectLoginError, selectLoginLoading } from './selectors';
+import {
+  selectLoginError,
+  selectLoginErrorMessage,
+  selectLoginLoading,
+} from './selectors';
 import { checkIfAlreadyLoggedIn, login } from './actions';
 import {
   FormControl,
@@ -25,6 +29,7 @@ export class LoginComponent implements OnInit {
 
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
+  errorMessage$: Observable<string | null>;
 
   form = new FormGroup({
     username: new FormControl('', {
@@ -41,6 +46,7 @@ export class LoginComponent implements OnInit {
   constructor(private store: Store) {
     this.loading$ = this.store.select(selectLoginLoading);
     this.error$ = this.store.select(selectLoginError);
+    this.errorMessage$ = this.store.select(selectLoginErrorMessage);
   }
 
   ngOnInit() {
@@ -57,7 +63,7 @@ export class LoginComponent implements OnInit {
       login({
         username: this.form.controls.username.value,
         password: this.form.controls.password.value,
-      })
+      }),
     );
   }
 }

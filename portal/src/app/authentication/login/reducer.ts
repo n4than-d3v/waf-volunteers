@@ -8,5 +8,10 @@ export const loginReducer = createReducer<LoginState>(
   on(loginSuccess, (state, { token }) => {
     return { ...state, token, loading: false };
   }),
-  on(loginFailure, (state, _) => ({ ...state, loading: false, error: true }))
+  on(loginFailure, (state, { reference }) => ({
+    ...state,
+    loading: false,
+    error: true,
+    errorMessage: reference,
+  })),
 );

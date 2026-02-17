@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { checkIfAlreadyLoggedIn, login } from './actions';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { loginSuccess, loginFailure } from './actions';
@@ -26,10 +26,17 @@ export class LoginEffects {
           })
           .pipe(
             map((response: any) => loginSuccess({ token: response.token })),
-            catchError((_) => of(loginFailure()))
-          )
-      )
-    )
+            catchError((error: HttpErrorResponse) => {
+              console.log(error);
+              if (error.status === 400) {
+                return of(loginFailure({ reference: error.error.reference }));
+              }
+
+              return of(loginFailure({ reference: 'NETCON' }));
+            }),
+          ),
+      ),
+    ),
   );
 
   loginSuccess$ = createEffect(
@@ -49,9 +56,9 @@ export class LoginEffects {
           } else {
             this.router.navigateByUrl('/volunteer/dashboard');
           }
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   checkIfAlreadyLoggedIn$ = createEffect(() =>
@@ -62,7 +69,7 @@ export class LoginEffects {
           return of(loginSuccess({ token: this.tokenProvider.getToken()! }));
         }
         return of();
-      })
-    )
+      }),
+    ),
   );
 }

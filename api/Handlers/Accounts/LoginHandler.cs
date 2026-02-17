@@ -5,10 +5,12 @@ using Api.Database.Entities.Account;
 using Api.Services;
 using MediatR;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using UAParser;
 
 namespace Api.Handlers.Accounts;
 
@@ -20,13 +22,15 @@ public class Login : IRequest<IResult>
 
 public class LoginHandler : IRequestHandler<Login, IResult>
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
     private readonly IHashService _hashService;
     private readonly JwtSettings _settings;
 
-    public LoginHandler(IOptions<JwtSettings> settings, IDatabaseRepository repository, IEncryptionService encryptionService, IHashService hashService)
+    public LoginHandler(IOptions<JwtSettings> settings, IHttpContextAccessor httpContextAccessor, IDatabaseRepository repository, IEncryptionService encryptionService, IHashService hashService)
     {
+        _httpContextAccessor = httpContextAccessor;
         _repository = repository;
         _encryptionService = encryptionService;
         _hashService = hashService;
@@ -58,7 +62,8 @@ public class LoginHandler : IRequestHandler<Login, IResult>
                 return Results.BadRequest(new { reference });
             }
 
-            user.SetLastLoggedIn(DateTime.UtcNow);
+            var userAgent = GetUserAgent();
+            user.Login(_encryptionService.Encrypt(userAgent, user.Salt));
             await _repository.SaveChangesAsync();
 
             var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
@@ -75,6 +80,64 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             return Results.BadRequest(new { reference });
         }
     }
+
+    private string GetUserAgent()
+    {
+        try
+        {
+            var context = _httpContextAccessor.HttpContext;
+            if (context == null)
+                return string.Empty;
+
+            if (!context.Request.Headers.TryGetValue("User-Agent", out var userAgent))
+                return string.Empty;
+
+            var parser = Parser.GetDefault();
+            var client = parser.Parse(userAgent.ToString());
+
+            // ---- Device ----
+            string device = client.Device.Family;
+
+            if (string.IsNullOrWhiteSpace(device) || device == "Other")
+            {
+                var osFamily = client.OS.Family ?? string.Empty;
+
+                if (osFamily.Contains("Windows", StringComparison.OrdinalIgnoreCase) ||
+                    osFamily.Contains("Mac", StringComparison.OrdinalIgnoreCase) ||
+                    osFamily.Contains("Linux", StringComparison.OrdinalIgnoreCase))
+                {
+                    device = "Desktop";
+                }
+                else
+                {
+                    device = "Unknown Device";
+                }
+            }
+
+            // ---- Browser ----
+            string browser = client.UA.Family ?? "Unknown Browser";
+            string browserVersion = client.UA.Major;
+
+            string browserFormatted = string.IsNullOrWhiteSpace(browserVersion)
+                ? browser
+                : $"{browser} {browserVersion}";
+
+            // ---- OS ----
+            string os = client.OS.Family ?? "Unknown OS";
+            string osVersion = client.OS.Major;
+
+            string osFormatted = string.IsNullOrWhiteSpace(osVersion)
+                ? os
+                : $"{os} {osVersion}";
+
+            return $"{device}, {browserFormatted}, {osFormatted}";
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
 
     private async Task<string> RecordFailure(Login request, LoginFailureBreakpoint breakpoint, Exception? exception = null)
     {

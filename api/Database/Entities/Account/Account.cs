@@ -12,6 +12,7 @@ public class Account : Entity
     public AccountStatus Status { get; private set; }
     public AccountRoles Roles { get; private set; }
     public DateTime? LastLoggedIn { get; private set; }
+    public string? UserAgent { get; private set; }
 
     #endregion
 
@@ -36,13 +37,14 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateTime? lastLoggedIn, string firstName, string lastName, string email, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
         Status = status;
         Roles = roles;
         LastLoggedIn = lastLoggedIn;
+        UserAgent = userAgent;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
@@ -53,13 +55,14 @@ public class Account : Entity
         Salt = salt;
     }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateTime? lastLoggedIn, string firstName, string lastName, string email, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
         Status = status;
         Roles = roles;
         LastLoggedIn = lastLoggedIn;
+        UserAgent = userAgent;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
@@ -116,9 +119,10 @@ public class Account : Entity
         Status = status;
     }
 
-    public void SetLastLoggedIn(DateTime date)
+    public void Login(string userAgent)
     {
-        LastLoggedIn = date;
+        LastLoggedIn = DateTime.UtcNow;
+        UserAgent = userAgent;
     }
 
     #endregion

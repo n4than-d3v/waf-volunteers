@@ -48,6 +48,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             AccountStatus.Active,
             request.Roles,
             lastLoggedIn: null,
+            userAgent: null,
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Email ?? string.Empty, salt),

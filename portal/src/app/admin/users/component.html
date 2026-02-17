@@ -46,10 +46,11 @@
     <tr>
       <th>Login</th>
       <th>Full name</th>
-      <th>Last login</th>
+      <th>Most recent login</th>
+      <th>Most recent device</th>
       <th>Notifications</th>
-      <th>Roles</th>
       <th>Status</th>
+      <th>Roles</th>
       <th></th>
     </tr>
   </thead>
@@ -59,17 +60,13 @@
       <td>{{ user.username }}</td>
       <td>{{ user.firstName }} {{ user.lastName }}</td>
       <td>{{ user.lastLoggedIn | date: 'dd MMM yyyy HH:mm'}}</td>
+      <td>{{ user.userAgent }}</td>
       <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
-      <!--
-      <td>
-        <admin-users-address [address]="user.address" />
-      </td>
-      -->
-      <td>
-        <admin-users-role [roles]="user.roles" />
-      </td>
       <td>
         <admin-users-status [status]="user.status" />
+      </td>
+      <td>
+        <admin-users-role [roles]="user.roles" />
       </td>
       <td>
         <a [routerLink]="'./' + user.id + '/update-info'">Details</a>

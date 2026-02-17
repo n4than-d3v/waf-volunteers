@@ -22,6 +22,7 @@ public class DatabaseContext : DbContext
 {
     // Account management
     public DbSet<Account> Accounts { get; set; }
+    public DbSet<LoginFailure> LoginFailures { get; set; }
     public DbSet<ResetPasswordRequest> ResetPasswordRequests { get; set; }
 
     // Rota management

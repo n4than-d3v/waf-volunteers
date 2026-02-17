@@ -35,21 +35,75 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 
     public async Task<IResult> Handle(Login request, CancellationToken cancellationToken)
     {
-        var username = request.Username.ToLowerInvariant();
-        var user = await _repository.Get<Account>(x => x.Username == username);
-        if (user == null) return Results.BadRequest();
+        try
+        {
+            var username = request.Username.ToLowerInvariant();
+            var user = await _repository.Get<Account>(x => x.Username == username, tracking: false);
+            if (user == null)
+            {
+                var reference = await RecordFailure(request, LoginFailureBreakpoint.NoUserWithUsername);
+                return Results.BadRequest(new { reference });
+            }
 
-        var password = _hashService.Hash(request.Password);
-        if (user.Password != password) return Results.BadRequest();
-        if (user.Status != AccountStatus.Active) return Results.BadRequest();
+            var password = _hashService.Hash(request.Password);
+            if (user.Password != password)
+            {
+                var reference = await RecordFailure(request, LoginFailureBreakpoint.PasswordDoesNotMatch);
+                return Results.BadRequest(new { reference });
+            }
 
-        var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
-        var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
-        var email = _encryptionService.Decrypt(user.Email, user.Salt);
+            if (user.Status != AccountStatus.Active)
+            {
+                var reference = await RecordFailure(request, LoginFailureBreakpoint.StatusIsNotActive);
+                return Results.BadRequest(new { reference });
+            }
 
-        var token = GenerateToken(user.Id, firstName, lastName, email, (int)user.Roles);
+            var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
+            var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
+            var email = _encryptionService.Decrypt(user.Email, user.Salt);
 
-        return Results.Ok(new { token });
+            var token = GenerateToken(user.Id, firstName, lastName, email, (int)user.Roles);
+
+            return Results.Ok(new { token });
+        }
+        catch (Exception e)
+        {
+            var reference = await RecordFailure(request, LoginFailureBreakpoint.UnhandledError, e);
+            return Results.BadRequest();
+        }
+    }
+
+    private async Task<string> RecordFailure(Login request, LoginFailureBreakpoint breakpoint, Exception? exception = null)
+    {
+        var salt = _encryptionService.GenerateSalt();
+        var reference = GenerateLoginFailureReference();
+        var passwordHash = _hashService.Hash(request.Password);
+
+        _repository.Create(new LoginFailure
+        {
+            Reference = reference,
+            Username = _encryptionService.Encrypt(request.Username, salt),
+            Password = _encryptionService.Encrypt(request.Password, salt),
+            PasswordHash = passwordHash,
+            Breakpoint = breakpoint,
+            Exception = exception != null ? $"{exception.Message} - {exception.StackTrace}" : null,
+            Salt = salt
+        });
+
+        await _repository.SaveChangesAsync();
+
+        return reference;
+    }
+
+    private string GenerateLoginFailureReference()
+    {
+        const string chars = "BCDFGHJKLMNPQRSTVWXYZ";
+        var random = new Random();
+
+        return new string(Enumerable
+            .Repeat(chars, 6)
+            .Select(s => s[random.Next(s.Length)])
+            .ToArray());
     }
 
     private string GenerateToken(int userId, string firstName, string lastName, string email, int roles)

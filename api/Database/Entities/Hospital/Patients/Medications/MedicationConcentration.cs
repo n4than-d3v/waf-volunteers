@@ -8,6 +8,8 @@ public class MedicationConcentration : Entity
     public Medication Medication { get; set; }
 
     public string Form { get; set; }
-    public double ConcentrationMgMl { get; set; }
+    public double ConcentrationValue { get; set; }
+    public string ConcentrationUnit { get; set; }
+    public string DefaultUnit { get; set; }
     public List<MedicationConcentrationSpeciesDose> SpeciesDoses { get; set; }
 }

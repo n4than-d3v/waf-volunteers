@@ -25,12 +25,14 @@ public class ManageMedicationHandler : IRequestHandler<ManageMedication, IResult
 
     public async Task<IResult> Handle(ManageMedication request, CancellationToken cancellationToken)
     {
+        var brands = (request.Brands ?? []).Select(x => x.Trim()).ToArray();
+
         if (request.Id == null)
         {
             var medication = new Medication
             {
                 ActiveSubstance = request.ActiveSubstance,
-                Brands = request.Brands,
+                Brands = brands,
                 Notes = request.Notes
             };
 
@@ -48,7 +50,7 @@ public class ManageMedicationHandler : IRequestHandler<ManageMedication, IResult
             else
             {
                 medication.ActiveSubstance = request.ActiveSubstance;
-                medication.Brands = request.Brands;
+                medication.Brands = brands;
                 medication.Notes = request.Notes;
             }
         }

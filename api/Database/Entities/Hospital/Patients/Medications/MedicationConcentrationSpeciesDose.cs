@@ -11,10 +11,10 @@ public class MedicationConcentrationSpeciesDose : Entity
     // or
     public SpeciesType? SpeciesType { get; set; }
 
-    public double DoseMgKgRangeStart { get; set; }
-    public double DoseMgKgRangeEnd { get; set; }
-    public double DoseMlKgRangeStart { get; set; }
-    public double DoseMlKgRangeEnd { get; set; }
+    public double ConcentrationDoseRangeStart { get; set; }
+    public double ConcentrationDoseRangeEnd { get; set; }
+    public double DefaultDoseRangeStart { get; set; }
+    public double DefaultDoseRangeEnd { get; set; }
     public AdministrationMethod? AdministrationMethod { get; set; }
     public string? Frequency { get; set; }
     public string Notes { get; set; }

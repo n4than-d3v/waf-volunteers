@@ -54,15 +54,28 @@
       <input id="form" type="text" formControlName="form" />
     </div>
     <div class="field">
-      <label for="concentrationMgMl">
-        Concentration (mg/ml)
+      <label for="concentrationValue">
+        Concentration
         <span class="required">*</span>
       </label>
-      <input
-        id="concentrationMgMl"
-        type="number"
-        formControlName="concentrationMgMl"
-      />
+      <div class="concentration-unit">
+        <input
+          id="concentrationValue"
+          type="number"
+          formControlName="concentrationValue"
+        />
+        <span>mg/</span>
+        <select id="defaultUnit" formControlName="defaultUnit">
+          <option>ml</option>
+          <option>cc</option>
+          <option>mg</option>
+          <option>g</option>
+          <option>drop</option>
+          <option>tab</option>
+          <option>cap</option>
+          <option>IU</option>
+        </select>
+      </div>
     </div>
     <div class="buttons">
       <button
@@ -119,50 +132,52 @@
     <p class="range-header">Dose (mg/kg)</p>
     <div class="range">
       <div class="field">
-        <label for="doseMgKgRangeStart">
+        <label for="concentrationDoseRangeStart">
           Start
           <span class="required">*</span></label
         >
         <input
-          id="doseMgKgRangeStart"
+          id="concentrationDoseRangeStart"
           type="number"
-          formControlName="doseMgKgRangeStart"
+          formControlName="concentrationDoseRangeStart"
         />
       </div>
       <div class="field">
-        <label for="doseMgKgRangeEnd">
+        <label for="concentrationDoseRangeEnd">
           End
           <span class="required">*</span></label
         >
         <input
-          id="doseMgKgRangeEnd"
+          id="concentrationDoseRangeEnd"
           type="number"
-          formControlName="doseMgKgRangeEnd"
+          formControlName="concentrationDoseRangeEnd"
         />
       </div>
     </div>
-    <p class="range-header">Dose (ml/kg)</p>
+    <p class="range-header">
+      Dose ({{ addMedicationConcentrationSpeciesDose.concentrationUnit }}/kg)
+    </p>
     <div class="range">
       <div class="field">
-        <label for="doseMlKgRangeStart">
+        <label for="defaultDoseRangeStart">
           Start
           <span class="required">*</span></label
         >
         <input
-          id="doseMlKgRangeStart"
+          id="defaultDoseRangeStart"
           type="number"
-          formControlName="doseMlKgRangeStart"
+          formControlName="defaultDoseRangeStart"
         />
       </div>
       <div class="field">
-        <label for="doseMlKgRangeEnd">
+        <label for="defaultDoseRangeEnd">
           End
           <span class="required">*</span></label
         >
         <input
-          id="doseMlKgRangeEnd"
+          id="defaultDoseRangeEnd"
           type="number"
-          formControlName="doseMlKgRangeEnd"
+          formControlName="defaultDoseRangeEnd"
         />
       </div>
     </div>
@@ -224,7 +239,10 @@ medication.id) {
   <div class="concentration">
     <h4>
       {{ concentration.form }}
-      <span>{{ concentration.concentrationMgMl }} mg/ml</span>
+      <span
+        >{{ concentration.concentrationValue }} {{
+        concentration.concentrationUnit }}</span
+      >
       <button
         (click)="prepareEditMedicationConcentration(medication, concentration)"
         class="button button--secondary"
@@ -243,7 +261,7 @@ medication.id) {
         <tr>
           <th>Species</th>
           <th>Dose (mg/kg)</th>
-          <th>Dose (ml/kg)</th>
+          <th>Dose ({{ concentration.defaultUnit }}/kg)</th>
           <th>Method</th>
           <th>Frequency</th>
           <th>Notes</th>
@@ -266,14 +284,16 @@ medication.id) {
             @if (!last) {<span>, </span>} }
           </td>
           <td>
-            @if (dose.doseMgKgRangeStart === dose.doseMgKgRangeEnd) { {{
-            dose.doseMgKgRangeStart }} } @else { {{ dose.doseMgKgRangeStart }} -
-            {{ dose.doseMgKgRangeEnd }} }
+            @if (dose.concentrationDoseRangeStart ===
+            dose.concentrationDoseRangeEnd) { {{
+            dose.concentrationDoseRangeStart }} } @else { {{
+            dose.concentrationDoseRangeStart }} - {{
+            dose.concentrationDoseRangeEnd }} }
           </td>
           <td>
-            @if (dose.doseMlKgRangeStart === dose.doseMlKgRangeEnd) { {{
-            dose.doseMlKgRangeStart }} } @else { {{ dose.doseMlKgRangeStart }} -
-            {{ dose.doseMlKgRangeEnd }} }
+            @if (dose.defaultDoseRangeStart === dose.defaultDoseRangeEnd) { {{
+            dose.defaultDoseRangeStart }} } @else { {{
+            dose.defaultDoseRangeStart }} - {{ dose.defaultDoseRangeEnd }} }
           </td>
           @if (dose.administrationMethod) {
           <td>

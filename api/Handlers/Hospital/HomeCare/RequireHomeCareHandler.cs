@@ -3,6 +3,7 @@ using Api.Database;
 using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.HomeCare;
+using Api.Handlers.Hospital.Patients;
 using Api.Services;
 using MediatR;
 using Newtonsoft.Json;
@@ -39,7 +40,8 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
 
     public async Task<IResult> Handle(RequireHomeCare request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId);
+        var patient = await _repository.Get<Patient>(request.PatientId,
+            action: x => x.IncludeBasicDetails());
         if (patient == null) return Results.BadRequest();
 
         var requester = await _repository.Get<Account>(_userContext.Id);
@@ -58,7 +60,7 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
         _repository.Create(homeCareRequest);
         await _repository.SaveChangesAsync();
 
-        string species = patient.Species?.Name ?? patient.SuspectedSpecies?.Description ?? "Unknown";
+        string species = patient.SpeciesVariant?.FriendlyName ?? patient.SuspectedSpecies?.Description ?? "Unknown";
         var accounts = await _repository.GetAll<Account>(x => x.Status == AccountStatus.Active, tracking: false);
 
         foreach (var account in accounts)

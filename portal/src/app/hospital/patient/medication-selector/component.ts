@@ -25,6 +25,7 @@ import {
   AdministrationMethod,
   getWeightUnit,
   Medication,
+  MedicationConcentration,
   MedicationConcentrationSpeciesDose,
   ReadOnlyWrapper,
   Species,
@@ -146,7 +147,7 @@ export class HospitalPatientMedicationSelectorComponent
     for (const dose of medicationConcentration.speciesDoses) {
       if (!dose.species) continue;
       if (dose.species.id === species.id) {
-        this.updateDoseDefaults(dose, update);
+        this.updateDoseDefaults(medicationConcentration, dose, update);
       }
     }
     if (this.defaultDoseKey) return;
@@ -154,16 +155,16 @@ export class HospitalPatientMedicationSelectorComponent
     for (const dose of medicationConcentration.speciesDoses) {
       if (!dose.speciesType) continue;
       if (dose.speciesType === species.speciesType) {
-        this.updateDoseDefaults(dose, update);
+        this.updateDoseDefaults(medicationConcentration, dose, update);
       }
     }
   }
 
   updateRange() {
     const weight = this.getWeightKg();
-    const doseMlKg = Number(this.formGroup.value.rangeSelection);
+    const defaultDose = Number(this.formGroup.value.rangeSelection);
     this.formGroup.controls['quantityValue'].setValue(
-      Math.round(doseMlKg * weight * 100) / 100,
+      Math.round(defaultDose * weight * 100) / 100,
     );
   }
 
@@ -177,6 +178,7 @@ export class HospitalPatientMedicationSelectorComponent
   }
 
   private updateDoseDefaults(
+    concentration: MedicationConcentration,
     dose: MedicationConcentrationSpeciesDose,
     update: boolean = true,
   ) {
@@ -188,11 +190,13 @@ export class HospitalPatientMedicationSelectorComponent
     this.formGroup.controls['administrationMethodId'].setValue(
       dose.administrationMethod.id,
     );
-    this.formGroup.controls['rangeSelection'].setValue(dose.doseMlKgRangeEnd);
-    this.formGroup.controls['quantityValue'].setValue(
-      Math.round(dose.doseMlKgRangeEnd * weight * 100) / 100,
+    this.formGroup.controls['rangeSelection'].setValue(
+      dose.defaultDoseRangeEnd,
     );
-    this.formGroup.controls['quantityUnit'].setValue('ml');
+    this.formGroup.controls['quantityValue'].setValue(
+      Math.round(dose.defaultDoseRangeEnd * weight * 100) / 100,
+    );
+    this.formGroup.controls['quantityUnit'].setValue(concentration.defaultUnit);
     if (this.formGroup.controls['frequency']) {
       this.formGroup.controls['frequency'].setValue(dose.frequency);
       if (dose.frequency === 'One time') {
@@ -245,10 +249,10 @@ export class HospitalPatientMedicationSelectorComponent
 
   private getGroupKey(item: MedicationConcentrationSpeciesDose): string {
     return [
-      item.doseMgKgRangeStart,
-      item.doseMgKgRangeEnd,
-      item.doseMlKgRangeStart,
-      item.doseMlKgRangeEnd,
+      item.concentrationDoseRangeStart,
+      item.concentrationDoseRangeEnd,
+      item.defaultDoseRangeStart,
+      item.defaultDoseRangeEnd,
       item.administrationMethod.code,
       item.frequency,
       item.notes,
@@ -268,10 +272,10 @@ export class HospitalPatientMedicationSelectorComponent
           key,
           species: [],
           isDefault: false,
-          doseMgKgRangeStart: item.doseMgKgRangeStart,
-          doseMgKgRangeEnd: item.doseMgKgRangeEnd,
-          doseMlKgRangeStart: item.doseMlKgRangeStart,
-          doseMlKgRangeEnd: item.doseMlKgRangeEnd,
+          concentrationDoseRangeStart: item.concentrationDoseRangeStart,
+          concentrationDoseRangeEnd: item.concentrationDoseRangeEnd,
+          defaultDoseRangeStart: item.defaultDoseRangeStart,
+          defaultDoseRangeEnd: item.defaultDoseRangeEnd,
           administrationMethod: item.administrationMethod,
           frequency: item.frequency,
           notes: item.notes,
@@ -310,10 +314,10 @@ interface MedicationConcentrationSpeciesDoses {
   key: string;
   species: { name: string; highlight: boolean }[];
   isDefault: boolean;
-  doseMgKgRangeStart: number;
-  doseMgKgRangeEnd: number;
-  doseMlKgRangeStart: number;
-  doseMlKgRangeEnd: number;
+  concentrationDoseRangeStart: number;
+  concentrationDoseRangeEnd: number;
+  defaultDoseRangeStart: number;
+  defaultDoseRangeEnd: number;
   administrationMethod: AdministrationMethod;
   frequency: string;
   notes: string;

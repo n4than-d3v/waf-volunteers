@@ -45,6 +45,8 @@ public class AddPatientNoteHandler : IRequestHandler<AddPatientNote, IResult>
         var author = await _repository.Get<Account>(_userContext.Id);
         if (author == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var note = new PatientNote
         {
             Noter = author,

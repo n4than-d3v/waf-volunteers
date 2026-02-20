@@ -61,6 +61,7 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         patient.Dispositioner = dispositioner;
         patient.DispositionReasons = dispositionReasons;
         patient.Status = PatientStatus.Dispositioned;
+        patient.LastUpdatedDetails = DateTime.UtcNow;
 
         bool before24Hrs = patient.Dispositioned <= patient.Admitted.AddHours(24);
 

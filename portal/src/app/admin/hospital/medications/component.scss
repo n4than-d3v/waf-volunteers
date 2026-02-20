@@ -16,6 +16,21 @@ p + .button--primary {
   margin: 0.5rem 0rem;
 }
 
+.concentration-unit {
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 6rem;
+    margin-right: 0.5rem;
+  }
+
+  select {
+    width: 6rem;
+    margin-left: 0.125rem;
+  }
+}
+
 .range-header {
   margin-top: 1rem;
   margin-bottom: 0rem;

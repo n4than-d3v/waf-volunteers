@@ -545,7 +545,7 @@ export class HospitalEffects {
                     patientId: action.exam.patientId,
                   }),
                 );
-              } else if (action.outcome === 'alive') {
+              } else if (action.outcome === 'alive' && action.penId) {
                 actions.push(
                   movePatient({
                     patientId: action.exam.patientId,
@@ -553,7 +553,7 @@ export class HospitalEffects {
                     newAreaId: null,
                   }),
                 );
-              } else if (action.outcome === 'none') {
+              } else {
                 actions.push(
                   getPatient({
                     id: action.exam.patientId,

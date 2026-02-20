@@ -34,6 +34,7 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
         var patient = await _repository.Get<Patient>(request.PatientId);
         if (patient == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.Status = PatientStatus.Inpatient;
         patient.Disposition = null;
         patient.Dispositioner = null;

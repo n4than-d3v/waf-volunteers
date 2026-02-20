@@ -50,6 +50,8 @@ public class AddMedicationPrescriptionHandler : IRequestHandler<AddMedicationPre
         var administrationMethod = await _repository.Get<AdministrationMethod>(request.AdministrationMethodId);
         if (administrationMethod == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var prescription = new PatientPrescriptionMedication
         {
             Patient = patient,

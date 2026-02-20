@@ -3,6 +3,7 @@ using System;
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260220205709_SpeciesVariantLongTerm")]
+    partial class SpeciesVariantLongTerm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -875,16 +878,8 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ConcentrationUnit")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<double>("ConcentrationValue")
+                    b.Property<double>("ConcentrationMgMl")
                         .HasColumnType("double precision");
-
-                    b.Property<string>("DefaultUnit")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Form")
                         .IsRequired()
@@ -911,16 +906,16 @@ namespace Api.Migrations
                     b.Property<int?>("AdministrationMethodId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ConcentrationDoseRangeEnd")
+                    b.Property<double>("DoseMgKgRangeEnd")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("ConcentrationDoseRangeStart")
+                    b.Property<double>("DoseMgKgRangeStart")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("DefaultDoseRangeEnd")
+                    b.Property<double>("DoseMlKgRangeEnd")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("DefaultDoseRangeStart")
+                    b.Property<double>("DoseMlKgRangeStart")
                         .HasColumnType("double precision");
 
                     b.Property<string>("Frequency")

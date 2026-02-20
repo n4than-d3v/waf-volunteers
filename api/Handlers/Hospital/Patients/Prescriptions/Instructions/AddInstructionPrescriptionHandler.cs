@@ -35,6 +35,8 @@ public class AddInstructionPrescriptionHandler : IRequestHandler<AddInstructionP
         var patient = await _repository.Get<Patient>(request.PatientId);
         if (patient == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var prescription = new PatientPrescriptionInstruction
         {
             Patient = patient,

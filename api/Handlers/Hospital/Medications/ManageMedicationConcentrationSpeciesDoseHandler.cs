@@ -15,10 +15,10 @@ public class ManageMedicationConcentrationSpeciesDose : IRequest<IResult>
     // or
     public SpeciesType? SpeciesType { get; set; }
 
-    public double DoseMgKgRangeStart { get; set; }
-    public double DoseMgKgRangeEnd { get; set; }
-    public double DoseMlKgRangeStart { get; set; }
-    public double DoseMlKgRangeEnd { get; set; }
+    public double ConcentrationDoseRangeStart { get; set; }
+    public double ConcentrationDoseRangeEnd { get; set; }
+    public double DefaultDoseRangeStart { get; set; }
+    public double DefaultDoseRangeEnd { get; set; }
     public int? AdministrationMethodId { get; set; }
     public string? Frequency { get; set; }
     public string Notes { get; set; }
@@ -58,10 +58,10 @@ public class ManageMedicationConcentrationSpeciesDoseHandler : IRequestHandler<M
             {
                 MedicationConcentration = medicationConcentration,
                 AdministrationMethod = administrationMethod,
-                DoseMgKgRangeStart = request.DoseMgKgRangeStart,
-                DoseMgKgRangeEnd = request.DoseMgKgRangeEnd,
-                DoseMlKgRangeStart = request.DoseMlKgRangeStart,
-                DoseMlKgRangeEnd = request.DoseMlKgRangeEnd,
+                ConcentrationDoseRangeStart = request.ConcentrationDoseRangeStart,
+                ConcentrationDoseRangeEnd = request.ConcentrationDoseRangeEnd,
+                DefaultDoseRangeStart = request.DefaultDoseRangeStart,
+                DefaultDoseRangeEnd = request.DefaultDoseRangeEnd,
                 Frequency = request.Frequency,
                 Notes = request.Notes,
                 Species = species,
@@ -82,10 +82,10 @@ public class ManageMedicationConcentrationSpeciesDoseHandler : IRequestHandler<M
             else
             {
                 medicationConcentrationSpeciesDose.AdministrationMethod = administrationMethod;
-                medicationConcentrationSpeciesDose.DoseMgKgRangeStart = request.DoseMgKgRangeStart;
-                medicationConcentrationSpeciesDose.DoseMgKgRangeEnd = request.DoseMgKgRangeEnd;
-                medicationConcentrationSpeciesDose.DoseMlKgRangeStart = request.DoseMlKgRangeStart;
-                medicationConcentrationSpeciesDose.DoseMlKgRangeEnd = request.DoseMlKgRangeEnd;
+                medicationConcentrationSpeciesDose.ConcentrationDoseRangeStart = request.ConcentrationDoseRangeStart;
+                medicationConcentrationSpeciesDose.ConcentrationDoseRangeEnd = request.ConcentrationDoseRangeEnd;
+                medicationConcentrationSpeciesDose.DefaultDoseRangeStart = request.DefaultDoseRangeStart;
+                medicationConcentrationSpeciesDose.DefaultDoseRangeEnd = request.DefaultDoseRangeEnd;
                 medicationConcentrationSpeciesDose.Frequency = request.Frequency;
                 medicationConcentrationSpeciesDose.Notes = request.Notes;
                 medicationConcentrationSpeciesDose.Species = species;

@@ -11,7 +11,9 @@ public class ManageMedicationConcentration : IRequest<IResult>
 
     public int MedicationId { get; set; }
     public string Form { get; set; }
-    public double ConcentrationMgMl { get; set; }
+    public double ConcentrationValue { get; set; }
+    public string ConcentrationUnit { get; set; }
+    public string DefaultUnit { get; set; }
 }
 
 public class ManageMedicationConcentrationHandler : IRequestHandler<ManageMedicationConcentration, IResult>
@@ -34,7 +36,9 @@ public class ManageMedicationConcentrationHandler : IRequestHandler<ManageMedica
             {
                 Medication = medication,
                 Form = request.Form,
-                ConcentrationMgMl = request.ConcentrationMgMl
+                ConcentrationValue = request.ConcentrationValue,
+                ConcentrationUnit = request.ConcentrationUnit,
+                DefaultUnit = request.DefaultUnit
             };
 
             _repository.Create(medicationConcentration);
@@ -51,7 +55,9 @@ public class ManageMedicationConcentrationHandler : IRequestHandler<ManageMedica
             else
             {
                 medicationConcentration.Form = request.Form;
-                medicationConcentration.ConcentrationMgMl = request.ConcentrationMgMl;
+                medicationConcentration.ConcentrationValue = request.ConcentrationValue;
+                medicationConcentration.ConcentrationUnit = request.ConcentrationUnit;
+                medicationConcentration.DefaultUnit = request.DefaultUnit;
             }
         }
 

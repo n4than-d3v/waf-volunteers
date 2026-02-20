@@ -38,6 +38,8 @@ public class AddBloodTestHandler : IRequestHandler<AddBloodTest, IResult>
         var tester = await _repository.Get<Account>(_userContext.Id);
         if (tester == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var bloodTest = new PatientBloodTest
         {
             Patient = patient,

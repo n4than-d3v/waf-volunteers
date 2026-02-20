@@ -48,6 +48,7 @@ public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransfer
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;
         patient.Status = PatientStatus.Dispositioned;
+        patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.TransferLocation = transferLocation;
 
         await _repository.SaveChangesAsync();

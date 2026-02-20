@@ -83,7 +83,8 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ prescription.medication.activeSubstance }}</td>
       <td>
         {{ prescription.medicationConcentration.form }}, {{
-        prescription.medicationConcentration.concentrationMgMl }} mg/ml
+        prescription.medicationConcentration.concentrationValue }} {{
+        prescription.medicationConcentration.concentrationUnit }}
       </td>
       <td>
         {{ prescription.administrationMethod.description }} ({{

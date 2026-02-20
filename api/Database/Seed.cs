@@ -45,7 +45,9 @@ public static class Seed
                 {
                     Medication = medication,
                     Form = form.Form,
-                    ConcentrationMgMl = form.ConcentrationMgMl,
+                    DefaultUnit = "ml",
+                    ConcentrationUnit = "mg/ml",
+                    ConcentrationValue = form.ConcentrationValue,
                     SpeciesDoses = []
                 };
                 foreach (var dose in form.Doses)
@@ -61,10 +63,10 @@ public static class Seed
                             {
                                 MedicationConcentration = concentration,
                                 SpeciesType = (SpeciesType)dose.SpeciesType,
-                                DoseMgKgRangeStart = dose.DoseMgKgRangeStart,
-                                DoseMgKgRangeEnd = dose.DoseMgKgRangeEnd,
-                                DoseMlKgRangeStart = dose.DoseMlKgRangeStart,
-                                DoseMlKgRangeEnd = dose.DoseMlKgRangeEnd,
+                                ConcentrationDoseRangeStart = dose.ConcentrationDoseRangeStart,
+                                ConcentrationDoseRangeEnd = dose.ConcentrationDoseRangeEnd,
+                                DefaultDoseRangeStart = dose.DefaultDoseRangeStart,
+                                DefaultDoseRangeEnd = dose.DefaultDoseRangeEnd,
                                 AdministrationMethod = string.IsNullOrWhiteSpace(dose.AdministrationMethod) ? null : context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
                                 Frequency = dose.Frequency,
                                 Notes = dose.Notes ?? string.Empty
@@ -82,10 +84,10 @@ public static class Seed
                                 {
                                     MedicationConcentration = concentration,
                                     Species = context.Species.Single(x => x.Name == species),
-                                    DoseMgKgRangeStart = dose.DoseMgKgRangeStart,
-                                    DoseMgKgRangeEnd = dose.DoseMgKgRangeEnd,
-                                    DoseMlKgRangeStart = dose.DoseMlKgRangeStart,
-                                    DoseMlKgRangeEnd = dose.DoseMlKgRangeEnd,
+                                    ConcentrationDoseRangeStart = dose.ConcentrationDoseRangeStart,
+                                    ConcentrationDoseRangeEnd = dose.ConcentrationDoseRangeEnd,
+                                    DefaultDoseRangeStart = dose.DefaultDoseRangeStart,
+                                    DefaultDoseRangeEnd = dose.DefaultDoseRangeEnd,
                                     AdministrationMethod = context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
                                     Frequency = dose.Frequency,
                                     Notes = dose.Notes ?? string.Empty
@@ -99,10 +101,10 @@ public static class Seed
                         {
                             MedicationConcentration = concentration,
                             Species = context.Species.Single(x => x.Name == dose.Species),
-                            DoseMgKgRangeStart = dose.DoseMgKgRangeStart,
-                            DoseMgKgRangeEnd = dose.DoseMgKgRangeEnd,
-                            DoseMlKgRangeStart = dose.DoseMlKgRangeStart,
-                            DoseMlKgRangeEnd = dose.DoseMlKgRangeEnd,
+                            ConcentrationDoseRangeStart = dose.ConcentrationDoseRangeStart,
+                            ConcentrationDoseRangeEnd = dose.ConcentrationDoseRangeEnd,
+                            DefaultDoseRangeStart = dose.DefaultDoseRangeStart,
+                            DefaultDoseRangeEnd = dose.DefaultDoseRangeEnd,
                             AdministrationMethod = string.IsNullOrWhiteSpace(dose.AdministrationMethod) ? null : context.AdministrationMethods.Single(x => x.Code == dose.AdministrationMethod),
                             Frequency = dose.Frequency,
                             Notes = dose.Notes ?? string.Empty
@@ -238,17 +240,17 @@ public static class Seed
         public class CMForm
         {
             public string Form { get; set; }
-            public double ConcentrationMgMl { get; set; }
+            public double ConcentrationValue { get; set; }
             public List<CMFSpecies> Doses { get; set; }
 
             public class CMFSpecies
             {
                 public string? Species { get; set; }
                 public MedicationSpeciesType? SpeciesType { get; set; }
-                public double DoseMgKgRangeStart { get; set; }
-                public double DoseMgKgRangeEnd { get; set; }
-                public double DoseMlKgRangeStart { get; set; }
-                public double DoseMlKgRangeEnd { get; set; }
+                public double ConcentrationDoseRangeStart { get; set; }
+                public double ConcentrationDoseRangeEnd { get; set; }
+                public double DefaultDoseRangeStart { get; set; }
+                public double DefaultDoseRangeEnd { get; set; }
                 public string? AdministrationMethod { get; set; }
                 public string? Frequency { get; set; }
                 public string Notes { get; set; }

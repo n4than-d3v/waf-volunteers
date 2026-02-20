@@ -130,6 +130,7 @@ export class HospitalPatientExamComponent implements OnInit {
     dispositionReasonIds: new FormArray<
       FormGroup<{ reason: FormControl<string | null> }>
     >([]),
+    settingPen: new FormControl(true),
     areaId: new FormControl(''),
     penId: new FormControl(''),
   });
@@ -255,8 +256,10 @@ export class HospitalPatientExamComponent implements OnInit {
           .controls.reason.clearValidators();
       }
       if (this.examForm.controls.outcome.value === 'alive') {
-        this.examForm.controls.penId.setValidators([Validators.required]);
         this.examForm.controls.dispositionReasonIds.clear();
+        if (this.examForm.controls.settingPen.value) {
+          this.examForm.controls.penId.setValidators([Validators.required]);
+        }
       } else if (
         this.examForm.controls.outcome.value === 'diedOnTable' ||
         this.examForm.controls.outcome.value === 'deadOnArrival' ||

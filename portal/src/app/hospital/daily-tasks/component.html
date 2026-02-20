@@ -129,7 +129,8 @@
   <p>
     💊 {{ administeringPrescription.medication.activeSubstance }} &middot; {{
     administeringPrescription.medicationConcentration.form }}, {{
-    administeringPrescription.medicationConcentration.concentrationMgMl }} mg/ml
+    administeringPrescription.medicationConcentration.concentrationValue }} {{
+    administeringPrescription.medicationConcentration.concentrationUnit }}
   </p>
   <p>
     💉 {{ administeringPrescription.administrationMethod.description }} ({{
@@ -221,7 +222,8 @@
   <p>
     💊 {{ administeringPrescription.medication.activeSubstance }} &middot; {{
     administeringPrescription.medicationConcentration.form }}, {{
-    administeringPrescription.medicationConcentration.concentrationMgMl }} mg/ml
+    administeringPrescription.medicationConcentration.concentrationValue }} {{
+    administeringPrescription.medicationConcentration.concentrationUnit }}
   </p>
   <p>
     💉 {{ administeringPrescription.administrationMethod.description }} ({{
@@ -498,8 +500,9 @@ administerPrescriptionTask.error) {
                   </td>
                   <td>
                     {{ prescription.medicationConcentration.form }}, {{
-                    prescription.medicationConcentration.concentrationMgMl }}
-                    mg/ml<br />
+                    prescription.medicationConcentration.concentrationValue }}
+                    {{ prescription.medicationConcentration.concentrationUnit
+                    }}<br />
                     {{ prescription.administrationMethod.description }} ({{
                     prescription.administrationMethod.code }})
                   </td>

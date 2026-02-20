@@ -53,6 +53,7 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
         }
 
         patient.Pen = pen;
+        patient.LastUpdatedDetails = DateTime.UtcNow;
 
         await _repository.SaveChangesAsync();
 

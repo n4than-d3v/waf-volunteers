@@ -48,6 +48,7 @@ public class MarkPatientReleasedHandler : IRequestHandler<MarkPatientReleased, I
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;
         patient.Status = PatientStatus.Dispositioned;
+        patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.ReleaseType = releaseType;
 
         await _repository.SaveChangesAsync();

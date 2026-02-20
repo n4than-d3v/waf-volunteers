@@ -36,9 +36,9 @@ public class Patient : Entity
     public Sex? Sex { get; set; }
     public DateTime? LastUpdatedDetails { get; set; }
     [NotMapped]
-    public bool IsLongTerm => Admitted <= DateTime.UtcNow.AddDays(-28);
+    public bool IsLongTerm => Admitted <= DateTime.UtcNow.AddDays(-(SpeciesVariant?.LongTermDays ?? 28));
     [NotMapped]
-    public bool IsOutdated => LastUpdatedDetails != null && LastUpdatedDetails <= DateTime.UtcNow.AddDays(-28);
+    public bool IsOutdated => LastUpdatedDetails != null && LastUpdatedDetails <= DateTime.UtcNow.AddDays(-7);
 
     #endregion
 

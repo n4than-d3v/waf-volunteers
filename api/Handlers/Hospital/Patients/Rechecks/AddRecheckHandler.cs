@@ -34,6 +34,8 @@ public class AddRecheckHandler : IRequestHandler<AddRecheck, IResult>
         var patient = await _repository.Get<Patient>(request.PatientId);
         if (patient == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var recheck = new PatientRecheck
         {
             Patient = patient,

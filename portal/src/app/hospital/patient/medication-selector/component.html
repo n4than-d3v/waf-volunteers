@@ -35,7 +35,8 @@
         (medication.id.toString() == formGroup.value.medicationId) { @for
         (concentration of medication.concentrations; track concentration.id) {
         <option [value]="concentration.id">
-          {{ concentration.form }}, {{ concentration.concentrationMgMl }} mg/ml
+          {{ concentration.form }}, {{ concentration.concentrationValue }} {{
+          concentration.concentrationUnit }}
         </option>
         } } }
       </select>
@@ -114,7 +115,7 @@
       <tr>
         <th>Species</th>
         <th>Dose (mg/kg)</th>
-        <th>Dose (ml/kg)</th>
+        <th>Dose ({{ concentration.defaultUnit }}/kg)</th>
         <th>Method</th>
         <th>Frequency</th>
         <th>Notes</th>
@@ -134,24 +135,25 @@
           >} } }
         </td>
         <td>
-          @if (dose.doseMgKgRangeStart === dose.doseMgKgRangeEnd) { {{
-          dose.doseMgKgRangeStart }} } @else { {{ dose.doseMgKgRangeStart }} -
-          {{ dose.doseMgKgRangeEnd }} }
+          @if (dose.concentrationDoseRangeStart ===
+          dose.concentrationDoseRangeEnd) { {{ dose.concentrationDoseRangeStart
+          }} } @else { {{ dose.concentrationDoseRangeStart }} - {{
+          dose.concentrationDoseRangeEnd }} }
         </td>
         <td>
-          @if (dose.doseMlKgRangeStart === dose.doseMlKgRangeEnd) { {{
-          dose.doseMlKgRangeStart }} } @else { {{ dose.doseMlKgRangeStart }} -
-          {{ dose.doseMlKgRangeEnd }} @if (dose.isDefault) {
+          @if (dose.defaultDoseRangeStart === dose.defaultDoseRangeEnd) { {{
+          dose.defaultDoseRangeStart }} } @else { {{ dose.defaultDoseRangeStart
+          }} - {{ dose.defaultDoseRangeEnd }} @if (dose.isDefault) {
           <div class="slider-container">
             <input
               type="range"
               id="dose-slider"
-              [min]="dose.doseMlKgRangeStart"
-              [max]="dose.doseMlKgRangeEnd"
+              [min]="dose.defaultDoseRangeStart"
+              [max]="dose.defaultDoseRangeEnd"
               [step]="0.01"
               formControlName="rangeSelection"
               (input)="updateRange()"
-              [attr.style]="'--value:' + (((formGroup.value.rangeSelection - dose.doseMlKgRangeStart) / (dose.doseMlKgRangeEnd - dose.doseMlKgRangeStart)) * 100) + '%'"
+              [attr.style]="'--value:' + (((formGroup.value.rangeSelection - dose.defaultDoseRangeStart) / (dose.defaultDoseRangeEnd - dose.defaultDoseRangeStart)) * 100) + '%'"
             />
           </div>
           {{ formGroup.value.rangeSelection }} } }

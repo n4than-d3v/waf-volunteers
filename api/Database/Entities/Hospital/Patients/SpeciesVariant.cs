@@ -11,5 +11,7 @@ public class SpeciesVariant : Entity
     public string FriendlyName { get; set; }
     public int Order { get; set; }
 
+    public int LongTermDays { get; set; }
+
     public string FeedingGuidance { get; set; }
 }

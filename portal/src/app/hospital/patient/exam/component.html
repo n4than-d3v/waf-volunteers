@@ -336,6 +336,13 @@
         <input type="radio" id="pts" formControlName="outcome" value="pts" />
       </div>
       @if (examForm.controls.outcome.value === 'alive') {
+      <div class="field house-check">
+        <input type="checkbox" id="settingPen" formControlName="settingPen" />
+        <label for="settingPen">
+          I know the pen where this patient is being housed
+        </label>
+      </div>
+      @if (examForm.controls.settingPen.value) {
       <div class="fields fields--inline">
         <div class="field">
           <label for="areaId">
@@ -378,7 +385,7 @@
           } }
         </div>
       </div>
-      } @else if (examForm.controls.outcome.value === 'diedOnTable' ||
+      } } @else if (examForm.controls.outcome.value === 'diedOnTable' ||
       examForm.controls.outcome.value === 'deadOnArrival' ||
       examForm.controls.outcome.value === 'pts') {
       <div class="fields">

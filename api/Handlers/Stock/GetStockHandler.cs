@@ -37,7 +37,8 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
         {
             Id = item.Id;
             Medication = item.Medication.ActiveSubstance;
-            MedicationConcentration = $"{item.MedicationConcentration.Form} ({item.MedicationConcentration.ConcentrationMgMl} mg/ml)";
+            var concentration = item.MedicationConcentration;
+            MedicationConcentration = $"{concentration.Form} ({concentration.ConcentrationValue} {concentration.ConcentrationUnit})";
             Brand = item.Brand;
             Measurement = item.Measurement;
             AfterOpeningLifetimeDays = item.AfterOpeningLifetimeDays;

@@ -69,6 +69,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     name: new FormControl(''),
     friendlyName: new FormControl(''),
     order: new FormControl(''),
+    longTermDays: new FormControl(''),
     feedingGuidance: new FormControl(''),
   });
 
@@ -84,7 +85,10 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  constructor(private store: Store, private sanitizer: DomSanitizer) {
+  constructor(
+    private store: Store,
+    private sanitizer: DomSanitizer,
+  ) {
     this.species$ = this.store.select(selectSpecies);
   }
 
@@ -108,7 +112,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.updatingSpeciesId = species.id;
     this.speciesForm.controls.name.setValue(species.name);
     this.speciesForm.controls.speciesType.setValue(
-      species.speciesType.toString()
+      species.speciesType.toString(),
     );
     this.editor = new Editor();
     this.previousScroll = window.scrollY;
@@ -121,11 +125,14 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.updatingSpeciesId = species.id;
     this.speciesVariantForm.controls.name.setValue(variant.name);
     this.speciesVariantForm.controls.friendlyName.setValue(
-      variant.friendlyName
+      variant.friendlyName,
     );
     this.speciesVariantForm.controls.order.setValue(variant.order.toString());
+    this.speciesVariantForm.controls.longTermDays.setValue(
+      variant.longTermDays.toString(),
+    );
     this.speciesVariantForm.controls.feedingGuidance.setValue(
-      toHTML(JSON.parse(variant.feedingGuidance))
+      toHTML(JSON.parse(variant.feedingGuidance)),
     );
     this.editor = new Editor();
     this.previousScroll = window.scrollY;
@@ -157,7 +164,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           name: this.speciesForm.controls.name.value || '',
           speciesType: Number(this.speciesForm.controls.speciesType.value),
         },
-      })
+      }),
     );
     this.cancel();
   }
@@ -174,9 +181,12 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           friendlyName:
             this.speciesVariantForm.controls.friendlyName.value || '',
           order: Number(this.speciesVariantForm.controls.order.value),
+          longTermDays: Number(
+            this.speciesVariantForm.controls.longTermDays.value,
+          ),
           feedingGuidance: JSON.stringify(jsonDoc),
         },
-      })
+      }),
     );
     const pscroll = this.previousScroll;
     setTimeout(() => {
@@ -194,7 +204,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           name: this.speciesForm.controls.name.value || '',
           speciesType: Number(this.speciesForm.controls.speciesType.value),
         },
-      })
+      }),
     );
     const pscroll = this.previousScroll;
     setTimeout(() => {
@@ -217,9 +227,12 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           friendlyName:
             this.speciesVariantForm.controls.friendlyName.value || '',
           order: Number(this.speciesVariantForm.controls.order.value),
+          longTermDays: Number(
+            this.speciesVariantForm.controls.longTermDays.value,
+          ),
           feedingGuidance: JSON.stringify(jsonDoc),
         },
-      })
+      }),
     );
     const pscroll = this.previousScroll;
     setTimeout(() => {

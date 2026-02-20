@@ -42,6 +42,8 @@ public class AddFaecalTestHandler : IRequestHandler<AddFaecalTest, IResult>
         var tester = await _repository.Get<Account>(_userContext.Id);
         if (tester == null) return Results.BadRequest();
 
+        patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var faecalTest = new PatientFaecalTest
         {
             Patient = patient,

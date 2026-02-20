@@ -39,7 +39,8 @@
         (medication.id.toString() == form.value.medicationId) { @for
         (concentration of medication.concentrations; track concentration.id) {
         <option [value]="concentration.id">
-          {{ concentration.form }}, {{ concentration.concentrationMgMl }} mg/ml
+          {{ concentration.form }}, {{ concentration.concentrationValue }} {{
+          concentration.concentrationUnit }}
         </option>
         } } }
       </select>

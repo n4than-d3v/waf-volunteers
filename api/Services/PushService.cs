@@ -58,17 +58,9 @@ public class PushService : IPushService
 
             return true;
         }
-        catch (WebPushException ex)
-        {
-            if (ex.StatusCode == HttpStatusCode.Gone || ex.StatusCode == HttpStatusCode.NotFound)
-            {
-                _inactiveSubscriptions.Add(userId);
-            }
-
-            return false;
-        }
         catch
         {
+            _inactiveSubscriptions.Add(userId);
             return false;
         }
     }

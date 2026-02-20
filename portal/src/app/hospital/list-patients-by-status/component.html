@@ -98,7 +98,17 @@
       </td>
       <td>{{ patient.species?.name }}</td>
       <td>{{ patient.speciesVariant?.name }}</td>
-      <td>{{ patient.pen?.reference }} {{ patient.uniqueIdentifier }}</td>
+      @if (patient.pen) {
+      <td>
+        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
+        }
+      </td>
+      } @else {
+      <td>
+        <span class="outdated">Homeless</span>
+      </td>
+      }
       <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
         @if (patient.isLongTerm) {
@@ -131,7 +141,17 @@
       </td>
       <td>{{ patient.species?.name }}</td>
       <td>{{ patient.speciesVariant?.name }}</td>
-      <td>{{ patient.pen?.reference }} {{ patient.uniqueIdentifier }}</td>
+      @if (patient.pen) {
+      <td>
+        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
+        }
+      </td>
+      } @else {
+      <td>
+        <span class="outdated">Homeless</span>
+      </td>
+      }
       <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
       <td>
         {{ patient.homeCareRequests[0]?.requested | date: 'dd MMM yyyy HH:mm' }}

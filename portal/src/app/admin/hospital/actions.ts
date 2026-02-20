@@ -206,7 +206,9 @@ export const upsertMedicationConcentration = createAction(
     id?: number;
     medicationId: number;
     form: string;
-    concentrationMgMl: number;
+    concentrationValue: number;
+    concentrationUnit: string;
+    defaultUnit: string;
   }>(),
 );
 export const upsertMedicationConcentrationSuccess = createAction(
@@ -223,10 +225,10 @@ export const upsertMedicationConcentrationSpeciesDose = createAction(
     medicationConcentrationId: number;
     speciesId: number | null;
     speciesType: SpeciesType | null;
-    doseMgKgRangeStart: number;
-    doseMgKgRangeEnd: number;
-    doseMlKgRangeStart: number;
-    doseMlKgRangeEnd: number;
+    concentrationDoseRangeStart: number;
+    concentrationDoseRangeEnd: number;
+    defaultDoseRangeStart: number;
+    defaultDoseRangeEnd: number;
     administrationMethodId: number;
     frequency: string;
     notes: string;

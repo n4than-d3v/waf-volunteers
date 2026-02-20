@@ -58,10 +58,11 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
   addMedication = false;
   editMedication: number | null = null;
-  addMedicationConcentration: number | null = null;
-  editMedicationConcentration: number | null = null;
-  addMedicationConcentrationSpeciesDose: number | null = null;
-  editMedicationConcentrationSpeciesDose: number | null = null;
+  addMedicationConcentration: Medication | null = null;
+  editMedicationConcentration: MedicationConcentration | null = null;
+  addMedicationConcentrationSpeciesDose: MedicationConcentration | null = null;
+  editMedicationConcentrationSpeciesDose: MedicationConcentrationSpeciesDose | null =
+    null;
 
   medicationForm = new FormGroup({
     activeSubstance: new FormControl(''),
@@ -71,17 +72,18 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
   medicationConcentrationForm = new FormGroup({
     form: new FormControl(''),
-    concentrationMgMl: new FormControl(''),
+    concentrationValue: new FormControl(''),
+    defaultUnit: new FormControl(''),
   });
 
   medicationConcentrationSpeciesDoseForm = new FormGroup({
     doseFor: new FormControl(''),
     speciesId: new FormControl(''),
     speciesType: new FormControl(''),
-    doseMgKgRangeStart: new FormControl(''),
-    doseMgKgRangeEnd: new FormControl(''),
-    doseMlKgRangeStart: new FormControl(''),
-    doseMlKgRangeEnd: new FormControl(''),
+    concentrationDoseRangeStart: new FormControl(''),
+    concentrationDoseRangeEnd: new FormControl(''),
+    defaultDoseRangeStart: new FormControl(''),
+    defaultDoseRangeEnd: new FormControl(''),
     administrationMethodId: new FormControl(''),
     frequencyType: new FormControl(''),
     frequencyX: new FormControl(''),
@@ -94,7 +96,7 @@ export class AdminHospitalMedicationsComponent implements OnInit {
     this.medications$ = this.store.select(selectMedications);
     this.species$ = this.store.select(selectSpecies);
     this.administrationMethods$ = this.store.select(
-      selectAdministrationMethods
+      selectAdministrationMethods,
     );
   }
 
@@ -139,14 +141,14 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   }
 
   prepareAddMedicationConcentration(medication: Medication) {
-    this.addMedicationConcentration = medication.id;
+    this.addMedicationConcentration = medication;
     window.scroll(0, 0);
   }
 
   prepareAddMedicationConcentrationSpeciesDose(
-    concentration: MedicationConcentration
+    concentration: MedicationConcentration,
   ) {
-    this.addMedicationConcentrationSpeciesDose = concentration.id;
+    this.addMedicationConcentrationSpeciesDose = concentration;
     window.scroll(0, 0);
   }
 
@@ -163,23 +165,24 @@ export class AdminHospitalMedicationsComponent implements OnInit {
 
   prepareEditMedicationConcentration(
     medication: Medication,
-    concentration: MedicationConcentration
+    concentration: MedicationConcentration,
   ) {
-    this.addMedicationConcentration = medication.id;
-    this.editMedicationConcentration = concentration.id;
+    this.addMedicationConcentration = medication;
+    this.editMedicationConcentration = concentration;
     this.medicationConcentrationForm.patchValue({
       form: concentration.form,
-      concentrationMgMl: concentration.concentrationMgMl.toString(),
+      concentrationValue: concentration.concentrationValue.toString(),
+      defaultUnit: concentration.defaultUnit,
     });
     window.scroll(0, 0);
   }
 
   prepareEditMedicationConcentrationSpeciesDose(
     concentration: MedicationConcentration,
-    dose: MedicationConcentrationSpeciesDose
+    dose: MedicationConcentrationSpeciesDose,
   ) {
-    this.addMedicationConcentrationSpeciesDose = concentration.id;
-    this.editMedicationConcentrationSpeciesDose = dose.id;
+    this.addMedicationConcentrationSpeciesDose = concentration;
+    this.editMedicationConcentrationSpeciesDose = dose;
     let frequencyType = '',
       frequencyX = '',
       frequencyY = '';
@@ -199,10 +202,10 @@ export class AdminHospitalMedicationsComponent implements OnInit {
       doseFor: dose.species ? 'SID' : 'STYPE',
       speciesId: dose.species ? dose.species.id.toString() : null,
       speciesType: dose.speciesType ? dose.speciesType.toString() : null,
-      doseMgKgRangeStart: dose.doseMgKgRangeStart.toString(),
-      doseMgKgRangeEnd: dose.doseMgKgRangeEnd.toString(),
-      doseMlKgRangeStart: dose.doseMlKgRangeEnd.toString(),
-      doseMlKgRangeEnd: dose.doseMlKgRangeEnd.toString(),
+      concentrationDoseRangeStart: dose.concentrationDoseRangeStart.toString(),
+      concentrationDoseRangeEnd: dose.concentrationDoseRangeEnd.toString(),
+      defaultDoseRangeStart: dose.defaultDoseRangeEnd.toString(),
+      defaultDoseRangeEnd: dose.defaultDoseRangeEnd.toString(),
       administrationMethodId: dose.administrationMethod
         ? dose.administrationMethod.id.toString()
         : null,
@@ -222,7 +225,7 @@ export class AdminHospitalMedicationsComponent implements OnInit {
         activeSubstance: this.medicationForm.value.activeSubstance!,
         brands: this.medicationForm.value.brands!.split(','),
         notes: this.medicationForm.value.notes || '',
-      })
+      }),
     );
     this.cancel();
   }
@@ -230,13 +233,16 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   saveMedicationConcentration() {
     this.store.dispatch(
       upsertMedicationConcentration({
-        id: this.editMedicationConcentration || undefined,
-        medicationId: this.addMedicationConcentration!,
+        id: this.editMedicationConcentration?.id || undefined,
+        medicationId: this.addMedicationConcentration!.id,
         form: this.medicationConcentrationForm.value.form!,
-        concentrationMgMl: Number(
-          this.medicationConcentrationForm.value.concentrationMgMl
+        concentrationValue: Number(
+          this.medicationConcentrationForm.value.concentrationValue,
         ),
-      })
+        concentrationUnit:
+          'mg/' + this.medicationConcentrationForm.value.defaultUnit!,
+        defaultUnit: this.medicationConcentrationForm.value.defaultUnit!,
+      }),
     );
     this.cancel();
   }
@@ -245,36 +251,40 @@ export class AdminHospitalMedicationsComponent implements OnInit {
     console.log(this.medicationConcentrationSpeciesDoseForm.value);
     this.store.dispatch(
       upsertMedicationConcentrationSpeciesDose({
-        id: this.editMedicationConcentrationSpeciesDose || undefined,
-        medicationConcentrationId: this.addMedicationConcentrationSpeciesDose!,
+        id: this.editMedicationConcentrationSpeciesDose?.id || undefined,
+        medicationConcentrationId:
+          this.addMedicationConcentrationSpeciesDose!.id,
         speciesId: this.medicationConcentrationSpeciesDoseForm.value.speciesId
           ? Number(this.medicationConcentrationSpeciesDoseForm.value.speciesId)
           : null,
         speciesType: this.medicationConcentrationSpeciesDoseForm.value
           .speciesType
           ? Number(
-              this.medicationConcentrationSpeciesDoseForm.value.speciesType
+              this.medicationConcentrationSpeciesDoseForm.value.speciesType,
             )
           : null,
-        doseMgKgRangeStart: Number(
-          this.medicationConcentrationSpeciesDoseForm.value.doseMgKgRangeStart
+        concentrationDoseRangeStart: Number(
+          this.medicationConcentrationSpeciesDoseForm.value
+            .concentrationDoseRangeStart,
         ),
-        doseMgKgRangeEnd: Number(
-          this.medicationConcentrationSpeciesDoseForm.value.doseMgKgRangeEnd
+        concentrationDoseRangeEnd: Number(
+          this.medicationConcentrationSpeciesDoseForm.value
+            .concentrationDoseRangeEnd,
         ),
-        doseMlKgRangeStart: Number(
-          this.medicationConcentrationSpeciesDoseForm.value.doseMlKgRangeStart
+        defaultDoseRangeStart: Number(
+          this.medicationConcentrationSpeciesDoseForm.value
+            .defaultDoseRangeStart,
         ),
-        doseMlKgRangeEnd: Number(
-          this.medicationConcentrationSpeciesDoseForm.value.doseMlKgRangeEnd
+        defaultDoseRangeEnd: Number(
+          this.medicationConcentrationSpeciesDoseForm.value.defaultDoseRangeEnd,
         ),
         administrationMethodId: Number(
           this.medicationConcentrationSpeciesDoseForm.value
-            .administrationMethodId
+            .administrationMethodId,
         ),
         frequency: this.medicationConcentrationSpeciesDoseForm.value.frequency!,
         notes: this.medicationConcentrationSpeciesDoseForm.value.notes || '',
-      })
+      }),
     );
     this.cancel();
   }
@@ -288,10 +298,10 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   SpeciesType = SpeciesType;
   private getGroupKey(item: MedicationConcentrationSpeciesDose): string {
     return [
-      item.doseMgKgRangeStart,
-      item.doseMgKgRangeEnd,
-      item.doseMlKgRangeStart,
-      item.doseMlKgRangeEnd,
+      item.concentrationDoseRangeStart,
+      item.concentrationDoseRangeEnd,
+      item.defaultDoseRangeStart,
+      item.defaultDoseRangeEnd,
       item.administrationMethod.code,
       item.frequency,
       item.notes,
@@ -299,7 +309,7 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   }
 
   groupMedicationDoses(
-    items: MedicationConcentrationSpeciesDose[]
+    items: MedicationConcentrationSpeciesDose[],
   ): MedicationConcentrationSpeciesDoses[] {
     const map = new Map<string, MedicationConcentrationSpeciesDoses>();
 
@@ -310,10 +320,10 @@ export class AdminHospitalMedicationsComponent implements OnInit {
         map.set(key, {
           key,
           species: [],
-          doseMgKgRangeStart: item.doseMgKgRangeStart,
-          doseMgKgRangeEnd: item.doseMgKgRangeEnd,
-          doseMlKgRangeStart: item.doseMlKgRangeStart,
-          doseMlKgRangeEnd: item.doseMlKgRangeEnd,
+          concentrationDoseRangeStart: item.concentrationDoseRangeStart,
+          concentrationDoseRangeEnd: item.concentrationDoseRangeEnd,
+          defaultDoseRangeStart: item.defaultDoseRangeStart,
+          defaultDoseRangeEnd: item.defaultDoseRangeEnd,
           administrationMethod: item.administrationMethod,
           frequency: item.frequency,
           notes: item.notes,
@@ -351,10 +361,10 @@ interface MedicationConcentrationSpeciesDoses {
     display: string;
     item: MedicationConcentrationSpeciesDose;
   }[];
-  doseMgKgRangeStart: number;
-  doseMgKgRangeEnd: number;
-  doseMlKgRangeStart: number;
-  doseMlKgRangeEnd: number;
+  concentrationDoseRangeStart: number;
+  concentrationDoseRangeEnd: number;
+  defaultDoseRangeStart: number;
+  defaultDoseRangeEnd: number;
   administrationMethod: AdministrationMethod;
   frequency: string;
   notes: string;

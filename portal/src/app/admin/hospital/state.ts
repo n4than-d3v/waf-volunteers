@@ -72,7 +72,9 @@ export interface Medication {
 export interface MedicationConcentration {
   id: number;
   form: string;
-  concentrationMgMl: number;
+  concentrationValue: number;
+  concentrationUnit: string;
+  defaultUnit: string;
   speciesDoses: MedicationConcentrationSpeciesDose[];
 }
 
@@ -80,10 +82,10 @@ export interface MedicationConcentrationSpeciesDose {
   id: number;
   species: Species;
   speciesType: SpeciesType;
-  doseMgKgRangeStart: number;
-  doseMgKgRangeEnd: number;
-  doseMlKgRangeStart: number;
-  doseMlKgRangeEnd: number;
+  concentrationDoseRangeStart: number;
+  concentrationDoseRangeEnd: number;
+  defaultDoseRangeStart: number;
+  defaultDoseRangeEnd: number;
   administrationMethod: AdministrationMethod;
   frequency: string;
   notes: string;
@@ -133,6 +135,7 @@ export interface CreateSpeciesVariantCommand {
   name: string;
   friendlyName: string;
   order: number;
+  longTermDays: number;
   feedingGuidance: string;
 }
 
@@ -150,6 +153,7 @@ export interface SpeciesVariant {
   friendlyName: string;
   feedingGuidance: string;
   order: number;
+  longTermDays: number;
 }
 
 export interface Species extends UpdateSpeciesCommand {

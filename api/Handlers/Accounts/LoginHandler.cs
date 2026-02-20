@@ -92,6 +92,9 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             if (!context.Request.Headers.TryGetValue("User-Agent", out var userAgent))
                 return string.Empty;
 
+            if (!context.Request.Headers.TryGetValue("Sec-CH-UA-Model", out var deviceModel))
+                return string.Empty;
+
             var parser = Parser.GetDefault();
             var client = parser.Parse(userAgent.ToString());
 
@@ -113,6 +116,9 @@ public class LoginHandler : IRequestHandler<Login, IResult>
                     device = "Unknown Device";
                 }
             }
+
+            if (!string.IsNullOrWhiteSpace(deviceModel))
+                device = deviceModel;
 
             // ---- Browser ----
             string browser = client.UA.Family ?? "Unknown Browser";

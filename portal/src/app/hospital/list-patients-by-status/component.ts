@@ -34,6 +34,8 @@ import { SpinnerComponent } from '../../shared/spinner/component';
   imports: [AsyncPipe, DatePipe, SpinnerComponent, FormsModule],
 })
 export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
+  readonly LS_PAGE_SIZE = 'hospital-list-page-size';
+
   @Input() set status(status: PatientStatus) {
     this._status = status;
     console.log('initial set status');
@@ -44,7 +46,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
 
   search$ = new BehaviorSubject<string>('');
   totalPages$: Observable<number>;
-  pageSize$ = new BehaviorSubject<number>(100);
+  pageSize$: BehaviorSubject<number>;
   page = 1;
 
   PatientStatus = PatientStatus;
@@ -56,6 +58,13 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   subscription: Subscription | null = null;
 
   constructor(private store: Store) {
+    let pageSize = 25;
+    let pageSizeFromLS = localStorage.getItem(this.LS_PAGE_SIZE);
+    if (pageSizeFromLS) {
+      pageSize = Number(pageSizeFromLS);
+    }
+    this.pageSize$ = new BehaviorSubject<number>(pageSize);
+
     this.patients$ = this.store.select(selectPatientsByStatus);
     this.patientCounts$ = this.store.select(selectPatientCounts);
     this.totalPages$ = combineLatest([
@@ -168,12 +177,15 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   private dispatch(silent: boolean) {
     if (!this._status) return;
 
+    const pageSize = this.pageSize$.getValue();
+    localStorage.setItem(this.LS_PAGE_SIZE, pageSize.toString());
+
     this.store.dispatch(
       getPatientsByStatus({
         status: this._status,
         search: this.search$.getValue(),
         page: this.page,
-        pageSize: this.pageSize$.getValue(),
+        pageSize,
         silent,
       }),
     );

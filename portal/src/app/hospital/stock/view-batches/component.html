@@ -38,11 +38,13 @@
         {{ batch.quantityInUse }} {{ getMeasurement(page.item.measurement) }}
       </td>
       <td>
-        @if (batch.expired) {
-        <span class="expired">Batch expired</span>
-        } @if (batch.expiredAfterOpening) {
-        <span class="expired">In-use expired</span>
-        }
+        <span class="warnings">
+          @if (batch.expired) {
+          <span class="expired">Batch expired</span>
+          } @if (batch.expiredAfterOpening) {
+          <span class="expired">In-use expired</span>
+          }
+        </span>
       </td>
       <td>
         <div class="buttons">

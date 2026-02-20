@@ -11,6 +11,7 @@
   <div class="field">
     <label for="pageSize">Page size</label>
     <select
+      id="pageSize"
       [ngModel]="pageSize$ | async"
       (ngModelChange)="pageSize$.next($event)"
     >

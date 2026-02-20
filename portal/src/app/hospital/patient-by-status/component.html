@@ -1,6 +1,8 @@
 @if (patientCounts$ | async; as count) { @if (count.data) {
 <div class="container">
-  <div class="item no-select" (click)="viewDashboard()">📊 Dashboard</div>
+  <div class="item no-select" (click)="viewDashboard()">
+    <span class="title">📊 Dashboard</span>
+  </div>
   <div class="item no-select" (click)="changeTab(1)">
     <img src="images/hospital/patient-by-status/pending-initial-exam.svg" />
     <span class="title">✨ Pending intake exam</span>

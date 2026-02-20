@@ -7,6 +7,25 @@
     max-width: max-content;
     background-color: #e2e2e2;
     border-right: solid 1px black;
+    position: relative;
+
+    &:not(.expanded) {
+      max-width: 2.125rem;
+      overflow-x: hidden;
+
+      .patients,
+      .tasks,
+      .stock {
+        padding-left: 0rem;
+      }
+    }
+
+    .toggle-expand {
+      position: absolute;
+      top: 0rem;
+      right: 0rem;
+      padding: 0.325rem 0.75rem;
+    }
 
     .patients,
     .tasks,

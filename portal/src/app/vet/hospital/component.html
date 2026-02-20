@@ -1,12 +1,26 @@
 <div data-prevent-main-padding="true" class="page">
-  <div class="sidebar">
+  <div class="sidebar" [class.expanded]="expanded">
+    <button
+      class="button button--none toggle-expand"
+      (click)="expanded = !expanded"
+    >
+      @if (expanded) { ❮ } @else { ❯ }
+    </button>
     <div class="patients">
+      @if (expanded) {
       <h2>Patients</h2>
       <hospital-patient-search />
+      } @else {
+      <h2>&nbsp;</h2>
+      }
       <hospital-patient-by-status />
     </div>
     <div class="tasks">
+      @if (expanded) {
       <h2>Daily tasks</h2>
+      } @else {
+      <h2>&nbsp;</h2>
+      }
       <div class="items">
         <div (click)="viewDailyTasks()" class="item no-select">
           🩺 View daily tasks

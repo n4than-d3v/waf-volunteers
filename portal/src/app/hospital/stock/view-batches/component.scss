@@ -33,6 +33,11 @@ table {
   }
 }
 
+.warnings {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .expired {
   color: var(--theme-color-2);
   font-weight: bold;

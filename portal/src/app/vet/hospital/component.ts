@@ -36,6 +36,8 @@ export class VetHospitalComponent implements OnDestroy {
   tab$: Observable<Tab>;
   tabHistory$: Observable<Tab[]>;
 
+  expanded = true;
+
   constructor(private store: Store) {
     this.tab$ = this.store.select(selectTab);
     this.tabHistory$ = this.store.select(selectTabHistory);

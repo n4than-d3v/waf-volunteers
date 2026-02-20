@@ -22,7 +22,11 @@
   <table>
     <tbody>
       <tr>
-        <td>Date dispositioned</td>
+        <td>Disposition</td>
+        <td>{{ getDisposition(patient) }}</td>
+      </tr>
+      <tr>
+        <td>Disposition date</td>
         <td>{{ patient.dispositioned | date: 'dd MMM yyyy HH:mm' }}</td>
       </tr>
       @if (patient.dispositionReasons) {
@@ -30,12 +34,12 @@
         <td>Disposition reason</td>
         <td>{{ formatDispositionReasons(patient.dispositionReasons) }}</td>
       </tr>
-      } @else if (patient.releaseType) {
+      } @if (patient.releaseType) {
       <tr>
         <td>Release type</td>
         <td>{{ patient.releaseType.description }}</td>
       </tr>
-      } @else if (patient.transferLocation) {
+      } @if (patient.transferLocation) {
       <tr>
         <td>Transfer location</td>
         <td>{{ patient.transferLocation.description }}</td>

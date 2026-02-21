@@ -95,6 +95,8 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             if (!context.Request.Headers.TryGetValue("Sec-CH-UA-Model", out var deviceModel))
                 return string.Empty;
 
+            var deviceModelWithoutQuotes = deviceModel.ToString().Replace("\"", "");
+
             var parser = Parser.GetDefault();
             var client = parser.Parse(userAgent.ToString());
 
@@ -117,8 +119,8 @@ public class LoginHandler : IRequestHandler<Login, IResult>
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(deviceModel))
-                device = deviceModel;
+            if (!string.IsNullOrWhiteSpace(deviceModelWithoutQuotes))
+                device = deviceModelWithoutQuotes;
 
             // ---- Browser ----
             string browser = client.UA.Family ?? "Unknown Browser";
@@ -136,7 +138,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
                 ? os
                 : $"{os} {osVersion}";
 
-            return $"{device}, {browserFormatted}, {osFormatted}".Replace("\"", "");
+            return $"{device}, {browserFormatted}, {osFormatted}";
         }
         catch
         {

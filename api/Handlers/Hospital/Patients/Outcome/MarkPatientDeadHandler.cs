@@ -50,11 +50,18 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         if (dispositioner == null) return Results.BadRequest();
 
         var dispositionReasons = new List<DispositionReason>();
-        foreach (var dispositionReasonId in request.DispositionReasonIds)
+        var dispositionReasonIds = (request.DispositionReasonIds ?? []).Where(x => x != default);
+        foreach (var dispositionReasonId in dispositionReasonIds)
         {
             var dispositionReason = await _repository.Get<DispositionReason>(dispositionReasonId);
             if (dispositionReason == null) return Results.BadRequest();
             dispositionReasons.Add(dispositionReason);
+        }
+
+        if (!dispositionReasons.Any())
+        {
+            var dispositionReason = await _repository.Get<DispositionReason>(x => x.Description == "Unknown");
+            dispositionReasons.Add(dispositionReason!);
         }
 
         patient.Dispositioned = DateTime.UtcNow;

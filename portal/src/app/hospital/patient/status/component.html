@@ -113,22 +113,19 @@
         🏠 Request home care
       </button>
     </div>
-    } } } @else if (updating === 'die' || updating === 'pts') {
-    <form [formGroup]="deadForm">
-      <h4>{{ updating === 'die' ? 'Died' : 'Euthanised' }}</h4>
+    } } } @else if (updating === 'die') {
+    <form [formGroup]="dieForm">
+      <h4>Died</h4>
       <div class="fields">
         <div class="field">
-          <label for="dispositionReasonId">
-            Disposition reason
-            <span class="required">*</span>
-          </label>
+          <label for="dispositionReasonId"> Disposition reason </label>
           @if (dispositionReasons$ | async; as dispositionReasons) { @if
           (dispositionReasons.data) {
           <div
             formArrayName="dispositionReasonIds"
             *ngFor="
               let dispositionReason of
-                deadForm.controls.dispositionReasonIds.controls;
+                dieForm.controls.dispositionReasonIds.controls;
               let i = index
           "
           >
@@ -141,12 +138,12 @@
                 [formGroup]="dispositionReason"
                 [items]="convertDispositionReasons(dispositionReasons.data)"
               ></hospital-patient-autocomplete>
-              @if (i === deadForm.controls.dispositionReasonIds.controls.length
-              - 1) {
+              @if (i === dieForm.controls.dispositionReasonIds.controls.length -
+              1) {
               <button
                 type="button"
                 class="button button--none"
-                (click)="addDispositionReason()"
+                (click)="addDieDispositionReason()"
               >
                 ➕
               </button>
@@ -154,7 +151,7 @@
               <button
                 type="button"
                 class="button button--none"
-                (click)="removeDispositionReason(i)"
+                (click)="removeDieDispositionReason(i)"
               >
                 ➖
               </button>
@@ -164,11 +161,71 @@
           } }
         </div>
       </div>
-      @if (attemptedSave && !deadForm.valid) {
+      @if (attemptedSave && !dieForm.valid) {
       <div class="error">Please fill in all required fields</div>
       } @if (!saving) {
       <div class="buttons">
         <button (click)="die()" class="button button--primary">Save</button>
+        <button (click)="reset()" class="button button--secondary">Back</button>
+      </div>
+      }
+    </form>
+    } @else if (updating === 'pts') {
+    <form [formGroup]="ptsForm">
+      <h4>Euthanised</h4>
+      <div class="fields">
+        <div class="field">
+          <label for="dispositionReasonId">
+            Disposition reason
+            <span class="required">*</span>
+          </label>
+          @if (dispositionReasons$ | async; as dispositionReasons) { @if
+          (dispositionReasons.data) {
+          <div
+            formArrayName="dispositionReasonIds"
+            *ngFor="
+              let dispositionReason of
+                ptsForm.controls.dispositionReasonIds.controls;
+              let i = index
+          "
+          >
+            <div [formGroupName]="i" class="reason-wrapper">
+              <hospital-patient-autocomplete
+                [id]="'reason' + i"
+                [inline]="true"
+                [label]="''"
+                [control]="'reason'"
+                [formGroup]="dispositionReason"
+                [items]="convertDispositionReasons(dispositionReasons.data)"
+              ></hospital-patient-autocomplete>
+              @if (i === ptsForm.controls.dispositionReasonIds.controls.length -
+              1) {
+              <button
+                type="button"
+                class="button button--none"
+                (click)="addPtsDispositionReason()"
+              >
+                ➕
+              </button>
+              } @if (i !== 0) {
+              <button
+                type="button"
+                class="button button--none"
+                (click)="removePtsDispositionReason(i)"
+              >
+                ➖
+              </button>
+              }
+            </div>
+          </div>
+          } }
+        </div>
+      </div>
+      @if (attemptedSave && !ptsForm.valid) {
+      <div class="error">Please fill in all required fields</div>
+      } @if (!saving) {
+      <div class="buttons">
+        <button (click)="pts()" class="button button--primary">Save</button>
         <button (click)="reset()" class="button button--secondary">Back</button>
       </div>
       }

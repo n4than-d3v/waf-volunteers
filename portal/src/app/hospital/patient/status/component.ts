@@ -71,7 +71,13 @@ export class HospitalPatientStatusComponent implements OnInit {
   PatientStatus = PatientStatus;
   getDisposition = getDisposition;
 
-  deadForm = new FormGroup({
+  dieForm = new FormGroup({
+    dispositionReasonIds: new FormArray<
+      FormGroup<{ reason: FormControl<string | null> }>
+    >([]),
+  });
+
+  ptsForm = new FormGroup({
     dispositionReasonIds: new FormArray<
       FormGroup<{ reason: FormControl<string | null> }>
     >([]),
@@ -113,19 +119,32 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(getDispositionReasons());
     this.store.dispatch(getReleaseTypes());
     this.store.dispatch(getTransferLocations());
-    this.addDispositionReason();
+    this.addDieDispositionReason();
+    this.addPtsDispositionReason();
   }
 
-  addDispositionReason() {
-    this.deadForm.controls.dispositionReasonIds.push(
+  addDieDispositionReason() {
+    this.dieForm.controls.dispositionReasonIds.push(
+      new FormGroup({
+        reason: new FormControl<string | null>(null),
+      }),
+    );
+  }
+
+  removeDieDispositionReason(id: number) {
+    this.dieForm.controls.dispositionReasonIds.removeAt(id);
+  }
+
+  addPtsDispositionReason() {
+    this.ptsForm.controls.dispositionReasonIds.push(
       new FormGroup({
         reason: new FormControl<string | null>(null, Validators.required),
       }),
     );
   }
 
-  removeDispositionReason(id: number) {
-    this.deadForm.controls.dispositionReasonIds.removeAt(id);
+  removePtsDispositionReason(id: number) {
+    this.ptsForm.controls.dispositionReasonIds.removeAt(id);
   }
 
   formatDispositionReasons(reason: DispositionReason[]) {
@@ -162,7 +181,8 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.saving = false;
     this.updating = '';
     this.attemptedSave = false;
-    this.deadForm.reset();
+    this.dieForm.reset();
+    this.ptsForm.reset();
     this.releaseForm.reset();
     this.transferForm.reset();
   }
@@ -216,16 +236,33 @@ export class HospitalPatientStatusComponent implements OnInit {
 
   die() {
     this.attemptedSave = true;
-    if (!this.deadForm.valid) return;
+    if (!this.dieForm.valid) return;
     this.saving = true;
     this.store.dispatch(
       markPatientDead({
         patientId: this.patient.id,
-        dispositionReasonIds: this.deadForm.value.dispositionReasonIds!.map(
+        dispositionReasonIds: this.dieForm.value.dispositionReasonIds!.map(
           (x) => Number(x.reason!),
         ),
         onArrival: false,
-        putToSleep: this.updating === 'pts',
+        putToSleep: false,
+      }),
+    );
+    this.reset();
+  }
+
+  pts() {
+    this.attemptedSave = true;
+    if (!this.ptsForm.valid) return;
+    this.saving = true;
+    this.store.dispatch(
+      markPatientDead({
+        patientId: this.patient.id,
+        dispositionReasonIds: this.ptsForm.value.dispositionReasonIds!.map(
+          (x) => Number(x.reason!),
+        ),
+        onArrival: false,
+        putToSleep: true,
       }),
     );
     this.reset();

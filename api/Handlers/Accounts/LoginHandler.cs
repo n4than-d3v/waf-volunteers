@@ -136,7 +136,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
                 ? os
                 : $"{os} {osVersion}";
 
-            return $"{device}, {browserFormatted}, {osFormatted}";
+            return $"{device}, {browserFormatted}, {osFormatted}".Replace("\"", "");
         }
         catch
         {

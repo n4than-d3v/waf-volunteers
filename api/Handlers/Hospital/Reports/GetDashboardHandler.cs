@@ -385,8 +385,7 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
                 if (admittedPerDay.TryGetValue(date, out var admitted))
                     patients += admitted;
 
-                var yesterday = date.AddDays(-1);
-                if (dischargedPerDay.TryGetValue(yesterday, out var discharged))
+                if (dischargedPerDay.TryGetValue(date, out var discharged))
                     patients -= discharged;
 
                 perYear[date] = patients;

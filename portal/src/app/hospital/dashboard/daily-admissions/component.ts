@@ -93,8 +93,11 @@ export class HospitalDashboardChartAdmissionsComponent
       });
 
       const values = labels.map((label) => {
-        const dayKey = moment(label, 'D MMM').format('MM-DD');
-        return dayMap.get(dayKey) ?? 0;
+        const yesterdayKey = moment(`2020 ${label}`, 'YYYY D MMM')
+          .add(-1, 'day')
+          .format('MM-DD');
+        const dayKey = moment(`2020 ${label}`, 'YYYY D MMM').format('MM-DD');
+        return dayMap.get(dayKey) ?? dayMap.get(yesterdayKey) ?? 0;
       });
 
       const colour = getColor(idx);

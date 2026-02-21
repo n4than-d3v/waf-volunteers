@@ -60,6 +60,8 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   updatingSpeciesVariant: SpeciesVariant | null = null;
   updatingSpeciesId: number | null = null;
 
+  filter = '';
+
   speciesForm = new FormGroup({
     name: new FormControl(''),
     speciesType: new FormControl(''),
@@ -90,6 +92,19 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     private sanitizer: DomSanitizer,
   ) {
     this.species$ = this.store.select(selectSpecies);
+  }
+
+  shouldShowSpecies(species: Species) {
+    return (
+      species.name.toLowerCase().includes(this.filter.toLowerCase()) ||
+      species.variants.some(
+        (variant) =>
+          variant.name.toLowerCase().includes(this.filter.toLowerCase()) ||
+          variant.friendlyName
+            .toLowerCase()
+            .includes(this.filter.toLowerCase()),
+      )
+    );
   }
 
   beginCreateSpecies() {

@@ -194,6 +194,7 @@ export interface ListPatient {
   transferLocation: TransferLocation | null;
   dispositioner: {} | null;
   homeCareRequests: HomeCareRequest[];
+  lastMessageSentByOrphanFeeder: boolean | null;
   id: number;
 }
 

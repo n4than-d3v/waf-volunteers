@@ -42,6 +42,8 @@ export class AdminHospitalAreasComponent implements OnInit {
   movingPen: number | null = null;
   creatingPenForArea: Area | null = null;
 
+  filter = '';
+
   areaForm = new FormGroup({
     code: new FormControl(''),
     name: new FormControl(''),
@@ -58,6 +60,16 @@ export class AdminHospitalAreasComponent implements OnInit {
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
+  }
+
+  shouldShowArea(area: Area) {
+    return (
+      area.name.toLowerCase().includes(this.filter.toLowerCase()) ||
+      area.code.toLowerCase().includes(this.filter.toLowerCase()) ||
+      area.pens.some((pen) =>
+        pen.reference.toLowerCase().includes(this.filter.toLowerCase()),
+      )
+    );
   }
 
   beginCreateArea() {

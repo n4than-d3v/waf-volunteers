@@ -21,6 +21,12 @@
 <button (click)="beginCreateArea()" class="button button--primary">
   Create new area
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (creatingArea) {
 <section>
   <h2>Create new area</h2>
@@ -102,7 +108,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (area of areas.data; track area.id) {
+    @for (area of areas.data; track area.id) { @if (shouldShowArea(area)) {
     <tr>
       <td>
         @if (area.deleted) {
@@ -150,7 +156,7 @@
         </button>
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
 } }

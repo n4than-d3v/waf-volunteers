@@ -17,6 +17,12 @@
 <button (click)="beginCreate()" class="button button--primary">
   Create new tag
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (creating && editor) {
 <section>
   <h2>Create new tag</h2>
@@ -88,7 +94,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (tag of tags.data; track tag.id) {
+    @for (tag of tags.data; track tag.id) { @if (shouldShowTag(tag)) {
     <tr>
       <td>{{ tag.name }}</td>
       <td [innerHTML]="convertHtml(tag.description)"></td>
@@ -98,7 +104,7 @@
         </button>
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
 } }

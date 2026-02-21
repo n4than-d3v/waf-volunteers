@@ -211,12 +211,18 @@
 <button (click)="prepareAddMedication()" class="button button--primary">
   Add medication
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @if (medications$ | async; as medications) { @if (medications.loading) {
 <spinner></spinner>
 } @else if (medications.error) {
 <div class="error">Error occurred</div>
 } @else if (medications.data) { @for (medication of medications.data; track
-medication.id) {
+medication.id) { @if (shouldShowMedication(medication)) {
 <div class="medication">
   <h3>
     {{ medication.activeSubstance }}
@@ -312,4 +318,4 @@ medication.id) {
   </div>
   }
 </div>
-} } }
+} } } }

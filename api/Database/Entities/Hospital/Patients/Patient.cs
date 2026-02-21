@@ -59,6 +59,12 @@ public class Patient : Entity
     public List<Diet> Diets { get; set; }
     public List<HomeCareRequest> HomeCareRequests { get; set; }
     public List<HomeCareMessage> HomeCareMessages { get; set; }
+    public bool? LastMessageSentByOrphanFeeder => (HomeCareMessages?.Any() ?? false)
+        ? HomeCareMessages
+            .OrderByDescending(m => m.Date)
+            .First()
+            .Author?.Roles.HasFlag(Account.AccountRoles.BEACON_ORPHAN_FEEDER)
+        : null;
     public List<PatientFaecalTest> FaecalTests { get; set; }
     public List<PatientBloodTest> BloodTests { get; set; }
 

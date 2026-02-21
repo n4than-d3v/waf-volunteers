@@ -45,6 +45,8 @@ export class AdminHospitalDietsComponent implements OnInit {
   updating = false;
   updatingDiet: Diet | null = null;
 
+  filter = '';
+
   form = new FormGroup({
     name: new FormControl(''),
     description: new FormControl(''),
@@ -65,6 +67,10 @@ export class AdminHospitalDietsComponent implements OnInit {
     private sanitizer: DomSanitizer,
   ) {
     this.diets$ = this.store.select(selectDiets);
+  }
+
+  shouldShowDiet(diet: Diet) {
+    return diet.name.toLowerCase().includes(this.filter.toLowerCase());
   }
 
   beginCreate() {

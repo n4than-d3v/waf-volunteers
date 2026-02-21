@@ -17,6 +17,12 @@
 <button (click)="beginCreateSpecies()" class="button button--primary">
   Create new species
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (creatingSpecies && editor) {
 <section>
   <h2>Create new species</h2>
@@ -167,7 +173,7 @@
 </section>
 }
 <div class="list">
-  @for (s of species.data; track s.id) {
+  @for (s of species.data; track s.id) { @if (shouldShowSpecies(s)) {
   <div class="item">
     <table>
       <caption>
@@ -214,6 +220,6 @@
       </tbody>
     </table>
   </div>
-  }
+  } }
 </div>
 } }

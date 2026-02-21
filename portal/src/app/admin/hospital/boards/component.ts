@@ -28,11 +28,17 @@ export class AdminHospitalBoardsComponent implements OnInit {
   name = '';
   areaDisplayTypes: { [key: string]: string } = {};
 
+  filter = '';
+
   message = '';
   startDate = '';
   startTime = '';
   endDate = '';
   endTime = '';
+
+  shouldShowBoard(board: PatientBoard): boolean {
+    return board.name.toLowerCase().includes(this.filter.toLowerCase());
+  }
 
   private resetDateRange() {
     const start = moment();

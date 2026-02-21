@@ -38,12 +38,20 @@ export class AdminHospitalTransferLocationsComponent implements OnInit {
   updating = false;
   updatingTransferLocation: TransferLocation | null = null;
 
+  filter = '';
+
   form = new FormGroup({
     description: new FormControl(''),
   });
 
   constructor(private store: Store) {
     this.transferLocations$ = this.store.select(selectTransferLocations);
+  }
+
+  shouldShowTransferLocation(transferLocation: TransferLocation) {
+    return transferLocation.description
+      .toLowerCase()
+      .includes(this.filter.toLowerCase());
   }
 
   beginCreate() {

@@ -16,6 +16,12 @@
     Add message to all patient boards
   </button>
 </div>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (adding || editing) {
 <section>
   <h2>{{ adding ? 'Add' : 'Edit' }} patient board</h2>
@@ -82,7 +88,8 @@
     </tr>
   </thead>
   <tbody>
-    @for (board of boards.data||[]; track board.id){
+    @for (board of boards.data||[]; track board.id){ @if
+    (shouldShowBoard(board)) {
     <tr>
       <td>{{ board.name }}</td>
       <td>
@@ -110,7 +117,7 @@
         </div>
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
 } }

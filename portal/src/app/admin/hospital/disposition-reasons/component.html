@@ -26,6 +26,12 @@
 <button (click)="beginCreate()" class="button button--primary">
   Create new disposition reason
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (creating && editor) {
 <section>
   <h2>Create new disposition reason</h2>
@@ -98,7 +104,8 @@
   </thead>
   <tbody>
     @for (dispositionReason of dispositionReasons.data; track
-    dispositionReason.id) {
+    dispositionReason.id) { @if (shouldShowDispositionReason(dispositionReason))
+    {
     <tr>
       <td>{{ dispositionReason.description }}</td>
       <td [innerHTML]="dispositionReason.communication"></td>
@@ -111,7 +118,7 @@
         </button>
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
 } }

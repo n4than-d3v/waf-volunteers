@@ -49,6 +49,8 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
   updating = false;
   updatingDispositionReason: DispositionReason | null = null;
 
+  filter = '';
+
   form = new FormGroup({
     description: new FormControl(''),
     communication: new FormControl(''),
@@ -69,6 +71,12 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
     private sanitizer: DomSanitizer,
   ) {
     this.dispositionReasons$ = this.store.select(selectDispositionReasons);
+  }
+
+  shouldShowDispositionReason(dispositionReason: DispositionReason) {
+    return dispositionReason.description
+      .toLowerCase()
+      .includes(this.filter.toLowerCase());
   }
 
   beginCreate() {

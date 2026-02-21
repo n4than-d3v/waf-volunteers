@@ -16,9 +16,9 @@
       <th>Arrival date</th>
       <th>Expiration date</th>
       <th>Delivered</th>
-      <th>In stock</th>
-      <th>In use</th>
-      <th colspan="2"></th>
+      <th colspan="2">In stock</th>
+      <th colspan="2">In use</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -35,14 +35,23 @@
         {{ batch.quantityInStock }} {{ getMeasurement(page.item.measurement) }}
       </td>
       <td>
+        <div class="warnings">
+          @if (batch.expired) {
+          <span class="urgent">🚨 Batch expired</span>
+          } @else if (batch.expiresSoon) {
+          <span class="warning">⚠️ Batch expires today</span>
+          }
+        </div>
+      </td>
+      <td>
         {{ batch.quantityInUse }} {{ getMeasurement(page.item.measurement) }}
       </td>
       <td>
         <span class="warnings">
-          @if (batch.expired) {
-          <span class="expired">Batch expired</span>
-          } @if (batch.expiredAfterOpening) {
-          <span class="expired">In-use expired</span>
+          @if (batch.expiredAfterOpening) {
+          <span class="urgent">🚨 In-use expired</span>
+          } @else if (batch.expiresSoonAfterOpening) {
+          <span class="warning">⚠️ In-use expires today</span>
           }
         </span>
       </td>
@@ -70,9 +79,9 @@
       <td colspan="2"></td>
       <th>Signed out</th>
       <th>In-use expiration</th>
-      <th>Quantity</th>
-      <th>Disposal</th>
-      <th colspan="2"></th>
+      <th colspan="2">Quantity</th>
+      <th colspan="2">Disposal</th>
+      <th></th>
     </tr>
     @for (usage of batch.usages; track usage.id) {
     <tr>
@@ -81,13 +90,15 @@
       <td>{{ usage.expiry | date: 'dd MMM yyyy' }}</td>
       <td>{{ usage.quantity }} {{ getMeasurement(page.item.measurement) }}</td>
       <td>
+        @if (usage.expired) {
+        <span class="urgent">🚨 In-use expired</span>
+        } @else if (usage.expiresSoon) {
+        <span class="warning">⚠️ In-use expires today</span>
+        }
+      </td>
+      <td colspan="2">
         @if (usage.disposed) { {{ usage.disposed | date: 'dd MMM yyyy' }} ({{
         usage.disposedBy }}) } @else { Still in use }
-      </td>
-      <td>
-        @if (usage.expired) {
-        <span class="expired">In-use expired</span>
-        }
       </td>
       <td>
         @if (!usage.disposed) {

@@ -17,6 +17,12 @@
 <button (click)="beginCreate()" class="button button--primary">
   Create new diet
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (creating && editor) {
 <section>
   <h2>Create new diet</h2>
@@ -88,7 +94,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (diet of diets.data; track diet.id) {
+    @for (diet of diets.data; track diet.id) { @if (shouldShowDiet(diet)) {
     <tr>
       <td>{{ diet.name }}</td>
       <td [innerHTML]="convertHtml(diet.description)"></td>
@@ -98,7 +104,7 @@
         </button>
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
 } }

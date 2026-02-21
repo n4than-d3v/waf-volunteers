@@ -17,6 +17,8 @@ import { HospitalStockViewBatchesComponent } from '../view-batches/component';
 import { HospitalStockDisposeUsageComponent } from '../dispose-usage/component';
 import { HospitalStockDisposeBatchComponent } from '../dispose-batch/component';
 import { TokenProvider } from '../../../shared/token.provider';
+import { FormsModule } from '@angular/forms';
+import { FilterSortPipe } from './filter-sort.pipe';
 
 @Component({
   selector: 'hospital-stock-list',
@@ -31,6 +33,8 @@ import { TokenProvider } from '../../../shared/token.provider';
     HospitalStockSignOutComponent,
     HospitalStockDisposeUsageComponent,
     HospitalStockDisposeBatchComponent,
+    FormsModule,
+    FilterSortPipe,
   ],
 })
 export class HospitalStockListComponent implements OnInit {
@@ -40,9 +44,15 @@ export class HospitalStockListComponent implements OnInit {
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
 
+  filter = '';
+  sort: 'medication' | 'brand' = 'medication';
+
   isVet = false;
 
-  constructor(private store: Store, private tokenProvider: TokenProvider) {
+  constructor(
+    private store: Store,
+    private tokenProvider: TokenProvider,
+  ) {
     this.page$ = this.store.select(selectPage);
     this.stock$ = this.store.select(selectStock);
     this.loading$ = this.store.select(selectStockLoading);
@@ -55,7 +65,7 @@ export class HospitalStockListComponent implements OnInit {
     this.store.dispatch(
       setPage({
         page: { pageType: 'delivery' },
-      })
+      }),
     );
   }
 
@@ -63,7 +73,7 @@ export class HospitalStockListComponent implements OnInit {
     this.store.dispatch(
       setPage({
         page: { pageType: 'viewBatches', item },
-      })
+      }),
     );
   }
 

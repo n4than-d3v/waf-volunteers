@@ -38,12 +38,20 @@ export class AdminHospitalReleaseTypesComponent implements OnInit {
   updating = false;
   updatingReleaseType: ReleaseType | null = null;
 
+  filter = '';
+
   form = new FormGroup({
     description: new FormControl(''),
   });
 
   constructor(private store: Store) {
     this.releaseTypes$ = this.store.select(selectReleaseTypes);
+  }
+
+  shouldShowReleaseType(releaseType: ReleaseType) {
+    return releaseType.description
+      .toLowerCase()
+      .includes(this.filter.toLowerCase());
   }
 
   beginCreate() {

@@ -54,7 +54,7 @@ export class AdminHospitalMedicationsComponent implements OnInit {
   species$: Observable<Wrapper<Species>>;
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
 
-  search = '';
+  filter = '';
 
   addMedication = false;
   editMedication: number | null = null;
@@ -97,6 +97,17 @@ export class AdminHospitalMedicationsComponent implements OnInit {
     this.species$ = this.store.select(selectSpecies);
     this.administrationMethods$ = this.store.select(
       selectAdministrationMethods,
+    );
+  }
+
+  shouldShowMedication(medication: Medication) {
+    return (
+      medication.activeSubstance
+        .toLowerCase()
+        .includes(this.filter.toLowerCase()) ||
+      medication.brands.some((brand) =>
+        brand.toLowerCase().includes(this.filter.toLowerCase()),
+      )
     );
   }
 

@@ -63,12 +63,16 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
         public int QuantityInUse => Batches.Sum(x => x.QuantityInUse);
         public bool Expired => Batches.Any(x => x.Expired);
         public bool ExpiredAfterOpening => Batches.Any(x => x.ExpiredAfterOpening);
+        public bool ExpiresSoon => Batches.Any(x => x.ExpiresSoon);
+        public bool ExpiresSoonAfterOpening => Batches.Any(x => x.ExpiresSoonAfterOpening);
 
         public List<BatchWrapper> Batches { get; set; }
     }
 
     public class BatchWrapper
     {
+        public const int DaysUntilExpiresSoon = 1;
+
         public BatchWrapper(StockItemBatch batch)
         {
             Id = batch.Id;
@@ -92,6 +96,8 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
         public int QuantityDisposed => Usages.Where(x => x.Disposed != null).Sum(x => x.Quantity);
         public bool Expired => Expiry < DateOnly.FromDateTime(DateTime.UtcNow);
         public bool ExpiredAfterOpening => Usages.Any(x => x.Expired);
+        public bool ExpiresSoon => Expiry < DateOnly.FromDateTime(DateTime.UtcNow.AddDays(DaysUntilExpiresSoon));
+        public bool ExpiresSoonAfterOpening => Usages.Any(x => x.ExpiresSoon);
 
         public List<UsageWrapper> Usages { get; set; }
     }
@@ -119,5 +125,6 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
         public string? DisposedBy { get; set; }
 
         public bool Expired => Disposed == null && Expiry < DateOnly.FromDateTime(DateTime.UtcNow);
+        public bool ExpiresSoon => Disposed == null && Expiry < DateOnly.FromDateTime(DateTime.UtcNow.AddDays(BatchWrapper.DaysUntilExpiresSoon));
     }
 }

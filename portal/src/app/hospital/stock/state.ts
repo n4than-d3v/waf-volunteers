@@ -59,6 +59,8 @@ export interface Stock {
   quantityInUse: number;
   expired: boolean;
   expiredAfterOpening: boolean;
+  expiresSoon: boolean;
+  expiresSoonAfterOpening: boolean;
   batches: StockBatch[];
 }
 
@@ -74,6 +76,8 @@ export interface StockBatch {
   quantityDisposed: number;
   expired: boolean;
   expiredAfterOpening: boolean;
+  expiresSoon: boolean;
+  expiresSoonAfterOpening: boolean;
   usages: StockBatchUsage[];
 }
 
@@ -86,6 +90,7 @@ export interface StockBatchUsage {
   disposed: string | null;
   disposedBy: string | null;
   expired: boolean;
+  expiresSoon: boolean;
 }
 
 export interface Item {

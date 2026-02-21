@@ -18,6 +18,12 @@
 <button (click)="beginCreate()" class="button button--primary">
   Create new transfer location
 </button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
 } @else if (creating) {
 <section>
   <h2>Create new transfer location</h2>
@@ -60,7 +66,7 @@
   </thead>
   <tbody>
     @for (transferLocation of transferLocations.data; track transferLocation.id)
-    {
+    { @if (shouldShowTransferLocation(transferLocation)) {
     <tr>
       <td>{{ transferLocation.description }}</td>
       <td>
@@ -72,7 +78,7 @@
         </button>
       </td>
     </tr>
-    }
+    } }
   </tbody>
 </table>
 } }

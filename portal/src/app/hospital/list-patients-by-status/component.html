@@ -170,6 +170,7 @@
       <th>Variant</th>
       <th>Date admitted</th>
       <th>Home care since</th>
+      <th>Home care pen</th>
       <th>Home carer</th>
     </tr>
   </thead>
@@ -177,6 +178,7 @@
     @for (patient of patients.data; track patient.id) {
     <tr>
       <td>
+        @if (patient.lastMessageSentByOrphanFeeder) { 🔴 }
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
       <td>{{ patient.species?.name }}</td>
@@ -186,6 +188,17 @@
         @for (request of patient.homeCareRequests; track request.id) { {{
         request.pickup | date: 'dd MMM yyyy HH:mm' }} }
       </td>
+      @if (patient.pen) {
+      <td>
+        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
+        }
+      </td>
+      } @else {
+      <td>
+        <span class="outdated">Homeless</span>
+      </td>
+      }
       <td>
         @for (request of patient.homeCareRequests; track request.id) { {{
         request.responder?.firstName }} {{ request.responder?.lastName }} }

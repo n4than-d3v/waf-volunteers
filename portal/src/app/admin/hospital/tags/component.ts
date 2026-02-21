@@ -45,6 +45,8 @@ export class AdminHospitalTagsComponent implements OnInit {
   updating = false;
   updatingTag: Tag | null = null;
 
+  filter = '';
+
   form = new FormGroup({
     name: new FormControl(''),
     description: new FormControl(''),
@@ -65,6 +67,10 @@ export class AdminHospitalTagsComponent implements OnInit {
     private sanitizer: DomSanitizer,
   ) {
     this.tags$ = this.store.select(selectTags);
+  }
+
+  shouldShowTag(tag: Tag) {
+    return tag.name.toLowerCase().includes(this.filter.toLowerCase());
   }
 
   beginCreate() {

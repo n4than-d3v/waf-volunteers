@@ -19,33 +19,53 @@
 } @if (error$ | async; as error) {
 <div class="error">Error occurred</div>
 } @if (stock$ | async; as stock) {
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+  <div class="field">
+    <label for="sort">Sort</label>
+    <select id="sort" [(ngModel)]="sort">
+      <option value="medication">Active substance</option>
+      <option value="brand">Brand</option>
+    </select>
+  </div>
+</div>
 <table>
   <thead>
     <tr>
       <th>Medication</th>
-      <th>Concentration</th>
       <th>Brand</th>
-      <th>In stock</th>
-      <th>In use</th>
+      <th>Concentration</th>
+      <th colspan="2">In stock</th>
+      <th colspan="2">In use</th>
       <th colspan="2"></th>
     </tr>
   </thead>
   <tbody>
-    @for (item of stock; track item.id) {
+    @for (item of stock | filterSort : filter : sort; track item.id) {
     <tr>
       <td>{{ item.medication }}</td>
-      <td>{{ item.medicationConcentration }}</td>
       <td>{{ item.brand }}</td>
+      <td>{{ item.medicationConcentration }}</td>
       <td>{{ item.quantityInStock }} {{ getMeasurement(item.measurement) }}</td>
+      <td>
+        <div class="warnings">
+          @if (item.needsReordering) { @if (item.quantityInStock == 0) {
+          <span class="urgent">🚨 Re-order</span>
+          } @else {
+          <span class="warning">⚠️ Re-order</span>
+          } }
+        </div>
+      </td>
       <td>{{ item.quantityInUse }} {{ getMeasurement(item.measurement) }}</td>
       <td>
         <div class="warnings">
-          @if (item.needsReordering) {
-          <span class="reorder">Re-order</span>
-          } @if (item.expired) {
-          <span class="expired">Batch expired</span>
-          } @if (item.expiredAfterOpening) {
-          <span class="expired">In-use expired</span>
+          @if (item.expiredAfterOpening) {
+          <span class="urgent">🚨 In-use expired</span>
+          } @else if (item.expiresSoonAfterOpening) {
+          <span class="warning">⚠️ In-use expires today</span>
           }
         </div>
       </td>
@@ -57,6 +77,15 @@
           >
             📦 View batches
           </button>
+        </div>
+      </td>
+      <td>
+        <div class="warnings">
+          @if (item.expired) {
+          <span class="urgent">🚨 Batch expired</span>
+          } @else if (item.expiresSoon) {
+          <span class="warning">⚠️ Batch expires today</span>
+          }
         </div>
       </td>
     </tr>

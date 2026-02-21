@@ -92,8 +92,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             if (!context.Request.Headers.TryGetValue("User-Agent", out var userAgent))
                 return string.Empty;
 
-            if (!context.Request.Headers.TryGetValue("Sec-CH-UA-Model", out var deviceModel))
-                return string.Empty;
+            context.Request.Headers.TryGetValue("Sec-CH-UA-Model", out var deviceModel);
 
             var deviceModelWithoutQuotes = deviceModel.ToString().Replace("\"", "");
 

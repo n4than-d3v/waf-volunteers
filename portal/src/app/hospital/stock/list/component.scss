@@ -26,12 +26,26 @@ table {
   gap: 0.5rem;
 }
 
-.expired {
+.urgent {
   font-weight: bold;
   color: var(--theme-color-2);
 }
 
-.reorder {
+.warning {
   font-weight: bold;
-  color: var(--theme-color-5);
+  color: #91734d;
+}
+
+.filter {
+  display: flex;
+  gap: 0.5rem;
+
+  .field {
+    margin-top: 1rem;
+
+    input,
+    select {
+      max-width: 15rem;
+    }
+  }
 }

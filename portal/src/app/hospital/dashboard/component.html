@@ -3,10 +3,20 @@
 } @else if (dashboard.error) {
 <div class="error">Error occurred</div>
 } @else if (dashboard.data) {
-<h3>Admissions</h3>
-<hospital-dashboard-daily-admissions
-  [dashboard]="dashboard.data"
-></hospital-dashboard-daily-admissions>
+<div class="sections sections--full">
+  <section>
+    <h3>Admissions</h3>
+    <hospital-dashboard-daily-admissions
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-daily-admissions>
+  </section>
+  <section>
+    <h3>Patients in care</h3>
+    <hospital-dashboard-daily-in-care
+      [dashboard]="dashboard.data"
+    ></hospital-dashboard-daily-in-care>
+  </section>
+</div>
 
 <div class="sections">
   <section>

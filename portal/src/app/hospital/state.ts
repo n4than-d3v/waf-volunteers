@@ -90,6 +90,7 @@ export interface ReadOnlyWrapper<T> {
 export interface Dashboard {
   speciesRescues: { [year: number]: { [species: string]: number[] } };
   patientAdmissionsByDate: { [year: number]: { [date: string]: number } };
+  patientsInCareByDate: { [year: number]: { [date: string]: number } };
   patientsByAdmissionReason: { [year: number]: { [reason: string]: number } };
   patientsBySpecies: { [year: number]: { [species: string]: number } };
   patientsByDisposition: { [year: number]: { [disposition: number]: number } };

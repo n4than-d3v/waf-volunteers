@@ -12,6 +12,7 @@ import { HospitalDashboardAdmissionsBySpeciesSurvivalComponent } from './admissi
 import { HospitalDashboardAdmissionsByDispositionComponent } from './admissions-by-disposition/component';
 import { HospitalDashboardAdmissionsBySpeciesRescuesComponent } from './admissions-by-species-rescue/component';
 import { HospitalDashboardAdmissionsBySpeciesEarlyLateMortalityComponent } from './admissions-by-species-early-late-mortality/component';
+import { HospitalDashboardChartInCareComponent } from './daily-in-care/component';
 
 @Component({
   selector: 'hospital-dashboard',
@@ -22,6 +23,7 @@ import { HospitalDashboardAdmissionsBySpeciesEarlyLateMortalityComponent } from 
     AsyncPipe,
     SpinnerComponent,
     HospitalDashboardChartAdmissionsComponent,
+    HospitalDashboardChartInCareComponent,
     HospitalDashboardAdmissionsByDispositionComponent,
     HospitalDashboardAdmissionsByReasonComponent,
     HospitalDashboardAdmissionsBySpeciesRescuesComponent,

@@ -33,7 +33,8 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
             PatientsByDisposition = await GetPatientsByDisposition(cancellationToken),
             PatientsByAdmissionReason = await GetPatientsByAdmissionReason(cancellationToken),
             PatientsBySpeciesDisposition = await GetPatientsBySpeciesDisposition(cancellationToken),
-            PatientAdmissionsByDate = await GetPatientAdmissionsByDate(cancellationToken)
+            PatientAdmissionsByDate = await GetPatientAdmissionsByDate(cancellationToken),
+            PatientsInCareByDate = await GetPatientsInCareByDate(cancellationToken)
         });
     }
 
@@ -314,7 +315,6 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
         return result;
     }
 
-
     private async Task<IReadOnlyDictionary<int, IReadOnlyDictionary<DateOnly, int>>> GetPatientAdmissionsByDate(CancellationToken cancellationToken)
     {
         var counts = await _repository
@@ -356,6 +356,59 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
         return result;
     }
 
+    private async Task<IReadOnlyDictionary<int, IReadOnlyDictionary<DateOnly, int>>> GetPatientsInCareByDate(CancellationToken cancellationToken)
+    {
+        var admittedPerDay = await _repository
+            .Query<Patient>()
+            .Where(p => p.Dispositioned != null)
+            .GroupBy(p => DateOnly.FromDateTime(p.Admitted))
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.Date, x => x.Count, cancellationToken);
+
+        var dischargedPerDay = await _repository
+            .Query<Patient>()
+            .Where(p => p.Dispositioned != null)
+            .GroupBy(p => DateOnly.FromDateTime(p.Dispositioned!.Value))
+            .Select(g => new { Date = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.Date, x => x.Count, cancellationToken);
+
+        var result = new Dictionary<int, IReadOnlyDictionary<DateOnly, int>>();
+
+        int cumulativeAdmitted = 0;
+        int cumulativeDischarged = 0;
+
+        var startDate = new DateOnly(StartYear, 1, 1);
+        var endDate = _today;
+
+        var currentYear = StartYear;
+        var perYear = new Dictionary<DateOnly, int>();
+
+        for (var date = startDate; date <= endDate; date = date.AddDays(1))
+        {
+            if (date.Year != currentYear)
+            {
+                result[currentYear] = perYear;
+                perYear = [];
+                currentYear = date.Year;
+            }
+
+            if (admittedPerDay.TryGetValue(date, out var admitted))
+                cumulativeAdmitted += admitted;
+
+            var previousDate = date.AddDays(-1);
+            if (dischargedPerDay.TryGetValue(previousDate, out var discharged))
+                cumulativeDischarged += discharged;
+
+            var active = cumulativeAdmitted - cumulativeDischarged;
+
+            perYear[date] = active;
+        }
+
+        result[currentYear] = perYear;
+
+        return result;
+    }
+
     public class Dashboard
     {
         public IReadOnlyDictionary<int, IReadOnlyDictionary<string, int[]>> SpeciesRescues { get; set; }
@@ -364,5 +417,6 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
         public IReadOnlyDictionary<int, IReadOnlyDictionary<string, int[]>> PatientsBySpeciesDisposition { get; set; }
         public IReadOnlyDictionary<int, IReadOnlyDictionary<string, int>> PatientsByAdmissionReason { get; set; }
         public IReadOnlyDictionary<int, IReadOnlyDictionary<DateOnly, int>> PatientAdmissionsByDate { get; set; }
+        public IReadOnlyDictionary<int, IReadOnlyDictionary<DateOnly, int>> PatientsInCareByDate { get; set; }
     }
 }

@@ -360,7 +360,6 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
     {
         var admittedPerDay = await _repository
             .Query<Patient>()
-            .Where(p => p.Dispositioned != null)
             .GroupBy(p => DateOnly.FromDateTime(p.Admitted))
             .Select(g => new { Date = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.Date, x => x.Count, cancellationToken);
@@ -374,37 +373,27 @@ public class GetDashboardHandler : IRequestHandler<GetDashboard, IResult>
 
         var result = new Dictionary<int, IReadOnlyDictionary<DateOnly, int>>();
 
-        int cumulativeAdmitted = 0;
-        int cumulativeDischarged = 0;
+        int patients = 0;
 
-        var startDate = new DateOnly(StartYear, 1, 1);
-        var endDate = _today;
-
-        var currentYear = StartYear;
-        var perYear = new Dictionary<DateOnly, int>();
-
-        for (var date = startDate; date <= endDate; date = date.AddDays(1))
+        for (int year = StartYear; year <= _today.Year; year++)
         {
-            if (date.Year != currentYear)
+            var perYear = new Dictionary<DateOnly, int>();
+            var end = year == _today.Year ? _today : new DateOnly(year, 12, 31);
+
+            for (var date = new DateOnly(year, 1, 1); date <= end; date = date.AddDays(1))
             {
-                result[currentYear] = perYear;
-                perYear = [];
-                currentYear = date.Year;
+                if (admittedPerDay.TryGetValue(date, out var admitted))
+                    patients += admitted;
+
+                var yesterday = date.AddDays(-1);
+                if (dischargedPerDay.TryGetValue(yesterday, out var discharged))
+                    patients -= discharged;
+
+                perYear[date] = patients;
             }
 
-            if (admittedPerDay.TryGetValue(date, out var admitted))
-                cumulativeAdmitted += admitted;
-
-            var previousDate = date.AddDays(-1);
-            if (dischargedPerDay.TryGetValue(previousDate, out var discharged))
-                cumulativeDischarged += discharged;
-
-            var active = cumulativeAdmitted - cumulativeDischarged;
-
-            perYear[date] = active;
+            result[year] = perYear;
         }
-
-        result[currentYear] = perYear;
 
         return result;
     }

@@ -6,6 +6,11 @@ export const selectAdminHospitalManagementState =
     'adminHospitalManagement',
   );
 
+export const selectFoods = createSelector(
+  selectAdminHospitalManagementState,
+  (state) => state.foods,
+);
+
 export const selectDiets = createSelector(
   selectAdminHospitalManagementState,
   (state) => state.diets,

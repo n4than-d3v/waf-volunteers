@@ -1,0 +1,10 @@
+﻿
+namespace Api.Database.Entities.Hospital.Patients.Husbandry;
+
+public class Food : Entity
+{
+    public string Name { get; set; }
+    public string? Notes { get; set; }
+
+    public string? Substitute { get; set; }
+}

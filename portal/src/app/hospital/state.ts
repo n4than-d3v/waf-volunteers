@@ -564,7 +564,6 @@ export interface SpeciesVariant {
   id: number;
   name: string;
   friendlyName: string;
-  feedingGuidance: string;
   order: number;
 }
 

@@ -381,6 +381,10 @@ public partial class Program
 
         var apiHospitalHusbandry = apiHospital.MapGroup("/husbandry");
 
+        apiHospitalHusbandry.MapGet("/foods", (IMediator mediator) => mediator.Send(new GetFoods()))
+            .AddNote("View foods")
+            .RequireAuthorization(signedInPolicy);
+
         apiHospitalHusbandry.MapGet("/diets", (IMediator mediator) => mediator.Send(new GetDiets()))
             .AddNote("View diets")
             .RequireAuthorization(signedInPolicy);
@@ -388,6 +392,10 @@ public partial class Program
         apiHospitalHusbandry.MapGet("/tags", (IMediator mediator) => mediator.Send(new GetTags()))
             .AddNote("View tags")
             .RequireAuthorization(signedInPolicy);
+
+        apiHospitalHusbandry.MapPut("/food", (IMediator mediator, UpsertFood request) => mediator.Send(request))
+            .AddNote("Update or create food")
+            .RequireAuthorization(vetPolicy);
 
         apiHospitalHusbandry.MapPut("/diet", (IMediator mediator, UpsertDiet request) => mediator.Send(request))
             .AddNote("Update or create diet")

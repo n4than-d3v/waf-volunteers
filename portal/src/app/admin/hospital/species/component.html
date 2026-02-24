@@ -23,7 +23,7 @@
     <input id="filter" type="text" [(ngModel)]="filter" />
   </div>
 </div>
-} @else if (creatingSpecies && editor) {
+} @else if (creatingSpecies) {
 <section>
   <h2>Create new species</h2>
   <form [formGroup]="speciesForm">
@@ -50,7 +50,7 @@
     </div>
   </form>
 </section>
-} @else if (creatingSpeciesVariant && editor) {
+} @else if (creatingSpeciesVariant) {
 <section>
   <h2>Create new variant for {{ creatingSpeciesVariant.name }}</h2>
   <form [formGroup]="speciesVariantForm">
@@ -73,20 +73,6 @@
       </div>
       <input id="longTermDays" type="number" formControlName="longTermDays" />
     </div>
-    <div class="field">
-      <label for="editor">Feeding guidance</label>
-      <div class="NgxEditor__Wrapper margin-left-lists">
-        <ngx-editor-menu
-          [editor]="editor"
-          [toolbar]="toolbar"
-        ></ngx-editor-menu>
-        <ngx-editor
-          [editor]="editor"
-          [placeholder]="'Type here...'"
-          formControlName="feedingGuidance"
-        ></ngx-editor>
-      </div>
-    </div>
     <div class="buttons">
       <button (click)="createSpeciesVariant()" class="button button--primary">
         Save
@@ -97,7 +83,7 @@
     </div>
   </form>
 </section>
-} @else if (updatingSpecies && editor) {
+} @else if (updatingSpecies) {
 <section>
   <h2>Edit species</h2>
   <form [formGroup]="speciesForm">
@@ -124,7 +110,7 @@
     </div>
   </form>
 </section>
-} @else if (updatingSpeciesVariant && editor) {
+} @else if (updatingSpeciesVariant) {
 <section>
   <h2>Edit variant for {{ updatingSpeciesVariant.name }}</h2>
   <form [formGroup]="speciesVariantForm">
@@ -147,20 +133,59 @@
       </div>
       <input id="longTermDays" type="number" formControlName="longTermDays" />
     </div>
-    <div class="field">
-      <label for="editor">Feeding guidance</label>
-      <div class="NgxEditor__Wrapper margin-left-lists">
-        <ngx-editor-menu
-          [editor]="editor"
-          [toolbar]="toolbar"
-        ></ngx-editor-menu>
-        <ngx-editor
-          [editor]="editor"
-          [placeholder]="'Type here...'"
-          formControlName="feedingGuidance"
-        ></ngx-editor>
+    <div class="feeding-guidance-section">
+      <h3>Feeding guidance</h3>
+      <div formArrayName="feedingGuidance">
+        <div
+          *ngFor="let fg of speciesVariantForm.controls.feedingGuidance.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="feeding-guidance">
+            <div class="controls">
+              <div class="field">
+                <label for="quantityValue">Quantity</label>
+                <input
+                  id="quantityValue"
+                  type="number"
+                  formControlName="quantityValue"
+                />
+              </div>
+              <div class="field">
+                <label for="quantityUnit">Unit</label>
+                <input
+                  id="quantityUnit"
+                  type="text"
+                  formControlName="quantityUnit"
+                />
+              </div>
+              <div class="field">
+                <label for="foodId">Food</label>
+                @if (foods$ | async; as foods) {
+                <select id="foodId" formControlName="foodId">
+                  @for (food of foods.data; track food.id) {
+                  <option [value]="food.id">{{ food.name }}</option>
+                  }
+                </select>
+                }
+              </div>
+              <div class="field">
+                <label for="timeId">Time</label>
+                <input id="timeId" type="time" formControlName="time" />
+              </div>
+            </div>
+            <button
+              class="button button--warning"
+              (click)="removeFeedingGuidance(i)"
+            >
+              Remove feeding
+            </button>
+          </div>
+        </div>
       </div>
     </div>
+    <button class="button button--secondary" (click)="addFeedingGuidance()">
+      Add feeding
+    </button>
     <div class="buttons">
       <button (click)="updateSpeciesVariant()" class="button button--primary">
         Save
@@ -206,7 +231,13 @@
         <tr>
           <td>{{ variant.name }}</td>
           <td>{{ variant.friendlyName }}</td>
-          <td [innerHTML]="convertHtml(variant.feedingGuidance)"></td>
+          <td>
+            @for (feeding of formatFeedingGuidance(variant); track feeding.time)
+            {
+            <strong>{{ feeding.time}}</strong>
+            @for (item of feeding.items; track item) { {{ item }}<br />
+            } }
+          </td>
           <td>
             <button
               class="button button--secondary"

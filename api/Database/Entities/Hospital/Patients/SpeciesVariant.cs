@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using Api.Database.Entities.Hospital.Patients.Husbandry;
+using System.Text.Json.Serialization;
 
 namespace Api.Database.Entities.Hospital.Patients;
 
@@ -13,5 +14,5 @@ public class SpeciesVariant : Entity
 
     public int LongTermDays { get; set; }
 
-    public string FeedingGuidance { get; set; }
+    public List<SpeciesVariantFood> FeedingGuidance { get; set; }
 }

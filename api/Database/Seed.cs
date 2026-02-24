@@ -153,7 +153,7 @@ public static class Seed
                 int i = 1;
                 foreach (var age in command.Ages)
                 {
-                    var speciesVariant = new SpeciesVariant { Species = species, Name = $"{age}", FriendlyName = $"{age} {name}", Order = i, FeedingGuidance = EmptyHtml };
+                    var speciesVariant = new SpeciesVariant { Species = species, Name = $"{age}", FriendlyName = $"{age} {name}", Order = i, FeedingGuidance = [] };
                     species.Variants.Add(speciesVariant);
                     i++;
                 }

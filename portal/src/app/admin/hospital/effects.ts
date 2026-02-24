@@ -7,6 +7,7 @@ import {
   Area,
   Diet,
   DispositionReason,
+  Food,
   Medication,
   PatientBoard,
   ReleaseType,
@@ -114,12 +115,73 @@ import {
   addBoardMessage,
   addBoardMessageSuccess,
   addBoardMessageError,
+  getFoods,
+  getFoodsSuccess,
+  getFoodsError,
+  createFood,
+  createFoodSuccess,
+  createFoodError,
+  updateFood,
+  updateFoodSuccess,
+  updateFoodError,
 } from './actions';
 
 @Injectable()
 export class AdminHospitalManagementEffects {
   actions$ = inject(Actions);
   http = inject(HttpClient);
+
+  // Foods
+
+  getFoods$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getFoods),
+      switchMap(() =>
+        this.http.get<Food[]>('hospital/husbandry/foods').pipe(
+          map((foods) => getFoodsSuccess({ foods })),
+          catchError(() => of(getFoodsError())),
+        ),
+      ),
+    ),
+  );
+
+  createFood$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createFood),
+      switchMap((action) =>
+        this.http.put('hospital/husbandry/food', action.food).pipe(
+          map((_) => createFoodSuccess()),
+          catchError(() => of(createFoodError())),
+        ),
+      ),
+    ),
+  );
+
+  createFoodSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createFoodSuccess),
+      switchMap((_) => of(getFoods())),
+    ),
+  );
+
+  updateFood$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateFood),
+      switchMap((action) =>
+        this.http.put('hospital/husbandry/food', action.food).pipe(
+          map((_) => updateFoodSuccess()),
+          catchError(() => of(updateFoodError())),
+        ),
+      ),
+    ),
+  );
+
+  updateFoodSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateFoodSuccess),
+      switchMap((_) => of(getFoods())),
+    ),
+  );
 
   // Diets
 

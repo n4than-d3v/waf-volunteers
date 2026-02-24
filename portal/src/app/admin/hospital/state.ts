@@ -1,4 +1,5 @@
 export interface AdminHospitalManagementState {
+  foods: Wrapper<Food>;
   diets: Wrapper<Diet>;
   tags: Wrapper<Tag>;
   dispositionReasons: Wrapper<DispositionReason>;
@@ -16,6 +17,16 @@ export interface Wrapper<T> {
   error: boolean;
   created: boolean;
   updated: boolean;
+}
+
+export interface CreateFoodCommand {
+  name: string;
+  notes: string;
+  substitute: string;
+}
+
+export interface Food extends CreateFoodCommand {
+  id: number;
 }
 
 export interface CreateDietCommand {
@@ -136,7 +147,13 @@ export interface CreateSpeciesVariantCommand {
   friendlyName: string;
   order: number;
   longTermDays: number;
-  feedingGuidance: string;
+
+  feedingGuidance: {
+    foodId: number;
+    time: string;
+    quantityValue: number;
+    quantityUnit: string;
+  }[];
 }
 
 export interface UpdateSpeciesCommand extends CreateSpeciesCommand {
@@ -151,9 +168,17 @@ export interface SpeciesVariant {
   id: number;
   name: string;
   friendlyName: string;
-  feedingGuidance: string;
   order: number;
   longTermDays: number;
+  feedingGuidance: SpeciesVariantFeedingGuidance[];
+}
+
+export interface SpeciesVariantFeedingGuidance {
+  id: number;
+  food: { id: number; name: string };
+  time: string;
+  quantityValue: number;
+  quantityUnit: string;
 }
 
 export interface Species extends UpdateSpeciesCommand {
@@ -203,6 +228,7 @@ const createWrapper = <T>(): Wrapper<T> => ({
 
 export const initialAdminHospitalManagementState: AdminHospitalManagementState =
   {
+    foods: createWrapper<Food>(),
     diets: createWrapper<Diet>(),
     tags: createWrapper<Tag>(),
     dispositionReasons: createWrapper<DispositionReason>(),

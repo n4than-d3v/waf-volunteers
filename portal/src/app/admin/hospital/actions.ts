@@ -22,7 +22,32 @@ import {
   SpeciesType,
   PatientBoard,
   PatientBoardAreaDisplayType,
+  Food,
+  CreateFoodCommand,
 } from './state';
+
+// Foods
+
+export const getFoods = createAction('[HMS-A] Get foods');
+export const getFoodsSuccess = createAction(
+  '[HMS-A] Get foods: success',
+  props<{ foods: Food[] }>(),
+);
+export const getFoodsError = createAction('[HMS-A] Get foods: error');
+
+export const createFood = createAction(
+  '[HMS-A] Create food',
+  props<{ food: CreateFoodCommand }>(),
+);
+export const createFoodSuccess = createAction('[HMS-A] Create food: success');
+export const createFoodError = createAction('[HMS-A] Create food: error');
+
+export const updateFood = createAction(
+  '[HMS-A] Update food',
+  props<{ food: Food }>(),
+);
+export const updateFoodSuccess = createAction('[HMS-A] Update food: success');
+export const updateFoodError = createAction('[HMS-A] Update food: error');
 
 // Diets
 

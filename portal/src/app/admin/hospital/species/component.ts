@@ -1,40 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import {
-  Species,
-  SpeciesType,
-  SpeciesVariant,
-  UpdateSpeciesCommand,
-  UpdateSpeciesVariantCommand,
-  Wrapper,
-} from '../state';
+import { Food, Species, SpeciesType, SpeciesVariant, Wrapper } from '../state';
 import { Store } from '@ngrx/store';
-import { selectSpecies } from '../selectors';
+import { selectFoods, selectSpecies } from '../selectors';
 import {
   createSpecies,
   createSpeciesVariant,
+  getFoods,
   getSpecies,
   updateSpecies,
   updateSpeciesVariant,
 } from '../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import {
-  Editor,
-  NgxEditorComponent,
-  NgxEditorMenuComponent,
-  toDoc,
-  toHTML,
-  Toolbar,
-} from 'ngx-editor';
-import {
+  FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'admin-hospital-species',
@@ -45,13 +32,13 @@ import { DomSanitizer } from '@angular/platform-browser';
     RouterLink,
     AsyncPipe,
     SpinnerComponent,
-    NgxEditorComponent,
-    NgxEditorMenuComponent,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
   ],
 })
 export class AdminHospitalSpeciesComponent implements OnInit {
+  foods$: Observable<Wrapper<Food>>;
   species$: Observable<Wrapper<Species>>;
 
   creatingSpecies = false;
@@ -72,26 +59,36 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     friendlyName: new FormControl(''),
     order: new FormControl(''),
     longTermDays: new FormControl(''),
-    feedingGuidance: new FormControl(''),
+    feedingGuidance: new FormArray<
+      FormGroup<{
+        foodId: FormControl<string | null>;
+        time: FormControl<string | null>;
+        quantityValue: FormControl<string | null>;
+        quantityUnit: FormControl<string | null>;
+      }>
+    >([]),
   });
 
   previousScroll = 0;
 
-  editor: Editor | null = null;
-  toolbar: Toolbar = [
-    ['bold', 'italic', 'underline', 'strike'],
-    ['bullet_list', 'ordered_list'],
-    ['text_color', 'background_color'],
-    ['link', 'image'],
-    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
-    ['align_left', 'align_center', 'align_right', 'align_justify'],
-  ];
-
-  constructor(
-    private store: Store,
-    private sanitizer: DomSanitizer,
-  ) {
+  constructor(private store: Store) {
+    this.foods$ = this.store.select(selectFoods);
     this.species$ = this.store.select(selectSpecies);
+  }
+
+  addFeedingGuidance() {
+    const formGroup = new FormGroup({
+      foodId: new FormControl('', [Validators.required]),
+      time: new FormControl('', [Validators.required]),
+      quantityValue: new FormControl('', [Validators.required]),
+      quantityUnit: new FormControl('', [Validators.required]),
+    });
+    this.speciesVariantForm.controls.feedingGuidance.push(formGroup);
+    return formGroup;
+  }
+
+  removeFeedingGuidance(index: number) {
+    this.speciesVariantForm.controls.feedingGuidance.removeAt(index);
   }
 
   shouldShowSpecies(species: Species) {
@@ -110,13 +107,11 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   beginCreateSpecies() {
     this.cancel(false);
     this.creatingSpecies = true;
-    this.editor = new Editor();
   }
 
   beginCreateSpeciesVariant(species: Species) {
     this.cancel(false);
     this.creatingSpeciesVariant = species;
-    this.editor = new Editor();
     this.previousScroll = window.scrollY;
     window.scroll(0, 0);
   }
@@ -129,15 +124,16 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.speciesForm.controls.speciesType.setValue(
       species.speciesType.toString(),
     );
-    this.editor = new Editor();
     this.previousScroll = window.scrollY;
     window.scroll(0, 0);
   }
 
   beginUpdateSpeciesVariant(variant: SpeciesVariant, species: Species) {
     this.cancel(false);
+
     this.updatingSpeciesVariant = variant;
     this.updatingSpeciesId = species.id;
+
     this.speciesVariantForm.controls.name.setValue(variant.name);
     this.speciesVariantForm.controls.friendlyName.setValue(
       variant.friendlyName,
@@ -146,12 +142,47 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.speciesVariantForm.controls.longTermDays.setValue(
       variant.longTermDays.toString(),
     );
-    this.speciesVariantForm.controls.feedingGuidance.setValue(
-      toHTML(JSON.parse(variant.feedingGuidance)),
-    );
-    this.editor = new Editor();
+
+    this.speciesVariantForm.controls.feedingGuidance.clear();
+
+    if (variant.feedingGuidance?.length) {
+      variant.feedingGuidance.forEach((fg) => {
+        const formGroup = this.addFeedingGuidance();
+        formGroup.controls.foodId.setValue(fg.food.id.toString());
+        formGroup.controls.quantityUnit.setValue(fg.quantityUnit);
+        formGroup.controls.quantityValue.setValue(fg.quantityValue.toString());
+        formGroup.controls.time.setValue(fg.time);
+      });
+    }
+
     this.previousScroll = window.scrollY;
     window.scroll(0, 0);
+  }
+
+  formatFeedingGuidance(variant: SpeciesVariant) {
+    const grouped = variant.feedingGuidance.reduce<Record<string, string[]>>(
+      (acc, guidance) => {
+        const formattedTime = guidance.time.slice(0, 5);
+
+        if (!acc[formattedTime]) {
+          acc[formattedTime] = [];
+        }
+
+        acc[formattedTime].push(
+          `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name}`,
+        );
+
+        return acc;
+      },
+      {},
+    );
+
+    return Object.entries(grouped)
+      .sort(([timeA], [timeB]) => timeA.localeCompare(timeB))
+      .map(([time, items]) => ({
+        time,
+        items,
+      }));
   }
 
   cancel(fullReset = true) {
@@ -162,14 +193,9 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     if (fullReset) {
       this.speciesForm.reset();
       this.speciesVariantForm.reset();
-      this.editor?.destroy();
-      this.editor = null;
+      this.speciesVariantForm.controls.feedingGuidance.clear();
       window.scroll(0, this.previousScroll);
     }
-  }
-
-  convertHtml(json: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(toHTML(JSON.parse(json)));
   }
 
   createSpecies() {
@@ -185,9 +211,6 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   createSpeciesVariant() {
-    const htmlContent =
-      this.speciesVariantForm.controls.feedingGuidance.value || '';
-    const jsonDoc = toDoc(htmlContent);
     this.store.dispatch(
       createSpeciesVariant({
         variant: {
@@ -199,7 +222,13 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           longTermDays: Number(
             this.speciesVariantForm.controls.longTermDays.value,
           ),
-          feedingGuidance: JSON.stringify(jsonDoc),
+          feedingGuidance:
+            this.speciesVariantForm.value.feedingGuidance?.map((fg: any) => ({
+              foodId: Number(fg.foodId),
+              time: fg.time,
+              quantityValue: Number(fg.quantityValue),
+              quantityUnit: fg.quantityUnit,
+            })) || [],
         },
       }),
     );
@@ -230,9 +259,6 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   updateSpeciesVariant() {
-    const htmlContent =
-      this.speciesVariantForm.controls.feedingGuidance.value || '';
-    const jsonDoc = toDoc(htmlContent);
     this.store.dispatch(
       updateSpeciesVariant({
         variant: {
@@ -245,7 +271,13 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           longTermDays: Number(
             this.speciesVariantForm.controls.longTermDays.value,
           ),
-          feedingGuidance: JSON.stringify(jsonDoc),
+          feedingGuidance:
+            this.speciesVariantForm.value.feedingGuidance?.map((fg: any) => ({
+              foodId: Number(fg.foodId),
+              time: fg.time,
+              quantityValue: Number(fg.quantityValue),
+              quantityUnit: fg.quantityUnit,
+            })) || [],
         },
       }),
     );
@@ -258,6 +290,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.store.dispatch(getFoods());
     this.store.dispatch(getSpecies());
   }
 

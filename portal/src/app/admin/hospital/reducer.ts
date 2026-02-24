@@ -94,11 +94,99 @@ import {
   getBoards,
   getBoardsSuccess,
   getBoardsError,
+  getFoods,
+  getFoodsSuccess,
+  getFoodsError,
+  createFood,
+  createFoodSuccess,
+  createFoodError,
+  updateFood,
+  updateFoodSuccess,
+  updateFoodError,
 } from './actions';
 
 export const adminHospitalManagementReducer =
   createReducer<AdminHospitalManagementState>(
     initialAdminHospitalManagementState,
+    // Foods
+    on(getFoods, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(getFoodsSuccess, (state, { foods }) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        data: foods,
+        loading: false,
+      },
+    })),
+    on(getFoodsError, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(createFood, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(createFoodSuccess, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: false,
+        created: true,
+      },
+    })),
+    on(createFoodError, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(updateFood, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(updateFoodSuccess, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: false,
+        updated: true,
+      },
+    })),
+    on(updateFoodError, (state) => ({
+      ...state,
+      foods: {
+        ...state.foods,
+        loading: false,
+        error: true,
+      },
+    })),
     // Diets
     on(getDiets, (state) => ({
       ...state,

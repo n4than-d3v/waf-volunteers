@@ -88,6 +88,8 @@ public class DatabaseContext : DbContext
     public DbSet<PatientFaecalTest> PatientFaecalTests { get; set; }
     public DbSet<Species> Species { get; set; }
     public DbSet<SpeciesVariant> SpeciesVariants { get; set; }
+    public DbSet<Food> Foods { get; set; }
+    public DbSet<SpeciesVariantFood> SpeciesVariantFoods { get; set; }
 
     // Patient boards
     public DbSet<Board> Boards { get; set; }

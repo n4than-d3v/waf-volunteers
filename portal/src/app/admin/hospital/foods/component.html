@@ -1,0 +1,100 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Food items</h1>
+
+<p>
+  These are items of food that can be associated with standard feeding guidance.
+  <br />
+  These are not custom dietary instructions, but standardised foods like chicks
+  / dog food.<br />
+  These can be used in the species variant configuration to set-up meals.
+</p>
+
+@if (foods$ | async; as foods) { @if (foods.loading) {
+<spinner></spinner>
+} @else if (foods.error) {
+<div class="error">Error occurred</div>
+} @else if (foods.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new food
+</button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
+} @else if (creating) {
+<section>
+  <h2>Create new food</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="notes">Notes</label>
+      <input id="notes" type="text" formControlName="notes" />
+    </div>
+    <div class="field">
+      <label for="substitute">Substitute</label>
+      <input id="substitute" type="text" formControlName="substitute" />
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating) {
+<section>
+  <h2>Edit food</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="notes">Notes</label>
+      <input id="notes" type="text" formControlName="notes" />
+    </div>
+    <div class="field">
+      <label for="substitute">Substitute</label>
+      <input id="substitute" type="text" formControlName="substitute" />
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Notes</th>
+      <th>Substitute</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (food of foods.data; track food.id) { @if (shouldShowFood(food)) {
+    <tr>
+      <td>{{ food.name }}</td>
+      <td>{{ food.notes }}</td>
+      <td>{{ food.substitute }}</td>
+      <td>
+        <button (click)="beginUpdate(food)" class="button button--secondary">
+          Edit
+        </button>
+      </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+} }

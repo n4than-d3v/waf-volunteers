@@ -82,7 +82,7 @@ export const appConfig: ApplicationConfig = {
           enterValidUrl: 'Please enter a valid URL',
           required: 'This is required',
         },
-      })
+      }),
     ),
     TokenProvider,
     provideHttpClient(withInterceptors([baseUrlInterceptor, tokenInterceptor])),
@@ -142,7 +142,7 @@ export const appConfig: ApplicationConfig = {
     ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideServiceWorker('ngsw-worker.js', {
+    provideServiceWorker('ngsw-worker-wrapper.js', {
       enabled: true,
       registrationStrategy: 'registerWhenStable:30000',
     }),

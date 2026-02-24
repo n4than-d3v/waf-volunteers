@@ -50,25 +50,26 @@ public class PushService : IPushService
         var webPushClient = new WebPushClient();
         try
         {
-            var resolver = new CamelCasePropertyNamesContractResolver();
             var payload = JsonConvert.SerializeObject(
                 new
                 {
-                    title = message.Title,
-                    body = message.Body,
-                    icon = message.Icon,
-                    badge = message.Badge,
-                    image = message.Image,
-                    onActionClick = new
+                    notification = new
                     {
-                        @default = new
-                        {
-                            operation = "openWindow",
-                            url = message.Url
-                        }
+                        title = message.Title,
+                        body = message.Body,
+                        icon = message.Icon,
+                        badge = message.Badge,
+                        image = message.Image
+                    },
+                    data = new
+                    {
+                        url = message.Url
                     }
                 },
-                new JsonSerializerSettings { ContractResolver = resolver });
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                });
 
             await webPushClient.SendNotificationAsync(subscription, payload, vapidDetails);
 

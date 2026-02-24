@@ -36,7 +36,8 @@ public class Notice : Entity
                 AccountRoles.BEACON_ORPHAN_FEEDER |
                 AccountRoles.BEACON_RESCUER |
                 AccountRoles.BEACON_CENTRE_MAINTENANCE |
-                AccountRoles.BEACON_OFFICE_ADMIN;
+                AccountRoles.BEACON_OFFICE_ADMIN |
+                AccountRoles.BEACON_HOUSE_KEEPER;
         }
     }
 

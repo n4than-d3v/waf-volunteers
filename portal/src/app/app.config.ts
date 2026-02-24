@@ -142,7 +142,7 @@ export const appConfig: ApplicationConfig = {
     ]),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideServiceWorker('ngsw-worker-wrapper.js', {
+    provideServiceWorker('ngsw-worker.js', {
       enabled: true,
       registrationStrategy: 'registerWhenStable:30000',
     }),

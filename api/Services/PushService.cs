@@ -59,11 +59,18 @@ public class PushService : IPushService
                         body = message.Body,
                         icon = message.Icon,
                         badge = message.Badge,
-                        image = message.Image
-                    },
-                    data = new
-                    {
-                        url = message.Url
+                        image = message.Image,
+                        data = new
+                        {
+                            onActionClick = new
+                            {
+                                @default = new
+                                {
+                                    operation = "openWindow",
+                                    url = message.Url
+                                }
+                            }
+                        }
                     }
                 },
                 new JsonSerializerSettings

@@ -109,8 +109,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     administrationMethodId: new FormControl('', [Validators.required]),
     comments: new FormControl(''),
     frequencyType: new FormControl('', [Validators.required]),
-    frequencyX: new FormControl('', [Validators.required]),
-    frequencyY: new FormControl('', [Validators.required]),
+    frequencyX: new FormControl(''),
+    frequencyY: new FormControl(''),
     frequency: new FormControl('', [Validators.required]),
   });
 
@@ -151,8 +151,34 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     });
   }
 
+  private validateFrequency(
+    form: Partial<
+      FormGroup<{
+        frequencyType: FormControl<string | null>;
+        frequencyX: FormControl<string | null>;
+        frequencyY: FormControl<string | null>;
+        frequency: FormControl<string | null>;
+      }>
+    >,
+  ) {
+    if (form.value?.frequencyType === 'once') {
+      form.controls?.frequencyX.clearValidators();
+      form.controls?.frequencyY.clearValidators();
+    } else {
+      form.controls?.frequencyX.addValidators([
+        Validators.required,
+        Validators.pattern(/^\d+$/),
+        Validators.min(0.01),
+      ]);
+      form.controls?.frequencyY.addValidators([Validators.required]);
+    }
+    form.controls?.frequencyX.updateValueAndValidity();
+    form.controls?.frequencyY.updateValueAndValidity();
+  }
+
   editMedication() {
     this.attemptedSave = true;
+    this.validateFrequency(this.prescriptionMedicationForm);
     if (!this.prescriptionMedicationForm.valid) return;
     this.saving = true;
     this.store.dispatch(
@@ -166,6 +192,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   editInstruction() {
     this.attemptedSave = true;
+    this.validateFrequency(this.prescriptionInstructionForm);
     if (!this.prescriptionInstructionForm.valid) return;
     this.saving = true;
     this.store.dispatch(
@@ -230,6 +257,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   addMedication() {
     this.attemptedSave = true;
+    this.validateFrequency(this.prescriptionMedicationForm);
     if (!this.prescriptionMedicationForm.valid) return;
     this.saving = true;
     this.store.dispatch(
@@ -242,6 +270,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
 
   addInstruction() {
     this.attemptedSave = true;
+    this.validateFrequency(this.prescriptionInstructionForm);
     if (!this.prescriptionInstructionForm.valid) return;
     this.saving = true;
     this.store.dispatch(

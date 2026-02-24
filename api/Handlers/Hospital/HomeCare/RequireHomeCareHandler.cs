@@ -74,7 +74,8 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
                 await _pushService.Send(push, new PushNotification
                 {
                     Title = "Home care required",
-                    Body = $"{species} requires home care. Can you please help?"
+                    Body = $"{species} requires home care. Can you please help?",
+                    Url = "/volunteer/home-care"
                 }, account.Id);
             }
         }

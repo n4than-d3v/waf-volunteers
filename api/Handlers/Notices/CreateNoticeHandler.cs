@@ -79,7 +79,8 @@ public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
                 await _pushService.Send(subscription!, new PushNotification
                 {
                     Title = "Notice",
-                    Body = request.Title
+                    Body = request.Title,
+                    Url = $"/volunteer/notices/{notice.Id}/view"
                 }, account.Id);
             }
             catch

@@ -113,7 +113,8 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                         await _pushService.Send(push, new PushNotification
                         {
                             Title = "Urgent! Last-minute cancellation",
-                            Body = message
+                            Body = message,
+                            Url = "/volunteer/rota"
                         }, recipient.Id);
                     }
                 }

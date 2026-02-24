@@ -1,10 +1,17 @@
 import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { TokenProvider } from '../shared/token.provider';
 
-export const isAuthenticated: CanActivateFn = () => {
+export const isAuthenticated: CanActivateFn = (route, state) => {
   const tokenProvider = inject(TokenProvider);
-  return tokenProvider.hasToken() && tokenProvider.isTokenStillAlive();
+  const router = inject(Router);
+
+  if (tokenProvider.hasToken() && tokenProvider.isTokenStillAlive())
+    return true;
+
+  return router.createUrlTree(['/login'], {
+    queryParams: { returnUrl: state.url },
+  });
 };
 
 export const isAdmin: CanActivateFn = () => {

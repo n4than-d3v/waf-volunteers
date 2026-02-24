@@ -68,7 +68,8 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
                 await _pushService.Send(push, new PushNotification
                 {
                     Title = "Home care message",
-                    Body = $"You have received a new message regarding patient {homeCareRequest.Reference}"
+                    Body = $"You have received a new message regarding patient {homeCareRequest.Reference}",
+                    Url = "/volunteer/home-care"
                 }, account.Id);
             }
         }

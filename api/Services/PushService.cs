@@ -18,6 +18,7 @@ public class PushNotification
     public string Icon { get; set; } = "icons/icon-192x192.png";
     public string Badge { get; set; } = "icons/icon-192x192.png";
     public string Image { get; set; }
+    public string Url { get; set; } = "/";
 }
 
 public interface IPushService
@@ -51,7 +52,28 @@ public class PushService : IPushService
         {
             var resolver = new CamelCasePropertyNamesContractResolver();
             var payload = JsonConvert.SerializeObject(
-                new { notification = message },
+                new
+                {
+                    notification = new
+                    {
+                        message.Title,
+                        message.Body,
+                        message.Icon,
+                        message.Badge,
+                        message.Image
+                    },
+                    data = new
+                    {
+                        onActionClick = new
+                        {
+                            @default = new
+                            {
+                                operation = "openWindow",
+                                url = message.Url
+                            }
+                        }
+                    }
+                },
                 new JsonSerializerSettings { ContractResolver = resolver });
 
             await webPushClient.SendNotificationAsync(subscription, payload, vapidDetails);

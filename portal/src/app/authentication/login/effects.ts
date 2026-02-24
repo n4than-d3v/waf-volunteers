@@ -45,6 +45,17 @@ export class LoginEffects {
         ofType(loginSuccess),
         map((action) => {
           this.tokenProvider.setToken(action.token);
+
+          try {
+            const returnUrl =
+              this.router.routerState.snapshot.root.queryParams['returnUrl'];
+
+            if (returnUrl) {
+              this.router.navigateByUrl(returnUrl);
+              return;
+            }
+          } catch {}
+
           if (this.tokenProvider.isAdmin()) {
             this.router.navigateByUrl('/admin/dashboard');
           } else if (this.tokenProvider.isClocking()) {

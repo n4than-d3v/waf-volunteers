@@ -67,7 +67,8 @@ public class NotConfirmedNextShiftHandler : IRequestHandler<NotConfirmedNextShif
                 await _pushService.Send(push, new PushNotification
                 {
                     Title = "Upcoming shift not confirmed",
-                    Body = $"We noticed you have not yet confirmed whether you are coming in on {string.Join(" and ", notify)}. Please can you update your availability on the rota? Thank you!"
+                    Body = $"We noticed you have not yet confirmed whether you are coming in on {string.Join(" and ", notify)}. Please can you update your availability on the rota? Thank you!",
+                    Url = "/volunteer/rota"
                 }, account.Id);
             }
         }

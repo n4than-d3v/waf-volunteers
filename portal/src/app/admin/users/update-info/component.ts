@@ -76,13 +76,17 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
       BEACON_RESCUER: new FormControl(false),
       BEACON_CENTRE_MAINTENANCE: new FormControl(false),
       BEACON_OFFICE_ADMIN: new FormControl(false),
+      BEACON_HOUSE_KEEPER: new FormControl(false),
       APP_ADMIN: new FormControl(false),
       APP_CLOCKING: new FormControl(false),
       APP_BOARDS: new FormControl(false),
     }),
   });
 
-  constructor(private store: Store, route: ActivatedRoute) {
+  constructor(
+    private store: Store,
+    route: ActivatedRoute,
+  ) {
     this.loading$ = this.store.select(selectProfilesLoading);
     this.updated$ = this.store.select(selectProfileUpdateSuccess);
     this.error$ = this.store.select(selectProfilesError);
@@ -92,7 +96,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
       this.store.dispatch(
         getUser({
           id: this.userId,
-        })
+        }),
       );
     });
     this.subscription = this.store
@@ -131,6 +135,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
               profile.roles & Roles.BEACON_CENTRE_MAINTENANCE
             ),
             BEACON_OFFICE_ADMIN: !!(profile.roles & Roles.BEACON_OFFICE_ADMIN),
+            BEACON_HOUSE_KEEPER: !!(profile.roles & Roles.BEACON_HOUSE_KEEPER),
             APP_ADMIN: !!(profile.roles & Roles.APP_ADMIN),
             APP_CLOCKING: !!(profile.roles & Roles.APP_CLOCKING),
             APP_BOARDS: !!(profile.roles & Roles.APP_BOARDS),
@@ -196,6 +201,9 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
             (this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.value
               ? Roles.BEACON_OFFICE_ADMIN
               : 0) |
+            (this.form.controls.roles.controls.BEACON_HOUSE_KEEPER.value
+              ? Roles.BEACON_HOUSE_KEEPER
+              : 0) |
             (this.form.controls.roles.controls.APP_ADMIN.value
               ? Roles.APP_ADMIN
               : 0) |
@@ -206,7 +214,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
               ? Roles.APP_BOARDS
               : 0),
         },
-      })
+      }),
     );
   }
 

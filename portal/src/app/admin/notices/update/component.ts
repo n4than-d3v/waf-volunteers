@@ -73,6 +73,7 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
       BEACON_RESCUER: new FormControl(false),
       BEACON_CENTRE_MAINTENANCE: new FormControl(false),
       BEACON_OFFICE_ADMIN: new FormControl(false),
+      BEACON_HOUSE_KEEPER: new FormControl(false),
       APP_ADMIN: new FormControl(false),
     }),
   });
@@ -92,7 +93,7 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
   constructor(
     private store: Store,
     public sanitizer: DomSanitizer,
-    route: ActivatedRoute
+    route: ActivatedRoute,
   ) {
     this.updated$ = this.store.select(selectNoticeUpdated);
     this.loading$ = this.store.select(selectNoticesLoading);
@@ -104,40 +105,43 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
       this.form.controls.content.setValue(toHTML(JSON.parse(notice.content)));
       const roles = notice.roles;
       this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.setValue(
-        (roles & Roles.BEACON_ANIMAL_HUSBANDRY) !== 0
+        (roles & Roles.BEACON_ANIMAL_HUSBANDRY) !== 0,
       );
       this.form.controls.roles.controls.BEACON_RECEPTIONIST.setValue(
-        (roles & Roles.BEACON_RECEPTIONIST) !== 0
+        (roles & Roles.BEACON_RECEPTIONIST) !== 0,
       );
       this.form.controls.roles.controls.BEACON_TEAM_LEADER.setValue(
-        (roles & Roles.BEACON_TEAM_LEADER) !== 0
+        (roles & Roles.BEACON_TEAM_LEADER) !== 0,
       );
       this.form.controls.roles.controls.BEACON_VET.setValue(
-        (roles & Roles.BEACON_VET) !== 0
+        (roles & Roles.BEACON_VET) !== 0,
       );
       this.form.controls.roles.controls.BEACON_VET_NURSE.setValue(
-        (roles & Roles.BEACON_VET_NURSE) !== 0
+        (roles & Roles.BEACON_VET_NURSE) !== 0,
       );
       this.form.controls.roles.controls.BEACON_AUXILIARY.setValue(
-        (roles & Roles.BEACON_AUXILIARY) !== 0
+        (roles & Roles.BEACON_AUXILIARY) !== 0,
       );
       this.form.controls.roles.controls.BEACON_WORK_EXPERIENCE.setValue(
-        (roles & Roles.BEACON_WORK_EXPERIENCE) !== 0
+        (roles & Roles.BEACON_WORK_EXPERIENCE) !== 0,
       );
       this.form.controls.roles.controls.BEACON_ORPHAN_FEEDER.setValue(
-        (roles & Roles.BEACON_ORPHAN_FEEDER) !== 0
+        (roles & Roles.BEACON_ORPHAN_FEEDER) !== 0,
       );
       this.form.controls.roles.controls.BEACON_RESCUER.setValue(
-        (roles & Roles.BEACON_RESCUER) !== 0
+        (roles & Roles.BEACON_RESCUER) !== 0,
       );
       this.form.controls.roles.controls.BEACON_CENTRE_MAINTENANCE.setValue(
-        (roles & Roles.BEACON_CENTRE_MAINTENANCE) !== 0
+        (roles & Roles.BEACON_CENTRE_MAINTENANCE) !== 0,
       );
       this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.setValue(
-        (roles & Roles.BEACON_OFFICE_ADMIN) !== 0
+        (roles & Roles.BEACON_OFFICE_ADMIN) !== 0,
+      );
+      this.form.controls.roles.controls.BEACON_HOUSE_KEEPER.setValue(
+        (roles & Roles.BEACON_HOUSE_KEEPER) !== 0,
       );
       this.form.controls.roles.controls.APP_ADMIN.setValue(
-        (roles & Roles.APP_ADMIN) !== 0
+        (roles & Roles.APP_ADMIN) !== 0,
       );
     });
     this.editor = new Editor();
@@ -146,7 +150,7 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
       this.store.dispatch(
         openNotice({
           id: this.id,
-        })
+        }),
       );
     });
   }
@@ -165,40 +169,43 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
   selectAllAudience() {
     this.selectedAllAudience = !this.selectedAllAudience;
     this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_RECEPTIONIST.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_TEAM_LEADER.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_VET.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_VET_NURSE.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_AUXILIARY.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_WORK_EXPERIENCE.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_ORPHAN_FEEDER.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_RESCUER.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_CENTRE_MAINTENANCE.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
+    );
+    this.form.controls.roles.controls.BEACON_HOUSE_KEEPER.setValue(
+      this.selectedAllAudience,
     );
     this.form.controls.roles.controls.APP_ADMIN.setValue(
-      this.selectedAllAudience
+      this.selectedAllAudience,
     );
   }
 
@@ -251,10 +258,13 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
           (this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.value
             ? Roles.BEACON_OFFICE_ADMIN
             : 0) |
+          (this.form.controls.roles.controls.BEACON_HOUSE_KEEPER.value
+            ? Roles.BEACON_HOUSE_KEEPER
+            : 0) |
           (this.form.controls.roles.controls.APP_ADMIN.value
             ? Roles.APP_ADMIN
             : 0),
-      })
+      }),
     );
   }
 }

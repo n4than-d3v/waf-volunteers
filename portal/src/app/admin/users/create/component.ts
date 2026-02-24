@@ -55,6 +55,7 @@ export class AdminUsersCreateComponent {
       BEACON_RESCUER: new FormControl(false),
       BEACON_CENTRE_MAINTENANCE: new FormControl(false),
       BEACON_OFFICE_ADMIN: new FormControl(false),
+      BEACON_HOUSE_KEEPER: new FormControl(false),
       APP_ADMIN: new FormControl(false),
       APP_CLOCKING: new FormControl(false),
       APP_BOARDS: new FormControl(false),
@@ -112,6 +113,9 @@ export class AdminUsersCreateComponent {
             (this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.value
               ? Roles.BEACON_OFFICE_ADMIN
               : 0) |
+            (this.form.controls.roles.controls.BEACON_HOUSE_KEEPER.value
+              ? Roles.BEACON_HOUSE_KEEPER
+              : 0) |
             (this.form.controls.roles.controls.APP_ADMIN.value
               ? Roles.APP_ADMIN
               : 0) |
@@ -122,7 +126,7 @@ export class AdminUsersCreateComponent {
               ? Roles.APP_BOARDS
               : 0),
         },
-      })
+      }),
     );
   }
 }

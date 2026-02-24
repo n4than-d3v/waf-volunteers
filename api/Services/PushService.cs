@@ -66,7 +66,7 @@ public class PushService : IPushService
                             {
                                 @default = new
                                 {
-                                    operation = "openWindow",
+                                    operation = "navigateLastFocusedOrOpen",
                                     url = message.Url
                                 }
                             }

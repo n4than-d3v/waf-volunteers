@@ -54,23 +54,17 @@ public class PushService : IPushService
             var payload = JsonConvert.SerializeObject(
                 new
                 {
-                    notification = new
+                    title = message.Title,
+                    body = message.Body,
+                    icon = message.Icon,
+                    badge = message.Badge,
+                    image = message.Image,
+                    onActionClick = new
                     {
-                        message.Title,
-                        message.Body,
-                        message.Icon,
-                        message.Badge,
-                        message.Image
-                    },
-                    data = new
-                    {
-                        onActionClick = new
+                        @default = new
                         {
-                            @default = new
-                            {
-                                operation = "openWindow",
-                                url = message.Url
-                            }
+                            operation = "openWindow",
+                            url = message.Url
                         }
                     }
                 },

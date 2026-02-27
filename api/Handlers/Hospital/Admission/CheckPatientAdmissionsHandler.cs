@@ -70,6 +70,11 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                     continue;
                 }
 
+                if (admission.entity.is_archived || admission.entity.c_name == "VOID")
+                {
+                    continue;
+                }
+
                 // Otherwise if patient doesn't exist, create a new patient
                 var patientSalt = _encryptionService.GenerateSalt();
 

@@ -30,6 +30,7 @@ public partial class BeaconService
             public List<string> c_reason_for_admission { get; set; }
             public List<string> c_arrival_cage_pod { get; set; }
             public bool c_rescue { get; set; }
+            public bool is_archived { get; set; }
         }
 
         public class Reference

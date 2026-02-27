@@ -198,6 +198,11 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     }
   }
 
+  private convertTime(time: string) {
+    const timeSplit = time.split(':');
+    return `${timeSplit[0]}:${timeSplit[1]}:00`;
+  }
+
   createSpecies() {
     this.store.dispatch(
       createSpecies({
@@ -225,7 +230,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           feedingGuidance:
             this.speciesVariantForm.value.feedingGuidance?.map((fg: any) => ({
               foodId: Number(fg.foodId),
-              time: fg.time,
+              time: this.convertTime(fg.time),
               quantityValue: Number(fg.quantityValue),
               quantityUnit: fg.quantityUnit,
             })) || [],
@@ -274,7 +279,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           feedingGuidance:
             this.speciesVariantForm.value.feedingGuidance?.map((fg: any) => ({
               foodId: Number(fg.foodId),
-              time: fg.time,
+              time: this.convertTime(fg.time),
               quantityValue: Number(fg.quantityValue),
               quantityUnit: fg.quantityUnit,
             })) || [],

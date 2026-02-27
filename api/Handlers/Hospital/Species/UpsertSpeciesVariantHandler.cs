@@ -36,85 +36,78 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
 
     public async Task<IResult> Handle(UpsertSpeciesVariant request, CancellationToken cancellationToken)
     {
-        try
+        var species = await _repository.Get<Species>(request.SpeciesId);
+        if (species == null) return Results.BadRequest();
+
+        var foods = await _repository.GetAll<Food>(x => true);
+
+        SpeciesVariant speciesVariant;
+        if (request.Id != null)
         {
-            var species = await _repository.Get<Species>(request.SpeciesId);
-            if (species == null) return Results.BadRequest();
+            speciesVariant = await _repository.Get<SpeciesVariant>(request.Id.Value,
+                action: x => x.Include(y => y.FeedingGuidance).ThenInclude(y => y.Food));
+            if (speciesVariant == null) return Results.BadRequest();
 
-            var foods = await _repository.GetAll<Food>(x => true);
-
-            SpeciesVariant speciesVariant;
-            if (request.Id != null)
+            speciesVariant.Name = request.Name;
+            speciesVariant.FriendlyName = request.FriendlyName;
+            speciesVariant.Order = request.Order;
+            speciesVariant.LongTermDays = request.LongTermDays;
+            speciesVariant.Species = species;
+            speciesVariant.FeedingGuidance ??= [];
+        }
+        else
+        {
+            speciesVariant = new SpeciesVariant
             {
-                speciesVariant = await _repository.Get<SpeciesVariant>(request.Id.Value,
-                    action: x => x.Include(y => y.FeedingGuidance).ThenInclude(y => y.Food));
-                if (speciesVariant == null) return Results.BadRequest();
+                Name = request.Name,
+                FriendlyName = request.FriendlyName,
+                Order = request.Order,
+                LongTermDays = request.LongTermDays,
+                Species = species,
+                FeedingGuidance = []
+            };
+            _repository.Create(speciesVariant);
+        }
 
-                speciesVariant.Name = request.Name;
-                speciesVariant.FriendlyName = request.FriendlyName;
-                speciesVariant.Order = request.Order;
-                speciesVariant.LongTermDays = request.LongTermDays;
-                speciesVariant.Species = species;
-                speciesVariant.FeedingGuidance ??= [];
+        var existingGuidance = speciesVariant.FeedingGuidance.ToList();
+
+        foreach (var existingItem in existingGuidance)
+        {
+            if (!request.FeedingGuidance.Any(r => r.FoodId == existingItem.Food.Id))
+            {
+                speciesVariant.FeedingGuidance.Remove(existingItem);
+                _repository.Delete(existingItem);
+            }
+        }
+
+        foreach (var item in request.FeedingGuidance)
+        {
+            var existingItem = existingGuidance.FirstOrDefault(x => x.Food.Id == item.FoodId);
+            if (existingItem != null)
+            {
+                existingItem.Time = item.Time;
+                existingItem.QuantityValue = item.QuantityValue;
+                existingItem.QuantityUnit = item.QuantityUnit;
             }
             else
             {
-                speciesVariant = new SpeciesVariant
+                var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
+                if (food == null) return Results.BadRequest();
+
+                var newGuidance = new SpeciesVariantFood
                 {
-                    Name = request.Name,
-                    FriendlyName = request.FriendlyName,
-                    Order = request.Order,
-                    LongTermDays = request.LongTermDays,
-                    Species = species,
-                    FeedingGuidance = []
+                    Food = food,
+                    Time = item.Time,
+                    QuantityValue = item.QuantityValue,
+                    QuantityUnit = item.QuantityUnit,
+                    SpeciesVariant = speciesVariant
                 };
-                _repository.Create(speciesVariant);
+
+                speciesVariant.FeedingGuidance.Add(newGuidance);
             }
-
-            var existingGuidance = speciesVariant.FeedingGuidance.ToList();
-
-            foreach (var existingItem in existingGuidance)
-            {
-                if (!request.FeedingGuidance.Any(r => r.FoodId == existingItem.Food.Id))
-                {
-                    speciesVariant.FeedingGuidance.Remove(existingItem);
-                    _repository.Delete(existingItem);
-                }
-            }
-
-            foreach (var item in request.FeedingGuidance)
-            {
-                var existingItem = existingGuidance.FirstOrDefault(x => x.Food.Id == item.FoodId);
-                if (existingItem != null)
-                {
-                    existingItem.Time = item.Time;
-                    existingItem.QuantityValue = item.QuantityValue;
-                    existingItem.QuantityUnit = item.QuantityUnit;
-                }
-                else
-                {
-                    var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
-                    if (food == null) return Results.BadRequest();
-
-                    var newGuidance = new SpeciesVariantFood
-                    {
-                        Food = food,
-                        Time = item.Time,
-                        QuantityValue = item.QuantityValue,
-                        QuantityUnit = item.QuantityUnit,
-                        SpeciesVariant = speciesVariant
-                    };
-
-                    speciesVariant.FeedingGuidance.Add(newGuidance);
-                }
-            }
-
-            await _repository.SaveChangesAsync();
-            return Results.NoContent();
         }
-        catch (Exception ex)
-        {
-            return Results.BadRequest(ex.Message + " - " + ex.StackTrace);
-        }
+
+        await _repository.SaveChangesAsync();
+        return Results.NoContent();
     }
 }

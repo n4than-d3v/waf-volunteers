@@ -31,11 +31,13 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
 
     public async Task<IResult> Handle(MarkPatientInCentre request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId);
+        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.IncludeOutcome());
         if (patient == null) return Results.BadRequest();
 
         patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.Status = PatientStatus.Inpatient;
+        patient.TransferLocation = null;
+        patient.ReleaseType = null;
         patient.Disposition = null;
         patient.Dispositioner = null;
         patient.Dispositioned = null;

@@ -76,7 +76,7 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         {
             patient.Disposition = before24Hrs ? Disposition.PtsBefore24Hrs : Disposition.PtsAfter24Hrs;
         }
-        else if (request.OnArrival)
+        else if (request.OnArrival || dispositionReasons.Any(x => x.Description == "DOA"))
         {
             patient.Disposition = Disposition.DeadOnArrival;
         }

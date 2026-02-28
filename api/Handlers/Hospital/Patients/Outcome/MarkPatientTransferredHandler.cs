@@ -24,17 +24,21 @@ public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransfer
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
     private readonly IBeaconService _beaconService;
+    private readonly IMediator _mediator;
 
-    public MarkPatientTransferredHandler(IDatabaseRepository repository, IUserContext userContext, IBeaconService beaconService)
+    public MarkPatientTransferredHandler(IDatabaseRepository repository,
+        IUserContext userContext, IBeaconService beaconService, IMediator mediator)
     {
         _repository = repository;
         _userContext = userContext;
         _beaconService = beaconService;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(MarkPatientTransferred request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId);
+        var patient = await _repository.Get<Patient>(request.PatientId,
+            action: x => x.IncludeBasicDetails().IncludeOutcome());
         if (patient == null) return Results.BadRequest();
 
         var dispositioner = await _repository.Get<Account>(_userContext.Id);
@@ -52,6 +56,11 @@ public class MarkPatientTransferredHandler : IRequestHandler<MarkPatientTransfer
         patient.TransferLocation = transferLocation;
 
         await _repository.SaveChangesAsync();
+
+        if (patient.Pen != null)
+        {
+            await _mediator.Send(new MarkPenNeedsCleaning { Id = patient.Pen.Id }, cancellationToken);
+        }
 
         if (patient.BeaconId != 0)
         {

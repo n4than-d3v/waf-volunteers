@@ -23,15 +23,18 @@ public class MarkPatientInCentre : IRequest<IResult>
 public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IMediator _mediator;
 
-    public MarkPatientInCentreHandler(IDatabaseRepository repository)
+    public MarkPatientInCentreHandler(IDatabaseRepository repository, IMediator mediator)
     {
         _repository = repository;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(MarkPatientInCentre request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.IncludeOutcome());
+        var patient = await _repository.Get<Patient>(request.PatientId,
+            action: x => x.IncludeBasicDetails().IncludeOutcome());
         if (patient == null) return Results.BadRequest();
 
         patient.LastUpdatedDetails = DateTime.UtcNow;
@@ -44,6 +47,12 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
         patient.DispositionReasons?.Clear();
 
         await _repository.SaveChangesAsync();
+
+        if (patient.Pen != null)
+        {
+            await _mediator.Send(new MarkPenNeedsCleaning { Id = patient.Pen.Id }, cancellationToken);
+        }
+
         return Results.NoContent();
     }
 }

@@ -427,6 +427,10 @@ public partial class Program
             .AddNote("Admin marks a pen as enabled or disabled")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalLocations.MapPost("/pen/{id:int}/clean", (IMediator mediator, int id, CleanPen request) => mediator.Send(request.WithId(id)))
+            .AddNote("Husbandry marks a pen as being clean")
+            .RequireAuthorization(signedInPolicy);
+
         apiHospitalLocations.MapPut("/pen/{id:int}/area/{areaId:int}", (IMediator mediator, int id, int areaId) => mediator.Send(new MovePen { Id = id, AreaId = areaId }))
             .AddNote("Admin moves a pen to another area")
             .RequireAuthorization(vetPolicy);

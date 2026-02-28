@@ -24,12 +24,15 @@ public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientRead
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
     private readonly IEmailService _emailService;
+    private readonly IMediator _mediator;
 
-    public MarkPatientReadyForReleaseHandler(IDatabaseRepository repository, IEncryptionService encryptionService, IEmailService emailService)
+    public MarkPatientReadyForReleaseHandler(IDatabaseRepository repository,
+        IEncryptionService encryptionService, IEmailService emailService, IMediator mediator)
     {
         _repository = repository;
         _encryptionService = encryptionService;
         _emailService = emailService;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(MarkPatientReadyForRelease request, CancellationToken cancellationToken)
@@ -42,6 +45,11 @@ public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientRead
         patient.Status = PatientStatus.ReadyForRelease;
 
         await _repository.SaveChangesAsync();
+
+        if (patient.Pen != null)
+        {
+            await _mediator.Send(new MarkPenNeedsCleaning { Id = patient.Pen.Id }, cancellationToken);
+        }
 
         if (patient.Admitter == null) return Results.NoContent();
         var admitter = patient.Admitter;

@@ -11,6 +11,7 @@ public class Pen : Entity
 
     public string Code { get; set; }
     public bool Deleted { get; set; }
+    public bool NeedsCleaning { get; set; }
 
     [JsonIgnore]
     public List<Patient> Patients { get; set; }

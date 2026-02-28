@@ -191,6 +191,8 @@ public static class ViewPatientExtensions
         return x
             .Include(y => y.Species)
             .Include(y => y.SpeciesVariant)
+                .ThenInclude(y => y.FeedingGuidance)
+                    .ThenInclude(y => y.Food)
             .Include(y => y.Pen).ThenInclude(y => y.Area);
     }
 

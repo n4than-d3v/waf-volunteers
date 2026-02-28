@@ -29,21 +29,23 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
     private readonly IEncryptionService _encryptionService;
     private readonly IEmailService _emailService;
     private readonly IBeaconService _beaconService;
+    private readonly IMediator _mediator;
 
     public MarkPatientDeadHandler(IDatabaseRepository repository, IUserContext userContext,
-        IEncryptionService encryptionService, IEmailService emailService, IBeaconService beaconService)
+        IEncryptionService encryptionService, IEmailService emailService, IBeaconService beaconService, IMediator mediator)
     {
         _repository = repository;
         _userContext = userContext;
         _encryptionService = encryptionService;
         _emailService = emailService;
         _beaconService = beaconService;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(MarkPatientDead request, CancellationToken cancellationToken)
     {
         var patient = await _repository.Get<Patient>(request.PatientId,
-            action: x => x.IncludeAdmission().IncludeBasicDetails());
+            action: x => x.IncludeAdmission().IncludeBasicDetails().IncludeOutcome());
         if (patient == null) return Results.BadRequest();
 
         var dispositioner = await _repository.Get<Account>(_userContext.Id);
@@ -86,6 +88,11 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         }
 
         await _repository.SaveChangesAsync();
+
+        if (patient.Pen != null)
+        {
+            await _mediator.Send(new MarkPenNeedsCleaning { Id = patient.Pen.Id }, cancellationToken);
+        }
 
         if (patient.BeaconId != 0)
         {

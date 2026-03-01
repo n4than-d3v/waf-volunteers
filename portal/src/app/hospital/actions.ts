@@ -687,6 +687,7 @@ export const updatePatientBasicDetails = createAction(
     patientId: number;
     name: string;
     uniqueIdentifier: string;
+    microchip: string;
     speciesId: number;
     speciesVariantId: number;
     sex: number;

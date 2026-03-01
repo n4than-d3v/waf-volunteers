@@ -496,6 +496,10 @@ public partial class Program
         apiHospitalBoards.MapPost("/{id:int}/message", (IMediator mediator, int id, AddBoardMessage request) => mediator.Send(request.WithId(id)))
             .AddNote("Vet adds a message to appear on a board")
             .RequireAuthorization(vetPolicy);
+
+        apiHospitalBoards.MapPost("/complete-task", (IMediator mediator, int id, MarkBoardTaskComplete request) => mediator.Send(request))
+            .AddNote("User marks a task on a board as completed")
+            .RequireAuthorization(signedInPolicy);
     }
 
     private static void RegisterAccountRoutes(RouteGroupBuilder api)

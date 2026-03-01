@@ -54,6 +54,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
   detailsForm = new FormGroup({
     name: new FormControl(''),
     uniqueIdentifier: new FormControl(''),
+    microchip: new FormControl(''),
     speciesId: new FormControl('', [Validators.required]),
     speciesVariantId: new FormControl('', [Validators.required]),
     sex: new FormControl('', [Validators.required]),
@@ -99,6 +100,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
     this.detailsForm.patchValue({
       name: patient.name,
       uniqueIdentifier: patient.uniqueIdentifier,
+      microchip: patient.microchip,
       speciesId: patient.species?.id.toString(),
       speciesVariantId: patient.speciesVariant?.id.toString(),
       sex: patient.sex!.toString(),
@@ -115,6 +117,7 @@ export class HospitalPatientDetailsComponent implements OnInit {
         patientId: this.patient.id,
         name: this.detailsForm.value.name || '',
         uniqueIdentifier: this.detailsForm.value.uniqueIdentifier || '',
+        microchip: this.detailsForm.value.microchip || '',
         speciesId: Number(this.detailsForm.value.speciesId),
         speciesVariantId: Number(this.detailsForm.value.speciesVariantId),
         sex: Number(this.detailsForm.value.sex),

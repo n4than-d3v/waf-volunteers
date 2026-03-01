@@ -1,3 +1,5 @@
+import { PatientBoardAreaDisplayType } from '../admin/hospital/state';
+
 export interface HospitalState {
   tab: Tab;
   tabHistory: Tab[];
@@ -177,6 +179,7 @@ export interface ListPatient {
   reference: string;
   name: string | null;
   uniqueIdentifier: string | null;
+  microchip: string | null;
   species: Species | null;
   speciesVariant: SpeciesVariant | null;
   sex: number | null;
@@ -628,14 +631,27 @@ export interface PatientBoard {
 }
 
 export interface PatientBoardArea {
+  displayType: PatientBoardAreaDisplayType;
   area: { id: number; area: { name: string } };
-  summary: string[] | null;
+  summary: string[];
   pens: PatientBoardAreaPen[] | null;
 }
 
 export interface PatientBoardAreaPen {
   reference: string;
-  patients: ListPatient[];
+  patients: string[] | null;
+  diets: string[] | null;
+  tags: string[] | null;
+  tasks: PatientBoardAreaPenTask[];
+  needsCleaning: boolean;
+}
+
+export interface PatientBoardAreaPenTask {
+  id: number;
+  time: string;
+  details: string[];
+  icon: string;
+  done: boolean;
 }
 
 export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({

@@ -67,6 +67,7 @@ export class HospitalPatientTagsComponent implements OnInit {
       patientId: this.patient.id,
       name: this.patient.name || '',
       uniqueIdentifier: this.patient.uniqueIdentifier || '',
+      microchip: this.patient.microchip || '',
       speciesId: this.patient.species!.id,
       speciesVariantId: this.patient.speciesVariant!.id,
       sex: this.patient.sex!,
@@ -89,7 +90,7 @@ export class HospitalPatientTagsComponent implements OnInit {
         ...update,
         update: 'tags',
         tagIds: [...update.tagIds, Number(this.tagForm.value.tagId!)],
-      })
+      }),
     );
     this.reset();
   }
@@ -101,7 +102,7 @@ export class HospitalPatientTagsComponent implements OnInit {
         ...update,
         update: 'tags',
         tagIds: update.tagIds.filter((x) => x != id),
-      })
+      }),
     );
     this.reset();
   }

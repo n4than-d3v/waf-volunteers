@@ -18,6 +18,7 @@ import {
 } from '../state';
 import { selectPatientBoard, selectPatientBoards } from '../selectors';
 import { viewPatientBoard, viewPatientBoards } from '../actions';
+import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
 
 @Pipe({
   name: 'sortBoardAreas',
@@ -62,6 +63,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     this.boards$ = this.store.select(selectPatientBoards);
     this.board$ = this.store.select(selectPatientBoard);
   }
+
+  PatientBoardAreaDisplayType = PatientBoardAreaDisplayType;
 
   viewBoard(id: number) {
     this.viewingBoard = id;

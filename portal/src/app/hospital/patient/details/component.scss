@@ -10,6 +10,22 @@
   }
 }
 
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+
+  input,
+  select {
+    padding: 0.25rem 0.5rem;
+  }
+
+  button {
+    margin-bottom: 0.5rem;
+  }
+}
+
 table:not(:has(thead)) tbody {
   td {
     font-size: 1.125rem;
@@ -28,8 +44,6 @@ table:not(:has(thead)) tbody {
 }
 
 .fields {
-  margin-top: 1rem;
-
   .field {
     margin-bottom: 0.5rem;
   }

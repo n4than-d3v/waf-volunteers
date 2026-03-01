@@ -11,6 +11,7 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
     public int PatientId { get; set; }
     public string Name { get; set; }
     public string UniqueIdentifier { get; set; }
+    public string Microchip { get; set; }
     public int SpeciesId { get; set; }
     public int SpeciesVariantId { get; set; }
     public Sex Sex { get; set; }
@@ -49,6 +50,7 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
 
         patient.Name = request.Name;
         patient.UniqueIdentifier = request.UniqueIdentifier;
+        patient.Microchip = request.Microchip;
         patient.Species = species;
         patient.SpeciesVariant = speciesVariant;
         patient.Sex = request.Sex;

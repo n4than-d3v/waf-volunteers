@@ -1,3 +1,4 @@
+@if (!updating) { @if (isVet && patient.status != PatientStatus.Dispositioned) {
 <div class="row">
   <table>
     <tbody>
@@ -25,10 +26,13 @@
         <td>Identifier</td>
         <td>{{ patient.uniqueIdentifier || '(blank)' }}</td>
       </tr>
+      <tr>
+        <td>Microchip</td>
+        <td>{{ patient.microchip || '(blank)' }}</td>
+      </tr>
     </tbody>
   </table>
 </div>
-@if (!updating) { @if (isVet && patient.status != PatientStatus.Dispositioned) {
 <div class="buttons">
   <button
     (click)="beginUpdate(patient)"
@@ -48,7 +52,7 @@
 <form [formGroup]="detailsForm">
   <div class="fields">
     <div class="field">
-      <label for="species">
+      <label for="speciesId">
         Species
         <span class="required">*</span>
       </label>
@@ -64,7 +68,7 @@
       } }
     </div>
     <div class="field">
-      <label for="species">
+      <label for="speciesVariant">
         Variant
         <span class="required">*</span>
       </label>
@@ -92,13 +96,23 @@
         <option value="3">Unknown</option>
       </select>
     </div>
+  </div>
+  <div class="fields">
     <div class="field">
       <label for="name"> Name </label>
-      <input type="text" formControlName="name" />
+      <input id="name" type="text" formControlName="name" />
     </div>
     <div class="field">
       <label for="uniqueIdentifier"> Identifier </label>
-      <input type="text" formControlName="uniqueIdentifier" />
+      <input
+        id="uniqueIdentifier"
+        type="text"
+        formControlName="uniqueIdentifier"
+      />
+    </div>
+    <div class="field">
+      <label for="microchip"> Microchip </label>
+      <input id="microchip" type="text" formControlName="microchip" />
     </div>
   </div>
   @if (attemptedSave && !detailsForm.valid) {

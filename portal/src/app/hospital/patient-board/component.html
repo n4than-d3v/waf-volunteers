@@ -39,36 +39,53 @@
   } }
 </div>
 }
-<div class="areas">
-  @for (area of board.data.areas | sortBoardAreas; track area.area.id) {
-  <div class="area">
-    <h2>{{ area.area.area.name }}</h2>
-    @if (area.summary != null && area.summary.length > 0) {
-    <div class="summary">
+<div class="pens">
+  @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if
+  (area.displayType === PatientBoardAreaDisplayType.SummarisePatients) {
+  <div class="pen">
+    <div class="location">{{ area.area.area.name }}</div>
+    <div class="patients">
       @for (summary of area.summary; track summary) {
       <p>{{ summary }}</p>
       }
     </div>
-    } @else if (area.pens != null && area.pens.length > 0) {
-    <div class="pens">
-      @for (pen of area.pens; track pen.reference) {
-      <div class="pen">
-        <div class="location">{{ pen.reference }}</div>
-        <div class="patients">
-          @for (patient of pen.patients; track patient.id) {
-          <div class="patient">
-            <div class="name">{{ patient.speciesVariant?.friendlyName }}</div>
-            <div class="diets">
-              @for (diet of patient.diets; track diet.id) {
-              <span class="diet">{{ diet.name }}</span>
-              }
-            </div>
-            <div class="tags">
-              @for (tag of patient.tags; track tag.id) {
-              <span class="tag">{{ tag.name }}</span>
-              }
-            </div>
-          </div>
+  </div>
+  } @else if (area.pens != null && area.pens.length > 0) { @for (pen of
+  area.pens; track pen.reference) {
+  <div class="pen">
+    <div class="location">{{ pen.reference }}</div>
+    <div class="patients">
+      @if (pen.needsCleaning) {
+      <span class="instruction">Please clean</span>
+      }
+      <div class="name">
+        @for (patient of pen.patients; track patient) {
+        <p>{{ patient }}</p>
+        }
+      </div>
+      @if (pen.diets && pen.diets.length > 0) {
+      <div class="diets">
+        @for (diet of pen.diets; track diet) {
+        <span class="diet">{{ diet }}</span>
+        }
+      </div>
+      } @if (pen.tags && pen.tags.length > 0) {
+      <div class="tags">
+        @for (tag of pen.tags; track tag) {
+        <span class="tag">{{ tag }}</span>
+        }
+      </div>
+      }
+    </div>
+    @if (pen.tasks && pen.tasks.length > 0) {
+    <div class="tasks">
+      @for (task of pen.tasks; track task.id) {
+      <div class="task">
+        <button class="button button--secondary-invert">{{ task.icon }}</button>
+        <div>
+          <p class="time">{{ task.time }}</p>
+          @for (detail of task.details; track detail) {
+          <p class="details">{{ detail }}</p>
           }
         </div>
       </div>
@@ -76,6 +93,6 @@
     </div>
     }
   </div>
-  }
+  } } }
 </div>
 } }

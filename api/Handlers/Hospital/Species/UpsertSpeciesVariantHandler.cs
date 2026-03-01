@@ -73,7 +73,7 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
 
         foreach (var existingItem in existingGuidance)
         {
-            if (!request.FeedingGuidance.Any(r => r.FoodId == existingItem.Food.Id))
+            if (!request.FeedingGuidance.Any(r => r.Time == existingItem.Time && r.FoodId == existingItem.Food.Id))
             {
                 speciesVariant.FeedingGuidance.Remove(existingItem);
                 _repository.Delete(existingItem);
@@ -82,7 +82,7 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
 
         foreach (var item in request.FeedingGuidance)
         {
-            var existingItem = existingGuidance.FirstOrDefault(x => x.Food.Id == item.FoodId);
+            var existingItem = existingGuidance.FirstOrDefault(x => x.Time == item.Time && x.Food.Id == item.FoodId);
             if (existingItem != null)
             {
                 existingItem.Time = item.Time;

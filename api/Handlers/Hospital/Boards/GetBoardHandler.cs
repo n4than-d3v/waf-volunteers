@@ -6,12 +6,44 @@ using Api.Handlers.Hospital.Patients;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 
 namespace Api.Handlers.Hospital.Boards;
 
 public class GetBoard : IRequest<IResult>
 {
     public int Id { get; set; }
+}
+
+public static class InMemoryBoardTasks
+{
+    private struct BoardTask
+    {
+        internal int PenId { get; set; }
+        internal int TaskId { get; set; }
+    }
+
+
+    private static DateOnly _lastUpdated = new();
+    private static ConcurrentBag<BoardTask> _tasksCompleted = [];
+
+    public static void ClearIfNextDay()
+    {
+        if (DateOnly.FromDateTime(DateTime.UtcNow) != _lastUpdated)
+        {
+            _tasksCompleted.Clear();
+        }
+    }
+
+    public static void CompleteTask(int penId, int taskId)
+    {
+        _tasksCompleted.Add(new BoardTask { PenId = penId, TaskId = taskId });
+    }
+
+    public static bool IsComplete(int penId, int taskId)
+    {
+        return _tasksCompleted.Any(x => x.PenId == penId && x.TaskId == taskId);
+    }
 }
 
 public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
@@ -27,10 +59,13 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
     public async Task<IResult> Handle(GetBoard request, CancellationToken cancellationToken)
     {
+        InMemoryBoardTasks.ClearIfNextDay();
+
         var board = await _repository.Get<Board>(request.Id, tracking: false, x => x
             .Include(y => y.Messages)
             .Include(y => y.Areas)
-                .ThenInclude(y => y.Area));
+                .ThenInclude(y => y.Area)
+                    .ThenInclude(y => y.Pens));
         if (board == null) return Results.BadRequest();
 
         var showAreas = board.Areas
@@ -41,7 +76,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         var patients = await _repository.GetAll<Patient>(
             x =>
                 (x.Status == PatientStatus.Inpatient || x.Status == PatientStatus.PendingHomeCare || x.Status == PatientStatus.ReadyForRelease) &&
-                x.Pen != null && showAreas.Contains(x.Pen.Area.Id), tracking: false,
+                x.SpeciesVariant != null && x.Pen != null && showAreas.Contains(x.Pen.Area.Id), tracking: false,
             x => x.AsSplitQuery().IncludeBasicDetails().IncludeHusbandry());
 
         foreach (var patient in patients)
@@ -66,17 +101,35 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
     private static PatientBoardArea CreateBoardArea(IReadOnlyList<Patient> patients, BoardArea area)
     {
-        var boardArea = new PatientBoardArea { Area = area };
+        var boardArea = new PatientBoardArea
+        {
+            DisplayType = area.DisplayType,
+            Area = area,
+            Pens = []
+        };
 
         var areaPatients = patients.Where(x => x.Pen?.Area.Id == area.Area.Id).ToList();
 
-        if (area.DisplayType == BoardAreaDisplayType.SummarisePatients)
-            boardArea.Summary = GetPatientSummary(areaPatients);
+        boardArea.Summary = GetPatientSummary(areaPatients);
 
         if (area.DisplayType == BoardAreaDisplayType.ShowPatients)
             boardArea.Pens = CreateBoardAreaPens(areaPatients);
 
+        boardArea.Pens.AddRange(
+            GetPensNeedingCleaning(area.Area)
+        );
+
         return boardArea;
+    }
+
+    private static List<PatientBoardAreaPen> GetPensNeedingCleaning(Area area)
+    {
+        return area.Pens.Where(pen => pen.NeedsCleaning).Select(pen => new PatientBoardAreaPen
+        {
+            Reference = pen.Reference,
+            NeedsCleaning = pen.NeedsCleaning,
+            Patients = []
+        }).ToList();
     }
 
     private static List<PatientBoardAreaPen> CreateBoardAreaPens(IReadOnlyList<Patient> areaPatients)
@@ -87,18 +140,68 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 PenId = p.Pen?.Id,
                 PenReference = p.Pen?.Reference
             })
-            .Select(g => new PatientBoardAreaPen
+            .Select(g =>
             {
-                Reference = g.Key.PenReference,
-                Patients = g.ToList()
+                var penPatients = g.ToList();
+                return new PatientBoardAreaPen
+                {
+                    Patients = GetPatientSummary(penPatients),
+                    Tasks = GetPatientBoardAreaPenTasks(g.Key.PenId.Value, penPatients),
+                    Diets = penPatients.SelectMany(p => p.Diets).Select(d => d.Name).Distinct().ToList(),
+                    Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
+                    Reference = g.Key.PenReference
+                };
             })
             .OrderBy(x => x.Reference)
             .ToList();
     }
 
-    private static List<string> GetPatientSummary(IReadOnlyList<Patient> areaPatients)
+    private static List<PatientBoardAreaPenTask> GetPatientBoardAreaPenTasks(int penId, IReadOnlyList<Patient> patients)
     {
-        return areaPatients
+        var tasks = new List<PatientBoardAreaPenTask>();
+
+        int taskId = 1;
+
+        tasks.Add(new PatientBoardAreaPenTask
+        {
+            Id = taskId,
+            Time = "Clean",
+            Details = [],
+            Icon = "🧽",
+            Done = InMemoryBoardTasks.IsComplete(penId, 1)
+        });
+
+        var times = patients
+            .SelectMany(patient => patient.SpeciesVariant!.FeedingGuidance)
+            .GroupBy(food => food.Time)
+            .OrderBy(time => time.Key);
+
+        foreach (var time in times)
+        {
+            var groups = time.GroupBy(time => new
+            {
+                time.QuantityUnit,
+                time.Food.Id,
+                time.Food.Name
+            }).OrderBy(food => food.Key.Id);
+
+            taskId++;
+            tasks.Add(new PatientBoardAreaPenTask
+            {
+                Id = taskId,
+                Time = time.Key.ToString("HH:mm"),
+                Details = groups.Select(group => $"{group.Sum(g => g.QuantityValue)} {group.Key.QuantityUnit} {group.Key.Name}").ToArray(),
+                Icon = "🍔",
+                Done = InMemoryBoardTasks.IsComplete(penId, taskId)
+            });
+        }
+
+        return tasks;
+    }
+
+    private static List<string> GetPatientSummary(IReadOnlyList<Patient> patients)
+    {
+        return patients
                 .GroupBy(p => new
                 {
                     VariantName = p.SpeciesVariant?.FriendlyName
@@ -116,6 +219,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     public class PatientBoardArea
     {
         public BoardArea Area { get; set; }
+        public BoardAreaDisplayType DisplayType { get; set; }
         public List<string>? Summary { get; set; }
         public List<PatientBoardAreaPen>? Pens { get; set; }
     }
@@ -123,6 +227,20 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     public class PatientBoardAreaPen
     {
         public string Reference { get; set; }
-        public List<Patient> Patients { get; set; }
+        public List<string> Patients { get; set; }
+        public List<string> Diets { get; set; }
+        public List<string> Tags { get; set; }
+        public List<PatientBoardAreaPenTask> Tasks { get; set; }
+        public bool NeedsCleaning { get; set; }
+    }
+
+    public class PatientBoardAreaPenTask
+    {
+        public int Id { get; set; }
+
+        public string Time { get; set; }
+        public string Icon { get; set; }
+        public string[] Details { get; set; }
+        public bool Done { get; set; }
     }
 }

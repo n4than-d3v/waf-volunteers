@@ -31,6 +31,7 @@ public class Patient : Entity
     public string Reference { get; set; }
     public string? Name { get; set; }
     public string? UniqueIdentifier { get; set; }
+    public string? Microchip { get; set; }
     public Species? Species { get; set; }
     public SpeciesVariant? SpeciesVariant { get; set; }
     public Sex? Sex { get; set; }
@@ -89,11 +90,11 @@ public class Patient : Entity
     {
         get
         {
-            var exams = (Exams ?? []).Where(x => x.WeightValue.HasValue)
+            var exams = (Exams ?? []).Where(x => 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
-            var notes = (Notes ?? []).Where(x => x.WeightValue.HasValue)
+            var notes = (Notes ?? []).Where(x => 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Noted, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
-            var rechecks = (Rechecks ?? []).Where(x => x.Rechecked.HasValue && x.WeightValue.HasValue)
+            var rechecks = (Rechecks ?? []).Where(x => x.Rechecked.HasValue && 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Rechecked!.Value, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
             var weights = new List<Weight>();
             weights.AddRange(exams);

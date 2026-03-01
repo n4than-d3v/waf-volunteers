@@ -244,22 +244,24 @@ export class HospitalPatientExamComponent implements OnInit {
 
   performExam() {
     this.attemptedSave = true;
+    this.examForm.controls.penId.clearValidators();
+    for (
+      let i = 0;
+      i < this.examForm.controls.dispositionReasonIds.length;
+      i++
+    ) {
+      this.examForm.controls.dispositionReasonIds
+        .at(i)
+        .controls.reason.clearValidators();
+    }
     if (this.exam === null) {
-      this.examForm.controls.penId.clearValidators();
-      for (
-        let i = 0;
-        i < this.examForm.controls.dispositionReasonIds.length;
-        i++
-      ) {
-        this.examForm.controls.dispositionReasonIds
-          .at(i)
-          .controls.reason.clearValidators();
-      }
       if (this.examForm.controls.outcome.value === 'alive') {
         this.examForm.controls.dispositionReasonIds.clear();
         if (this.examForm.controls.settingPen.value) {
           this.examForm.controls.penId.setValidators([Validators.required]);
         }
+      } else if (this.examForm.controls.outcome.value == 'release') {
+        this.examForm.controls.dispositionReasonIds.clear();
       } else if (
         this.examForm.controls.outcome.value === 'diedOnTable' ||
         this.examForm.controls.outcome.value === 'deadOnArrival' ||
@@ -275,22 +277,25 @@ export class HospitalPatientExamComponent implements OnInit {
             .controls.reason.setValidators([Validators.required]);
         }
       }
-      this.examForm.controls.penId.updateValueAndValidity({
-        onlySelf: true,
-        emitEvent: true,
-      });
-      for (
-        let i = 0;
-        i < this.examForm.controls.dispositionReasonIds.length;
-        i++
-      ) {
-        this.examForm.controls.dispositionReasonIds
-          .at(i)
-          .controls.reason.updateValueAndValidity({
-            onlySelf: true,
-            emitEvent: true,
-          });
-      }
+    } else {
+      this.examForm.controls.penId.clearValidators();
+      this.examForm.controls.dispositionReasonIds.clear();
+    }
+    this.examForm.controls.penId.updateValueAndValidity({
+      onlySelf: true,
+      emitEvent: true,
+    });
+    for (
+      let i = 0;
+      i < this.examForm.controls.dispositionReasonIds.length;
+      i++
+    ) {
+      this.examForm.controls.dispositionReasonIds
+        .at(i)
+        .controls.reason.updateValueAndValidity({
+          onlySelf: true,
+          emitEvent: true,
+        });
     }
     this.examForm.updateValueAndValidity({
       onlySelf: true,

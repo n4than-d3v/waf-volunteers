@@ -39,9 +39,9 @@ export class SortBoardAreasPipe implements PipeTransform {
       const aEmpty = !a.pens || a.pens.length === 0;
       const bEmpty = !b.pens || b.pens.length === 0;
 
-      // 1. Prioritize empty summaries
-      if (aEmpty && !bEmpty) return -1;
-      if (!aEmpty && bEmpty) return 1;
+      // 1. De-prioritize empty pens
+      if (aEmpty && !bEmpty) return 1;
+      if (!aEmpty && bEmpty) return -1;
 
       // 2. Sort alphabetically by area name
       const nameA = a.area.area.name.toLowerCase();

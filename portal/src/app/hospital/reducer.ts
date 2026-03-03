@@ -165,6 +165,12 @@ import {
   getDashboard,
   getDashboardSuccess,
   getDashboardError,
+  markBoardTaskComplete,
+  markBoardTaskCompleteSuccess,
+  markBoardTaskCompleteError,
+  markPenClean,
+  markPenCleanError,
+  markPenCleanSuccess,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1244,6 +1250,56 @@ export const hospitalReducer = createReducer<HospitalState>(
       ...state.board,
       loading: false,
       error: true,
+    },
+  })),
+  on(markBoardTaskComplete, (state) => ({
+    ...state,
+    markBoard: {
+      ...state.markBoard,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(markBoardTaskCompleteSuccess, (state) => ({
+    ...state,
+    markBoard: {
+      ...state.markBoard,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(markBoardTaskCompleteError, (state) => ({
+    ...state,
+    markBoard: {
+      ...state.markBoard,
+      loading: false,
+      error: false,
+    },
+  })),
+  on(markPenClean, (state) => ({
+    ...state,
+    markPenClean: {
+      ...state.markPenClean,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(markPenCleanSuccess, (state) => ({
+    ...state,
+    markPenClean: {
+      ...state.markPenClean,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(markPenCleanError, (state) => ({
+    ...state,
+    markPenClean: {
+      ...state.markPenClean,
+      loading: false,
+      error: false,
     },
   })),
 );

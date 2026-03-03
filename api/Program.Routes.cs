@@ -497,7 +497,7 @@ public partial class Program
             .AddNote("Vet adds a message to appear on a board")
             .RequireAuthorization(vetPolicy);
 
-        apiHospitalBoards.MapPost("/complete-task", (IMediator mediator, int id, MarkBoardTaskComplete request) => mediator.Send(request))
+        apiHospitalBoards.MapPost("/complete-task", (IMediator mediator, MarkBoardTaskComplete request) => mediator.Send(request))
             .AddNote("User marks a task on a board as completed")
             .RequireAuthorization(signedInPolicy);
     }

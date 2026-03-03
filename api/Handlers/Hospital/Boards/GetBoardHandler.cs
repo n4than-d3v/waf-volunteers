@@ -25,24 +25,33 @@ public static class InMemoryBoardTasks
 
 
     private static DateOnly _lastUpdated = new();
-    private static ConcurrentBag<BoardTask> _tasksCompleted = [];
+    private static ConcurrentDictionary<BoardTask, bool> _tasksCompleted = [];
 
     public static void ClearIfNextDay()
     {
-        if (DateOnly.FromDateTime(DateTime.UtcNow) != _lastUpdated)
+        var now = DateOnly.FromDateTime(DateTime.UtcNow);
+        if (now != _lastUpdated)
         {
+            _lastUpdated = now;
             _tasksCompleted.Clear();
         }
     }
 
     public static void CompleteTask(int penId, int taskId)
     {
-        _tasksCompleted.Add(new BoardTask { PenId = penId, TaskId = taskId });
+        if (IsComplete(penId, taskId))
+        {
+            _tasksCompleted.TryRemove(new BoardTask { PenId = penId, TaskId = taskId }, out var _);
+        }
+        else
+        {
+            _tasksCompleted.TryAdd(new BoardTask { PenId = penId, TaskId = taskId }, true);
+        }
     }
 
     public static bool IsComplete(int penId, int taskId)
     {
-        return _tasksCompleted.Any(x => x.PenId == penId && x.TaskId == taskId);
+        return _tasksCompleted.ContainsKey(new BoardTask { PenId = penId, TaskId = taskId });
     }
 }
 
@@ -126,6 +135,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     {
         return area.Pens.Where(pen => pen.NeedsCleaning).Select(pen => new PatientBoardAreaPen
         {
+            Id = pen.Id,
             Reference = pen.Reference,
             NeedsCleaning = pen.NeedsCleaning,
             Patients = []
@@ -145,6 +155,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 var penPatients = g.ToList();
                 return new PatientBoardAreaPen
                 {
+                    Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
                     Tasks = GetPatientBoardAreaPenTasks(g.Key.PenId.Value, penPatients),
                     Diets = penPatients.SelectMany(p => p.Diets).Select(d => d.Name).Distinct().ToList(),
@@ -226,6 +237,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
     public class PatientBoardAreaPen
     {
+        public int Id { get; set; }
         public string Reference { get; set; }
         public List<string> Patients { get; set; }
         public List<string> Diets { get; set; }

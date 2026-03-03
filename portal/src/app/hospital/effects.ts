@@ -197,6 +197,12 @@ import {
   getDashboard,
   getDashboardSuccess,
   getDashboardError,
+  markBoardTaskComplete,
+  markBoardTaskCompleteSuccess,
+  markBoardTaskCompleteError,
+  markPenClean,
+  markPenCleanSuccess,
+  markPenCleanError,
 } from './actions';
 
 @Injectable()
@@ -1585,6 +1591,44 @@ export class HospitalEffects {
           catchError(() => of(viewPatientBoardError())),
         ),
       ),
+    ),
+  );
+
+  markBoardTaskComplete$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markBoardTaskComplete),
+      switchMap((action) =>
+        this.http.post(`hospital/boards/complete-task`, action).pipe(
+          map((_) => markBoardTaskCompleteSuccess({ boardId: action.boardId })),
+          catchError(() => of(markBoardTaskCompleteError())),
+        ),
+      ),
+    ),
+  );
+
+  markBoardTaskCompleteSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markBoardTaskCompleteSuccess),
+      switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
+    ),
+  );
+
+  markPenClean$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPenClean),
+      switchMap((action) =>
+        this.http.post(`hospital/locations/pen/${action.penId}/clean`, {}).pipe(
+          map((_) => markPenCleanSuccess({ boardId: action.boardId })),
+          catchError(() => of(markPenCleanError())),
+        ),
+      ),
+    ),
+  );
+
+  markPenCleanSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markPenCleanSuccess),
+      switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
     ),
   );
 }

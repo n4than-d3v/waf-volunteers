@@ -81,15 +81,34 @@
     <div class="tasks">
       @for (task of pen.tasks; track task.id) {
       <div class="task">
-        <button class="button button--secondary-invert">{{ task.icon }}</button>
+        <button
+          (click)="markComplete(pen, task)"
+          class="button button--secondary-invert"
+        >
+          @if (task.done) { ✔️ } @else { &nbsp; }
+        </button>
         <div>
-          <p class="time">{{ task.time }}</p>
+          <p class="time">{{ task.icon }} {{ task.time }}</p>
           @for (detail of task.details; track detail) {
           <p class="details">{{ detail }}</p>
           }
         </div>
       </div>
       }
+    </div>
+    } @else if (pen.needsCleaning) {
+    <div class="tasks">
+      <div class="task">
+        <button
+          (click)="markClean(pen)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+        <div>
+          <p class="time">🧽 Clean</p>
+        </div>
+      </div>
     </div>
     }
   </div>

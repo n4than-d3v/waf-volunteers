@@ -35,6 +35,8 @@ export interface HospitalState {
   updateDiets: Task;
   updateTags: Task;
   addLabs: Task;
+  markBoard: Task;
+  markPenClean: Task;
 
   // Patient details
   tags: ReadOnlyWrapper<Tag[]>;
@@ -638,6 +640,7 @@ export interface PatientBoardArea {
 }
 
 export interface PatientBoardAreaPen {
+  id: number;
   reference: string;
   patients: string[] | null;
   diets: string[] | null;
@@ -669,6 +672,8 @@ export const createTask = (): Task => ({
 export const initialHospitalState: HospitalState = {
   tab: { code: 'DASHBOARD', title: 'Dashboard' },
   tabHistory: [{ code: 'DASHBOARD', title: 'Dashboard' }],
+  markBoard: createTask(),
+  markPenClean: createTask(),
   dashboard: createReadOnlyWrapper<Dashboard>(),
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
   patientsByStatus: createReadOnlyWrapper<ListPatient[]>(),

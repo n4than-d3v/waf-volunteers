@@ -32,10 +32,14 @@ h1 {
     border: solid 2px rgb(60, 60, 60);
     margin-right: -2px;
     margin-top: -2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     .instruction {
       color: var(--theme-color-2);
       font-weight: bold;
+      padding: 0rem 0.25rem;
     }
 
     .location {
@@ -44,6 +48,10 @@ h1 {
       padding: 0.25rem 0.5rem;
       font-weight: bold;
       font-size: 1.25rem;
+    }
+
+    .name {
+      padding: 0rem 0.25rem 0.25rem 0.25rem;
     }
 
     .tasks {
@@ -77,6 +85,7 @@ h1 {
           margin-bottom: -2px;
           padding: 0.125rem;
           border-color: rgb(60, 60, 60);
+          min-width: 2.25rem;
         }
       }
     }
@@ -84,6 +93,7 @@ h1 {
     .patients {
       padding: 0.25rem;
       padding-bottom: 0rem;
+      flex: 1;
 
       .diets,
       .tags {

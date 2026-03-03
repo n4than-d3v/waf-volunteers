@@ -873,3 +873,25 @@ export const viewPatientBoardSuccess = createAction(
 export const viewPatientBoardError = createAction(
   '[HMS-V] View patient board: error',
 );
+
+export const markBoardTaskComplete = createAction(
+  '[HMS-V] Mark board task complete',
+  props<{ boardId: number; penId: number; taskId: number }>(),
+);
+export const markBoardTaskCompleteSuccess = createAction(
+  '[HMS-V] Mark board task complete: success',
+  props<{ boardId: number }>(),
+);
+export const markBoardTaskCompleteError = createAction(
+  '[HMS-V] Mark board task complete: error',
+);
+
+export const markPenClean = createAction(
+  '[HMS-V] Mark pen clean',
+  props<{ boardId: number; penId: number }>(),
+);
+export const markPenCleanSuccess = createAction(
+  '[HMS-V] Mark pen clean: success',
+  props<{ boardId: number }>(),
+);
+export const markPenCleanError = createAction('[HMS-V] Mark pen clean: error');

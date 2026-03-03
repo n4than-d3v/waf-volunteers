@@ -208,3 +208,13 @@ export const selectPatientBoard = createSelector(
   selectHospitalState,
   (state) => state.board,
 );
+
+export const selectMarkBoard = createSelector(
+  selectHospitalState,
+  (state) => state.markBoard,
+);
+
+export const selectMarkPenClean = createSelector(
+  selectHospitalState,
+  (state) => state.markPenClean,
+);

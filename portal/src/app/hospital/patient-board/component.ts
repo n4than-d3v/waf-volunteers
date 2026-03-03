@@ -14,10 +14,17 @@ import {
   ListPatientBoard,
   PatientBoard,
   PatientBoardArea,
+  PatientBoardAreaPen,
+  PatientBoardAreaPenTask,
   ReadOnlyWrapper,
 } from '../state';
 import { selectPatientBoard, selectPatientBoards } from '../selectors';
-import { viewPatientBoard, viewPatientBoards } from '../actions';
+import {
+  markBoardTaskComplete,
+  markPenClean,
+  viewPatientBoard,
+  viewPatientBoards,
+} from '../actions';
 import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
 
 @Pipe({
@@ -29,8 +36,8 @@ export class SortBoardAreasPipe implements PipeTransform {
     if (!areas) return [];
 
     return areas.slice().sort((a, b) => {
-      const aEmpty = !a.summary || a.summary.length === 0;
-      const bEmpty = !b.summary || b.summary.length === 0;
+      const aEmpty = !a.pens || a.pens.length === 0;
+      const bEmpty = !b.pens || b.pens.length === 0;
 
       // 1. Prioritize empty summaries
       if (aEmpty && !bEmpty) return -1;
@@ -71,6 +78,25 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       viewPatientBoard({
         id,
+      }),
+    );
+  }
+
+  markClean(pen: PatientBoardAreaPen) {
+    this.store.dispatch(
+      markPenClean({
+        boardId: this.viewingBoard!,
+        penId: pen.id,
+      }),
+    );
+  }
+
+  markComplete(pen: PatientBoardAreaPen, task: PatientBoardAreaPenTask) {
+    this.store.dispatch(
+      markBoardTaskComplete({
+        boardId: this.viewingBoard!,
+        penId: pen.id,
+        taskId: task.id,
       }),
     );
   }

@@ -70,7 +70,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
             var email = _encryptionService.Decrypt(user.Email, user.Salt);
 
-            var token = GenerateToken(user.Id, firstName, lastName, email, (int)user.Roles);
+            var token = GenerateToken(user.Id, firstName, lastName, email, user.Roles);
 
             return Results.Ok(new { token });
         }
@@ -180,7 +180,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             .ToArray());
     }
 
-    private string GenerateToken(int userId, string firstName, string lastName, string email, int roles)
+    private string GenerateToken(int userId, string firstName, string lastName, string email, AccountRoles roles)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -192,16 +192,23 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 
             new Claim(AccountConstants.Claims.Id, userId.ToString()),
             new Claim(AccountConstants.Claims.Email, email),
-            new Claim(AccountConstants.Claims.Roles, roles.ToString()),
+            new Claim(AccountConstants.Claims.Roles, ((int)roles).ToString()),
             new Claim(AccountConstants.Claims.FirstName, firstName),
             new Claim(AccountConstants.Claims.LastName, lastName)
         };
+
+        int expiry = _settings.ExpiresInMinutes;
+
+        if (roles.HasFlag(AccountRoles.APP_BOARDS) || roles.HasFlag(AccountRoles.APP_CLOCKING))
+        {
+            expiry = 60 * 24 * 30;
+        }
 
         var token = new JwtSecurityToken(
             issuer: _settings.Issuer,
             audience: _settings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_settings.ExpiresInMinutes),
+            expires: DateTime.UtcNow.AddMinutes(expiry),
             signingCredentials: credentials
         );
 

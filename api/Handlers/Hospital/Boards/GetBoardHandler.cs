@@ -171,6 +171,14 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     {
         var tasks = new List<PatientBoardAreaPenTask>();
 
+        // Temporary until Katrien provides the feeding guidance
+
+        tasks.Add(new PatientBoardAreaPenTask { Id = 1, Time = "Morning", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 1) });
+        tasks.Add(new PatientBoardAreaPenTask { Id = 2, Time = "Afternoon", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 2) });
+        tasks.Add(new PatientBoardAreaPenTask { Id = 3, Time = "Evening", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 3) });
+
+        return tasks;
+
         int taskId = 1;
 
         tasks.Add(new PatientBoardAreaPenTask

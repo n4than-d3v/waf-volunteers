@@ -10,7 +10,6 @@ import {
   PatientCounts,
   PatientStatus,
   Tab,
-  Diet,
   Tag,
   DispositionReason,
   ReleaseType,
@@ -25,6 +24,7 @@ import {
   PatientBoard,
   ListPatientBoard,
   Dashboard,
+  Food,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -126,14 +126,14 @@ export const getMucousMembraneTexturesError = createAction(
   '[HMS-V] Get mucousMembraneTextures: error',
 );
 
-// Diets
+// Foods
 
-export const getDiets = createAction('[HMS-V] Get diets');
-export const getDietsSuccess = createAction(
-  '[HMS-V] Get diets: success',
-  props<{ diets: Diet[] }>(),
+export const getFoods = createAction('[HMS-V] Get foods');
+export const getFoodsSuccess = createAction(
+  '[HMS-V] Get foods: success',
+  props<{ foods: Food[] }>(),
 );
-export const getDietsError = createAction('[HMS-V] Get diets: error');
+export const getFoodsError = createAction('[HMS-V] Get foods: error');
 
 // Tags
 
@@ -678,7 +678,7 @@ export const removePrescriptionInstructionError = createAction(
 
 // Update basic details
 
-export type UpdatePatientBasicDetailsType = 'details' | 'diets' | 'tags';
+export type UpdatePatientBasicDetailsType = 'details' | 'feeding' | 'tags';
 
 export const updatePatientBasicDetails = createAction(
   '[HMS-V] Update patient basic details',
@@ -692,7 +692,12 @@ export const updatePatientBasicDetails = createAction(
     speciesVariantId: number;
     sex: number;
     tagIds: number[];
-    dietIds: number[];
+    feeding: {
+      time: string;
+      quantityValue: number;
+      quantityUnit: string;
+      foodId: number;
+    }[];
   }>(),
 );
 export const updatePatientBasicDetailsSuccess = createAction(

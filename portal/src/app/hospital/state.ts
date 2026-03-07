@@ -39,8 +39,8 @@ export interface HospitalState {
   markPenClean: Task;
 
   // Patient details
+  foods: ReadOnlyWrapper<Food[]>;
   tags: ReadOnlyWrapper<Tag[]>;
-  diets: ReadOnlyWrapper<Diet[]>;
   areas: ReadOnlyWrapper<Area[]>;
   species: ReadOnlyWrapper<Species[]>;
 
@@ -192,7 +192,7 @@ export interface ListPatient {
   pen: Pen | null;
   area: Area | null;
   tags: Tag[];
-  diets: Diet[];
+  feeding: Feeding[];
   disposition: Disposition | null;
   dispositioned: string | null;
   dispositionReasons: DispositionReason[];
@@ -442,10 +442,16 @@ export interface MucousMembraneTexture {
   description: string;
 }
 
-export interface Diet {
+export interface Feeding {
+  time: string;
+  quantityValue: number;
+  quantityUnit: string;
+  food: { id: number; name: string };
+}
+
+export interface Food {
   id: number;
   name: string;
-  description: string;
 }
 
 export interface Tag {
@@ -570,6 +576,7 @@ export interface SpeciesVariant {
   name: string;
   friendlyName: string;
   order: number;
+  feedingGuidance: Feeding[];
 }
 
 export interface Species {
@@ -643,7 +650,6 @@ export interface PatientBoardAreaPen {
   id: number;
   reference: string;
   patients: string[] | null;
-  diets: string[] | null;
   tags: string[] | null;
   tasks: PatientBoardAreaPenTask[];
   needsCleaning: boolean;
@@ -684,7 +690,7 @@ export const initialHospitalState: HospitalState = {
   dehydrations: createReadOnlyWrapper<Dehydration[]>(),
   mucousMembraneColours: createReadOnlyWrapper<MucousMembraneColour[]>(),
   mucousMembraneTextures: createReadOnlyWrapper<MucousMembraneTexture[]>(),
-  diets: createReadOnlyWrapper<Diet[]>(),
+  foods: createReadOnlyWrapper<Food[]>(),
   tags: createReadOnlyWrapper<Tag[]>(),
   dispositionReasons: createReadOnlyWrapper<DispositionReason[]>(),
   releaseTypes: createReadOnlyWrapper<ReleaseType[]>(),

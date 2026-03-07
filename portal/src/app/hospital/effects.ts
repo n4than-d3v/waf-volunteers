@@ -10,7 +10,6 @@ import {
   Dehydration,
   MucousMembraneColour,
   MucousMembraneTexture,
-  Diet,
   Tag,
   DispositionReason,
   ReleaseType,
@@ -26,6 +25,7 @@ import {
   PatientBoard,
   ListPatientBoard,
   Dashboard,
+  Food,
 } from './state';
 import { catchError, delay, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -59,9 +59,6 @@ import {
   getAreas,
   getAreasError,
   getAreasSuccess,
-  getDiets,
-  getDietsError,
-  getDietsSuccess,
   getDispositionReasons,
   getDispositionReasonsError,
   getDispositionReasonsSuccess,
@@ -203,6 +200,9 @@ import {
   markPenClean,
   markPenCleanSuccess,
   markPenCleanError,
+  getFoods,
+  getFoodsSuccess,
+  getFoodsError,
 } from './actions';
 
 @Injectable()
@@ -368,15 +368,15 @@ export class HospitalEffects {
     ),
   );
 
-  // Diets
+  // Foods
 
-  getDiets$ = createEffect(() =>
+  getFoods$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getDiets),
+      ofType(getFoods),
       switchMap(() =>
-        this.http.get<Diet[]>('hospital/husbandry/diets').pipe(
-          map((diets) => getDietsSuccess({ diets })),
-          catchError(() => of(getDietsError())),
+        this.http.get<Food[]>('hospital/husbandry/foods').pipe(
+          map((foods) => getFoodsSuccess({ foods })),
+          catchError(() => of(getFoodsError())),
         ),
       ),
     ),

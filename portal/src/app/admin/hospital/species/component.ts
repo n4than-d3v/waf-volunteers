@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Food, Species, SpeciesType, SpeciesVariant, Wrapper } from '../state';
+import {
+  Food,
+  formatFeeding,
+  Species,
+  SpeciesType,
+  SpeciesVariant,
+  Wrapper,
+} from '../state';
 import { Store } from '@ngrx/store';
 import { selectFoods, selectSpecies } from '../selectors';
 import {
@@ -159,31 +166,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     window.scroll(0, 0);
   }
 
-  formatFeedingGuidance(variant: SpeciesVariant) {
-    const grouped = variant.feedingGuidance.reduce<Record<string, string[]>>(
-      (acc, guidance) => {
-        const formattedTime = guidance.time.slice(0, 5);
-
-        if (!acc[formattedTime]) {
-          acc[formattedTime] = [];
-        }
-
-        acc[formattedTime].push(
-          `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name}`,
-        );
-
-        return acc;
-      },
-      {},
-    );
-
-    return Object.entries(grouped)
-      .sort(([timeA], [timeB]) => timeA.localeCompare(timeB))
-      .map(([time, items]) => ({
-        time,
-        items,
-      }));
-  }
+  formatFeedingGuidance = formatFeeding;
 
   cancel(fullReset = true) {
     this.creatingSpecies = false;

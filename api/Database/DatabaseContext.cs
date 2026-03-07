@@ -65,7 +65,7 @@ public class DatabaseContext : DbContext
     public DbSet<MucousMembraneTexture> MucousMembraneTextures { get; set; }
     public DbSet<HomeCareMessage> HomeCareMessages { get; set; }
     public DbSet<HomeCareRequest> HomeCareRequests { get; set; }
-    public DbSet<Diet> Diets { get; set; }
+    public DbSet<PatientFeeding> PatientFeedings { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<AdministrationMethod> AdministrationMethods { get; set; }
     public DbSet<Medication> Medications { get; set; }
@@ -89,7 +89,7 @@ public class DatabaseContext : DbContext
     public DbSet<Species> Species { get; set; }
     public DbSet<SpeciesVariant> SpeciesVariants { get; set; }
     public DbSet<Food> Foods { get; set; }
-    public DbSet<SpeciesVariantFood> SpeciesVariantFoods { get; set; }
+    public DbSet<SpeciesVariantFeeding> SpeciesVariantFeeding { get; set; }
 
     // Patient boards
     public DbSet<Board> Boards { get; set; }

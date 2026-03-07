@@ -11,11 +11,6 @@ export const selectFoods = createSelector(
   (state) => state.foods,
 );
 
-export const selectDiets = createSelector(
-  selectAdminHospitalManagementState,
-  (state) => state.diets,
-);
-
 export const selectTags = createSelector(
   selectAdminHospitalManagementState,
   (state) => state.tags,

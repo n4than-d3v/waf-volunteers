@@ -385,20 +385,12 @@ public partial class Program
             .AddNote("View foods")
             .RequireAuthorization(signedInPolicy);
 
-        apiHospitalHusbandry.MapGet("/diets", (IMediator mediator) => mediator.Send(new GetDiets()))
-            .AddNote("View diets")
-            .RequireAuthorization(signedInPolicy);
-
         apiHospitalHusbandry.MapGet("/tags", (IMediator mediator) => mediator.Send(new GetTags()))
             .AddNote("View tags")
             .RequireAuthorization(signedInPolicy);
 
         apiHospitalHusbandry.MapPut("/food", (IMediator mediator, UpsertFood request) => mediator.Send(request))
             .AddNote("Update or create food")
-            .RequireAuthorization(vetPolicy);
-
-        apiHospitalHusbandry.MapPut("/diet", (IMediator mediator, UpsertDiet request) => mediator.Send(request))
-            .AddNote("Update or create diet")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalHusbandry.MapPut("/tag", (IMediator mediator, UpsertTag request) => mediator.Send(request))

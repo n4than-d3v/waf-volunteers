@@ -57,7 +57,7 @@ public class Patient : Entity
     public List<PatientNote> Notes { get; set; }
     public List<PatientMovement> Movements { get; set; }
     public List<Tag> Tags { get; set; }
-    public List<Diet> Diets { get; set; }
+    public List<PatientFeeding> Feeding { get; set; }
     public List<HomeCareRequest> HomeCareRequests { get; set; }
     public List<HomeCareMessage> HomeCareMessages { get; set; }
     public bool? LastMessageSentByOrphanFeeder => (HomeCareMessages?.Any() ?? false)

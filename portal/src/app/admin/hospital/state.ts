@@ -1,6 +1,7 @@
+import { Feeding } from '../../hospital/state';
+
 export interface AdminHospitalManagementState {
   foods: Wrapper<Food>;
-  diets: Wrapper<Diet>;
   tags: Wrapper<Tag>;
   dispositionReasons: Wrapper<DispositionReason>;
   releaseTypes: Wrapper<ReleaseType>;
@@ -26,15 +27,6 @@ export interface CreateFoodCommand {
 }
 
 export interface Food extends CreateFoodCommand {
-  id: number;
-}
-
-export interface CreateDietCommand {
-  name: string;
-  description: string;
-}
-
-export interface Diet extends CreateDietCommand {
   id: number;
 }
 
@@ -218,6 +210,31 @@ export enum PatientBoardAreaDisplayType {
   SummarisePatients = 2,
 }
 
+export const formatFeeding = (feeding: Feeding[]) => {
+  const grouped = feeding.reduce<Record<string, string[]>>((acc, guidance) => {
+    const formattedTime = guidance.time.slice(0, 5);
+
+    if (!acc[formattedTime]) {
+      acc[formattedTime] = [];
+    }
+
+    if (guidance.quantityValue > 0) {
+      acc[formattedTime].push(
+        `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name}`,
+      );
+    }
+
+    return acc;
+  }, {});
+
+  return Object.entries(grouped)
+    .sort(([timeA], [timeB]) => timeA.localeCompare(timeB))
+    .map(([time, items]) => ({
+      time,
+      items,
+    }));
+};
+
 const createWrapper = <T>(): Wrapper<T> => ({
   data: [],
   loading: false,
@@ -229,7 +246,6 @@ const createWrapper = <T>(): Wrapper<T> => ({
 export const initialAdminHospitalManagementState: AdminHospitalManagementState =
   {
     foods: createWrapper<Food>(),
-    diets: createWrapper<Diet>(),
     tags: createWrapper<Tag>(),
     dispositionReasons: createWrapper<DispositionReason>(),
     releaseTypes: createWrapper<ReleaseType>(),

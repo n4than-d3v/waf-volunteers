@@ -85,7 +85,6 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
             var existingItem = existingGuidance.FirstOrDefault(x => x.Time == item.Time && x.Food.Id == item.FoodId);
             if (existingItem != null)
             {
-                existingItem.Time = item.Time;
                 existingItem.QuantityValue = item.QuantityValue;
                 existingItem.QuantityUnit = item.QuantityUnit;
             }
@@ -94,7 +93,7 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
                 var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
                 if (food == null) return Results.BadRequest();
 
-                var newGuidance = new SpeciesVariantFood
+                var newGuidance = new SpeciesVariantFeeding
                 {
                     Food = food,
                     Time = item.Time,

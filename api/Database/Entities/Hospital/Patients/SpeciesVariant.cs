@@ -14,5 +14,5 @@ public class SpeciesVariant : Entity
 
     public int LongTermDays { get; set; }
 
-    public List<SpeciesVariantFood> FeedingGuidance { get; set; }
+    public List<SpeciesVariantFeeding> FeedingGuidance { get; set; }
 }

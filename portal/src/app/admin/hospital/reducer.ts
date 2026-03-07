@@ -10,9 +10,6 @@ import {
   createArea,
   createAreaError,
   createAreaSuccess,
-  createDiet,
-  createDietError,
-  createDietSuccess,
   createDispositionReason,
   createDispositionReasonError,
   createDispositionReasonSuccess,
@@ -46,9 +43,6 @@ import {
   getAreas,
   getAreasError,
   getAreasSuccess,
-  getDiets,
-  getDietsError,
-  getDietsSuccess,
   getDispositionReasons,
   getDispositionReasonsError,
   getDispositionReasonsSuccess,
@@ -70,9 +64,6 @@ import {
   movePen,
   movePenError,
   movePenSuccess,
-  updateDiet,
-  updateDietError,
-  updateDietSuccess,
   updateDispositionReason,
   updateDispositionReasonError,
   updateDispositionReasonSuccess,
@@ -183,85 +174,6 @@ export const adminHospitalManagementReducer =
       ...state,
       foods: {
         ...state.foods,
-        loading: false,
-        error: true,
-      },
-    })),
-    // Diets
-    on(getDiets, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: true,
-        error: false,
-        created: false,
-        updated: false,
-      },
-    })),
-    on(getDietsSuccess, (state, { diets }) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        data: diets,
-        loading: false,
-      },
-    })),
-    on(getDietsError, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: false,
-        error: true,
-      },
-    })),
-    on(createDiet, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: true,
-        error: false,
-        created: false,
-        updated: false,
-      },
-    })),
-    on(createDietSuccess, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: false,
-        created: true,
-      },
-    })),
-    on(createDietError, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: false,
-        error: true,
-      },
-    })),
-    on(updateDiet, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: true,
-        error: false,
-        created: false,
-        updated: false,
-      },
-    })),
-    on(updateDietSuccess, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
-        loading: false,
-        updated: true,
-      },
-    })),
-    on(updateDietError, (state) => ({
-      ...state,
-      diets: {
-        ...state.diets,
         loading: false,
         error: true,
       },

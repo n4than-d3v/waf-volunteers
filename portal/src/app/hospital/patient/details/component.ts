@@ -121,9 +121,12 @@ export class HospitalPatientDetailsComponent implements OnInit {
         speciesId: Number(this.detailsForm.value.speciesId),
         speciesVariantId: Number(this.detailsForm.value.speciesVariantId),
         sex: Number(this.detailsForm.value.sex),
-        // Not updating tags or diets (yet)
+        // Not updating tags or feeding in this
         tagIds: this.patient.tags.map((x) => x.id),
-        dietIds: this.patient.diets.map((x) => x.id),
+        feeding: this.patient.feeding.map((x) => ({
+          ...x,
+          foodId: x.food.id,
+        })),
       }),
     );
     this.reset();

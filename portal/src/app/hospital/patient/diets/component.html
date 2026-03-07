@@ -1,54 +1,111 @@
 <div class="wrapper">
-  <p>Diet, if different to default feeding guidance.</p>
-  @if (patient.diets.length > 0) {
-  <div class="row">
-    <table>
-      <tbody>
-        @for (diet of patient.diets; track diet.id) {
-        <tr>
-          <td>{{ diet.name }}</td>
-          <td>
-            @if (isVet && patient.status != PatientStatus.Dispositioned) {
-            <button (click)="remove(diet.id)" class="button button--none">
-              🗑️
-            </button>
-            }
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-  } @if (!adding) { @if (isVet && patient.status != PatientStatus.Dispositioned)
-  {
+  @if (!customising) { @if (patient.feeding.length > 0) {
+  <p class="is-custom">🍳 This patient has a custom diet</p>
+  }
+  <p>Feeding boards will show the following instructions:</p>
+
+  <table>
+    <tbody>
+      @for (feeding of getInstructions(); let lastTime = $last; track
+      feeding.time) { @for (item of feeding.items; let first = $first; let
+      lastFood = $last; track item) {
+      <tr [class.last]="lastFood && !lastTime">
+        <td>@if (first) { {{ feeding.time }} }</td>
+        <td>{{ item }}</td>
+      </tr>
+      } }
+    </tbody>
+  </table>
+  @if (isVet && patient.status != PatientStatus.Dispositioned) {
   <div class="buttons">
-    <button (click)="adding = true" class="button button--secondary-invert">
-      🍔 Add instruction
+    <button
+      (click)="beginCustomising()"
+      class="button button--secondary-invert"
+    >
+      🍳 Customise
     </button>
+    @if (patient.feeding.length > 0) {
+    <button
+      (click)="clearCustomisations()"
+      class="button button--secondary-invert"
+    >
+      🔄 Reset
+    </button>
+    }
   </div>
   } } @else {
   <form [formGroup]="dietForm">
-    <div class="field">
-      <label for="diet">
-        Diet
-        <span class="required">*</span>
-      </label>
-      <select id="diet" formControlName="dietId">
-        <option value=""></option>
-        @if (diets$ | async; as diets) { @if (diets.loading) {
-        <spinner />
-        } @else if (diets.error) {
-        <div class="error">Error occurred</div>
-        } @else if (diets.data) { @for (diet of diets.data; track diet.id) {
-        <option [value]="diet.id">{{ diet.name }}</option>
-        } }}
-      </select>
+    <div formArrayName="feeding">
+      <div
+        *ngFor="let fg of dietForm.controls.feeding.controls; let i = index"
+        [formGroupName]="i"
+      >
+        @if (showFeeding(i)) {
+        <div class="feeding-guidance">
+          <div class="controls">
+            <div class="field">
+              <label for="timeId">
+                Time
+                <span class="required">*</span>
+              </label>
+              <input id="timeId" type="time" formControlName="time" />
+            </div>
+            <div class="field">
+              <label for="quantityValue">
+                Quantity
+                <span class="required">*</span>
+              </label>
+              <div class="input-with-units">
+                <input
+                  id="quantityValue"
+                  type="number"
+                  formControlName="quantityValue"
+                  autocomplete="off"
+                />
+                <select id="quantityUnit" formControlName="quantityUnit">
+                  <option></option>
+                  <option>g</option>
+                  <option>ml</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="foodId">
+                Food
+                <span class="required">*</span>
+              </label>
+              @if (foods$ | async; as foods) {
+              <select id="foodId" formControlName="foodId">
+                @for (food of foods.data; track food.id) {
+                <option [value]="food.id">{{ food.name }}</option>
+                }
+              </select>
+              }
+            </div>
+          </div>
+          <button
+            class="button button--secondary-invert rem"
+            (click)="removeFeedingGuidance(i)"
+          >
+            ➖
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="right-align">
+      <button
+        class="button button--secondary-invert add"
+        (click)="addFeedingGuidance()"
+      >
+        ➕
+      </button>
     </div>
     @if (!saving) { @if (attemptedSave && !dietForm.valid) {
     <div class="error">Please fill in all required fields</div>
     }
     <div class="buttons">
-      <button (click)="add()" class="button button--primary">Save</button>
+      <button (click)="save()" class="button button--primary">Save</button>
       <button (click)="reset()" class="button button--secondary">Back</button>
     </div>
     }

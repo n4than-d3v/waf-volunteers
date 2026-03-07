@@ -58,10 +58,10 @@ export const selectMucousMembraneTextures = createSelector(
   selectHospitalState,
   (state) => state.mucousMembraneTextures,
 );
-7;
-export const selectDiets = createSelector(
+
+export const selectFoods = createSelector(
   selectHospitalState,
-  (state) => state.diets,
+  (state) => state.foods,
 );
 
 export const selectTags = createSelector(

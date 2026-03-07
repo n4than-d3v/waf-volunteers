@@ -63,13 +63,7 @@
         <p>{{ patient }}</p>
         }
       </div>
-      @if (pen.diets && pen.diets.length > 0) {
-      <div class="diets">
-        @for (diet of pen.diets; track diet) {
-        <span class="diet">{{ diet }}</span>
-        }
-      </div>
-      } @if (pen.tags && pen.tags.length > 0) {
+      @if (pen.tags && pen.tags.length > 0) {
       <div class="tags">
         @for (tag of pen.tags; track tag) {
         <span class="tag">{{ tag }}</span>

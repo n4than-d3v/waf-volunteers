@@ -2,7 +2,7 @@
 
 namespace Api.Database.Entities.Hospital.Patients.Husbandry;
 
-public class SpeciesVariantFood : Entity
+public class SpeciesVariantFeeding : Entity, IFeeding
 {
     [JsonIgnore]
     public SpeciesVariant SpeciesVariant { get; set; }

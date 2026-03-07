@@ -1,7 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import {
-  Diet,
-  CreateDietCommand,
   Tag,
   CreateTagCommand,
   DispositionReason,
@@ -48,29 +46,6 @@ export const updateFood = createAction(
 );
 export const updateFoodSuccess = createAction('[HMS-A] Update food: success');
 export const updateFoodError = createAction('[HMS-A] Update food: error');
-
-// Diets
-
-export const getDiets = createAction('[HMS-A] Get diets');
-export const getDietsSuccess = createAction(
-  '[HMS-A] Get diets: success',
-  props<{ diets: Diet[] }>(),
-);
-export const getDietsError = createAction('[HMS-A] Get diets: error');
-
-export const createDiet = createAction(
-  '[HMS-A] Create diet',
-  props<{ diet: CreateDietCommand }>(),
-);
-export const createDietSuccess = createAction('[HMS-A] Create diet: success');
-export const createDietError = createAction('[HMS-A] Create diet: error');
-
-export const updateDiet = createAction(
-  '[HMS-A] Update diet',
-  props<{ diet: Diet }>(),
-);
-export const updateDietSuccess = createAction('[HMS-A] Update diet: success');
-export const updateDietError = createAction('[HMS-A] Update diet: error');
 
 // Tags
 

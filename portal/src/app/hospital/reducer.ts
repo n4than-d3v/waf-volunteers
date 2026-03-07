@@ -32,9 +32,6 @@ import {
   getAreas,
   getAreasError,
   getAreasSuccess,
-  getDiets,
-  getDietsError,
-  getDietsSuccess,
   getDispositionReasons,
   getDispositionReasonsError,
   getDispositionReasonsSuccess,
@@ -171,6 +168,9 @@ import {
   markPenClean,
   markPenCleanError,
   markPenCleanSuccess,
+  getFoods,
+  getFoodsSuccess,
+  getFoodsError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -434,29 +434,30 @@ export const hospitalReducer = createReducer<HospitalState>(
       loading: false,
       error: true,
     },
-  })), // Diets
-  on(getDiets, (state) => ({
+  })),
+  // Tags
+  on(getFoods, (state) => ({
     ...state,
-    diets: {
-      ...state.diets,
+    foods: {
+      ...state.foods,
       loading: true,
       error: false,
       created: false,
       updated: false,
     },
   })),
-  on(getDietsSuccess, (state, { diets }) => ({
+  on(getFoodsSuccess, (state, { foods }) => ({
     ...state,
-    diets: {
-      ...state.diets,
-      data: diets,
+    foods: {
+      ...state.foods,
+      data: foods,
       loading: false,
     },
   })),
-  on(getDietsError, (state) => ({
+  on(getFoodsError, (state) => ({
     ...state,
-    diets: {
-      ...state.diets,
+    foods: {
+      ...state.foods,
       loading: false,
       error: true,
     },
@@ -941,7 +942,7 @@ export const hospitalReducer = createReducer<HospitalState>(
     },
     updateDiets: {
       ...state.updateDiets,
-      loading: update === 'diets',
+      loading: update === 'feeding',
       success: false,
       error: false,
     },
@@ -962,7 +963,7 @@ export const hospitalReducer = createReducer<HospitalState>(
     updateDiets: {
       ...state.updateDiets,
       loading: false,
-      success: update === 'diets',
+      success: update === 'feeding',
     },
     updateTags: {
       ...state.updateTags,
@@ -980,7 +981,7 @@ export const hospitalReducer = createReducer<HospitalState>(
     updateDiets: {
       ...state.updateDiets,
       loading: false,
-      error: update === 'diets',
+      error: update === 'feeding',
     },
     updateTags: {
       ...state.updateTags,

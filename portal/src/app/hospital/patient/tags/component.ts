@@ -72,7 +72,10 @@ export class HospitalPatientTagsComponent implements OnInit {
       speciesVariantId: this.patient.speciesVariant!.id,
       sex: this.patient.sex!,
       tagIds: this.patient.tags.map((x) => x.id),
-      dietIds: this.patient.diets.map((x) => x.id),
+      feeding: this.patient.feeding.map((x) => ({
+        ...x,
+        foodId: x.food.id,
+      })),
     };
   }
 

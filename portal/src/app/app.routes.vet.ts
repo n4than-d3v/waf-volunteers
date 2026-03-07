@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { VetDashboardComponent } from './vet/dashboard/component';
 import { VetHospitalComponent } from './vet/hospital/component';
 import { AdminHospitalComponent } from './admin/hospital/component';
-import { AdminHospitalDietsComponent } from './admin/hospital/diets/component';
 import { AdminHospitalTagsComponent } from './admin/hospital/tags/component';
 import { AdminHospitalDispositionReasonsComponent } from './admin/hospital/disposition-reasons/component';
 import { AdminHospitalReleaseTypesComponent } from './admin/hospital/release-types/component';
@@ -33,10 +32,6 @@ export const routes: Routes = [
       {
         path: 'foods',
         component: AdminHospitalFoodsComponent,
-      },
-      {
-        path: 'diets',
-        component: AdminHospitalDietsComponent,
       },
       {
         path: 'tags',

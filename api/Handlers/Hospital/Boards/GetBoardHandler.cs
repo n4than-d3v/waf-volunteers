@@ -2,6 +2,7 @@
 using Api.Database.Entities.Hospital.Boards;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Husbandry;
 using Api.Handlers.Hospital.Patients;
 using Api.Services;
 using MediatR;
@@ -158,7 +159,6 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
                     Tasks = GetPatientBoardAreaPenTasks(g.Key.PenId.Value, penPatients),
-                    Diets = penPatients.SelectMany(p => p.Diets).Select(d => d.Name).Distinct().ToList(),
                     Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
                     Reference = g.Key.PenReference
                 };
@@ -177,7 +177,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         tasks.Add(new PatientBoardAreaPenTask { Id = 2, Time = "Afternoon", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 2) });
         tasks.Add(new PatientBoardAreaPenTask { Id = 3, Time = "Evening", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 3) });
 
-        return tasks;
+        tasks.Clear();
 
         int taskId = 1;
 
@@ -191,7 +191,9 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         });
 
         var times = patients
-            .SelectMany(patient => patient.SpeciesVariant!.FeedingGuidance)
+            .SelectMany(patient => patient.Feeding.Any()
+                ? patient.Feeding.ToList<IFeeding>()
+                : patient.SpeciesVariant!.FeedingGuidance.ToList<IFeeding>())
             .GroupBy(food => food.Time)
             .OrderBy(time => time.Key);
 
@@ -210,7 +212,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 Id = taskId,
                 Time = time.Key.ToString("HH:mm"),
                 Details = groups.Select(group => $"{group.Sum(g => g.QuantityValue)} {group.Key.QuantityUnit} {group.Key.Name}").ToArray(),
-                Icon = "🍔",
+                Icon = "🍎",
                 Done = InMemoryBoardTasks.IsComplete(penId, taskId)
             });
         }
@@ -248,7 +250,6 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public int Id { get; set; }
         public string Reference { get; set; }
         public List<string> Patients { get; set; }
-        public List<string> Diets { get; set; }
         public List<string> Tags { get; set; }
         public List<PatientBoardAreaPenTask> Tasks { get; set; }
         public bool NeedsCleaning { get; set; }

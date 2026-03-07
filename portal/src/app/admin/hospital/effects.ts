@@ -3,9 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import {
-  AdministrationMethod,
   Area,
-  Diet,
   DispositionReason,
   Food,
   Medication,
@@ -25,9 +23,6 @@ import {
   createArea,
   createAreaError,
   createAreaSuccess,
-  createDiet,
-  createDietError,
-  createDietSuccess,
   createDispositionReason,
   createDispositionReasonError,
   createDispositionReasonSuccess,
@@ -61,9 +56,6 @@ import {
   getAreas,
   getAreasError,
   getAreasSuccess,
-  getDiets,
-  getDietsError,
-  getDietsSuccess,
   getDispositionReasons,
   getDispositionReasonsError,
   getDispositionReasonsSuccess,
@@ -85,9 +77,6 @@ import {
   movePen,
   movePenError,
   movePenSuccess,
-  updateDiet,
-  updateDietError,
-  updateDietSuccess,
   updateDispositionReason,
   updateDispositionReasonError,
   updateDispositionReasonSuccess,
@@ -180,58 +169,6 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(updateFoodSuccess),
       switchMap((_) => of(getFoods())),
-    ),
-  );
-
-  // Diets
-
-  getDiets$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getDiets),
-      switchMap(() =>
-        this.http.get<Diet[]>('hospital/husbandry/diets').pipe(
-          map((diets) => getDietsSuccess({ diets })),
-          catchError(() => of(getDietsError())),
-        ),
-      ),
-    ),
-  );
-
-  createDiet$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createDiet),
-      switchMap((action) =>
-        this.http.put('hospital/husbandry/diet', action.diet).pipe(
-          map((_) => createDietSuccess()),
-          catchError(() => of(createDietError())),
-        ),
-      ),
-    ),
-  );
-
-  createDietSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createDietSuccess),
-      switchMap((_) => of(getDiets())),
-    ),
-  );
-
-  updateDiet$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateDiet),
-      switchMap((action) =>
-        this.http.put('hospital/husbandry/diet', action.diet).pipe(
-          map((_) => updateDietSuccess()),
-          catchError(() => of(updateDietError())),
-        ),
-      ),
-    ),
-  );
-
-  updateDietSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateDietSuccess),
-      switchMap((_) => of(getDiets())),
     ),
   );
 

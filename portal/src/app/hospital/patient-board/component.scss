@@ -95,24 +95,15 @@ h1 {
       padding-bottom: 0rem;
       flex: 1;
 
-      .diets,
       .tags {
         display: flex;
         flex-wrap: wrap;
         gap: 0.25rem;
-        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
 
-        .diet,
         .tag {
           color: white;
-          padding: 0.125rem 0.25rem;
-        }
-
-        .diet {
-          background-color: var(--theme-color-5);
-        }
-
-        .tag {
+          padding: 0.125rem 0.4rem;
           background-color: var(--theme-color-2);
         }
       }

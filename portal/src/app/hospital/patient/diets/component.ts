@@ -96,6 +96,10 @@ export class HospitalPatientDietsComponent implements OnInit {
       });
     }
 
+    if (feedingItems.length === 0) {
+      this.addFeedingGuidance();
+    }
+
     this.customising = true;
   }
 

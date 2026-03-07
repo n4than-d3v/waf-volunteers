@@ -186,7 +186,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             Id = taskId,
             Time = "Clean",
             Details = [],
-            Icon = "🧽",
+            Icon = "",
             Done = InMemoryBoardTasks.IsComplete(penId, 1)
         });
 
@@ -212,7 +212,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 Id = taskId,
                 Time = time.Key.ToString("HH:mm"),
                 Details = groups.Select(group => $"{group.Sum(g => g.QuantityValue)} {group.Key.QuantityUnit} {group.Key.Name}").ToArray(),
-                Icon = "🍎",
+                Icon = "",
                 Done = InMemoryBoardTasks.IsComplete(penId, taskId)
             });
         }

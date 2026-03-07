@@ -1,9 +1,8 @@
 <div class="wrapper">
   @if (!customising) { @if (patient.feeding.length > 0) {
   <p class="is-custom">🍳 This patient has a custom diet</p>
-  }
+  } @if (getInstructions().length > 0) {
   <p>Feeding boards will show the following instructions:</p>
-
   <table>
     <tbody>
       @for (feeding of getInstructions(); let lastTime = $last; track
@@ -16,7 +15,13 @@
       } }
     </tbody>
   </table>
-  @if (isVet && patient.status != PatientStatus.Dispositioned) {
+  } @else {
+  <p class="no-guidance">⚠️ Feeding guidance not set up</p>
+  <p>
+    Feeding boards will not show any feeds for this patient.<br />
+    Add customisations to ensure it gets fed.
+  </p>
+  } @if (isVet && patient.status != PatientStatus.Dispositioned) {
   <div class="buttons">
     <button
       (click)="beginCustomising()"
@@ -66,6 +71,7 @@
                   <option></option>
                   <option>g</option>
                   <option>ml</option>
+                  <option>pinch</option>
                 </select>
               </div>
             </div>

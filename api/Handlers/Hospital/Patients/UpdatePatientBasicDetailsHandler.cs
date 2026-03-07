@@ -2,6 +2,7 @@
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
+using Api.Handlers.Hospital.Patients.Notes;
 using MediatR;
 
 namespace Api.Handlers.Hospital.Patients;
@@ -36,15 +37,17 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
 public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBasicDetails, IResult>
 {
     private readonly IDatabaseRepository _repository;
+    private readonly IMediator _mediator;
 
-    public UpdatePatientBasicDetailsHandler(IDatabaseRepository repository)
+    public UpdatePatientBasicDetailsHandler(IDatabaseRepository repository, IMediator mediator)
     {
         _repository = repository;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(UpdatePatientBasicDetails request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.IncludeHusbandry());
+        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.IncludeBasicDetails().IncludeHusbandry());
         if (patient == null) return Results.BadRequest();
 
         var species = await _repository.Get<Species>(request.SpeciesId);
@@ -52,6 +55,15 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
 
         var speciesVariant = await _repository.Get<SpeciesVariant>(request.SpeciesVariantId);
         if (speciesVariant == null) return Results.BadRequest();
+
+        if (patient.SpeciesVariant != null && patient.SpeciesVariant.Id != request.SpeciesVariantId)
+        {
+            await _mediator.Send(new AddPatientNote
+            {
+                PatientId = request.PatientId,
+                Comments = $"Age updated from {patient.SpeciesVariant.Name} to {speciesVariant.Name}"
+            }, cancellationToken);
+        }
 
         var tags = await _repository.GetAll<Tag>(x => true);
         var foods = await _repository.GetAll<Food>(x => true);
@@ -104,6 +116,7 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
         }
 
         await _repository.SaveChangesAsync();
+
         return Results.NoContent();
     }
 }

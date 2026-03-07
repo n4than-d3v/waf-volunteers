@@ -56,6 +56,7 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
   dailyTasksReport$: Observable<ReadOnlyWrapper<DailyTasksReport>>;
 
   date: string = '';
+  previousScroll = 0;
 
   showMe = {
     overdueRechecks: true,
@@ -106,6 +107,16 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
         date: this.date,
       }),
     );
+  }
+
+  beginAdministeringPrescription(prescription: Prescription) {
+    this.previousScroll = window.scrollY;
+    this.administeringPrescription = prescription;
+  }
+
+  beginPerformingRecheck(recheck: ListRecheck) {
+    this.previousScroll = window.scrollY;
+    this.performingRecheck = recheck;
   }
 
   ngOnInit() {
@@ -214,6 +225,9 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
     this.newRecheckRoles = {};
     this.newRecheckRequireWeight = {};
     this.newRecheckDescription = {};
+    setTimeout(() => {
+      window.scroll(0, this.previousScroll);
+    }, 250);
   }
 
   getRecheckRoles = getRecheckRoles;

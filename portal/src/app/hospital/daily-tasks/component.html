@@ -438,10 +438,10 @@ administerPrescriptionTask.error) {
                     @if (!recheck.rechecked) {
                     <div class="buttons buttons--check">
                       <button
-                        (click)="performingRecheck = recheck"
+                        (click)="beginPerformingRecheck(recheck)"
                         class="button button--secondary-invert"
                       >
-                        🩺
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       </button>
                     </div>
                     }
@@ -528,7 +528,7 @@ administerPrescriptionTask.error) {
                       getOutstandingAdministrationsCount(prescription); track i)
                       {
                       <button
-                        (click)="administeringPrescription = prescription"
+                        (click)="beginAdministeringPrescription(prescription)"
                         class="button button--secondary-invert"
                       >
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

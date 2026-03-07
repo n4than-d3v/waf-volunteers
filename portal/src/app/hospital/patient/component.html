@@ -44,21 +44,20 @@ PatientStatus.PendingInitialExam) {
     ></hospital-patient-status>
   </section>
 </div>
-@if (patient.data.status != PatientStatus.ReceivingHomeCare) {
 <div class="sections">
-  <section>
-    <h3>Location</h3>
-    <hospital-patient-location
-      [patient]="patient.data"
-      [isVet]="isVet"
-    ></hospital-patient-location>
-  </section>
   <section>
     <h3>Diet</h3>
     <hospital-patient-diets
       [patient]="patient.data"
       [isVet]="isVet"
     ></hospital-patient-diets>
+  </section>
+  <section>
+    <h3>Location</h3>
+    <hospital-patient-location
+      [patient]="patient.data"
+      [isVet]="isVet"
+    ></hospital-patient-location>
   </section>
   <section>
     <h3>Tags</h3>
@@ -68,7 +67,7 @@ PatientStatus.PendingInitialExam) {
     ></hospital-patient-tags>
   </section>
 </div>
-} @if (patient.data.homeCareRequests.length > 0) {
+@if (patient.data.homeCareRequests.length > 0) {
 <section>
   <h3>Home care</h3>
   <hospital-patient-home-care

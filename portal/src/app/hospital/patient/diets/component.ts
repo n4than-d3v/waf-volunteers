@@ -175,7 +175,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         ...update,
         update: 'feeding',
         feeding: this.dietForm.controls.feeding.controls.map((group) => ({
-          time: group.value.time!,
+          time: group.value.time! + ':00',
           quantityUnit: group.value.quantityUnit! || ' ',
           quantityValue: Number(group.value.quantityValue!),
           foodId: Number(group.value.foodId!),

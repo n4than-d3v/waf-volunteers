@@ -199,12 +199,16 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         foreach (var time in times)
         {
-            var groups = time.GroupBy(time => new
-            {
-                time.QuantityUnit,
-                time.Food.Id,
-                time.Food.Name
-            }).OrderBy(food => food.Key.Id);
+            var groups = time
+                .Where(time => time.QuantityValue > 0)
+                .GroupBy(time => new
+                {
+                    time.QuantityUnit,
+                    time.Food.Id,
+                    time.Food.Name
+                }).OrderBy(food => food.Key.Id);
+
+            if (!groups.Any()) continue;
 
             taskId++;
             tasks.Add(new PatientBoardAreaPenTask
@@ -223,6 +227,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     private static List<string> GetPatientSummary(IReadOnlyList<Patient> patients)
     {
         return patients
+                .OrderBy(p => p.Species?.Id).ThenBy(p => p.SpeciesVariant?.Order)
                 .GroupBy(p => new
                 {
                     VariantName = p.SpeciesVariant?.FriendlyName

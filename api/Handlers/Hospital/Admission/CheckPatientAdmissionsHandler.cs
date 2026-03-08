@@ -84,7 +84,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 patient = new Patient
                 {
                     BeaconId = admission.entity.id,
-                    Admitted = admission.entity.created_at,
+                    Admitted = DateTime.UtcNow,
                     Reference = reference,
                     Status = PatientStatus.PendingInitialExam,
                     Salt = patientSalt

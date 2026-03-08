@@ -189,15 +189,15 @@ export function getSpeciesType(type: SpeciesType) {
     case SpeciesType.Bird:
       return 'Birds';
     case SpeciesType.Waterfowl:
-      return 'Birds - Waterfowl';
+      return 'Waterfowl';
     case SpeciesType.Pigeon:
-      return 'Birds - Pigeons';
+      return 'Pigeons';
     case SpeciesType.Raptor:
-      return 'Birds - Raptors';
+      return 'Raptors';
     case SpeciesType.Mammal:
       return 'Mammals';
     case SpeciesType.Rodent:
-      return 'Mammals - Rodents';
+      return 'Rodents';
     case SpeciesType.Reptile:
       return 'Reptiles';
     default:

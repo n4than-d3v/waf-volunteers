@@ -105,6 +105,11 @@ export enum SpeciesType {
   Bird = 2,
   Amphibian = 3,
   Reptile = 4,
+
+  Waterfowl = 5,
+  Pigeon = 6,
+  Raptor = 7,
+  Rodent = 8,
 }
 
 export interface CreateAreaCommand {
@@ -183,8 +188,16 @@ export function getSpeciesType(type: SpeciesType) {
       return 'Amphibians';
     case SpeciesType.Bird:
       return 'Birds';
+    case SpeciesType.Waterfowl:
+      return 'Birds - Waterfowl';
+    case SpeciesType.Pigeon:
+      return 'Birds - Pigeons';
+    case SpeciesType.Raptor:
+      return 'Birds - Raptors';
     case SpeciesType.Mammal:
       return 'Mammals';
+    case SpeciesType.Rodent:
+      return 'Mammals - Rodents';
     case SpeciesType.Reptile:
       return 'Reptiles';
     default:

@@ -548,6 +548,11 @@ export enum SpeciesType {
   Bird = 2,
   Amphibian = 3,
   Reptile = 4,
+
+  Waterfowl = 5,
+  Pigeon = 6,
+  Raptor = 7,
+  Rodent = 8,
 }
 
 export interface Pen {

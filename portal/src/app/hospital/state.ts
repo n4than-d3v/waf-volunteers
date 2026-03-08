@@ -558,6 +558,7 @@ export interface Pen {
 
   // Only available on getAreas()
   empty: boolean;
+  needsCleaning: boolean;
 }
 
 export interface Area {

@@ -22,6 +22,14 @@ public class GetAreasHandler : IRequestHandler<GetAreas, IResult>
     {
         var areas = await _repository.GetAll<Area>(x => true, tracking: false,
             x => x.Include(y => y.Pens).ThenInclude(y => y.Patients));
+
+        foreach (var area in areas)
+        {
+            if (!(area.Pens?.Any() ?? false)) continue;
+
+            area.Pens = area.Pens.OrderBy(x => x.Code).ToList();
+        }
+
         return Results.Ok(areas);
     }
 }

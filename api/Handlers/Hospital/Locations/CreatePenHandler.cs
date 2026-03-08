@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Locations;
 using MediatR;
+using System.Text.RegularExpressions;
 
 namespace Api.Handlers.Hospital.Locations;
 
@@ -27,11 +28,35 @@ public class CreatePenHandler : IRequestHandler<CreatePen, IResult>
         var pen = new Pen
         {
             Area = area,
-            Code = request.Code
+            Code = ConvertCode(request.Code)
         };
 
         _repository.Create(pen);
         await _repository.SaveChangesAsync();
         return Results.Created();
+    }
+
+    private static string ConvertCode(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return input;
+
+        input = input.Trim();
+
+        var match = Regex.Match(input, @"^([A-Za-z]+)\s*(\d+)$");
+        if (match.Success)
+        {
+            string letters = match.Groups[1].Value.ToUpper();
+            int number = int.Parse(match.Groups[2].Value);
+            return $"{letters}-{number:00}";
+        }
+
+        if (Regex.IsMatch(input, @"^\d+$"))
+        {
+            int number = int.Parse(input);
+            return number.ToString("00");
+        }
+
+        return input.ToUpper();
     }
 }

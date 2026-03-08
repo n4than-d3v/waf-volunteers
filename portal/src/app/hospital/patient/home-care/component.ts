@@ -131,9 +131,11 @@ export class HospitalPatientHomeCareComponent implements OnInit {
       .filter((x) => !x.deleted)
       .map((pen) => ({
         id: pen.id,
-        display: pen.empty
-          ? `🟩 ${pen.reference} (empty)`
-          : `🟨 ${pen.reference} (in use)`,
+        display: pen.needsCleaning
+          ? `🟥 ${pen.reference} (dirty)`
+          : pen.empty
+            ? `🟩 ${pen.reference} (empty)`
+            : `🟨 ${pen.reference} (in use)`,
       }));
   }
 

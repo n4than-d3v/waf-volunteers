@@ -6,4 +6,6 @@ public interface IFeeding
     public decimal QuantityValue { get; set; }
     public string QuantityUnit { get; set; }
     public Food Food { get; set; }
+    public bool TopUp { get; set; }
+    public string? Notes { get; set; }
 }

@@ -446,6 +446,8 @@ export interface Feeding {
   time: string;
   quantityValue: number;
   quantityUnit: string;
+  notes: string;
+  topUp: boolean;
   food: { id: number; name: string };
 }
 
@@ -664,9 +666,18 @@ export interface PatientBoardAreaPen {
 export interface PatientBoardAreaPenTask {
   id: number;
   time: string;
-  details: string[];
+  details: PatientBoardAreaPenTaskDetails[];
   icon: string;
   done: boolean;
+}
+
+export interface PatientBoardAreaPenTaskDetails {
+  quantityEach: number;
+  quantityTotal: number;
+  quantityUnit: string;
+  food: string;
+  topUp: string;
+  notes: string;
 }
 
 export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({

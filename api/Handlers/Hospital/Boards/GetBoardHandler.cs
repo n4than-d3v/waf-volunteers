@@ -8,6 +8,7 @@ using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using static Api.Handlers.Hospital.Boards.GetBoardHandler.PatientBoardAreaPenTask;
 
 namespace Api.Handlers.Hospital.Boards;
 
@@ -204,18 +205,27 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 .GroupBy(time => new
                 {
                     time.QuantityUnit,
-                    time.Food.Id,
                     time.Food.Name
-                }).OrderBy(food => food.Key.Id);
+                }).OrderBy(food => food.Key.Name);
 
             if (!groups.Any()) continue;
+
+            var details = groups.Select(group => new PatientBoardAreaPenTaskDetails
+            {
+                Food = group.Key.Name,
+                QuantityEach = group.Average(g => g.QuantityValue),
+                QuantityTotal = group.Sum(g => g.QuantityValue),
+                QuantityUnit = group.Key.QuantityUnit,
+                Notes = string.Join(" ", group.Where(g => !string.IsNullOrWhiteSpace(g.Notes)).Select(g => g.Notes).Distinct()),
+                TopUp = group.Any(g => g.TopUp)
+            }).ToArray();
 
             taskId++;
             tasks.Add(new PatientBoardAreaPenTask
             {
                 Id = taskId,
                 Time = time.Key.ToString("HH:mm"),
-                Details = groups.Select(group => $"{group.Sum(g => g.QuantityValue)} {group.Key.QuantityUnit} {group.Key.Name}").ToArray(),
+                Details = details.ToArray(),// groups.Select(group => $"{group.Sum(g => g.QuantityValue)} {group.Key.QuantityUnit} {group.Key.Name}").ToArray(),
                 Icon = "",
                 Done = InMemoryBoardTasks.IsComplete(penId, taskId)
             });
@@ -266,7 +276,17 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         public string Time { get; set; }
         public string Icon { get; set; }
-        public string[] Details { get; set; }
+        public PatientBoardAreaPenTaskDetails[] Details { get; set; }
         public bool Done { get; set; }
+    }
+
+    public class PatientBoardAreaPenTaskDetails
+    {
+        public decimal QuantityEach { get; set; }
+        public decimal QuantityTotal { get; set; }
+        public string QuantityUnit { get; set; }
+        public string Food { get; set; }
+        public bool TopUp { get; set; }
+        public string Notes { get; set; }
     }
 }

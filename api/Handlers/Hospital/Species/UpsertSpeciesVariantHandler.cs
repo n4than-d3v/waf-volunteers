@@ -22,6 +22,8 @@ public class UpsertSpeciesVariant : IRequest<IResult>
         public decimal QuantityValue { get; set; }
         public string QuantityUnit { get; set; }
         public int FoodId { get; set; }
+        public bool TopUp { get; set; }
+        public string? Notes { get; set; }
     }
 }
 
@@ -87,6 +89,8 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
             {
                 existingItem.QuantityValue = item.QuantityValue;
                 existingItem.QuantityUnit = item.QuantityUnit;
+                existingItem.TopUp = item.TopUp;
+                existingItem.Notes = item.Notes;
             }
             else
             {
@@ -99,6 +103,8 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
                     Time = item.Time,
                     QuantityValue = item.QuantityValue,
                     QuantityUnit = item.QuantityUnit,
+                    TopUp = item.TopUp,
+                    Notes = item.Notes,
                     SpeciesVariant = speciesVariant
                 };
 

@@ -151,6 +151,10 @@
           <div class="feeding-guidance">
             <div class="controls">
               <div class="field">
+                <label for="timeId">Time</label>
+                <input id="timeId" type="time" formControlName="time" />
+              </div>
+              <div class="field">
                 <label for="quantityValue">Quantity</label>
                 <input
                   id="quantityValue"
@@ -176,10 +180,6 @@
                 </select>
                 }
               </div>
-              <div class="field">
-                <label for="timeId">Time</label>
-                <input id="timeId" type="time" formControlName="time" />
-              </div>
             </div>
             <button
               class="button button--warning"
@@ -187,6 +187,15 @@
             >
               Remove feeding
             </button>
+          </div>
+
+          <div class="field">
+            <label for="notes">Notes</label>
+            <input id="notes" type="text" formControlName="notes" />
+          </div>
+          <div class="field">
+            <label for="topUp">Top up</label>
+            <input id="topUp" type="checkbox" formControlName="topUp" />
           </div>
         </div>
       </div>

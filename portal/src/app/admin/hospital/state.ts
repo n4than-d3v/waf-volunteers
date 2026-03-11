@@ -176,6 +176,8 @@ export interface SpeciesVariantFeedingGuidance {
   time: string;
   quantityValue: number;
   quantityUnit: string;
+  notes: string;
+  topUp: boolean;
 }
 
 export interface Species extends UpdateSpeciesCommand {

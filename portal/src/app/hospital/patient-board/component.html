@@ -84,7 +84,15 @@
         <div>
           <p class="time">{{ task.icon }} {{ task.time }}</p>
           @for (detail of task.details; track detail) {
-          <p class="details">{{ detail }}</p>
+          <p class="details">
+            {{ detail.quantityTotal }} {{ detail.quantityUnit }} {{ detail.food
+            }} @if (detail.quantityEach != detail.quantityTotal) { ({{
+            detail.quantityEach }} each) } @if (detail.notes) {
+            <span class="notes">{{ detail.notes }}</span>
+            } @if (detail.topUp) {
+            <span class="top-up">&nbsp;(top up)</span>
+            }
+          </p>
           }
         </div>
       </div>

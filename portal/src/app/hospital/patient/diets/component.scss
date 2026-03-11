@@ -83,6 +83,7 @@ table:has(thead) {
 .add,
 .rem {
   width: 3rem;
+  margin-top: 1.65rem;
 }
 
 .right-align {
@@ -93,20 +94,33 @@ table:has(thead) {
 .feeding-guidance {
   display: flex;
   gap: 0.5rem;
-  align-items: flex-end;
+  align-items: flex-start;
   margin-bottom: 0.5rem;
 
   .controls {
-    display: flex;
-    gap: 0.5rem;
+    .row {
+      display: flex;
+      gap: 0.5rem;
 
-    input[type="time"] {
-      padding: 0.45rem 0.5rem;
-    }
+      &:nth-child(1) {
+        margin-bottom: 0.5rem;
 
-    input[type="number"],
-    input[type="text"] {
-      max-width: 6rem;
+        input[type="time"] {
+          padding: 0.45rem 0.5rem;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+          max-width: 6rem;
+        }
+      }
+
+      &:nth-child(2) {
+        .field:nth-child(2) {
+          margin-top: 2.125rem;
+          margin-left: 0.75rem;
+        }
+      }
     }
   }
 }

@@ -48,45 +48,64 @@
         @if (showFeeding(i)) {
         <div class="feeding-guidance">
           <div class="controls">
-            <div class="field">
-              <label for="timeId">
-                Time
-                <span class="required">*</span>
-              </label>
-              <input id="timeId" type="time" formControlName="time" />
-            </div>
-            <div class="field">
-              <label for="quantityValue">
-                Quantity
-                <span class="required">*</span>
-              </label>
-              <div class="input-with-units">
-                <input
-                  id="quantityValue"
-                  type="number"
-                  formControlName="quantityValue"
-                  autocomplete="off"
-                />
-                <select id="quantityUnit" formControlName="quantityUnit">
-                  <option></option>
-                  <option>g</option>
-                  <option>ml</option>
-                  <option>pinch</option>
+            <div class="row">
+              <div class="field">
+                <label for="timeId-{{ i }}">
+                  Time
+                  <span class="required">*</span>
+                </label>
+                <input id="timeId-{{ i }}" type="time" formControlName="time" />
+              </div>
+              <div class="field">
+                <label for="quantityValue-{{ i }}">
+                  Quantity
+                  <span class="required">*</span>
+                </label>
+                <div class="input-with-units">
+                  <input
+                    id="quantityValue-{{ i }}"
+                    type="number"
+                    formControlName="quantityValue"
+                    autocomplete="off"
+                  />
+                  <select
+                    id="quantityUnit-{{ i }}"
+                    formControlName="quantityUnit"
+                  >
+                    <option></option>
+                    <option>g</option>
+                    <option>ml</option>
+                    <option>pinch</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label for="foodId-{{ i }}">
+                  Food
+                  <span class="required">*</span>
+                </label>
+                @if (foods$ | async; as foods) {
+                <select id="foodId-{{ i }}" formControlName="foodId">
+                  @for (food of foods.data; track food.id) {
+                  <option [value]="food.id">{{ food.name }}</option>
+                  }
                 </select>
+                }
               </div>
             </div>
-            <div class="field">
-              <label for="foodId">
-                Food
-                <span class="required">*</span>
-              </label>
-              @if (foods$ | async; as foods) {
-              <select id="foodId" formControlName="foodId">
-                @for (food of foods.data; track food.id) {
-                <option [value]="food.id">{{ food.name }}</option>
-                }
-              </select>
-              }
+            <div class="row">
+              <div class="field">
+                <label for="notes-{{ i }}"> Notes </label>
+                <input id="notes-{{ i }}" type="text" formControlName="notes" />
+              </div>
+              <div class="field">
+                <label for="topUp-{{ i }}"> Top up </label>
+                <input
+                  id="topUp-{{ i }}"
+                  type="checkbox"
+                  formControlName="topUp"
+                />
+              </div>
             </div>
           </div>
           <button

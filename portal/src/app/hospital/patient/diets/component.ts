@@ -52,6 +52,8 @@ export class HospitalPatientDietsComponent implements OnInit {
         time: FormControl<string | null>;
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
+        notes: FormControl<string | null>;
+        topUp: FormControl<boolean | null>;
       }>
     >([]),
   });
@@ -92,6 +94,8 @@ export class HospitalPatientDietsComponent implements OnInit {
         time: feeding.time,
         quantityValue: String(feeding.quantityValue),
         quantityUnit: feeding.quantityUnit,
+        notes: feeding.notes,
+        topUp: feeding.topUp,
         foodId: String(feeding.food.id),
       });
     }
@@ -122,6 +126,8 @@ export class HospitalPatientDietsComponent implements OnInit {
       time: new FormControl('', [Validators.required]),
       quantityValue: new FormControl('', [Validators.required]),
       quantityUnit: new FormControl(''),
+      notes: new FormControl(''),
+      topUp: new FormControl(false),
     });
     this.dietForm.controls.feeding.push(formGroup);
     return formGroup;
@@ -165,6 +171,20 @@ export class HospitalPatientDietsComponent implements OnInit {
     };
   }
 
+  private formatThreeTime(time: string) {
+    const split = time.split(':');
+    switch (split.length) {
+      case 1:
+        return `${time}:00:00`;
+      case 2:
+        return `${time}:00`;
+      case 3:
+        return `${time}`;
+      default:
+        return `${time[0]}:${time[1]}:${time[2]}`;
+    }
+  }
+
   save() {
     this.attemptedSave = true;
     if (!this.dietForm.valid) return;
@@ -175,9 +195,11 @@ export class HospitalPatientDietsComponent implements OnInit {
         ...update,
         update: 'feeding',
         feeding: this.dietForm.controls.feeding.controls.map((group) => ({
-          time: group.value.time! + ':00',
+          time: this.formatThreeTime(group.value.time!),
           quantityUnit: group.value.quantityUnit! || ' ',
           quantityValue: Number(group.value.quantityValue!),
+          notes: group.value.notes,
+          topUp: group.value.topUp || false,
           foodId: Number(group.value.foodId!),
         })),
       }),

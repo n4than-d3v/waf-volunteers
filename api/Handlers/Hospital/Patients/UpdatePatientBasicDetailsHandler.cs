@@ -25,6 +25,8 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
         public decimal QuantityValue { get; set; }
         public string QuantityUnit { get; set; }
         public int FoodId { get; set; }
+        public bool TopUp { get; set; }
+        public string? Notes { get; set; }
     }
 
     public UpdatePatientBasicDetails WithId(int id)
@@ -96,6 +98,8 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
             {
                 existingItem.QuantityValue = item.QuantityValue;
                 existingItem.QuantityUnit = item.QuantityUnit;
+                existingItem.TopUp = item.TopUp;
+                existingItem.Notes = item.Notes;
             }
             else
             {
@@ -108,6 +112,8 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
                     Time = item.Time,
                     QuantityValue = item.QuantityValue,
                     QuantityUnit = item.QuantityUnit,
+                    TopUp = item.TopUp,
+                    Notes = item.Notes,
                     Patient = patient
                 };
 

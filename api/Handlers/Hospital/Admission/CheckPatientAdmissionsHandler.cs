@@ -62,7 +62,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                     await UpdatePatientInfo(patient, admission);
 
                     // If name is "VOID" and patient HAS NOT BEEN EXAMINED, delete patient record
-                    if (admission.entity.c_name == "VOID" && patient.Status == PatientStatus.PendingInitialExam)
+                    if (admission.entity.c_id_number == "VOID" && patient.Status == PatientStatus.PendingInitialExam)
                     {
                         _repository.Delete(patient);
                     }
@@ -70,7 +70,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                     continue;
                 }
 
-                if (admission.entity.is_archived || admission.entity.c_name == "VOID")
+                if (admission.entity.is_archived || admission.entity.c_id_number == "VOID")
                 {
                     continue;
                 }

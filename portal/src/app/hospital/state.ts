@@ -660,15 +660,19 @@ export interface PatientBoardAreaPen {
   patients: string[] | null;
   tags: string[] | null;
   tasks: PatientBoardAreaPenTask[];
+  feedings: PatientBoardAreaPenFeeding[];
   needsCleaning: boolean;
 }
 
 export interface PatientBoardAreaPenTask {
   id: number;
+  name: string;
+  done: boolean;
+}
+
+export interface PatientBoardAreaPenFeeding {
   time: string;
   details: PatientBoardAreaPenTaskDetails[];
-  icon: string;
-  done: boolean;
 }
 
 export interface PatientBoardAreaPenTaskDetails {

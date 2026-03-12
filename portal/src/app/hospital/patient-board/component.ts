@@ -15,6 +15,7 @@ import {
   PatientBoard,
   PatientBoardArea,
   PatientBoardAreaPen,
+  PatientBoardAreaPenFeeding,
   PatientBoardAreaPenTask,
   ReadOnlyWrapper,
 } from '../state';
@@ -36,8 +37,12 @@ export class SortBoardAreasPipe implements PipeTransform {
     if (!areas) return [];
 
     return areas.slice().sort((a, b) => {
-      const aEmpty = !a.pens || a.pens.length === 0;
-      const bEmpty = !b.pens || b.pens.length === 0;
+      const aEmpty =
+        !a.displayType ||
+        a.displayType !== PatientBoardAreaDisplayType.ShowPatients;
+      const bEmpty =
+        !b.displayType ||
+        b.displayType !== PatientBoardAreaDisplayType.ShowPatients;
 
       // 1. De-prioritize empty pens
       if (aEmpty && !bEmpty) return 1;
@@ -63,6 +68,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   board$: Observable<ReadOnlyWrapper<PatientBoard>>;
 
   viewingBoard: number | null = null;
+
+  expandedPenReference: string | null = null;
 
   subscription: Subscription | null = null;
 
@@ -111,5 +118,12 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
+  }
+
+  anyOtherBoards(areas: PatientBoardArea[]) {
+    return areas.some(
+      (area) =>
+        area.displayType === PatientBoardAreaDisplayType.SummarisePatients,
+    );
   }
 }

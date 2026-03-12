@@ -24,9 +24,29 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
+.other-boards-wrapper {
+  border-top: dotted 2px grey;
+
+  h2 {
+    padding-top: 0.5rem;
+  }
+
+  .pens {
+    gap: 1rem;
+    padding-top: 0.5rem;
+
+    .pen .location {
+      background-color: var(--theme-primary);
+      color: white;
+    }
+  }
+}
+
 .pens {
   display: flex;
   flex-wrap: wrap;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
 
   .pen {
     border: solid 2px rgb(60, 60, 60);
@@ -43,7 +63,8 @@ h1 {
     }
 
     .location {
-      background-color: rgb(214, 214, 214);
+      background-color: var(--theme-color-5);
+      color: white;
       border-bottom: solid 2px rgb(60, 60, 60);
       padding: 0.25rem 0.5rem;
       font-weight: bold;
@@ -56,10 +77,26 @@ h1 {
 
     .tasks {
       display: flex;
-      flex-direction: column;
 
       .task {
         display: flex;
+        flex-direction: column;
+        flex: 1;
+        border-top: solid 2px rgb(60, 60, 60);
+        background-color: rgb(233, 233, 233);
+
+        &:not(:last-child) {
+          .time {
+            border-right: solid 2px rgb(60, 60, 60);
+          }
+        }
+
+        .time {
+          font-weight: bold;
+          font-size: 1rem;
+          text-align: center;
+          padding: 0rem 0.25rem;
+        }
 
         div {
           border-top: solid 2px rgb(60, 60, 60);
@@ -69,23 +106,56 @@ h1 {
           flex: 1;
         }
 
-        .time {
-          font-weight: bold;
-          font-size: 1rem;
-        }
-
-        .details {
-          color: rgb(57, 57, 57);
-          font-size: 0.75rem;
-          margin-top: -0.125rem;
-        }
-
         .button {
           margin-left: -2px;
           margin-bottom: -2px;
           padding: 0.125rem;
           border-color: rgb(60, 60, 60);
-          min-width: 2.25rem;
+          background-color: white;
+          border-right: none;
+        }
+      }
+    }
+
+    .feeding-times {
+      display: flex;
+      align-items: center;
+      padding: 0.125rem;
+      gap: 0.5rem;
+
+      .time {
+        font-weight: bold;
+        font-size: 1.125rem;
+      }
+    }
+
+    .expand {
+      flex: 1;
+      text-align: right;
+    }
+
+    .expand,
+    .collapse {
+      color: var(--theme-primary);
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 0.125rem 0.25rem;
+    }
+
+    .feedings {
+      .feeding {
+        padding: 0.25rem 0.25rem;
+
+        .time {
+          font-weight: bold;
+          font-size: 1.25rem;
+        }
+
+        .details {
+          color: rgb(57, 57, 57);
+          font-size: 1.125rem;
+          margin-top: -0.125rem;
         }
       }
     }

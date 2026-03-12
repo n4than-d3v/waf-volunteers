@@ -155,11 +155,18 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             .Select(g =>
             {
                 var penPatients = g.ToList();
+                var penId = g.Key.PenId.Value;
                 return new PatientBoardAreaPen
                 {
                     Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
-                    Tasks = GetPatientBoardAreaPenTasks(g.Key.PenId.Value, penPatients),
+                    Tasks =
+                    [
+                        new() { Id = 1, Name = "Morning", Done = InMemoryBoardTasks.IsComplete(penId, 1) },
+                        new() { Id = 2, Name = "Afternoon", Done = InMemoryBoardTasks.IsComplete(penId, 2) },
+                        new() { Id = 3, Name = "Evening", Done = InMemoryBoardTasks.IsComplete(penId, 3) }
+                    ],
+                    Feedings = GetPatientBoardAreaPenFeedings(g.Key.PenId.Value, penPatients),
                     Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
                     Reference = g.Key.PenReference
                 };
@@ -168,28 +175,9 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             .ToList();
     }
 
-    private static List<PatientBoardAreaPenTask> GetPatientBoardAreaPenTasks(int penId, IReadOnlyList<Patient> patients)
+    private static List<PatientBoardAreaPenFeeding> GetPatientBoardAreaPenFeedings(int penId, IReadOnlyList<Patient> patients)
     {
-        var tasks = new List<PatientBoardAreaPenTask>();
-
-        // Temporary until Katrien provides the feeding guidance
-
-        tasks.Add(new PatientBoardAreaPenTask { Id = 1, Time = "Morning", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 1) });
-        tasks.Add(new PatientBoardAreaPenTask { Id = 2, Time = "Afternoon", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 2) });
-        tasks.Add(new PatientBoardAreaPenTask { Id = 3, Time = "Evening", Details = [], Done = InMemoryBoardTasks.IsComplete(penId, 3) });
-
-        tasks.Clear();
-
-        int taskId = 1;
-
-        tasks.Add(new PatientBoardAreaPenTask
-        {
-            Id = taskId,
-            Time = "Clean",
-            Details = [],
-            Icon = "",
-            Done = InMemoryBoardTasks.IsComplete(penId, 1)
-        });
+        var feedings = new List<PatientBoardAreaPenFeeding>();
 
         var times = patients
             .SelectMany(patient => patient.Feeding.Any()
@@ -220,18 +208,14 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 TopUp = group.Any(g => g.TopUp)
             }).ToArray();
 
-            taskId++;
-            tasks.Add(new PatientBoardAreaPenTask
+            feedings.Add(new PatientBoardAreaPenFeeding
             {
-                Id = taskId,
                 Time = time.Key.ToString("HH:mm"),
-                Details = details.ToArray(),// groups.Select(group => $"{group.Sum(g => g.QuantityValue)} {group.Key.QuantityUnit} {group.Key.Name}").ToArray(),
-                Icon = "",
-                Done = InMemoryBoardTasks.IsComplete(penId, taskId)
+                Details = details.ToArray(),
             });
         }
 
-        return tasks;
+        return feedings;
     }
 
     private static List<string> GetPatientSummary(IReadOnlyList<Patient> patients)
@@ -267,6 +251,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public List<string> Patients { get; set; }
         public List<string> Tags { get; set; }
         public List<PatientBoardAreaPenTask> Tasks { get; set; }
+        public List<PatientBoardAreaPenFeeding> Feedings { get; set; }
         public bool NeedsCleaning { get; set; }
     }
 
@@ -274,10 +259,14 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     {
         public int Id { get; set; }
 
-        public string Time { get; set; }
-        public string Icon { get; set; }
-        public PatientBoardAreaPenTaskDetails[] Details { get; set; }
+        public string Name { get; set; }
         public bool Done { get; set; }
+    }
+
+    public class PatientBoardAreaPenFeeding
+    {
+        public string Time { get; set; }
+        public PatientBoardAreaPenTaskDetails[] Details { get; set; }
     }
 
     public class PatientBoardAreaPenTaskDetails

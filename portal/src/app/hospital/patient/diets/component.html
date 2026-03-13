@@ -50,12 +50,31 @@
           <div class="controls">
             <div class="row">
               <div class="field">
-                <label for="timeId-{{ i }}">
-                  Time
-                  <span class="required">*</span>
-                </label>
+                <label for="timeKind-{{ i }}">Time</label>
+                <select id="timeKind-{{ i }}" formControlName="timeKind">
+                  <option>Specific</option>
+                  <option>Every</option>
+                </select>
+              </div>
+              @if (dietForm.controls.feeding.controls[i].controls.timeKind.value
+              === 'Specific') {
+              <div class="field">
+                <label for="timeId-{{ i }}">&nbsp;</label>
                 <input id="timeId-{{ i }}" type="time" formControlName="time" />
               </div>
+              } @else {
+              <div class="field">
+                <label for="timeId-{{ i }}">&nbsp;</label>
+                <div class="interval-wrapper">
+                  <input
+                    id="timeId-{{ i }}"
+                    type="number"
+                    formControlName="time"
+                  />
+                  <span>hours</span>
+                </div>
+              </div>
+              }
               <div class="field">
                 <label for="quantityValue-{{ i }}">
                   Quantity
@@ -74,6 +93,9 @@
                   >
                     <option></option>
                     <option>g</option>
+                    <option>ml</option>
+                    <option>tbsp</option>
+                    <option>tsp</option>
                     <option>ml</option>
                     <option>pinch</option>
                   </select>

@@ -8,7 +8,6 @@ using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
-using static Api.Handlers.Hospital.Boards.GetBoardHandler.PatientBoardAreaPenTask;
 
 namespace Api.Handlers.Hospital.Boards;
 
@@ -24,7 +23,6 @@ public static class InMemoryBoardTasks
         internal int PenId { get; set; }
         internal int TaskId { get; set; }
     }
-
 
     private static DateOnly _lastUpdated = new();
     private static ConcurrentDictionary<BoardTask, bool> _tasksCompleted = [];
@@ -160,12 +158,10 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 {
                     Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
-                    Tasks =
-                    [
-                        new() { Id = 1, Name = "Morning", Done = InMemoryBoardTasks.IsComplete(penId, 1) },
-                        new() { Id = 2, Name = "Afternoon", Done = InMemoryBoardTasks.IsComplete(penId, 2) },
-                        new() { Id = 3, Name = "Evening", Done = InMemoryBoardTasks.IsComplete(penId, 3) }
-                    ],
+                    HasCustomDiet = penPatients.Any(patient => patient.Feeding?.Any() ?? false),
+                    Morning = InMemoryBoardTasks.IsComplete(penId, 1),
+                    Afternoon = InMemoryBoardTasks.IsComplete(penId, 2),
+                    Evening = InMemoryBoardTasks.IsComplete(penId, 3),
                     Feedings = GetPatientBoardAreaPenFeedings(g.Key.PenId.Value, penPatients),
                     Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
                     Reference = g.Key.PenReference
@@ -210,7 +206,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
             feedings.Add(new PatientBoardAreaPenFeeding
             {
-                Time = time.Key.ToString("HH:mm"),
+                Time = time.Key,
                 Details = details.ToArray(),
             });
         }
@@ -250,17 +246,15 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public string Reference { get; set; }
         public List<string> Patients { get; set; }
         public List<string> Tags { get; set; }
-        public List<PatientBoardAreaPenTask> Tasks { get; set; }
+
+        public bool HasCustomDiet { get; set; }
+
+        public bool Morning { get; set; }
+        public bool Afternoon { get; set; }
+        public bool Evening { get; set; }
+
         public List<PatientBoardAreaPenFeeding> Feedings { get; set; }
         public bool NeedsCleaning { get; set; }
-    }
-
-    public class PatientBoardAreaPenTask
-    {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-        public bool Done { get; set; }
     }
 
     public class PatientBoardAreaPenFeeding

@@ -21,7 +21,7 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
 
     public class PatientDietItem
     {
-        public TimeOnly Time { get; set; }
+        public string Time { get; set; }
         public decimal QuantityValue { get; set; }
         public string QuantityUnit { get; set; }
         public int FoodId { get; set; }

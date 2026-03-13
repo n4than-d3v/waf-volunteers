@@ -18,7 +18,7 @@ public class UpsertSpeciesVariant : IRequest<IResult>
 
     public class UpsertSpeciesVariantFood
     {
-        public TimeOnly Time { get; set; }
+        public string Time { get; set; }
         public decimal QuantityValue { get; set; }
         public string QuantityUnit { get; set; }
         public int FoodId { get; set; }

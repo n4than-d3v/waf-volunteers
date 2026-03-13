@@ -659,15 +659,16 @@ export interface PatientBoardAreaPen {
   reference: string;
   patients: string[] | null;
   tags: string[] | null;
-  tasks: PatientBoardAreaPenTask[];
-  feedings: PatientBoardAreaPenFeeding[];
-  needsCleaning: boolean;
-}
 
-export interface PatientBoardAreaPenTask {
-  id: number;
-  name: string;
-  done: boolean;
+  hasCustomDiet: boolean;
+
+  morning: boolean;
+  afternoon: boolean;
+  evening: boolean;
+
+  feedings: PatientBoardAreaPenFeeding[];
+
+  needsCleaning: boolean;
 }
 
 export interface PatientBoardAreaPenFeeding {

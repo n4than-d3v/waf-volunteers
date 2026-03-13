@@ -32,7 +32,6 @@ h1 {
   }
 
   .pens {
-    gap: 1rem;
     padding-top: 0.5rem;
 
     .pen .location {
@@ -43,51 +42,87 @@ h1 {
 }
 
 .pens {
-  display: flex;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-  gap: 0.5rem;
+  display: grid;
+  grid-auto-flow: row dense; /* allow wrapping */
+  grid-template-columns: repeat(auto-fit, minmax(min-content, 1fr));
+  gap: 0rem;
 
   .pen {
-    border: solid 2px rgb(60, 60, 60);
-    margin-right: -2px;
-    margin-top: -2px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    .instruction {
-      color: var(--theme-color-2);
-      font-weight: bold;
-      padding: 0rem 0.25rem;
-    }
+    display: contents; /* <-- this lets the children merge into the outer grid */
 
     .location {
+      grid-row: 1;
+      border: 2px solid black;
+      margin-left: -2px;
+
       background-color: var(--theme-color-5);
       color: white;
-      border-bottom: solid 2px rgb(60, 60, 60);
-      padding: 0.25rem 0.5rem;
+      padding-left: 0.5rem;
       font-weight: bold;
       font-size: 1.25rem;
     }
 
-    .name {
-      padding: 0rem 0.25rem 0.25rem 0.25rem;
+    .patients {
+      grid-row: 2;
+      border-left: 2px solid black;
+      border-right: 2px solid black;
+      margin-left: -2px;
+
+      .instruction {
+        color: var(--theme-color-2);
+        font-weight: bold;
+        padding: 0rem 0.25rem;
+      }
+    }
+
+    .tags {
+      grid-row: 3;
+
+      border-left: 2px solid black;
+      border-right: 2px solid black;
+      margin-left: -2px;
+
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      padding: 0.25rem;
+
+      .custom-diet {
+        color: white;
+        padding: 0.125rem 0.4rem;
+        background-color: var(--theme-color-1);
+      }
+
+      .tag {
+        color: white;
+        padding: 0.125rem 0.4rem;
+        background-color: var(--theme-color-2);
+      }
     }
 
     .tasks {
+      grid-row: 4;
+
+      border-top: solid 2px black;
+      border-left: 2px solid black;
+      border-right: 2px solid black;
+      margin-left: -2px;
+
       display: flex;
 
       .task {
         display: flex;
         flex-direction: column;
         flex: 1;
-        border-top: solid 2px rgb(60, 60, 60);
         background-color: rgb(233, 233, 233);
 
         &:not(:last-child) {
           .time {
-            border-right: solid 2px rgb(60, 60, 60);
+            border-right: solid 2px rgb(136, 136, 136);
+          }
+
+          button {
+            border-right: solid 2px rgb(136, 136, 136);
           }
         }
 
@@ -98,34 +133,34 @@ h1 {
           padding: 0rem 0.25rem;
         }
 
-        div {
-          border-top: solid 2px rgb(60, 60, 60);
-          padding-left: 0.25rem;
-          padding-right: 0.25rem;
-          align-content: center;
-          flex: 1;
-        }
-
         .button {
-          margin-left: -2px;
-          margin-bottom: -2px;
           padding: 0.125rem;
-          border-color: rgb(60, 60, 60);
+          max-height: 2.25rem;
+          border: none;
+          border-top: solid 2px rgb(136, 136, 136);
           background-color: white;
-          border-right: none;
         }
       }
     }
 
+    .feeding-times,
+    .feeding-expanded {
+      grid-row: 5;
+
+      border: 2px solid black;
+      margin-left: -2px;
+    }
+
     .feeding-times {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       padding: 0.125rem;
-      gap: 0.5rem;
+      column-gap: 0.5rem;
 
       .time {
         font-weight: bold;
-        font-size: 1.125rem;
+        font-size: 1rem;
       }
     }
 
@@ -141,6 +176,7 @@ h1 {
       cursor: pointer;
       font-weight: bold;
       padding: 0.125rem 0.25rem;
+      font-size: 1rem;
     }
 
     .feedings {
@@ -149,34 +185,21 @@ h1 {
 
         .time {
           font-weight: bold;
-          font-size: 1.25rem;
+          font-size: 1rem;
         }
 
         .details {
           color: rgb(57, 57, 57);
-          font-size: 1.125rem;
+          font-size: 0.9rem;
           margin-top: -0.125rem;
         }
       }
     }
 
     .patients {
+      min-height: 0;
       padding: 0.25rem;
       padding-bottom: 0rem;
-      flex: 1;
-
-      .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.25rem;
-        margin-bottom: 0.25rem;
-
-        .tag {
-          color: white;
-          padding: 0.125rem 0.4rem;
-          background-color: var(--theme-color-2);
-        }
-      }
     }
   }
 }

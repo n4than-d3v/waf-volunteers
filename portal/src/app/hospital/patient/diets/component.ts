@@ -49,6 +49,7 @@ export class HospitalPatientDietsComponent implements OnInit {
     feeding: new FormArray<
       FormGroup<{
         foodId: FormControl<string | null>;
+        timeKind: FormControl<string | null>;
         time: FormControl<string | null>;
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
@@ -71,9 +72,26 @@ export class HospitalPatientDietsComponent implements OnInit {
     this.store.dispatch(getFoods());
   }
 
-  formatTime(time: string) {
-    const split = time.split(':');
-    return split[0] + ':' + split[1];
+  private unconvertTime(time: string) {
+    const number = Number(time.split(' ')[1]);
+    if (time.includes('minutes')) {
+      return number / 60;
+    } else {
+      return number;
+    }
+  }
+
+  private convertTime(time: string) {
+    time = String(time);
+    if (time.includes(':')) {
+      const timeSplit = time.split(':');
+      return `${timeSplit[0]}:${timeSplit[1]}`;
+    } else {
+      const number = Number(time);
+      if (number === 1) return 'Every hour';
+      else if (number < 1) return `Every ${60 * number} minutes`;
+      else return `Every ${number} hours`;
+    }
   }
 
   getInstructions() {
@@ -90,8 +108,17 @@ export class HospitalPatientDietsComponent implements OnInit {
 
     for (const feeding of feedingItems) {
       const group = this.addFeedingGuidance();
+      let timeKind = 'Specific';
+      let time = '';
+      if (feeding.time.includes('Every')) {
+        timeKind = 'Every';
+        time = this.unconvertTime(feeding.time).toString();
+      } else {
+        time = feeding.time;
+      }
       group.patchValue({
-        time: feeding.time,
+        timeKind,
+        time,
         quantityValue: String(feeding.quantityValue),
         quantityUnit: feeding.quantityUnit,
         notes: feeding.notes,
@@ -123,6 +150,7 @@ export class HospitalPatientDietsComponent implements OnInit {
   addFeedingGuidance() {
     const formGroup = new FormGroup({
       foodId: new FormControl('', [Validators.required]),
+      timeKind: new FormControl('Specific'),
       time: new FormControl('', [Validators.required]),
       quantityValue: new FormControl('', [Validators.required]),
       quantityUnit: new FormControl(''),
@@ -171,20 +199,6 @@ export class HospitalPatientDietsComponent implements OnInit {
     };
   }
 
-  private formatThreeTime(time: string) {
-    const split = time.split(':');
-    switch (split.length) {
-      case 1:
-        return `${time}:00:00`;
-      case 2:
-        return `${time}:00`;
-      case 3:
-        return `${time}`;
-      default:
-        return `${time[0]}:${time[1]}:${time[2]}`;
-    }
-  }
-
   save() {
     this.attemptedSave = true;
     if (!this.dietForm.valid) return;
@@ -195,7 +209,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         ...update,
         update: 'feeding',
         feeding: this.dietForm.controls.feeding.controls.map((group) => ({
-          time: this.formatThreeTime(group.value.time!),
+          time: this.convertTime(group.value.time!),
           quantityUnit: group.value.quantityUnit! || ' ',
           quantityValue: Number(group.value.quantityValue!),
           notes: group.value.notes,

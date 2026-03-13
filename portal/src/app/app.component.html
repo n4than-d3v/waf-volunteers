@@ -67,7 +67,8 @@
     @if (
       !(
         router.url.includes("/login") ||
-        router.url.includes("/clocking/dashboard")
+        router.url.includes("/clocking/dashboard") ||
+        router.url.includes("/boards")
       )
     ) {
       <div class="sign-out">

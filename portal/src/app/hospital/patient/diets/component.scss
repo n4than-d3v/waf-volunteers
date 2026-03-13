@@ -125,6 +125,12 @@ table:has(thead) {
   }
 }
 
+.interval-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .is-custom {
   padding: 0.5rem 0.75rem;
   background-color: #ddeaff;

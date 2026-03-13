@@ -2,7 +2,7 @@
 
 public interface IFeeding
 {
-    public TimeOnly Time { get; set; }
+    public string Time { get; set; }
     public decimal QuantityValue { get; set; }
     public string QuantityUnit { get; set; }
     public Food Food { get; set; }

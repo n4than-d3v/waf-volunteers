@@ -15,8 +15,6 @@ import {
   PatientBoard,
   PatientBoardArea,
   PatientBoardAreaPen,
-  PatientBoardAreaPenFeeding,
-  PatientBoardAreaPenTask,
   ReadOnlyWrapper,
 } from '../state';
 import { selectPatientBoard, selectPatientBoards } from '../selectors';
@@ -98,12 +96,12 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     );
   }
 
-  markComplete(pen: PatientBoardAreaPen, task: PatientBoardAreaPenTask) {
+  markComplete(pen: PatientBoardAreaPen, taskId: number) {
     this.store.dispatch(
       markBoardTaskComplete({
         boardId: this.viewingBoard!,
         penId: pen.id,
-        taskId: task.id,
+        taskId,
       }),
     );
   }

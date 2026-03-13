@@ -47,70 +47,11 @@
   pen.reference) {
   <div class="pen">
     <div class="location">{{ pen.reference }}</div>
+    @if (pen.needsCleaning) {
     <div class="patients">
-      @if (pen.needsCleaning) {
       <span class="instruction">Please clean</span>
-      }
-      <div class="name">
-        @for (patient of pen.patients; track patient) {
-        <p>{{ patient }}</p>
-        }
-      </div>
-      @if (pen.tags && pen.tags.length > 0) {
-      <div class="tags">
-        @for (tag of pen.tags; track tag) {
-        <span class="tag">{{ tag }}</span>
-        }
-      </div>
-      }
     </div>
-    @if (pen.tasks && pen.tasks.length > 0) {
-    <div class="tasks">
-      @for (task of pen.tasks; track task.id) {
-      <div class="task">
-        <p class="time">{{ task.name }}</p>
-        <button
-          (click)="markComplete(pen, task)"
-          class="button button--secondary-invert"
-        >
-          @if (task.done) { ✔️ } @else { &nbsp; }
-        </button>
-      </div>
-      }
-    </div>
-    } @if (pen.feedings && pen.feedings.length > 0) { @if (expandedPenReference
-    !== pen.reference) {
-    <div class="feeding-times">
-      @for (feeding of pen.feedings; track feeding.time) {
-      <p class="time">{{ feeding.time }}</p>
-      }
-      <span class="expand" (click)="expandedPenReference = pen.reference">
-        [?]
-      </span>
-    </div>
-    } @if (expandedPenReference === pen.reference) {
-    <span class="collapse" (click)="expandedPenReference = null">Hide</span>
-    @for (feeding of pen.feedings; track feeding.time) {
-    <div class="feedings">
-      <div class="feeding">
-        <div>
-          <p class="time">{{ feeding.time }}</p>
-          @for (detail of feeding.details; track detail) {
-          <p class="details">
-            {{ detail.quantityTotal }} {{ detail.quantityUnit }} {{ detail.food
-            }} @if (detail.quantityEach != detail.quantityTotal) { ({{
-            detail.quantityEach }} {{ detail.quantityUnit }} each) } @if
-            (detail.notes) {
-            <span class="notes">{{ detail.notes }}</span>
-            } @if (detail.topUp) {
-            <span class="top-up">&nbsp;(top up)</span>
-            }
-          </p>
-          }
-        </div>
-      </div>
-    </div>
-    } } } @else if (pen.needsCleaning) {
+    <div class="tags"></div>
     <div class="tasks">
       <div class="task">
         <p class="time">Morning</p>
@@ -122,7 +63,84 @@
         </button>
       </div>
     </div>
-    }
+    } @else {
+    <div class="patients">
+      @for (patient of pen.patients; track patient) {
+      <p>{{ patient }}</p>
+      }
+    </div>
+    <div class="tags">
+      @for (tag of pen.tags; track tag) {
+      <span class="tag">{{ tag }}</span>
+      } @if (pen.hasCustomDiet) {
+      <span class="custom-diet">Special diet</span>
+      }
+    </div>
+    <div class="tasks">
+      <div class="task">
+        <p class="time">Mor</p>
+        <button
+          (click)="markComplete(pen, 1)"
+          class="button button--secondary-invert"
+        >
+          @if (pen.morning) { ✔️ } @else { &nbsp; }
+        </button>
+      </div>
+      <div class="task">
+        <p class="time">Aft</p>
+        <button
+          (click)="markComplete(pen, 2)"
+          class="button button--secondary-invert"
+        >
+          @if (pen.afternoon) { ✔️ } @else { &nbsp; }
+        </button>
+      </div>
+      <div class="task">
+        <p class="time">Eve</p>
+        <button
+          (click)="markComplete(pen, 3)"
+          class="button button--secondary-invert"
+        >
+          @if (pen.evening) { ✔️ } @else { &nbsp; }
+        </button>
+      </div>
+    </div>
+    @if (expandedPenReference !== pen.reference) {
+    <div class="feeding-times">
+      @for (feeding of pen.feedings; track feeding.time) {
+      <p class="time">{{ feeding.time }}</p>
+      } @if (pen.feedings.length) {
+      <span class="expand" (click)="expandedPenReference = pen.reference">
+        [?]
+      </span>
+      }
+    </div>
+    } @else {
+    <div class="feeding-expanded">
+      <span class="collapse" (click)="expandedPenReference = null">Hide</span>
+      @for (feeding of pen.feedings; track feeding.time) {
+      <div class="feedings">
+        <div class="feeding">
+          <div>
+            <p class="time">{{ feeding.time }}</p>
+            @for (detail of feeding.details; track detail) {
+            <p class="details">
+              {{ detail.quantityTotal }} {{ detail.quantityUnit }} {{
+              detail.food }} @if (detail.quantityEach != detail.quantityTotal) {
+              ({{ detail.quantityEach }} {{ detail.quantityUnit }} each) } @if
+              (detail.notes) {
+              <span class="notes">{{ detail.notes }}</span>
+              } @if (detail.topUp) {
+              <span class="top-up">&nbsp;(top up)</span>
+              }
+            </p>
+            }
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    } }
   </div>
   } } } }
 </div>

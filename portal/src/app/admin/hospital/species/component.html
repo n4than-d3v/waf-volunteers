@@ -151,29 +151,52 @@
           <div class="feeding-guidance">
             <div class="controls">
               <div class="field">
-                <label for="timeId">Time</label>
-                <input id="timeId" type="time" formControlName="time" />
+                <label for="timeKind-{{ i }}">Time</label>
+                <select id="timeKind-{{ i }}" formControlName="timeKind">
+                  <option>Specific</option>
+                  <option>Every</option>
+                </select>
               </div>
+              @if
+              (speciesVariantForm.controls.feedingGuidance.controls[i].controls.timeKind.value
+              === 'Specific') {
               <div class="field">
-                <label for="quantityValue">Quantity</label>
+                <label for="timeId-{{ i }}">&nbsp;</label>
+                <input id="timeId-{{ i }}" type="time" formControlName="time" />
+              </div>
+              } @else {
+              <div class="field">
+                <label for="timeId-{{ i }}">Every</label>
+                <div class="interval-wrapper">
+                  <input
+                    id="timeId-{{ i }}"
+                    type="number"
+                    formControlName="time"
+                  />
+                  <span>hours</span>
+                </div>
+              </div>
+              }
+              <div class="field">
+                <label for="quantityValue-{{ i }}">Quantity</label>
                 <input
-                  id="quantityValue"
+                  id="quantityValue-{{ i }}"
                   type="number"
                   formControlName="quantityValue"
                 />
               </div>
               <div class="field">
-                <label for="quantityUnit">Unit</label>
+                <label for="quantityUnit-{{ i }}">Unit</label>
                 <input
-                  id="quantityUnit"
+                  id="quantityUnit-{{ i }}"
                   type="text"
                   formControlName="quantityUnit"
                 />
               </div>
               <div class="field">
-                <label for="foodId">Food</label>
+                <label for="foodId-{{ i }}">Food</label>
                 @if (foods$ | async; as foods) {
-                <select id="foodId" formControlName="foodId">
+                <select id="foodId-{{ i }}" formControlName="foodId">
                   @for (food of foods.data; track food.id) {
                   <option [value]="food.id">{{ food.name }}</option>
                   }
@@ -190,12 +213,12 @@
           </div>
 
           <div class="field">
-            <label for="notes">Notes</label>
-            <input id="notes" type="text" formControlName="notes" />
+            <label for="notes-{{ i }}">Notes</label>
+            <input id="notes-{{ i }}" type="text" formControlName="notes" />
           </div>
           <div class="field">
-            <label for="topUp">Top up</label>
-            <input id="topUp" type="checkbox" formControlName="topUp" />
+            <label for="topUp-{{ i }}">Top up</label>
+            <input id="topUp-{{ i }}" type="checkbox" formControlName="topUp" />
           </div>
         </div>
       </div>
@@ -251,7 +274,7 @@
           <td>
             @for (feeding of formatFeedingGuidance(variant.feedingGuidance);
             track feeding.time) {
-            <strong>{{ feeding.time}}</strong>
+            <strong>{{ feeding.time }}</strong>
             @for (item of feeding.items; track item) { {{ item }}<br />
             } }
           </td>

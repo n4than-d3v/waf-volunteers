@@ -69,6 +69,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     feedingGuidance: new FormArray<
       FormGroup<{
         foodId: FormControl<string | null>;
+        timeKind: FormControl<string | null>;
         time: FormControl<string | null>;
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
@@ -88,6 +89,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   addFeedingGuidance() {
     const formGroup = new FormGroup({
       foodId: new FormControl('', [Validators.required]),
+      timeKind: new FormControl('Specific'),
       time: new FormControl('', [Validators.required]),
       quantityValue: new FormControl('', [Validators.required]),
       quantityUnit: new FormControl('', [Validators.required]),
@@ -162,7 +164,14 @@ export class AdminHospitalSpeciesComponent implements OnInit {
         formGroup.controls.foodId.setValue(fg.food.id.toString());
         formGroup.controls.quantityUnit.setValue(fg.quantityUnit);
         formGroup.controls.quantityValue.setValue(fg.quantityValue.toString());
-        formGroup.controls.time.setValue(fg.time);
+        if (fg.time.includes('Every')) {
+          formGroup.controls.timeKind.setValue('Every');
+          formGroup.controls.time.setValue(
+            this.unconvertTime(fg.time).toString(),
+          );
+        } else {
+          formGroup.controls.time.setValue(fg.time);
+        }
         formGroup.controls.notes.setValue(fg.notes);
         formGroup.controls.topUp.setValue(fg.topUp);
       });
@@ -187,9 +196,26 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     }
   }
 
+  private unconvertTime(time: string) {
+    const number = Number(time.split(' ')[1]);
+    if (time.includes('minutes')) {
+      return number / 60;
+    } else {
+      return number;
+    }
+  }
+
   private convertTime(time: string) {
-    const timeSplit = time.split(':');
-    return `${timeSplit[0]}:${timeSplit[1]}:00`;
+    time = String(time);
+    if (time.includes(':')) {
+      const timeSplit = time.split(':');
+      return `${timeSplit[0]}:${timeSplit[1]}`;
+    } else {
+      const number = Number(time);
+      if (number === 1) return 'Every hour';
+      else if (number < 1) return `Every ${60 * number} minutes`;
+      else return `Every ${number} hours`;
+    }
   }
 
   createSpecies() {

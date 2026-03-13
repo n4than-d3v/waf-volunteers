@@ -225,18 +225,60 @@ export enum PatientBoardAreaDisplayType {
   SummarisePatients = 2,
 }
 
+function unconvertTime(time: string) {
+  const number = Number(time.split(' ')[1]);
+  if (time.includes('minutes')) {
+    return number / 60;
+  } else {
+    return number;
+  }
+}
+
+function numberToTime(num: number) {
+  const hours = Math.floor(num);
+  const minutes = Math.round((num - hours) * 60);
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
 export const formatFeeding = (feeding: Feeding[]) => {
   const grouped = feeding.reduce<Record<string, string[]>>((acc, guidance) => {
-    const formattedTime = guidance.time.slice(0, 5);
+    const formattedTime = guidance.time;
 
-    if (!acc[formattedTime]) {
-      acc[formattedTime] = [];
+    const every = formattedTime.includes('Every');
+    const times: string[] = [];
+    if (every) {
+      const interval = unconvertTime(formattedTime);
+      let hour = 9;
+      while (hour <= 21) {
+        times.push(numberToTime(hour));
+        hour += interval;
+      }
+    }
+
+    if (every) {
+      for (const intervalTime of times) {
+        if (!acc[intervalTime]) {
+          acc[intervalTime] = [];
+        }
+      }
+    } else {
+      if (!acc[formattedTime]) {
+        acc[formattedTime] = [];
+      }
     }
 
     if (guidance.quantityValue > 0) {
-      acc[formattedTime].push(
-        `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name}`,
-      );
+      if (every) {
+        for (const intervalTime of times) {
+          acc[intervalTime].push(
+            `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes} ${guidance.topUp ? '(top up)' : ''}`,
+          );
+        }
+      } else {
+        acc[formattedTime].push(
+          `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes} ${guidance.topUp ? '(top up)' : ''}`,
+        );
+      }
     }
 
     return acc;

@@ -100,6 +100,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         return Results.Ok(new PatientBoard
         {
             Board = board,
+            Summary = GetPatientBoardSummary(patients),
             Areas = board.Areas
                 .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
                 .Select(area => CreateBoardArea(patients, area))
@@ -129,6 +130,50 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         );
 
         return boardArea;
+    }
+
+    private static List<PatientBoardSummary> GetPatientBoardSummary(IReadOnlyList<Patient> patients)
+    {
+        return patients
+            .GroupBy(p => p.Species?.Name)
+            .OrderBy(p => p.Key)
+            .Select(speciesGroup => new PatientBoardSummary
+            {
+                Species = speciesGroup.Key,
+                Quantity = speciesGroup.Count(),
+                Variants = speciesGroup
+                    .OrderBy(p => p.SpeciesVariant?.Order)
+                    .GroupBy(p => p.SpeciesVariant?.FriendlyName)
+                    .Select(variantGroup => new PatientBoardSummaryVariant
+                    {
+                        Name = variantGroup.Key,
+                        Quantity = variantGroup.Count(),
+                        Locations = variantGroup
+                            .Select(p => p.Pen?.Reference)
+                            .Where(r => !string.IsNullOrEmpty(r))
+                            .Distinct()
+                            .OrderBy(p => p)
+                            .ToList(),
+                        Feeding = variantGroup
+                            .SelectMany(p => p.Feeding.Any()
+                                ? p.Feeding.ToList<IFeeding>()
+                                : p.SpeciesVariant!.FeedingGuidance.ToList<IFeeding>())
+                            .Where(f => f.QuantityValue > 0)
+                            .GroupBy(f => new { f.Time })
+                            .Select(fg => new PatientBoardSummaryFeeding
+                            {
+                                Time = fg.Key.Time,
+                                Items = fg
+                                    .GroupBy(fgg => new { fgg.QuantityUnit, fgg.Food.Name })
+                                    .Select(fgg => new PatientBoardSummaryFeedingItem
+                                    {
+                                        Food = fgg.Key.Name,
+                                        QuantityValue = fg.Sum(f => f.QuantityValue),
+                                        QuantityUnit = fgg.Key.QuantityUnit
+                                    }).ToList()
+                            }).ToList()
+                    }).ToList()
+            }).ToList();
     }
 
     private static List<PatientBoardAreaPen> GetPensNeedingCleaning(Area area)
@@ -230,6 +275,35 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     {
         public Board Board { get; set; }
         public List<PatientBoardArea> Areas { get; set; }
+        public List<PatientBoardSummary> Summary { get; set; }
+    }
+
+    public class PatientBoardSummary
+    {
+        public string Species { get; set; }
+        public int Quantity { get; set; }
+        public List<PatientBoardSummaryVariant> Variants { get; set; } = new();
+    }
+
+    public class PatientBoardSummaryVariant
+    {
+        public string Name { get; set; }
+        public int Quantity { get; set; }
+        public List<string> Locations { get; set; } = new();
+        public List<PatientBoardSummaryFeeding> Feeding { get; set; } = new();
+    }
+
+    public class PatientBoardSummaryFeeding
+    {
+        public string Time { get; set; }
+        public List<PatientBoardSummaryFeedingItem> Items { get; set; }
+    }
+
+    public class PatientBoardSummaryFeedingItem
+    {
+        public decimal QuantityValue { get; set; }
+        public string QuantityUnit { get; set; }
+        public string Food { get; set; }
     }
 
     public class PatientBoardArea

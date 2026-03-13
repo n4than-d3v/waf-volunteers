@@ -1,5 +1,8 @@
 h1 {
-  margin-bottom: 1rem;
+  color: white;
+  position: absolute;
+  top: 1rem;
+  right: 6rem;
 }
 
 .boards {
@@ -42,31 +45,38 @@ h1 {
 }
 
 .pens {
-  display: grid;
-  grid-auto-flow: row dense; /* allow wrapping */
-  grid-template-columns: repeat(auto-fit, minmax(min-content, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0rem;
+  margin-bottom: 1rem;
 
   .pen {
-    display: contents; /* <-- this lets the children merge into the outer grid */
+    display: flex;
+    flex-direction: column;
+    border: solid 2px black;
+    margin-left: -2px;
+    margin-bottom: -2px;
+    max-width: 10rem;
+    --min-height: 0rem;
+
+    &.expanded {
+      max-width: 20rem;
+    }
 
     .location {
-      grid-row: 1;
-      border: 2px solid black;
-      margin-left: -2px;
-
+      min-height: var(--min-height);
       background-color: var(--theme-color-5);
+      border-bottom: solid 2px black;
       color: white;
-      padding-left: 0.5rem;
+      padding: 0rem 0.5rem;
       font-weight: bold;
       font-size: 1.25rem;
     }
 
     .patients {
-      grid-row: 2;
-      border-left: 2px solid black;
-      border-right: 2px solid black;
-      margin-left: -2px;
+      min-height: var(--min-height);
+      padding: 0.25rem;
+      padding-bottom: 0rem;
 
       .instruction {
         color: var(--theme-color-2);
@@ -76,39 +86,29 @@ h1 {
     }
 
     .tags {
-      grid-row: 3;
-
-      border-left: 2px solid black;
-      border-right: 2px solid black;
-      margin-left: -2px;
-
+      min-height: var(--min-height);
       display: flex;
       flex-wrap: wrap;
       gap: 0.25rem;
       padding: 0.25rem;
 
       .custom-diet {
-        color: white;
-        padding: 0.125rem 0.4rem;
-        background-color: var(--theme-color-1);
+        color: var(--theme-color-1);
+        font-weight: bold;
       }
 
       .tag {
-        color: white;
-        padding: 0.125rem 0.4rem;
-        background-color: var(--theme-color-2);
+        color: var(--theme-color-2);
+        font-weight: bold;
       }
     }
 
     .tasks {
-      grid-row: 4;
-
-      border-top: solid 2px black;
-      border-left: 2px solid black;
-      border-right: 2px solid black;
-      margin-left: -2px;
-
+      min-height: var(--min-height);
       display: flex;
+      padding: 0rem 1px;
+      border-top: solid 2px black;
+      border-bottom: solid 2px black;
 
       .task {
         display: flex;
@@ -137,21 +137,13 @@ h1 {
           padding: 0.125rem;
           max-height: 2.25rem;
           border: none;
-          border-top: solid 2px rgb(136, 136, 136);
           background-color: white;
         }
       }
     }
 
-    .feeding-times,
-    .feeding-expanded {
-      grid-row: 5;
-
-      border: 2px solid black;
-      margin-left: -2px;
-    }
-
     .feeding-times {
+      min-height: var(--min-height);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -164,11 +156,6 @@ h1 {
       }
     }
 
-    .expand {
-      flex: 1;
-      text-align: right;
-    }
-
     .expand,
     .collapse {
       color: var(--theme-primary);
@@ -179,27 +166,103 @@ h1 {
       font-size: 1rem;
     }
 
-    .feedings {
-      .feeding {
-        padding: 0.25rem 0.25rem;
+    .feeding-expanded {
+      min-height: var(--min-height);
 
-        .time {
-          font-weight: bold;
-          font-size: 1rem;
-        }
+      .expand {
+        flex: 1;
+        text-align: right;
+      }
 
-        .details {
-          color: rgb(57, 57, 57);
-          font-size: 0.9rem;
-          margin-top: -0.125rem;
+      .feedings {
+        .feeding {
+          padding: 0.25rem 0.25rem;
+
+          .time {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+
+          ul {
+            margin-left: 1rem;
+
+            li {
+              margin-bottom: 0.25rem;
+            }
+          }
+
+          .details {
+            color: rgb(57, 57, 57);
+            font-size: 0.9rem;
+            margin-top: -0.125rem;
+          }
         }
       }
     }
+  }
+}
 
-    .patients {
-      min-height: 0;
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: dotted 2px rgb(60, 60, 60);
+
+  .species {
+    border: solid 2px black;
+    display: flex;
+    flex-direction: column;
+    min-width: 12rem;
+    margin-left: -2px;
+    margin-bottom: -2px;
+
+    .species__name {
+      background-color: var(--theme-color-1);
+      border-bottom: solid 2px black;
+      color: white;
+      font-weight: bold;
+      padding: 0.125rem 0.5rem;
+      font-size: 1.25rem;
+    }
+
+    .variant {
       padding: 0.25rem;
-      padding-bottom: 0rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+
+      &:not(:nth-child(2)) {
+        margin-top: 0.25rem;
+        border-top: dotted 2px rgb(60, 60, 60);
+      }
+
+      .variant__details {
+        .variant__name {
+          font-weight: bold;
+          padding: 0.125rem 0.25rem;
+          font-size: 1.125rem;
+          border-radius: 2px;
+        }
+
+        .variant__foods {
+          margin-left: 0.25rem;
+
+          p {
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .variant__locations {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.125rem;
+        font-size: 0.9rem;
+        color: var(--theme-color-1);
+      }
     }
   }
 }

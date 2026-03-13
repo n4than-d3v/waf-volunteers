@@ -40,12 +40,46 @@
   } }
 </div>
 }
+
+<div class="summary">
+  @for (summary of board.data.summary; track summary.species) {
+  <div class="species">
+    <div class="species__name">
+      {{ summary.quantity }}x {{ summary.species }}
+    </div>
+    @for (variant of summary.variants; track variant.name) {
+    <div class="variant">
+      <div class="variant__details">
+        @if (summary.variants.length != 1 || variant.name != summary.species) {
+        <p class="variant__name">{{ variant.quantity }}x {{ variant.name }}</p>
+        }
+        <div class="variant__foods">
+          @for (feeding of variant.feeding; track feeding.time) { @if
+          (shouldShowTime(feeding.time)) {
+          <p><strong>{{ feeding.time }}</strong></p>
+          @for (food of feeding.items; track food.food) {
+          <p class="food">
+            {{ food.quantityValue }} {{ food.quantityUnit }} {{ food.food }}
+          </p>
+          } } }
+        </div>
+      </div>
+      <div class="variant__locations">
+        @for (location of variant.locations; track location) {
+        <span>{{ location }}</span> }
+      </div>
+    </div>
+    }
+  </div>
+  }
+</div>
+
 <div class="pens">
   @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if
   (area.displayType === PatientBoardAreaDisplayType.ShowPatients) { @if
   (area.pens != null && area.pens.length > 0) { @for (pen of area.pens; track
   pen.reference) {
-  <div class="pen">
+  <div class="pen" [class.expanded]="expandedPenReference === pen.reference">
     <div class="location">{{ pen.reference }}</div>
     @if (pen.needsCleaning) {
     <div class="patients">
@@ -54,7 +88,7 @@
     <div class="tags"></div>
     <div class="tasks">
       <div class="task">
-        <p class="time">Morning</p>
+        <p class="time">ASAP</p>
         <button
           (click)="markClean(pen)"
           class="button button--secondary-invert"
@@ -63,6 +97,7 @@
         </button>
       </div>
     </div>
+    <div class="feeding-times"></div>
     } @else {
     <div class="patients">
       @for (patient of pen.patients; track patient) {
@@ -107,9 +142,10 @@
     </div>
     @if (expandedPenReference !== pen.reference) {
     <div class="feeding-times">
-      @for (feeding of pen.feedings; track feeding.time) {
+      @for (feeding of pen.feedings; track feeding.time) { @if
+      (shouldShowTime(feeding.time)) {
       <p class="time">{{ feeding.time }}</p>
-      } @if (pen.feedings.length) {
+      } } @if (pen.feedings.length) {
       <span class="expand" (click)="expandedPenReference = pen.reference">
         [?]
       </span>
@@ -118,7 +154,8 @@
     } @else {
     <div class="feeding-expanded">
       <span class="collapse" (click)="expandedPenReference = null">Hide</span>
-      @for (feeding of pen.feedings; track feeding.time) {
+      @for (feeding of pen.feedings; track feeding.time) { @if
+      (shouldShowTime(feeding.time)) {
       <div class="feedings">
         <div class="feeding">
           <div>
@@ -138,7 +175,7 @@
           </div>
         </div>
       </div>
-      }
+      } }
     </div>
     } }
   </div>
@@ -146,7 +183,7 @@
 </div>
 @if (anyOtherBoards(board.data.areas)) {
 <div class="other-boards-wrapper">
-  <h2>Other boards</h2>
+  <h2>Other areas</h2>
   <div class="pens">
     @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if
     (area.displayType === PatientBoardAreaDisplayType.SummarisePatients) {

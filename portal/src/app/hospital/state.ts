@@ -645,6 +645,32 @@ export interface PatientBoard {
     }[];
   };
   areas: PatientBoardArea[];
+  summary: PatientBoardSummary[];
+}
+
+export interface PatientBoardSummary {
+  species: string;
+  quantity: number;
+  variants: PatientBoardSummaryVariant[];
+}
+
+export interface PatientBoardSummaryVariant {
+  name: string;
+  quantity: number;
+  locations: string[];
+  feeding: PatientBoardSummaryFeeding[];
+}
+
+export interface PatientBoardSummaryFeeding {
+  time: string;
+  items: PatientBoardSummaryFeedingItem[];
+}
+
+export interface PatientBoardSummaryFeedingItem {
+  time: string;
+  quantityValue: number;
+  quantityUnit: string;
+  food: string;
 }
 
 export interface PatientBoardArea {

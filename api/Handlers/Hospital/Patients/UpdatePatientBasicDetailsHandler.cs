@@ -84,16 +84,16 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
 
         foreach (var existingItem in existingDiets)
         {
-            if (!request.Feeding.Any(r => r.Time == existingItem.Time && r.FoodId == existingItem.Food.Id))
+            if (!request.Feeding.Any(r => r.QuantityUnit == existingItem.QuantityUnit && r.Time == existingItem.Time && r.FoodId == existingItem.Food.Id))
             {
                 patient.Feeding.Remove(existingItem);
                 _repository.Delete(existingItem);
             }
         }
 
-        foreach (var item in request.Feeding)
+        foreach (var item in request.Feeding.OrderBy(x => x.QuantityValue))
         {
-            var existingItem = existingDiets.FirstOrDefault(x => x.Time == item.Time && x.Food.Id == item.FoodId);
+            var existingItem = existingDiets.FirstOrDefault(x => x.QuantityUnit == item.QuantityUnit && x.Time == item.Time && x.Food.Id == item.FoodId);
             if (existingItem != null)
             {
                 existingItem.QuantityValue = item.QuantityValue;

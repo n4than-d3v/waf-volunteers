@@ -168,7 +168,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                                     .Select(fgg => new PatientBoardSummaryFeedingItem
                                     {
                                         Food = fgg.Key.Name,
-                                        QuantityValue = fg.Sum(f => f.QuantityValue),
+                                        QuantityValue = fgg.Sum(f => f.QuantityValue),
                                         QuantityUnit = fgg.Key.QuantityUnit
                                     }).ToList()
                             }).ToList()

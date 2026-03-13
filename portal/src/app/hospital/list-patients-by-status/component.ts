@@ -35,6 +35,7 @@ import { SpinnerComponent } from '../../shared/spinner/component';
 })
 export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   readonly LS_PAGE_SIZE = 'hospital-list-page-size';
+  readonly LS_SEARCH = 'hospital-list-page-search';
 
   @Input() set status(status: PatientStatus) {
     this._status = status;
@@ -44,7 +45,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
 
   _status: PatientStatus | null = null;
 
-  search$ = new BehaviorSubject<string>('');
+  search$: BehaviorSubject<string>;
   totalPages$: Observable<number>;
   pageSize$: BehaviorSubject<number>;
   page = 1;
@@ -64,6 +65,13 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
       pageSize = Number(pageSizeFromLS);
     }
     this.pageSize$ = new BehaviorSubject<number>(pageSize);
+
+    let search = '';
+    let searchFromLS = localStorage.getItem(this.LS_SEARCH);
+    if (searchFromLS) {
+      search = String(searchFromLS);
+    }
+    this.search$ = new BehaviorSubject<string>(search);
 
     this.patients$ = this.store.select(selectPatientsByStatus);
     this.patientCounts$ = this.store.select(selectPatientCounts);

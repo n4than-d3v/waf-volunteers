@@ -5,7 +5,8 @@
       type="text"
       id="search"
       autocomplete="off"
-      (input)="search$.next($any($event.target).value)"
+      [ngModel]="search$ | async"
+      (ngModelChange)="search$.next($event)"
     />
   </div>
   <div class="field">

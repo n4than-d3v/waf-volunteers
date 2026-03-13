@@ -188,10 +188,13 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
     const pageSize = this.pageSize$.getValue();
     localStorage.setItem(this.LS_PAGE_SIZE, pageSize.toString());
 
+    const search = this.search$.getValue();
+    localStorage.setItem(this.LS_SEARCH, search.toString());
+
     this.store.dispatch(
       getPatientsByStatus({
         status: this._status,
-        search: this.search$.getValue(),
+        search,
         page: this.page,
         pageSize,
         silent,

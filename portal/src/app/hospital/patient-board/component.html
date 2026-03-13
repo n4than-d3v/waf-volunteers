@@ -5,7 +5,10 @@
 } @else if (boards.data && (!viewingBoard)) {
 <div class="boards">
   @for (board of boards.data; track board.id) {
-  <button (click)="viewBoard(board.id)" class="button button--primary">
+  <button
+    (click)="viewBoard(board.id)"
+    class="button button--secondary-invert board-button"
+  >
     {{ board.name }}
   </button>
   }
@@ -41,38 +44,43 @@
 </div>
 }
 
+<button
+  class="button button--secondary summary-button"
+  (click)="expandFeedingSummary = !expandFeedingSummary"
+>
+  {{ expandFeedingSummary ? 'Hide' : 'Show' }} species summary
+</button>
+@if (expandFeedingSummary) {
 <div class="summary">
   @for (summary of board.data.summary; track summary.species) {
   <div class="species">
-    <div class="species__name">
-      {{ summary.quantity }}x {{ summary.species }}
-    </div>
-    @for (variant of summary.variants; track variant.name) {
-    <div class="variant">
-      <div class="variant__details">
-        @if (summary.variants.length != 1 || variant.name != summary.species) {
-        <p class="variant__name">{{ variant.quantity }}x {{ variant.name }}</p>
-        }
-        <div class="variant__foods">
-          @for (feeding of variant.feeding; track feeding.time) { @if
-          (shouldShowTime(feeding.time)) {
-          <p><strong>{{ feeding.time }}</strong></p>
-          @for (food of feeding.items; track food.food) {
-          <p class="food">
-            {{ food.quantityValue }} {{ food.quantityUnit }} {{ food.food }}
+    <div class="species__name">{{ summary.species }}</div>
+    <div class="variants">
+      @for (variant of summary.variants; track variant.name) {
+      <div class="variant">
+        <div class="variant__details">
+          <p class="variant__name">
+            {{ variant.quantity }}x {{ variant.name }}
           </p>
-          } } }
+          <div class="variant__foods">
+            @for (feeding of variant.feeding; track feeding.time) { @if
+            (shouldShowTime(feeding.time)) {
+            <p><strong>{{ feeding.time }}</strong></p>
+            @for (food of feeding.items; track food.food) {
+            <p class="food">
+              {{ food.quantityValue }} {{ food.quantityUnit }} {{ food.food }}
+            </p>
+            } } }
+          </div>
         </div>
+        <div class="variant__locations">{{ variant.locations.join(', ') }}</div>
       </div>
-      <div class="variant__locations">
-        @for (location of variant.locations; track location) {
-        <span>{{ location }}</span> }
-      </div>
+      }
     </div>
-    }
   </div>
   }
 </div>
+}
 
 <div class="pens">
   @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if

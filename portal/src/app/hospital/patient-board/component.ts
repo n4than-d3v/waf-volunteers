@@ -69,6 +69,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   expandedPenReference: string | null = null;
 
+  expandFeedingSummary = false;
+
   subscription: Subscription | null = null;
 
   constructor(private store: Store) {
@@ -171,35 +173,20 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       return h + m / 60;
     };
 
-    // Determine which window the input time falls into
-    let windowStart = 0;
-    let windowEnd = 0;
-
     if (/^\d{2}:\d{2}$/.test(time)) {
       const targetDecimal = timeToDecimal(time);
 
-      if (targetDecimal >= 9 && targetDecimal < 13) {
-        windowStart = 0; // 8:30 am
-        windowEnd = 13.5; // 1:30 pm
-      } else if (targetDecimal >= 13 && targetDecimal < 18) {
-        windowStart = 12.5; // 12:30 pm
-        windowEnd = 18.5; // 6:30 pm
-      } else if (targetDecimal >= 18 && targetDecimal < 22) {
-        windowStart = 17.5; // 5:30 pm
-        windowEnd = 23.999; // 10:30 pm
-      } else {
-        return false; // outside all windows
-      }
+      if (0 <= nowDecimal && nowDecimal <= 12.5)
+        return 0 <= targetDecimal && targetDecimal <= 12.99;
+      if (12.5 <= nowDecimal && nowDecimal <= 17.5)
+        return 12.5 <= targetDecimal && targetDecimal <= 17.99;
+      if (17.5 <= nowDecimal && nowDecimal <= 24)
+        return 17.5 <= targetDecimal && targetDecimal <= 24;
 
-      return nowDecimal >= windowStart && nowDecimal <= windowEnd;
+      return false;
     }
 
-    // If time is "Every x hours", always show it (can adjust logic if needed)
-    if (/^Every \d+ hours$/.test(time)) {
-      return true; // always true in this example
-    }
-
-    return false;
+    return true;
   }
 
   ngOnInit() {

@@ -271,12 +271,12 @@ export const formatFeeding = (feeding: Feeding[]) => {
       if (every) {
         for (const intervalTime of times) {
           acc[intervalTime].push(
-            `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes} ${guidance.topUp ? '(top up)' : ''}`,
+            `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
           );
         }
       } else {
         acc[formattedTime].push(
-          `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes} ${guidance.topUp ? '(top up)' : ''}`,
+          `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
         );
       }
     }

@@ -9,6 +9,11 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+
+  .board-button {
+    padding: 1rem;
+    font-size: 1.25rem;
+  }
 }
 
 .messages {
@@ -56,7 +61,7 @@ h1 {
     border: solid 2px black;
     margin-left: -2px;
     margin-bottom: -2px;
-    max-width: 10rem;
+    max-width: max-content;
     --min-height: 0rem;
 
     &.expanded {
@@ -88,18 +93,20 @@ h1 {
     .tags {
       min-height: var(--min-height);
       display: flex;
+      flex-direction: column;
       flex-wrap: wrap;
-      gap: 0.25rem;
-      padding: 0.25rem;
+      padding: 0rem 0.25rem;
 
       .custom-diet {
         color: var(--theme-color-1);
         font-weight: bold;
+        font-size: 0.9rem;
       }
 
       .tag {
         color: var(--theme-color-2);
         font-weight: bold;
+        font-size: 0.9rem;
       }
     }
 
@@ -138,16 +145,19 @@ h1 {
           max-height: 2.25rem;
           border: none;
           background-color: white;
+          outline: none !important;
+          box-shadow: none !important;
         }
       }
     }
 
     .feeding-times {
-      min-height: var(--min-height);
+      min-height: max(var(--min-height), 2rem);
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      padding: 0.125rem;
+      justify-content: space-between;
+      padding: 0rem 0.25rem;
       column-gap: 0.5rem;
 
       .time {
@@ -202,6 +212,12 @@ h1 {
   }
 }
 
+.summary-button {
+  margin-bottom: 0.5rem;
+  margin-left: -2px;
+  padding: 0.25rem 0.5rem;
+}
+
 .summary {
   display: flex;
   flex-wrap: wrap;
@@ -219,7 +235,7 @@ h1 {
     margin-bottom: -2px;
 
     .species__name {
-      background-color: var(--theme-color-1);
+      background-color: var(--theme-color-6);
       border-bottom: solid 2px black;
       color: white;
       font-weight: bold;
@@ -227,41 +243,46 @@ h1 {
       font-size: 1.25rem;
     }
 
-    .variant {
-      padding: 0.25rem;
+    .variants {
       display: flex;
-      justify-content: space-between;
-      gap: 0.5rem;
+      flex: 1;
+      align-items: stretch;
 
-      &:not(:nth-child(2)) {
-        margin-top: 0.25rem;
-        border-top: dotted 2px rgb(60, 60, 60);
-      }
-
-      .variant__details {
-        .variant__name {
-          font-weight: bold;
-          padding: 0.125rem 0.25rem;
-          font-size: 1.125rem;
-          border-radius: 2px;
-        }
-
-        .variant__foods {
-          margin-left: 0.25rem;
-
-          p {
-            font-size: 0.9rem;
-          }
-        }
-      }
-
-      .variant__locations {
+      .variant {
+        padding: 0.25rem;
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
-        gap: 0.125rem;
-        font-size: 0.9rem;
-        color: var(--theme-color-1);
+        gap: 0.5rem;
+        height: 100%;
+
+        &:not(:last-child) {
+          margin-right: 0.25rem;
+          border-right: dotted 2px rgb(60, 60, 60);
+        }
+
+        .variant__details {
+          .variant__name {
+            font-weight: bold;
+            padding: 0.125rem 0.25rem;
+            font-size: 1.125rem;
+            border-radius: 2px;
+          }
+
+          .variant__foods {
+            margin-left: 0.25rem;
+
+            p {
+              font-size: 0.9rem;
+            }
+          }
+        }
+
+        .variant__locations {
+          margin: 0rem 0.25rem;
+          font-size: 0.9rem;
+          color: var(--theme-color-1);
+          max-width: 15rem;
+        }
       }
     }
   }

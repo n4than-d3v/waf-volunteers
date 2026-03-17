@@ -68,7 +68,8 @@
             <p><strong>{{ feeding.time }}</strong></p>
             @for (food of feeding.items; track food.food) {
             <p class="food">
-              {{ food.quantityValue }} {{ food.quantityUnit }} {{ food.food }}
+              {{ formatNumber(food.quantityValue) }} {{ food.quantityUnit }} {{
+              food.food }}
             </p>
             } } }
           </div>
@@ -153,7 +154,7 @@
       @for (feeding of pen.feedings; track feeding.time) { @if
       (shouldShowTime(feeding.time)) {
       <p class="time">{{ feeding.time }}</p>
-      } } @if (pen.feedings.length) {
+      } } @if (isPenExpandable(pen)) {
       <span class="expand" (click)="expandedPenReference = pen.reference">
         [?]
       </span>
@@ -170,10 +171,10 @@
             <p class="time">{{ feeding.time }}</p>
             @for (detail of feeding.details; track detail) {
             <p class="details">
-              {{ detail.quantityTotal }} {{ detail.quantityUnit }} {{
-              detail.food }} @if (detail.quantityEach != detail.quantityTotal) {
-              ({{ detail.quantityEach }} {{ detail.quantityUnit }} each) } @if
-              (detail.notes) {
+              {{ formatNumber(detail.quantityTotal) }} {{ detail.quantityUnit }}
+              {{ detail.food }} @if (detail.quantityEach !=
+              detail.quantityTotal) { ({{ formatNumber(detail.quantityEach) }}
+              {{ detail.quantityUnit }} each) } @if (detail.notes) {
               <span class="notes">{{ detail.notes }}</span>
               } @if (detail.topUp) {
               <span class="top-up">&nbsp;(top up)</span>

@@ -8,6 +8,7 @@ using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 
 namespace Api.Handlers.Hospital.Boards;
 
@@ -132,6 +133,50 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         return boardArea;
     }
 
+    private static List<TimeSpan> ExpandFeedingTime(string time)
+    {
+        var startTime = TimeSpan.FromHours(9);   // 09:00
+        var endTime = TimeSpan.FromHours(22);    // 22:00
+
+        if (TimeSpan.TryParse(time, out var parsedTime))
+        {
+            return new List<TimeSpan> { parsedTime };
+        }
+
+        TimeSpan? interval = null;
+
+        var matchHours = Regex.Match(time, @"Every (\d+(\.\d+)?) hours?");
+        if (matchHours.Success)
+        {
+            double intervalHours = double.Parse(matchHours.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+            interval = TimeSpan.FromHours(intervalHours);
+        }
+
+        var matchMinutes = Regex.Match(time, @"Every (\d+(\.\d+)?) minutes?");
+        if (matchMinutes.Success)
+        {
+            double intervalMinutes = double.Parse(matchMinutes.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+            interval = TimeSpan.FromMinutes(intervalMinutes);
+        }
+
+        if (interval != null)
+        {
+            var results = new List<TimeSpan>();
+            var current = startTime;
+
+            while (current <= endTime)
+            {
+                results.Add(current);
+                current = current.Add(interval.Value);
+            }
+
+            return results;
+        }
+
+        // Fallback (unknown format)
+        return new List<TimeSpan> { };
+    }
+
     private static List<PatientBoardSummary> GetPatientBoardSummary(IReadOnlyList<Patient> patients)
     {
         return patients
@@ -159,16 +204,19 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                                 ? p.Feeding.ToList<IFeeding>()
                                 : p.SpeciesVariant!.FeedingGuidance.ToList<IFeeding>())
                             .Where(f => f.QuantityValue > 0)
-                            .GroupBy(f => new { f.Time })
+                            .SelectMany(f => ExpandFeedingTime(f.Time)
+                                .Select(t => new { Feeding = f, Time = t }))
+                            .GroupBy(x => x.Time)
+                            .OrderBy(x => x.Key)
                             .Select(fg => new PatientBoardSummaryFeeding
                             {
-                                Time = fg.Key.Time,
+                                Time = fg.Key.ToString(@"hh\:mm"),
                                 Items = fg
-                                    .GroupBy(fgg => new { fgg.QuantityUnit, fgg.Food.Name })
+                                    .GroupBy(fgg => new { fgg.Feeding.QuantityUnit, fgg.Feeding.Food.Name })
                                     .Select(fgg => new PatientBoardSummaryFeedingItem
                                     {
                                         Food = fgg.Key.Name,
-                                        QuantityValue = fgg.Sum(f => f.QuantityValue),
+                                        QuantityValue = fgg.Sum(f => f.Feeding.QuantityValue),
                                         QuantityUnit = fgg.Key.QuantityUnit
                                     }).ToList()
                             }).ToList()
@@ -224,35 +272,36 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             .SelectMany(patient => patient.Feeding.Any()
                 ? patient.Feeding.ToList<IFeeding>()
                 : patient.SpeciesVariant!.FeedingGuidance.ToList<IFeeding>())
-            .GroupBy(food => food.Time)
-            .OrderBy(time => time.Key);
+            .Where(f => f.QuantityValue > 0)
+            .SelectMany(f => ExpandFeedingTime(f.Time)
+                .Select(t => new { Feeding = f, Time = t }))
+            .GroupBy(f => f.Time)
+            .OrderBy(g => g.Key);
 
-        foreach (var time in times)
+        foreach (var timeGroup in times)
         {
-            var groups = time
-                .Where(time => time.QuantityValue > 0)
-                .GroupBy(time => new
-                {
-                    time.QuantityUnit,
-                    time.Food.Name
-                }).OrderBy(food => food.Key.Name);
+            var groups = timeGroup
+                .GroupBy(f => new { f.Feeding.QuantityUnit, f.Feeding.Food.Name })
+                .OrderBy(g => g.Key.Name);
 
             if (!groups.Any()) continue;
 
             var details = groups.Select(group => new PatientBoardAreaPenTaskDetails
             {
                 Food = group.Key.Name,
-                QuantityEach = group.Average(g => g.QuantityValue),
-                QuantityTotal = group.Sum(g => g.QuantityValue),
+                QuantityEach = group.Average(g => g.Feeding.QuantityValue),
+                QuantityTotal = group.Sum(g => g.Feeding.QuantityValue),
                 QuantityUnit = group.Key.QuantityUnit,
-                Notes = string.Join(" ", group.Where(g => !string.IsNullOrWhiteSpace(g.Notes)).Select(g => g.Notes).Distinct()),
-                TopUp = group.Any(g => g.TopUp)
+                Notes = string.Join(" ", group.Where(g => !string.IsNullOrWhiteSpace(g.Feeding.Notes))
+                                               .Select(g => g.Feeding.Notes)
+                                               .Distinct()),
+                TopUp = group.Any(g => g.Feeding.TopUp)
             }).ToArray();
 
             feedings.Add(new PatientBoardAreaPenFeeding
             {
-                Time = time.Key,
-                Details = details.ToArray(),
+                Time = timeGroup.Key.ToString(@"hh\:mm"),
+                Details = details,
             });
         }
 

@@ -30,6 +30,6 @@ public class GetAreasHandler : IRequestHandler<GetAreas, IResult>
             area.Pens = area.Pens.OrderBy(x => x.Code).ToList();
         }
 
-        return Results.Ok(areas);
+        return Results.Ok(areas.OrderBy(x => x.Code));
     }
 }

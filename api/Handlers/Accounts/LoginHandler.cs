@@ -201,7 +201,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 
         if (roles.HasFlag(AccountRoles.APP_BOARDS) || roles.HasFlag(AccountRoles.APP_CLOCKING))
         {
-            expiry = 60 * 24 * 30;
+            expiry = 60 * 24 * 365;
         }
 
         var token = new JwtSecurityToken(

@@ -108,6 +108,29 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     );
   }
 
+  isPenExpandable(pen: PatientBoardAreaPen): boolean {
+    if (!pen.feedings?.length) return false;
+    return pen.feedings.some((f) => this.shouldShowTime(f.time));
+  }
+
+  formatNumber(value: number): string {
+    // Convert decimal to fraction (closest simple fraction)
+    function toFraction(x: number, maxDenominator = 16): string | null {
+      for (let denom = 1; denom <= maxDenominator; denom++) {
+        const num = Math.round(x * denom);
+        if (Math.abs(num / denom - x) < 1e-3) return `${num}/${denom}`;
+      }
+      return null;
+    }
+
+    if (value > 0 && value < 1) {
+      const fraction = toFraction(value);
+      if (fraction) return fraction;
+    }
+
+    return value.toLocaleString();
+  }
+
   private normalizeChildHeightsPerRow() {
     const pens = Array.from(document.querySelectorAll<HTMLElement>('.pen'));
     const childSelectors = [

@@ -23,7 +23,7 @@
         <td>{{ patient.name || '(blank)' }}</td>
       </tr>
       <tr>
-        <td>Identifier</td>
+        <td>Ring</td>
         <td>{{ patient.uniqueIdentifier || '(blank)' }}</td>
       </tr>
       <tr>
@@ -104,12 +104,21 @@
       <input id="name" type="text" formControlName="name" />
     </div>
     <div class="field">
-      <label for="uniqueIdentifier"> Identifier </label>
-      <input
-        id="uniqueIdentifier"
-        type="text"
-        formControlName="uniqueIdentifier"
-      />
+      <label for="uniqueIdentifier"> Ring </label>
+      <select id="uniqueIdentifier" formControlName="uniqueIdentifier">
+        <option>❌ (None)</option>
+        <option>❤️ (Red)</option>
+        <option>🧡 (Orange)</option>
+        <option>💛 (Yellow)</option>
+        <option>💚 (Green)</option>
+        <option>💙 (Blue)</option>
+        <option>💜 (Purple)</option>
+        <option>🩷 (Pink)</option>
+        <option>🤎 (Brown)</option>
+        <option>🖤 (Black)</option>
+        <option>🤍 (White)</option>
+        <option>🩶 (Grey)</option>
+      </select>
     </div>
     <div class="field">
       <label for="microchip"> Microchip </label>

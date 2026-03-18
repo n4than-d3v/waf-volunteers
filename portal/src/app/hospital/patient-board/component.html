@@ -88,7 +88,7 @@
   (area.displayType === PatientBoardAreaDisplayType.ShowPatients) { @if
   (area.pens != null && area.pens.length > 0) { @for (pen of area.pens; track
   pen.reference) {
-  <div class="pen" [class.expanded]="expandedPenReference === pen.reference">
+  <div class="pen" [class.expanded]="expandedPens.includes(pen.reference)">
     <div class="location">{{ pen.reference }}</div>
     @if (pen.needsCleaning) {
     <div class="patients">
@@ -149,20 +149,18 @@
         </button>
       </div>
     </div>
-    @if (expandedPenReference !== pen.reference) {
+    @if (!expandedPens.includes(pen.reference)) {
     <div class="feeding-times">
       @for (feeding of pen.feedings; track feeding.time) { @if
       (shouldShowTime(feeding.time)) {
       <p class="time">{{ feeding.time }}</p>
       } } @if (isPenExpandable(pen)) {
-      <span class="expand" (click)="expandedPenReference = pen.reference">
-        [?]
-      </span>
+      <span class="expand" (click)="expandPen(pen)"> [?] </span>
       }
     </div>
     } @else {
     <div class="feeding-expanded">
-      <span class="collapse" (click)="expandedPenReference = null">Hide</span>
+      <span class="collapse" (click)="collapsePen(pen)">Hide</span>
       @for (feeding of pen.feedings; track feeding.time) { @if
       (shouldShowTime(feeding.time)) {
       <div class="feedings">

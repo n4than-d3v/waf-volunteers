@@ -67,7 +67,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   viewingBoard: number | null = null;
 
-  expandedPenReference: string | null = null;
+  expandedPens: string[] = [];
 
   expandFeedingSummary = false;
 
@@ -106,6 +106,14 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
         taskId,
       }),
     );
+  }
+
+  expandPen(pen: PatientBoardAreaPen) {
+    this.expandedPens.push(pen.reference);
+  }
+
+  collapsePen(pen: PatientBoardAreaPen) {
+    this.expandedPens = this.expandedPens.filter((x) => x !== pen.reference);
   }
 
   isPenExpandable(pen: PatientBoardAreaPen): boolean {

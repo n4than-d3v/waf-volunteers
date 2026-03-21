@@ -194,12 +194,16 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     if (/^\d{2}:\d{2}$/.test(time)) {
       const targetDecimal = timeToDecimal(time);
 
-      if (0 <= nowDecimal && nowDecimal <= 12.5)
+      if (0 <= nowDecimal && nowDecimal < 12.5)
         return 0 <= targetDecimal && targetDecimal <= 12.99;
-      if (12.5 <= nowDecimal && nowDecimal <= 17.5)
-        return 12.5 <= targetDecimal && targetDecimal <= 17.99;
-      if (17.5 <= nowDecimal && nowDecimal <= 24)
-        return 17.5 <= targetDecimal && targetDecimal <= 24;
+      if (12.5 <= nowDecimal && nowDecimal < 13)
+        return 0 <= targetDecimal && targetDecimal <= 17.99;
+      if (13 <= nowDecimal && nowDecimal < 17.5)
+        return 13 <= targetDecimal && targetDecimal <= 17.99;
+      if (17.5 <= nowDecimal && nowDecimal < 18)
+        return 13 <= targetDecimal && targetDecimal <= 23.99;
+      if (18 <= nowDecimal && nowDecimal < 24)
+        return 18 <= targetDecimal && targetDecimal <= 23.99;
 
       return false;
     }

@@ -779,6 +779,10 @@ public partial class Program
             .AddNote("User views list of notices")
             .RequireAuthorization(signedInPolicy);
 
+        apiNotices.MapGet("/summary", (IMediator mediator) => mediator.Send(new ViewNoticeInteractionSummary { }))
+            .AddNote("Admin views interaction summary")
+            .RequireAuthorization(adminPolicy);
+
         apiNotices.MapGet("/{id:int}", (IMediator mediator, int id) => mediator.Send(new ViewNoticeInteractions { NoticeId = id }))
             .AddNote("Admin views notice interactions")
             .RequireAuthorization(adminPolicy);

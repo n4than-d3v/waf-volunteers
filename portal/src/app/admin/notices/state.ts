@@ -1,6 +1,7 @@
 export interface NoticeManagementState {
   notices: Notice[];
   interactions: Interaction[];
+  interactionSummary: InteractionSummary[];
   loading: boolean;
   error: boolean;
   created: boolean;
@@ -27,9 +28,18 @@ export interface Interaction {
   }[];
 }
 
+export interface InteractionSummary {
+  id: number;
+  name: string;
+  total: number;
+  read: number;
+  unread: number;
+}
+
 export const initialNoticeManagementState: NoticeManagementState = {
   notices: [],
   interactions: [],
+  interactionSummary: [],
   loading: false,
   error: false,
   created: false,

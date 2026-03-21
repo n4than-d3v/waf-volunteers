@@ -6,35 +6,40 @@ export const selectNoticeManagementState =
 
 export const selectNotices = createSelector(
   selectNoticeManagementState,
-  (state) => state.notices
+  (state) => state.notices,
 );
 
 export const selectInteractions = createSelector(
   selectNoticeManagementState,
-  (state) => state.interactions
+  (state) => state.interactions,
+);
+
+export const selectInteractionSummary = createSelector(
+  selectNoticeManagementState,
+  (state) => state.interactionSummary,
 );
 
 export const selectNoticesLoading = createSelector(
   selectNoticeManagementState,
-  (state) => state.loading
+  (state) => state.loading,
 );
 
 export const selectNoticesError = createSelector(
   selectNoticeManagementState,
-  (state) => state.error
+  (state) => state.error,
 );
 
 export const selectNoticeCreated = createSelector(
   selectNoticeManagementState,
-  (state) => state.created
+  (state) => state.created,
 );
 
 export const selectNoticeUpdated = createSelector(
   selectNoticeManagementState,
-  (state) => state.updated
+  (state) => state.updated,
 );
 
 export const selectNoticeDeleted = createSelector(
   selectNoticeManagementState,
-  (state) => state.deleted
+  (state) => state.deleted,
 );

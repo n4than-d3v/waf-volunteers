@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { Interaction, Notice } from './state';
+import { Interaction, InteractionSummary, Notice } from './state';
 import {
   createNotice,
   createNoticeError,
@@ -19,6 +19,9 @@ import {
   viewNoticeInteractions,
   viewNoticeInteractionsError,
   viewNoticeInteractionsSuccess,
+  viewNoticeInteractionSummary,
+  viewNoticeInteractionSummaryError,
+  viewNoticeInteractionSummarySuccess,
 } from './actions';
 
 @Injectable()
@@ -47,6 +50,20 @@ export class NoticeManagementEffects {
             viewNoticeInteractionsSuccess({ interactions }),
           ),
           catchError(() => of(viewNoticeInteractionsError())),
+        ),
+      ),
+    ),
+  );
+
+  viewNoticeInteractionSummary$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(viewNoticeInteractionSummary),
+      switchMap(() =>
+        this.http.get<InteractionSummary[]>('notices/summary').pipe(
+          map((interactionSummary) =>
+            viewNoticeInteractionSummarySuccess({ interactionSummary }),
+          ),
+          catchError(() => of(viewNoticeInteractionSummaryError())),
         ),
       ),
     ),

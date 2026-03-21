@@ -14,6 +14,7 @@ import { AdminNoticeInteractionsComponent } from './admin/notices/interactions/c
 import { AdminNoticeDeleteComponent } from './admin/notices/delete/component';
 import { AdminNoticeUpdateComponent } from './admin/notices/update/component';
 import { AdminRotaViewClockingsComponent } from './admin/rota/clockings/component';
+import { AdminNoticeInteractionSummaryComponent } from './admin/notices/interaction-summary/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -56,6 +57,10 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', component: AdminNoticesComponent },
       { path: 'create', component: AdminNoticeCreateComponent },
+      {
+        path: 'interactions',
+        component: AdminNoticeInteractionSummaryComponent,
+      },
       {
         path: ':id',
         children: [

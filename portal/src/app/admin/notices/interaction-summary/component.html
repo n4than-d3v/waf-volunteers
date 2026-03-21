@@ -1,0 +1,53 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Notice interactions</h1>
+
+@if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (users$ | async; as users) {
+<div class="header">
+  <h2>Sort</h2>
+  <div class="field">
+    <label for="name"> Name </label>
+    <input id="name" type="radio" name="sort" [(ngModel)]="sort" value="name" />
+  </div>
+  <div class="field">
+    <label for="most"> Most read </label>
+    <input id="most" type="radio" name="sort" [(ngModel)]="sort" value="most" />
+  </div>
+  <div class="field">
+    <label for="least"> Least read </label>
+    <input
+      id="least"
+      type="radio"
+      name="sort"
+      [(ngModel)]="sort"
+      value="least"
+    />
+  </div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>Volunteer</th>
+      <th>Total</th>
+      <th>Read</th>
+      <th>Read %</th>
+      <th>Unread</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users | interactionSort: sort; track user.id) {
+    <tr>
+      <td>{{ user.name }}</td>
+      <td>{{ user.total }}</td>
+      <td>{{ user.read }}</td>
+      <td>{{ user.read / user.total | percent:'1.0-0' }}</td>
+      <td>{{ user.unread }}</td>
+    </tr>
+    }
+  </tbody>
+</table>
+}

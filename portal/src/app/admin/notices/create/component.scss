@@ -44,7 +44,11 @@ form {
   border: solid 1px black;
 }
 
-.send-at {
+.schedule {
   display: flex;
   gap: 1rem;
+
+  select {
+    max-width: max-content;
+  }
 }

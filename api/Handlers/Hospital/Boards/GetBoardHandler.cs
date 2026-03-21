@@ -145,6 +145,11 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         TimeSpan? interval = null;
 
+        if (time == "Every hour")
+        {
+            interval = TimeSpan.FromHours(1);
+        }
+
         var matchHours = Regex.Match(time, @"Every (\d+(\.\d+)?) hours?");
         if (matchHours.Success)
         {

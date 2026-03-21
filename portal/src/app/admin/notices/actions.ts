@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Interaction, Notice } from './state';
+import { Interaction, InteractionSummary, Notice } from './state';
 
 export const getNotices = createAction('[Admin Notices] Get notices');
 export const getNoticesSuccess = createAction(
@@ -55,6 +55,17 @@ export const viewNoticeInteractionsSuccess = createAction(
 );
 export const viewNoticeInteractionsError = createAction(
   '[Admin Notices] View notice interactions: error',
+);
+
+export const viewNoticeInteractionSummary = createAction(
+  '[Admin Notices] View notice interaction summary',
+);
+export const viewNoticeInteractionSummarySuccess = createAction(
+  '[Admin Notices] View notice interaction summary: success',
+  props<{ interactionSummary: InteractionSummary[] }>(),
+);
+export const viewNoticeInteractionSummaryError = createAction(
+  '[Admin Notices] View notice interaction summary: error',
 );
 
 export const deleteNotice = createAction(

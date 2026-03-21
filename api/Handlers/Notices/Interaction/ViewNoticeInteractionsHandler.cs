@@ -31,7 +31,7 @@ public class ViewNoticeInteractionsHandler : IRequestHandler<ViewNoticeInteracti
         var interactions = await _repository.GetAll<NoticeInteraction>(
             x => x.Notice.Id == request.NoticeId, tracking: false,
             action: x => x.Include(y => y.Notice).Include(y => y.Account));
-        var accounts = await _repository.GetAll<Account>(x => true, tracking: false);
+        var accounts = await _repository.GetAll<Account>(x => x.Status == AccountStatus.Active, tracking: false);
 
         var users = new List<UserNotice>();
 

@@ -12,6 +12,8 @@ export interface Notice {
   id: number;
   title: string;
   created: string;
+  sendAt: string;
+  sent: boolean;
 }
 
 export interface Interaction {

@@ -26,6 +26,7 @@ import {
 import { DomSanitizer } from '@angular/platform-browser';
 import { FakePhoneComponent } from '../../../shared/fake-phone/component';
 import { roleList, Roles } from '../../../shared/token.provider';
+import moment from 'moment';
 
 @Component({
   standalone: true,
@@ -53,6 +54,9 @@ export class AdminNoticeCreateComponent implements OnDestroy {
   form = new FormGroup({
     title: new FormControl(''),
     content: new FormControl(''),
+    schedule: new FormControl<'now' | 'later'>('now'),
+    sendAtDate: new FormControl(moment().format('YYYY-MM-DD')),
+    sendAtTime: new FormControl(moment().add(1, 'hour').format('HH:00')),
     files: new FormControl<File[] | null>(null),
     roles: new FormGroup({
       BEACON_ANIMAL_HUSBANDRY: new FormControl(false),
@@ -152,6 +156,13 @@ export class AdminNoticeCreateComponent implements OnDestroy {
       createNotice({
         title: this.form.controls.title.value || '',
         content: JSON.stringify(jsonDoc),
+        sendAt:
+          this.form.value.schedule === 'later'
+            ? this.form.value.sendAtDate! +
+              'T' +
+              this.form.value.sendAtTime! +
+              'Z'
+            : null,
         files: this.form.controls.files.value ?? [],
         roles:
           (this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.value

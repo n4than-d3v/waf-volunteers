@@ -102,6 +102,7 @@ export class VolunteerHomeCareComponent implements OnInit {
   }
 
   reset() {
+    this.addingMessage = false;
     this.saving = false;
     this.accepting = null;
     this.attemptedSave = false;

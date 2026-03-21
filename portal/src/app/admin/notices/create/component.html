@@ -29,6 +29,25 @@
       </div>
     </div>
     <div class="field">
+      <label for="schedule">Schedule</label>
+      <select id="schedule" formControlName="schedule">
+        <option value="now">Now</option>
+        <option value="later">Later</option>
+      </select>
+    </div>
+    @if (form.controls.schedule.value === 'later') {
+    <div class="send-at">
+      <div class="field">
+        <label for="sendAtDate">Date</label>
+        <input id="sendAtDate" type="date" formControlName="sendAtDate" />
+      </div>
+      <div class="field">
+        <label for="sendAtTime">Time</label>
+        <input id="sendAtTime" type="time" formControlName="sendAtTime" />
+      </div>
+    </div>
+    }
+    <div class="field">
       <label for="files">Attachments</label>
       <input id="files" type="file" multiple (change)="onFileChange($event)" />
     </div>

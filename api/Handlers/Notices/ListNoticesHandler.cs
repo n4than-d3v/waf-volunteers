@@ -45,6 +45,8 @@ public class ListNoticesHandler : IRequestHandler<ListNotices, IResult>
                 x.Id,
                 x.Title,
                 x.Created,
+                x.SendAt,
+                x.Sent,
                 HasAttachments = attachments.Any(y => y.Notice.Id == x.Id),
                 Read = interactions.Any(y => y.Notice.Id == x.Id)
             }).ToArray());

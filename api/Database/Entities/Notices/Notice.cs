@@ -8,21 +8,25 @@ public class Notice : Entity
     public string Content { get; set; }
     public DateTime Created { get; set; }
     public AccountRoles Roles { get; set; }
+    public DateTime SendAt { get; set; }
+    public bool Sent { get; set; }
 
     public Notice()
     {
     }
 
-    public Notice(string title, string content, AccountRoles roles) : this(title, content, DateTime.UtcNow, roles)
+    public Notice(string title, string content, AccountRoles roles, DateTime sendAt) : this(title, content, DateTime.UtcNow, roles, sendAt, false)
     {
     }
 
-    public Notice(string title, string content, DateTime created, AccountRoles roles)
+    public Notice(string title, string content, DateTime created, AccountRoles roles, DateTime sendAt, bool sent)
     {
         Title = title;
         Content = content;
         Created = created;
         Roles = roles;
+        SendAt = sendAt;
+        Sent = sent;
         if (roles == AccountRoles.None)
         {
             Roles =
@@ -45,6 +49,7 @@ public class Notice : Entity
 
     public bool ShouldShow(Account.Account account)
     {
+        if (!Sent) return false;
         if (account.Status == AccountStatus.Inactive) return false;
         return (account.Roles & Roles) != AccountRoles.None;
         // return Roles.HasFlag(account.Roles) || account.Roles.HasFlag(Roles);

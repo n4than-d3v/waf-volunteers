@@ -31,6 +31,7 @@ import { roleList, Roles } from '../../../shared/token.provider';
 import { openNotice } from '../../../volunteer/notices/actions';
 import { Notice } from '../../../volunteer/notices/state';
 import { selectNotice } from '../../../volunteer/notices/selectors';
+import moment from 'moment';
 
 @Component({
   standalone: true,
@@ -60,6 +61,9 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
   form = new FormGroup({
     title: new FormControl(''),
     content: new FormControl(''),
+    schedule: new FormControl<'now' | 'later'>('now'),
+    sendAtDate: new FormControl(moment().format('YYYY-MM-DD')),
+    sendAtTime: new FormControl(moment().add(1, 'hour').format('HH:00')),
     files: new FormControl<File[] | null>(null),
     roles: new FormGroup({
       BEACON_ANIMAL_HUSBANDRY: new FormControl(false),
@@ -101,49 +105,34 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
     this.store.select(selectNotice).subscribe((notice) => {
       if (!notice) return;
       this.notice = notice;
-      this.form.controls.title.setValue(notice.title);
-      this.form.controls.content.setValue(toHTML(JSON.parse(notice.content)));
       const roles = notice.roles;
-      this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.setValue(
-        (roles & Roles.BEACON_ANIMAL_HUSBANDRY) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_RECEPTIONIST.setValue(
-        (roles & Roles.BEACON_RECEPTIONIST) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_TEAM_LEADER.setValue(
-        (roles & Roles.BEACON_TEAM_LEADER) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_VET.setValue(
-        (roles & Roles.BEACON_VET) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_VET_NURSE.setValue(
-        (roles & Roles.BEACON_VET_NURSE) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_AUXILIARY.setValue(
-        (roles & Roles.BEACON_AUXILIARY) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_WORK_EXPERIENCE.setValue(
-        (roles & Roles.BEACON_WORK_EXPERIENCE) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_ORPHAN_FEEDER.setValue(
-        (roles & Roles.BEACON_ORPHAN_FEEDER) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_RESCUER.setValue(
-        (roles & Roles.BEACON_RESCUER) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_CENTRE_MAINTENANCE.setValue(
-        (roles & Roles.BEACON_CENTRE_MAINTENANCE) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_OFFICE_ADMIN.setValue(
-        (roles & Roles.BEACON_OFFICE_ADMIN) !== 0,
-      );
-      this.form.controls.roles.controls.BEACON_HOUSE_KEEPER.setValue(
-        (roles & Roles.BEACON_HOUSE_KEEPER) !== 0,
-      );
-      this.form.controls.roles.controls.APP_ADMIN.setValue(
-        (roles & Roles.APP_ADMIN) !== 0,
-      );
+      const date = moment(notice.sendAt);
+      this.form.patchValue({
+        title: notice.title,
+        content: toHTML(JSON.parse(notice.content)),
+        schedule: 'later',
+        sendAtDate: date.format('YYYY-MM-DD'),
+        sendAtTime: date.format('HH:mm'),
+        roles: {
+          BEACON_ANIMAL_HUSBANDRY:
+            (roles & Roles.BEACON_ANIMAL_HUSBANDRY) !== 0,
+          BEACON_RECEPTIONIST: (roles & Roles.BEACON_RECEPTIONIST) !== 0,
+          BEACON_TEAM_LEADER: (roles & Roles.BEACON_TEAM_LEADER) !== 0,
+          BEACON_VET: (roles & Roles.BEACON_VET) !== 0,
+          BEACON_VET_NURSE: (roles & Roles.BEACON_VET_NURSE) !== 0,
+          BEACON_AUXILIARY: (roles & Roles.BEACON_AUXILIARY) !== 0,
+          BEACON_WORK_EXPERIENCE: (roles & Roles.BEACON_WORK_EXPERIENCE) !== 0,
+          BEACON_ORPHAN_FEEDER: (roles & Roles.BEACON_ORPHAN_FEEDER) !== 0,
+          BEACON_RESCUER: (roles & Roles.BEACON_RESCUER) !== 0,
+          BEACON_CENTRE_MAINTENANCE:
+            (roles & Roles.BEACON_CENTRE_MAINTENANCE) !== 0,
+          BEACON_OFFICE_ADMIN: (roles & Roles.BEACON_OFFICE_ADMIN) !== 0,
+          BEACON_HOUSE_KEEPER: (roles & Roles.BEACON_HOUSE_KEEPER) !== 0,
+          APP_ADMIN: (roles & Roles.APP_ADMIN) !== 0,
+        },
+      });
     });
+
     this.editor = new Editor();
     route.params.subscribe((params) => {
       this.id = Number(params['id'] || 0);
@@ -224,6 +213,13 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
         title: this.form.controls.title.value || '',
         content: JSON.stringify(jsonDoc),
         files: this.form.controls.files.value ?? [],
+        sendAt:
+          this.form.value.schedule === 'later'
+            ? this.form.value.sendAtDate! +
+              'T' +
+              this.form.value.sendAtTime! +
+              'Z'
+            : null,
         roles:
           (this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.value
             ? Roles.BEACON_ANIMAL_HUSBANDRY

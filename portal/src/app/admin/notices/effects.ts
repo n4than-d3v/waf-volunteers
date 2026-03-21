@@ -32,10 +32,10 @@ export class NoticeManagementEffects {
       switchMap(() =>
         this.http.get<Notice[]>('notices').pipe(
           map((notices) => getNoticesSuccess({ notices })),
-          catchError(() => of(getNoticesError()))
-        )
-      )
-    )
+          catchError(() => of(getNoticesError())),
+        ),
+      ),
+    ),
   );
 
   viewNoticeInteractions$ = createEffect(() =>
@@ -44,12 +44,12 @@ export class NoticeManagementEffects {
       switchMap((action) =>
         this.http.get<Interaction[]>('notices/' + action.id).pipe(
           map((interactions) =>
-            viewNoticeInteractionsSuccess({ interactions })
+            viewNoticeInteractionsSuccess({ interactions }),
           ),
-          catchError(() => of(viewNoticeInteractionsError()))
-        )
-      )
-    )
+          catchError(() => of(viewNoticeInteractionsError())),
+        ),
+      ),
+    ),
   );
 
   createNotice$ = createEffect(() =>
@@ -59,16 +59,19 @@ export class NoticeManagementEffects {
         const formData = new FormData();
         formData.append('title', action.title);
         formData.append('content', action.content);
+        if (action.sendAt) {
+          formData.append('sendAt', action.sendAt);
+        }
         formData.append('roles', String(action.roles));
         for (const file of action.files) {
           formData.append('files', file);
         }
         return this.http.post('notices', formData).pipe(
           map(() => createNoticeSuccess()),
-          catchError(() => of(createNoticeError()))
+          catchError(() => of(createNoticeError())),
         );
-      })
-    )
+      }),
+    ),
   );
 
   updateNotice$ = createEffect(() =>
@@ -78,16 +81,19 @@ export class NoticeManagementEffects {
         const formData = new FormData();
         formData.append('title', action.title);
         formData.append('content', action.content);
+        if (action.sendAt) {
+          formData.append('sendAt', action.sendAt);
+        }
         formData.append('roles', String(action.roles));
         for (const file of action.files) {
           formData.append('files', file);
         }
         return this.http.put('notices/' + action.id, formData).pipe(
           map(() => updateNoticeSuccess()),
-          catchError(() => of(updateNoticeError()))
+          catchError(() => of(updateNoticeError())),
         );
-      })
-    )
+      }),
+    ),
   );
 
   deleteNotice$ = createEffect(() =>
@@ -96,9 +102,9 @@ export class NoticeManagementEffects {
       switchMap((action) =>
         this.http.delete('notices/' + action.id).pipe(
           map(() => deleteNoticeSuccess()),
-          catchError(() => of(deleteNoticeError()))
-        )
-      )
-    )
+          catchError(() => of(deleteNoticeError())),
+        ),
+      ),
+    ),
   );
 }

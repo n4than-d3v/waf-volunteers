@@ -202,6 +202,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   private unconvertTime(time: string) {
+    if (time === 'Every hour') return 1;
     const number = Number(time.split(' ')[1]);
     if (time.includes('minutes')) {
       return number / 60;

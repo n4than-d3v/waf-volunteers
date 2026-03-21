@@ -9,6 +9,8 @@ export interface Notice {
   id: number;
   title: string;
   content: string;
+  sendAt: string | null;
+  sent: boolean;
   roles: number;
   created: string;
   read: boolean;

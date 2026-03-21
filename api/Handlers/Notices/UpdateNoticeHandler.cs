@@ -12,6 +12,7 @@ public class UpdateNotice : IRequest<IResult>
     public int Id { get; set; }
     public string Title { get; set; }
     public string Content { get; set; }
+    public DateTime? SendAt { get; set; }
     public AccountRoles Roles { get; set; }
     public IFormFileCollection Files { get; set; }
 
@@ -40,6 +41,7 @@ public class UpdateNoticeHandler : IRequestHandler<UpdateNotice, IResult>
 
         notice.Title = request.Title;
         notice.Content = request.Content;
+        notice.SendAt = request.SendAt ?? DateTime.UtcNow;
         notice.Roles = request.Roles;
 
         await _repository.SaveChangesAsync();

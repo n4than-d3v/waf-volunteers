@@ -696,6 +696,9 @@ public partial class Program
 
         apiNotify.MapPost("/urgent-shifts", (IMediator mediator) => mediator.Send(new UrgentShifts()))
             .AddNote("Send notification for urgent shifts");
+
+        apiNotify.MapPost("/notices", (IMediator mediator) => mediator.Send(new SendNoticeNotifications()))
+            .AddNote("Send notifications for notices");
     }
 
     private static void RegisterClockingRoutes(RouteGroupBuilder api)
@@ -729,11 +732,14 @@ public partial class Program
         {
             var form = await httpReq.ReadFormAsync();
             _ = int.TryParse(form["roles"], out int roles);
+            _ = DateTime.TryParse(form["sendAt"], out var sendAt);
+            sendAt = DateTime.SpecifyKind(sendAt, DateTimeKind.Utc);
 
             var request = new CreateNotice
             {
                 Title = form["title"],
                 Content = form["content"],
+                SendAt = sendAt == DateTime.MinValue ? null : sendAt,
                 Roles = (Api.Database.Entities.Account.AccountRoles)roles,
                 Files = form.Files
             };
@@ -747,12 +753,15 @@ public partial class Program
         {
             var form = await httpReq.ReadFormAsync();
             _ = int.TryParse(form["roles"], out int roles);
+            _ = DateTime.TryParse(form["sendAt"], out var sendAt);
+            sendAt = DateTime.SpecifyKind(sendAt, DateTimeKind.Utc);
 
             var request = new UpdateNotice
             {
                 Id = id,
                 Title = form["title"],
                 Content = form["content"],
+                SendAt = sendAt == DateTime.MinValue ? null : sendAt,
                 Roles = (Api.Database.Entities.Account.AccountRoles)roles,
                 Files = form.Files
             };

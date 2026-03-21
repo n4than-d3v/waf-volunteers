@@ -49,6 +49,8 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
             notice.Id,
             notice.Title,
             notice.Content,
+            notice.SendAt,
+            notice.Sent,
             notice.Created,
             notice.Roles,
             Attachments = attachments.Select(x => new

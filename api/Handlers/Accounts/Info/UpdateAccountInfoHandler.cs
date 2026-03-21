@@ -84,15 +84,22 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccountInfo, IResult>
 
             var json = JsonConvert.SerializeObject(request.BeaconInfo);
             var beaconInfo = _encryptionService.Encrypt(json, user.Salt);
+
+            bool updateBeacon = user.BeaconInfo != beaconInfo;
+
             string firstName = _encryptionService.Encrypt(request.BeaconInfo.name.first, user.Salt);
             if (!string.IsNullOrWhiteSpace(request.BeaconInfo.c_preferred_name))
             {
                 firstName = _encryptionService.Encrypt(request.BeaconInfo.c_preferred_name, user.Salt);
             }
             string lastName = _encryptionService.Encrypt(request.BeaconInfo.name.last, user.Salt);
+
             user.UpdatePersonalDetails(firstName, lastName, user.Email, beaconInfo, cars);
 
-            await _beaconService.UpdateActiveVolunteerAsync(user.BeaconId.Value, request.BeaconInfo);
+            if (updateBeacon)
+            {
+                await _beaconService.UpdateActiveVolunteerAsync(user.BeaconId.Value, request.BeaconInfo);
+            }
         }
         else
         {

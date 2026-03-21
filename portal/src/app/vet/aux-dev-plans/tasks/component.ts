@@ -5,7 +5,11 @@ import { getAuxDevTasks, upsertAuxDevTask } from '../actions';
 import { TokenProvider } from '../../../shared/token.provider';
 import { Observable } from 'rxjs';
 import { AuxDevTask } from '../state';
-import { selectAuxDevTasks } from '../selectors';
+import {
+  selectAuxDevError,
+  selectAuxDevLoading,
+  selectAuxDevTasks,
+} from '../selectors';
 import {
   FormControl,
   FormGroup,
@@ -23,6 +27,7 @@ import {
 } from 'ngx-editor';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
+import { SpinnerComponent } from '../../../shared/spinner/component';
 
 @Pipe({ name: 'safeYoutube', pure: true })
 export class SafeYoutubePipe {
@@ -30,7 +35,7 @@ export class SafeYoutubePipe {
 
   transform(id: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${id}`
+      `https://www.youtube.com/embed/${id}`,
     );
   }
 }
@@ -43,6 +48,7 @@ export class SafeYoutubePipe {
   imports: [
     AsyncPipe,
     SafeYoutubePipe,
+    SpinnerComponent,
     NgxEditorComponent,
     NgxEditorMenuComponent,
     FormsModule,
@@ -52,6 +58,8 @@ export class SafeYoutubePipe {
 })
 export class AuxDevPlanTasksComponent implements OnInit {
   tasks$: Observable<AuxDevTask[]>;
+  loading$: Observable<boolean>;
+  error$: Observable<boolean>;
 
   isVet = false;
 
@@ -81,9 +89,11 @@ export class AuxDevPlanTasksComponent implements OnInit {
   constructor(
     private store: Store,
     private tokenProvider: TokenProvider,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
   ) {
     this.tasks$ = this.store.select(selectAuxDevTasks);
+    this.loading$ = this.store.select(selectAuxDevLoading);
+    this.error$ = this.store.select(selectAuxDevError);
     this.editor = new Editor();
   }
 
@@ -121,7 +131,7 @@ export class AuxDevPlanTasksComponent implements OnInit {
           .split(',')
           .map((x) => x.trim())
           .filter((x) => !!x),
-      })
+      }),
     );
     this.cancel();
   }

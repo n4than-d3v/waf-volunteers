@@ -91,12 +91,32 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
         {
             // Check to see if the shift has now been identified as "urgent"
             var volunteerRota = await _rotaService.GetVolunteerRotaAsync(request.Date, userId);
+
+            var regularShifts = await _repository.GetAll<RegularShift>(
+                x => true, tracking: false,
+                action: x => x.Include(y => y.Account).Include(y => y.Job));
+            var regularShiftsPerUser = regularShifts.GroupBy(y => y.Account.Id).ToDictionary(x => x.Key, x => x.ToList());
+
             var urgentShift = volunteerRota.UrgentShifts.FirstOrDefault(x => x.Date == request.Date && x.Time.Id == request.TimeId && x.Job.Id == request.JobId);
             if (urgentShift != null)
             {
                 var recipients = await _repository.GetAll<Account>(x => x.Status == AccountStatus.Active && x.Id != userId, tracking: false);
                 foreach (var recipient in recipients)
                 {
+                    // Need to check if user is allowed to work that job
+                    List<int> allowedJobIds = [];
+                    if (regularShiftsPerUser.TryGetValue(recipient.Id, out List<RegularShift>? userRegularShifts))
+                    {
+                        allowedJobIds.AddRange(userRegularShifts.SelectMany(x =>
+                        {
+                            List<int> list = [x.Job.Id];
+                            list.AddRange(x.Job.CanAlsoDoJobIds);
+                            return list;
+                        }).Distinct());
+                    }
+
+                    if (!allowedJobIds.Contains(job.Id)) continue;
+
                     var recipientSubscription = _encryptionService.Decrypt(recipient.PushSubscription, recipient.Salt);
                     if (!string.IsNullOrWhiteSpace(recipientSubscription))
                     {

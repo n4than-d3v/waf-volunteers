@@ -47,7 +47,11 @@
     View auxiliaries
   </a>
 </div>
-} } @if (tasks$ | async; as tasks) { @for (task of tasks; track task.id) {
+} } @if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
+} @if (tasks$ | async; as tasks) { @for (task of tasks; track task.id) {
 <div class="task">
   <h3 class="task-header">
     <span>

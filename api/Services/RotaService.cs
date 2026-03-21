@@ -314,10 +314,7 @@ public class RotaService : IRotaService
         var allowedJobIds = userRegularShifts
             .SelectMany(x =>
             {
-                var list = new List<int>
-                {
-                    x.Job.Id
-                };
+                List<int> list = [x.Job.Id];
                 list.AddRange(x.Job.CanAlsoDoJobIds);
                 return list;
             })

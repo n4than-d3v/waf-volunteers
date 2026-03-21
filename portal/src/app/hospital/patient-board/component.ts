@@ -24,7 +24,10 @@ import {
   viewPatientBoard,
   viewPatientBoards,
 } from '../actions';
-import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
+import {
+  formatFractionalNumber,
+  PatientBoardAreaDisplayType,
+} from '../../admin/hospital/state';
 
 @Pipe({
   name: 'sortBoardAreas',
@@ -121,23 +124,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     return pen.feedings.some((f) => this.shouldShowTime(f.time));
   }
 
-  formatNumber(value: number): string {
-    // Convert decimal to fraction (closest simple fraction)
-    function toFraction(x: number, maxDenominator = 16): string | null {
-      for (let denom = 1; denom <= maxDenominator; denom++) {
-        const num = Math.round(x * denom);
-        if (Math.abs(num / denom - x) < 1e-3) return `${num}/${denom}`;
-      }
-      return null;
-    }
-
-    if (value > 0 && value < 1) {
-      const fraction = toFraction(value);
-      if (fraction) return fraction;
-    }
-
-    return value.toLocaleString();
-  }
+  formatNumber = formatFractionalNumber;
 
   private normalizeChildHeightsPerRow() {
     const pens = Array.from(document.querySelectorAll<HTMLElement>('.pen'));

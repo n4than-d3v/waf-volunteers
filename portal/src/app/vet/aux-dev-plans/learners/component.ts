@@ -4,7 +4,11 @@ import { Store } from '@ngrx/store';
 import { getAuxDevLearners, witnessAuxPerformTask } from '../actions';
 import { Observable } from 'rxjs';
 import { AuxDevLearner, AuxDevTask } from '../state';
-import { selectAuxDevLearners } from '../selectors';
+import {
+  selectAuxDevError,
+  selectAuxDevLearners,
+  selectAuxDevLoading,
+} from '../selectors';
 import {
   FormControl,
   FormGroup,
@@ -12,16 +16,26 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { SpinnerComponent } from '../../../shared/spinner/component';
 
 @Component({
   selector: 'aux-dev-plan-learners',
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
-  imports: [AsyncPipe, DatePipe, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    SpinnerComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+  ],
 })
 export class AuxDevPlanLearnersComponent implements OnInit {
   learners$: Observable<AuxDevLearner[]>;
+  loading$: Observable<boolean>;
+  error$: Observable<boolean>;
 
   witnessingLearner: AuxDevLearner | null = null;
   witnessingTask: AuxDevTask | null = null;
@@ -33,6 +47,8 @@ export class AuxDevPlanLearnersComponent implements OnInit {
 
   constructor(private store: Store) {
     this.learners$ = this.store.select(selectAuxDevLearners);
+    this.loading$ = this.store.select(selectAuxDevLoading);
+    this.error$ = this.store.select(selectAuxDevError);
   }
 
   cancel() {

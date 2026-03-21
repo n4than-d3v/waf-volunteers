@@ -18,6 +18,10 @@
   </button>
   <button (click)="cancel()" class="button button--secondary">Cancel</button>
 </div>
+} @if (loading$ | async) {
+<spinner></spinner>
+} @if (error$ | async) {
+<div class="error">Error occurred</div>
 } @if (learners$ | async; as learners) { @for (learner of learners; track
 learner.id) {
 <h2>{{ learner.name }}</h2>

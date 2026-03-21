@@ -240,6 +240,24 @@ function numberToTime(num: number) {
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
+export function formatFractionalNumber(value: number): string {
+  // Convert decimal to fraction (closest simple fraction)
+  function toFraction(x: number, maxDenominator = 16): string | null {
+    for (let denom = 1; denom <= maxDenominator; denom++) {
+      const num = Math.round(x * denom);
+      if (Math.abs(num / denom - x) < 1e-3) return `${num}/${denom}`;
+    }
+    return null;
+  }
+
+  if (value > 0 && value < 1) {
+    const fraction = toFraction(value);
+    if (fraction) return fraction;
+  }
+
+  return value.toLocaleString();
+}
+
 export const formatFeeding = (feeding: Feeding[]) => {
   const grouped = feeding.reduce<Record<string, string[]>>((acc, guidance) => {
     const formattedTime = guidance.time;
@@ -249,7 +267,7 @@ export const formatFeeding = (feeding: Feeding[]) => {
     if (every) {
       const interval = unconvertTime(formattedTime);
       let hour = 9;
-      while (hour <= 21) {
+      while (hour <= 22) {
         times.push(numberToTime(hour));
         hour += interval;
       }
@@ -271,12 +289,12 @@ export const formatFeeding = (feeding: Feeding[]) => {
       if (every) {
         for (const intervalTime of times) {
           acc[intervalTime].push(
-            `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
+            `${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
           );
         }
       } else {
         acc[formattedTime].push(
-          `${guidance.quantityValue} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
+          `${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
         );
       }
     }

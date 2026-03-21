@@ -11,6 +11,8 @@ import {
   getAssignableAreas,
   getJobs,
   getTimes,
+  removeNewbie,
+  removeWorkExperience,
 } from './actions';
 import moment, { Moment } from 'moment';
 import { Observable, Subscription } from 'rxjs';
@@ -103,9 +105,8 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
           for (const job of shift.jobs) {
             for (const volunteer of job.volunteers) {
               if (volunteer.attendanceId) {
-                this.updatingAssignableArea[
-                  volunteer.attendanceId!
-                ] = `${volunteer.areaId}`;
+                this.updatingAssignableArea[volunteer.attendanceId!] =
+                  `${volunteer.areaId}`;
               }
             }
           }
@@ -134,7 +135,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
         start: this._start.format('YYYY-MM-DD'),
         end: this._end.format('YYYY-MM-DD'),
         silent: false,
-      })
+      }),
     );
   }
 
@@ -149,7 +150,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
   private getExpansionKey(
     day: AdminRota,
     shift: AdminRotaShift,
-    job: AdminRotaShiftJob
+    job: AdminRotaShiftJob,
   ) {
     return `${day.date}-${shift.time.name}-${job.job.name}`;
   }
@@ -172,7 +173,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
     day: AdminRota,
     shift: AdminRotaShift,
     job: AdminRotaShiftJob,
-    volunteer: AdminRotaShiftJobVolunteer
+    volunteer: AdminRotaShiftJobVolunteer,
   ) => ({
     userId: volunteer.id!,
     date: day.date,
@@ -208,7 +209,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
         start: this._start.format('YYYY-MM-DD'),
         end: this._end.format('YYYY-MM-DD'),
         shiftType: ShiftType.Extra,
-      })
+      }),
     );
     this.resetForm();
   }
@@ -222,7 +223,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
         jobId: Number(this.jobId),
         start: this._start.format('YYYY-MM-DD'),
         end: this._end.format('YYYY-MM-DD'),
-      })
+      }),
     );
     this.resetForm();
   }
@@ -246,19 +247,39 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
         dates: this.workExperienceDates,
         start: this._start.format('YYYY-MM-DD'),
         end: this._end.format('YYYY-MM-DD'),
-      })
+      }),
     );
     this.resetForm();
+  }
+
+  removeNewbie(id: number) {
+    this.store.dispatch(
+      removeNewbie({
+        id,
+        start: this._start.format('YYYY-MM-DD'),
+        end: this._end.format('YYYY-MM-DD'),
+      }),
+    );
+  }
+
+  removeWorkExperience(id: number) {
+    this.store.dispatch(
+      removeWorkExperience({
+        id,
+        start: this._start.format('YYYY-MM-DD'),
+        end: this._end.format('YYYY-MM-DD'),
+      }),
+    );
   }
 
   setComing(
     day: AdminRota,
     shift: AdminRotaShift,
     job: AdminRotaShiftJob,
-    volunteer: AdminRotaShiftJobVolunteer
+    volunteer: AdminRotaShiftJobVolunteer,
   ) {
     this.store.dispatch(
-      confirmShift(this.getUpdatePayload(day, shift, job, volunteer))
+      confirmShift(this.getUpdatePayload(day, shift, job, volunteer)),
     );
   }
 
@@ -266,10 +287,10 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
     day: AdminRota,
     shift: AdminRotaShift,
     job: AdminRotaShiftJob,
-    volunteer: AdminRotaShiftJobVolunteer
+    volunteer: AdminRotaShiftJobVolunteer,
   ) {
     this.store.dispatch(
-      denyShift(this.getUpdatePayload(day, shift, job, volunteer))
+      denyShift(this.getUpdatePayload(day, shift, job, volunteer)),
     );
   }
 
@@ -278,7 +299,7 @@ export class AdminRotaComponent implements OnInit, OnDestroy {
       assignArea({
         attendanceId: attendanceId,
         assignableAreaId: Number(this.updatingAssignableArea[attendanceId]),
-      })
+      }),
     );
   }
 

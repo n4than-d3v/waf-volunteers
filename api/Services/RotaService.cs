@@ -110,6 +110,7 @@ public class RotaService : IRotaService
         {
             return new Day.DayShift.DayShiftJob.DayShiftJobNewbie
             {
+                Id = newbie.Id,
                 Name = newbie.Name
             };
         }
@@ -118,6 +119,7 @@ public class RotaService : IRotaService
         {
             return new Day.DayWorkExperience
             {
+                Id = workExperience.Id,
                 Name = workExperience.WorkExperience.Name,
                 Notes = workExperience.Notes
             };
@@ -398,6 +400,7 @@ public class Day
 
     public class DayWorkExperience
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Notes { get; set; }
     }
@@ -438,6 +441,7 @@ public class Day
 
             public class DayShiftJobNewbie
             {
+                public int Id { get; set; }
                 public string Name { get; set; }
             }
         }

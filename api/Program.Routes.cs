@@ -679,8 +679,16 @@ public partial class Program
             .AddNote("Admin adds a newbie to a shift")
             .RequireAuthorization(adminPolicy);
 
-        apiRota.MapPost("/add-work-experience", (IMediator mediator, AddWorkExperience request) => mediator.Send(request))
-            .AddNote("Admin adds a work experience to a shift")
+        apiRota.MapDelete("/newbie/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveNewbie { Id = id }))
+            .AddNote("Admin removes a newbie from a shift")
+            .RequireAuthorization(adminPolicy);
+
+        apiRota.MapPost("/work-experience", (IMediator mediator, AddWorkExperience request) => mediator.Send(request))
+            .AddNote("Admin adds a work experience volunteer")
+            .RequireAuthorization(adminPolicy);
+
+        apiRota.MapDelete("/work-experience/{id:int}", (IMediator mediator, int id) => mediator.Send(new RemoveWorkExperience { Id = id }))
+            .AddNote("Admin removes a work experience volunteer")
             .RequireAuthorization(adminPolicy);
 
         apiRota.MapGet("/reports/{start:datetime}/{end:datetime}", (IMediator mediator, DateOnly start, DateOnly end) => mediator.Send(new ViewAttendance { Start = start, End = end }))

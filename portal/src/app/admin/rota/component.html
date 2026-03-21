@@ -327,7 +327,15 @@ addingWorkExperience)) {
             @if (job.newbies.length > 0) { @for (newbie of job.newbies; track
             newbie.name) {
             <div class="newbies">
-              <div class="newbie">{{ newbie.name }}</div>
+              <div class="newbie">
+                <span> {{ newbie.name }} </span>
+                <button
+                  class="button button--none"
+                  (click)="removeNewbie(newbie.id)"
+                >
+                  ❌
+                </button>
+              </div>
             </div>
             } }
           </div>
@@ -345,9 +353,15 @@ addingWorkExperience)) {
               <div class="volunteer">
                 <div class="details">
                   <abbr class="name"
-                    >{{ workExperience.name }} - {{ workExperience.notes
-                    }}</abbr
+                    >{{ workExperience.name }} @if (workExperience.notes) { - {{
+                    workExperience.notes }} }</abbr
                   >
+                  <button
+                    class="button button--none"
+                    (click)="removeWorkExperience(workExperience.id)"
+                  >
+                    ❌
+                  </button>
                 </div>
               </div>
               }

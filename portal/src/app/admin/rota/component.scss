@@ -298,6 +298,14 @@ a {
                 font-size: 0.9rem;
                 background-color: pink;
                 padding: 0.125rem 0.35rem;
+
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                button {
+                  font-size: 1rem;
+                }
               }
             }
           }
@@ -342,6 +350,20 @@ a {
 
 .shift.shift--work-experience {
   .details {
+    padding: 0.125rem 0.25rem;
     background-color: rgb(197, 197, 234);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .name {
+      flex-basis: 90% !important;
+    }
+
+    button {
+      font-size: 1rem;
+      max-width: max-content;
+    }
   }
 }

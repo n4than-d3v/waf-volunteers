@@ -50,6 +50,12 @@ import {
   getTimes,
   getTimesError,
   getTimesSuccess,
+  removeNewbie,
+  removeNewbieError,
+  removeNewbieSuccess,
+  removeWorkExperience,
+  removeWorkExperienceError,
+  removeWorkExperienceSuccess,
   updateAssignableAreas,
   updateAssignableAreasError,
   updateAssignableAreasSuccess,
@@ -93,10 +99,10 @@ export class RotaManagementEffects {
       switchMap(() =>
         this.http.get<Job[]>('rota/jobs').pipe(
           map((jobs) => getJobsSuccess({ jobs })),
-          catchError(() => of(getJobsError()))
-        )
-      )
-    )
+          catchError(() => of(getJobsError())),
+        ),
+      ),
+    ),
   );
 
   updateJobs$ = createEffect(() =>
@@ -105,17 +111,17 @@ export class RotaManagementEffects {
       switchMap((action) =>
         this.http.put('rota/jobs', { jobs: action.jobs }).pipe(
           map(() => updateJobsSuccess()),
-          catchError(() => of(updateJobsError()))
-        )
-      )
-    )
+          catchError(() => of(updateJobsError())),
+        ),
+      ),
+    ),
   );
 
   updateJobsSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateJobsSuccess),
-      switchMap(() => of(getJobs()))
-    )
+      switchMap(() => of(getJobs())),
+    ),
   );
 
   getMissingReasons$ = createEffect(() =>
@@ -124,10 +130,10 @@ export class RotaManagementEffects {
       switchMap(() =>
         this.http.get<MissingReason[]>('rota/missing-reasons').pipe(
           map((missingReasons) => getMissingReasonsSuccess({ missingReasons })),
-          catchError(() => of(getMissingReasonsError()))
-        )
-      )
-    )
+          catchError(() => of(getMissingReasonsError())),
+        ),
+      ),
+    ),
   );
 
   updateMissingReasons$ = createEffect(() =>
@@ -140,17 +146,17 @@ export class RotaManagementEffects {
           })
           .pipe(
             map(() => updateMissingReasonsSuccess()),
-            catchError(() => of(updateMissingReasonsError()))
-          )
-      )
-    )
+            catchError(() => of(updateMissingReasonsError())),
+          ),
+      ),
+    ),
   );
 
   updateMissingReasonsSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateMissingReasonsSuccess),
-      switchMap(() => of(getMissingReasons()))
-    )
+      switchMap(() => of(getMissingReasons())),
+    ),
   );
 
   getTimes$ = createEffect(() =>
@@ -159,10 +165,10 @@ export class RotaManagementEffects {
       switchMap(() =>
         this.http.get<Time[]>('rota/times').pipe(
           map((times) => getTimesSuccess({ times })),
-          catchError(() => of(getTimesError()))
-        )
-      )
-    )
+          catchError(() => of(getTimesError())),
+        ),
+      ),
+    ),
   );
 
   updateTimes$ = createEffect(() =>
@@ -171,17 +177,17 @@ export class RotaManagementEffects {
       switchMap((action) =>
         this.http.put('rota/times', { times: action.times }).pipe(
           map(() => updateTimesSuccess()),
-          catchError(() => of(updateTimesError()))
-        )
-      )
-    )
+          catchError(() => of(updateTimesError())),
+        ),
+      ),
+    ),
   );
 
   updateTimesSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateTimesSuccess),
-      switchMap(() => of(getTimes()))
-    )
+      switchMap(() => of(getTimes())),
+    ),
   );
 
   getRequirements$ = createEffect(() =>
@@ -190,10 +196,10 @@ export class RotaManagementEffects {
       switchMap(() =>
         this.http.get<Requirement[]>('rota/requirements').pipe(
           map((requirements) => getRequirementsSuccess({ requirements })),
-          catchError(() => of(getRequirementsError()))
-        )
-      )
-    )
+          catchError(() => of(getRequirementsError())),
+        ),
+      ),
+    ),
   );
 
   updateRequirements$ = createEffect(() =>
@@ -204,17 +210,17 @@ export class RotaManagementEffects {
           .put('rota/requirements', { requirements: action.requirements })
           .pipe(
             map(() => updateRequirementsSuccess()),
-            catchError(() => of(updateRequirementsError()))
-          )
-      )
-    )
+            catchError(() => of(updateRequirementsError())),
+          ),
+      ),
+    ),
   );
 
   updateRequirementsSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateRequirementsSuccess),
-      switchMap(() => of(getRequirements()))
-    )
+      switchMap(() => of(getRequirements())),
+    ),
   );
 
   getAssignableShifts$ = createEffect(() =>
@@ -223,12 +229,12 @@ export class RotaManagementEffects {
       switchMap(() =>
         this.http.get<AssignableShift[]>('rota/assignable-shifts').pipe(
           map((assignableShifts) =>
-            getAssignableShiftsSuccess({ assignableShifts })
+            getAssignableShiftsSuccess({ assignableShifts }),
           ),
-          catchError(() => of(getAssignableShiftsError()))
-        )
-      )
-    )
+          catchError(() => of(getAssignableShiftsError())),
+        ),
+      ),
+    ),
   );
 
   updateAssignableShifts$ = createEffect(() =>
@@ -241,17 +247,17 @@ export class RotaManagementEffects {
           })
           .pipe(
             map(() => updateAssignableShiftsSuccess()),
-            catchError(() => of(updateAssignableShiftsError()))
-          )
-      )
-    )
+            catchError(() => of(updateAssignableShiftsError())),
+          ),
+      ),
+    ),
   );
 
   updateAssignableShiftsSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateAssignableShiftsSuccess),
-      switchMap(() => of(getAssignableShifts()))
-    )
+      switchMap(() => of(getAssignableShifts())),
+    ),
   );
 
   getAssignableAreas$ = createEffect(() =>
@@ -260,12 +266,12 @@ export class RotaManagementEffects {
       switchMap(() =>
         this.http.get<AssignableArea[]>('rota/assignable-areas').pipe(
           map((assignableAreas) =>
-            getAssignableAreasSuccess({ assignableAreas })
+            getAssignableAreasSuccess({ assignableAreas }),
           ),
-          catchError(() => of(getAssignableAreasError()))
-        )
-      )
-    )
+          catchError(() => of(getAssignableAreasError())),
+        ),
+      ),
+    ),
   );
 
   updateAssignableAreas$ = createEffect(() =>
@@ -278,17 +284,17 @@ export class RotaManagementEffects {
           })
           .pipe(
             map(() => updateAssignableAreasSuccess()),
-            catchError(() => of(updateAssignableAreasError()))
-          )
-      )
-    )
+            catchError(() => of(updateAssignableAreasError())),
+          ),
+      ),
+    ),
   );
 
   updateAssignableAreasSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateAssignableAreasSuccess),
-      switchMap(() => of(getAssignableAreas()))
-    )
+      switchMap(() => of(getAssignableAreas())),
+    ),
   );
 
   assignArea$ = createEffect(() =>
@@ -297,10 +303,10 @@ export class RotaManagementEffects {
       switchMap((action) =>
         this.http.put('rota/assign-area', action).pipe(
           map(() => assignAreaSuccess()),
-          catchError(() => of(assignAreaError()))
-        )
-      )
-    )
+          catchError(() => of(assignAreaError())),
+        ),
+      ),
+    ),
   );
 
   getRegularShifts$ = createEffect(() =>
@@ -311,10 +317,10 @@ export class RotaManagementEffects {
           .get<RegularShift[]>(`rota/users/${action.userId}/regular-shifts`)
           .pipe(
             map((regularShifts) => getRegularShiftsSuccess({ regularShifts })),
-            catchError(() => of(getRegularShiftsError()))
-          )
-      )
-    )
+            catchError(() => of(getRegularShiftsError())),
+          ),
+      ),
+    ),
   );
 
   addRegularShift$ = createEffect(() =>
@@ -324,21 +330,21 @@ export class RotaManagementEffects {
         this.http
           .post(
             `rota/users/${action.userId}/regular-shifts`,
-            action.regularShift
+            action.regularShift,
           )
           .pipe(
             map(() => addRegularShiftSuccess({ userId: action.userId })),
-            catchError(() => of(addRegularShiftError()))
-          )
-      )
-    )
+            catchError(() => of(addRegularShiftError())),
+          ),
+      ),
+    ),
   );
 
   addRegularShiftSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addRegularShiftSuccess),
-      switchMap((action) => of(getRegularShifts({ userId: action.userId })))
-    )
+      switchMap((action) => of(getRegularShifts({ userId: action.userId }))),
+    ),
   );
 
   deleteRegularShift$ = createEffect(() =>
@@ -347,21 +353,21 @@ export class RotaManagementEffects {
       switchMap((action) =>
         this.http
           .delete(
-            `rota/users/${action.userId}/regular-shift/${action.regularShiftId}`
+            `rota/users/${action.userId}/regular-shift/${action.regularShiftId}`,
           )
           .pipe(
             map(() => deleteRegularShiftSuccess({ userId: action.userId })),
-            catchError(() => of(deleteRegularShiftError()))
-          )
-      )
-    )
+            catchError(() => of(deleteRegularShiftError())),
+          ),
+      ),
+    ),
   );
 
   deleteRegularShiftSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteRegularShiftSuccess),
-      switchMap((action) => of(getRegularShifts({ userId: action.userId })))
-    )
+      switchMap((action) => of(getRegularShifts({ userId: action.userId }))),
+    ),
   );
 
   getAdminRota$ = createEffect(() =>
@@ -372,10 +378,10 @@ export class RotaManagementEffects {
           .get<AdminRota[]>(`rota/shifts/${action.start}/${action.end}`)
           .pipe(
             map((rota) => getAdminRotaSuccess({ rota })),
-            catchError(() => of(getAdminRotaError()))
-          )
-      )
-    )
+            catchError(() => of(getAdminRotaError())),
+          ),
+      ),
+    ),
   );
 
   confirmShift$ = createEffect(() =>
@@ -386,12 +392,12 @@ export class RotaManagementEffects {
           .post(`rota/user/${action.userId}/shifts/confirm`, action)
           .pipe(
             map(() =>
-              confirmShiftSuccess({ start: action.start, end: action.end })
+              confirmShiftSuccess({ start: action.start, end: action.end }),
             ),
-            catchError(() => of(confirmShiftError()))
-          )
-      )
-    )
+            catchError(() => of(confirmShiftError())),
+          ),
+      ),
+    ),
   );
 
   confirmShiftSuccess$ = createEffect(() =>
@@ -403,10 +409,10 @@ export class RotaManagementEffects {
             start: action.start,
             end: action.end,
             silent: true,
-          })
-        )
-      )
-    )
+          }),
+        ),
+      ),
+    ),
   );
 
   denyShift$ = createEffect(() =>
@@ -418,12 +424,12 @@ export class RotaManagementEffects {
             denyShiftSuccess({
               start: action.start,
               end: action.end,
-            })
+            }),
           ),
-          catchError(() => of(denyShiftError()))
-        )
-      )
-    )
+          catchError(() => of(denyShiftError())),
+        ),
+      ),
+    ),
   );
 
   denyShiftSuccess$ = createEffect(() =>
@@ -435,10 +441,10 @@ export class RotaManagementEffects {
             start: action.start,
             end: action.end,
             silent: true,
-          })
-        )
-      )
-    )
+          }),
+        ),
+      ),
+    ),
   );
 
   addNewbie$ = createEffect(() =>
@@ -447,54 +453,75 @@ export class RotaManagementEffects {
       switchMap((action) =>
         this.http.post(`rota/add-newbie`, action).pipe(
           map(() => addNewbieSuccess({ start: action.start, end: action.end })),
-          catchError(() => of(addNewbieError()))
-        )
-      )
-    )
-  );
-
-  addNewbieSuccess$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(addNewbieSuccess),
-      switchMap((action) =>
-        of(
-          getAdminRota({
-            start: action.start,
-            end: action.end,
-            silent: true,
-          })
-        )
-      )
-    )
+          catchError(() => of(addNewbieError())),
+        ),
+      ),
+    ),
   );
 
   addWorkExperience$ = createEffect(() =>
     this.actions$.pipe(
       ofType(addWorkExperience),
       switchMap((action) =>
-        this.http.post(`rota/add-work-experience`, action).pipe(
+        this.http.post(`rota/work-experience`, action).pipe(
           map(() =>
-            addWorkExperienceSuccess({ start: action.start, end: action.end })
+            addWorkExperienceSuccess({ start: action.start, end: action.end }),
           ),
-          catchError(() => of(addWorkExperienceError()))
-        )
-      )
-    )
+          catchError(() => of(addWorkExperienceError())),
+        ),
+      ),
+    ),
   );
 
-  addWorkExperienceSuccess$ = createEffect(() =>
+  removeNewbie$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(addWorkExperienceSuccess),
+      ofType(removeNewbie),
+      switchMap((action) =>
+        this.http.delete(`rota/newbie/${action.id}`).pipe(
+          map(() =>
+            removeNewbieSuccess({ start: action.start, end: action.end }),
+          ),
+          catchError(() => of(removeNewbieError())),
+        ),
+      ),
+    ),
+  );
+
+  removeWorkExperience$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(removeWorkExperience),
+      switchMap((action) =>
+        this.http.delete(`rota/work-experience/${action.id}`).pipe(
+          map(() =>
+            removeWorkExperienceSuccess({
+              start: action.start,
+              end: action.end,
+            }),
+          ),
+          catchError(() => of(removeWorkExperienceError())),
+        ),
+      ),
+    ),
+  );
+
+  addOrRemoveNewbieOrWorkExperience$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        addNewbieSuccess,
+        removeNewbieSuccess,
+        addWorkExperienceSuccess,
+        removeWorkExperienceSuccess,
+      ),
       switchMap((action) =>
         of(
           getAdminRota({
             start: action.start,
             end: action.end,
             silent: true,
-          })
-        )
-      )
-    )
+          }),
+        ),
+      ),
+    ),
   );
 
   getReports$ = createEffect(() =>
@@ -505,9 +532,9 @@ export class RotaManagementEffects {
           .get<Report[]>(`rota/reports/${action.start}/${action.end}`)
           .pipe(
             map((reports) => getReportsSuccess({ reports })),
-            catchError(() => of(getReportsError()))
-          )
-      )
-    )
+            catchError(() => of(getReportsError())),
+          ),
+      ),
+    ),
   );
 }

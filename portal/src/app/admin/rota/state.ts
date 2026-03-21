@@ -130,6 +130,7 @@ export interface AdminRota {
 }
 
 export interface DayWorkExperience {
+  id: number;
   name: string;
   notes: string;
 }
@@ -167,6 +168,7 @@ export interface AdminRotaShiftJobVolunteer {
 }
 
 export interface AdminRotaShiftJobNewbie {
+  id: number;
   name: string;
 }
 

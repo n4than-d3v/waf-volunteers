@@ -25,8 +25,8 @@ export class AdminRotaViewAttendanceComponent implements OnInit {
 
   constructor(private store: Store) {
     this.reports$ = this.store.select(selectAdminReports);
-    const start = moment().startOf('isoWeek');
-    const end = moment(start).add(6, 'days');
+    const start = moment('2026-03-09');
+    const end = moment().subtract(1, 'days');
     this.start = start.format('YYYY-MM-DD');
     this.end = end.format('YYYY-MM-DD');
   }
@@ -36,7 +36,7 @@ export class AdminRotaViewAttendanceComponent implements OnInit {
       getReports({
         start: this.start,
         end: this.end,
-      })
+      }),
     );
   }
 

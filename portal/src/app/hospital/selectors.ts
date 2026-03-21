@@ -84,6 +84,11 @@ export const selectTransferLocations = createSelector(
   (state) => state.transferLocations,
 );
 
+export const selectHomeCarers = createSelector(
+  selectHospitalState,
+  (state) => state.homeCarers,
+);
+
 export const selectAdministrationMethods = createSelector(
   selectHospitalState,
   (state) => state.administrationMethods,
@@ -167,6 +172,11 @@ export const selectUpdateTags = createSelector(
 export const selectDropOffHomeCare = createSelector(
   selectHospitalState,
   (state) => state.dropOffHomeCare,
+);
+
+export const selectTransferHomeCare = createSelector(
+  selectHospitalState,
+  (state) => state.transferHomeCare,
 );
 
 export const selectMessageHomeCare = createSelector(

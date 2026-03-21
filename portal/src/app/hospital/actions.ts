@@ -25,6 +25,7 @@ import {
   ListPatientBoard,
   Dashboard,
   Food,
+  HomeCarer,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -179,6 +180,17 @@ export const getTransferLocationsSuccess = createAction(
 );
 export const getTransferLocationsError = createAction(
   '[HMS-V] Get transfer locations: error',
+);
+
+// Home carers
+
+export const getHomeCarers = createAction('[HMS-V] Get home carers');
+export const getHomeCarersSuccess = createAction(
+  '[HMS-V] Get home carers: success',
+  props<{ homeCarers: HomeCarer[] }>(),
+);
+export const getHomeCarersError = createAction(
+  '[HMS-V] Get home carers: error',
 );
 
 // Administration methods
@@ -716,6 +728,7 @@ export const requestHomeCare = createAction(
   props<{
     patientId: number;
     notes: string;
+    homeCarerId: number | null;
   }>(),
 );
 export const requestHomeCareSuccess = createAction(
@@ -724,6 +737,24 @@ export const requestHomeCareSuccess = createAction(
 );
 export const requestHomeCareError = createAction(
   '[HMS-V] Request home care: error',
+);
+
+// Home carer transfer
+
+export const homeCarerTransfer = createAction(
+  '[HMS-V] Home carer transfer',
+  props<{
+    patientId: number;
+    homeCareRequestId: number;
+    homeCarerId: number;
+  }>(),
+);
+export const homeCarerTransferSuccess = createAction(
+  '[HMS-V] Home carer transfer: success',
+  props<{ patientId: number }>(),
+);
+export const homeCarerTransferError = createAction(
+  '[HMS-V] Home carer transfer: error',
 );
 
 // Home carer drop-off
@@ -756,6 +787,19 @@ export const sendHomeCareMessageSuccess = createAction(
 );
 export const sendHomeCareMessageError = createAction(
   '[HMS-V] Send home care message: error',
+);
+
+// Download home care message attachment
+
+export const downloadHomeCareMessageAttachment = createAction(
+  '[HMS-V] Download home care message attachment',
+  props<{
+    messageId: number;
+    attachment: {
+      id: number;
+      fileName: string;
+    };
+  }>(),
 );
 
 // Search for patient

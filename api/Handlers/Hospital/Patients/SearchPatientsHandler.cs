@@ -43,6 +43,12 @@ public class SearchPatientsHandler : IRequestHandler<SearchPatients, IResult>
         // Search by name
         patient ??= await _repository.Get<Patient>(x => x.Name != null && x.Name.ToUpper().Contains(request.Search), tracking: false, action: x => x.IncludeAdmission().IncludeBasicDetails());
 
+        // Search by microchip
+        patient ??= await _repository.Get<Patient>(x => x.Microchip != null && x.Microchip.ToUpper().Contains(request.Search), tracking: false, action: x => x.IncludeAdmission().IncludeBasicDetails());
+
+        // Search by pen
+        patient ??= await _repository.Get<Patient>(x => x.Status != PatientStatus.Dispositioned && x.Pen != null && x.Pen.Area != null && (x.Pen.Area.Code + "-" + x.Pen.Code).ToUpper().Contains(request.Search), tracking: false, action: x => x.IncludeAdmission().IncludeBasicDetails());
+
         if (patient == null) return Results.NotFound();
         return Results.Ok(new
         {

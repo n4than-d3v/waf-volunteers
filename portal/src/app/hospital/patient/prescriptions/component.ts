@@ -224,6 +224,19 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     return { frequencyType, frequencyX, frequencyY };
   }
 
+  getPrescriptions(): Prescription[] {
+    return [
+      ...this.patient.prescriptionInstructions,
+      ...this.patient.prescriptionMedications,
+    ].sort((a, b) => {
+      return new Date(b.start).getTime() - new Date(a.start).getTime();
+    });
+  }
+
+  isMedication(p: Prescription): p is PrescriptionMedication {
+    return 'medication' in p;
+  }
+
   private getPrescriptionInstruction() {
     return {
       patientId: this.patient.id,

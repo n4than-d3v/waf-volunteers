@@ -29,6 +29,7 @@ export interface HospitalState {
   movePatient: Task;
   setDisposition: Task;
   requestHomeCare: Task;
+  transferHomeCare: Task;
   dropOffHomeCare: Task;
   messageHomeCare: Task;
   updateBasicDetails: Task;
@@ -48,6 +49,7 @@ export interface HospitalState {
   releaseTypes: ReadOnlyWrapper<ReleaseType[]>;
   transferLocations: ReadOnlyWrapper<TransferLocation[]>;
   dispositionReasons: ReadOnlyWrapper<DispositionReason[]>;
+  homeCarers: ReadOnlyWrapper<HomeCarer[]>;
 
   // Medications
   medications: ReadOnlyWrapper<Medication[]>;
@@ -154,6 +156,12 @@ export interface DailyTasksReportAreaPenPatient {
   prescriptionMedications: PrescriptionMedication[];
 }
 
+export interface HomeCarer {
+  id: number;
+  firstName: string;
+  lastName: string;
+}
+
 export interface ListPatient {
   beaconId: number;
   admitted: string;
@@ -225,6 +233,9 @@ export interface HomeCareMessage {
   author: { firstName: string; lastName: string };
   date: string;
   message: string;
+  weightValue: number | null;
+  weightUnit: number | null;
+  attachments: { id: number; fileName: string }[];
   me: boolean;
 }
 
@@ -743,6 +754,7 @@ export const initialHospitalState: HospitalState = {
   dispositionReasons: createReadOnlyWrapper<DispositionReason[]>(),
   releaseTypes: createReadOnlyWrapper<ReleaseType[]>(),
   transferLocations: createReadOnlyWrapper<TransferLocation[]>(),
+  homeCarers: createReadOnlyWrapper<HomeCarer[]>(),
   administrationMethods: createReadOnlyWrapper<AdministrationMethod[]>(),
   medications: createReadOnlyWrapper<Medication[]>(),
   areas: createReadOnlyWrapper<Area[]>(),
@@ -756,6 +768,7 @@ export const initialHospitalState: HospitalState = {
   removePrescription: createTask(),
   movePatient: createTask(),
   requestHomeCare: createTask(),
+  transferHomeCare: createTask(),
   dropOffHomeCare: createTask(),
   messageHomeCare: createTask(),
   updateBasicDetails: createTask(),

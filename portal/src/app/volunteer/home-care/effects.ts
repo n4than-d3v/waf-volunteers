@@ -7,6 +7,7 @@ import {
   acceptHomeCareRequest,
   acceptHomeCareRequestError,
   acceptHomeCareRequestSuccess,
+  downloadHomeCareMessageAttachment,
   getHomeCareMessages,
   getHomeCareMessagesError,
   getHomeCareMessagesSuccess,
@@ -33,12 +34,12 @@ export class OrphanFeederEffects {
       switchMap(() =>
         this.http.get<HomeCareRequest[]>('hospital/home-care/outstanding').pipe(
           map((requests) =>
-            getOutstandingHomeCareRequestsSuccess({ requests })
+            getOutstandingHomeCareRequestsSuccess({ requests }),
           ),
-          catchError(() => of(getOutstandingHomeCareRequestsError()))
-        )
-      )
-    )
+          catchError(() => of(getOutstandingHomeCareRequestsError())),
+        ),
+      ),
+    ),
   );
 
   acceptHomeCareRequest$ = createEffect(() =>
@@ -49,19 +50,19 @@ export class OrphanFeederEffects {
           .post(`hospital/home-care/${action.homeCareRequestId}/accept`, action)
           .pipe(
             map(() => acceptHomeCareRequestSuccess()),
-            catchError(() => of(acceptHomeCareRequestError()))
-          )
-      )
-    )
+            catchError(() => of(acceptHomeCareRequestError())),
+          ),
+      ),
+    ),
   );
 
   acceptHomeCareRequestSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(acceptHomeCareRequestSuccess),
       switchMap(() =>
-        of(getOutstandingHomeCareRequests(), getMyActiveHomeCareRequests())
-      )
-    )
+        of(getOutstandingHomeCareRequests(), getMyActiveHomeCareRequests()),
+      ),
+    ),
   );
 
   getMyActiveHomeCareRequests$ = createEffect(() =>
@@ -70,10 +71,10 @@ export class OrphanFeederEffects {
       switchMap(() =>
         this.http.get<HomeCareRequest[]>('hospital/home-care/active').pipe(
           map((requests) => getMyActiveHomeCareRequestsSuccess({ requests })),
-          catchError(() => of(getMyActiveHomeCareRequestsError()))
-        )
-      )
-    )
+          catchError(() => of(getMyActiveHomeCareRequestsError())),
+        ),
+      ),
+    ),
   );
 
   getHomeCareMessages$ = createEffect(() =>
@@ -81,44 +82,81 @@ export class OrphanFeederEffects {
       ofType(getHomeCareMessages),
       switchMap((action) =>
         this.http
-          .get<HomeCareMessage[]>(
-            `hospital/home-care/${action.homeCareRequestId}/messages`
-          )
+          .get<
+            HomeCareMessage[]
+          >(`hospital/home-care/${action.homeCareRequestId}/messages`)
           .pipe(
             map((messages) => getHomeCareMessagesSuccess({ messages })),
-            catchError(() => of(getHomeCareMessagesError()))
-          )
-      )
-    )
+            catchError(() => of(getHomeCareMessagesError())),
+          ),
+      ),
+    ),
   );
 
   sendHomeCareMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendHomeCareMessage),
-      switchMap((action) =>
-        this.http
+      switchMap((action) => {
+        const formData = new FormData();
+        formData.append('homeCareRequestId', String(action.homeCareRequestId));
+        formData.append('weightValue', String(action.weightValue || ''));
+        formData.append('weightUnit', String(action.weightUnit || ''));
+        formData.append('message', action.message);
+        for (const file of action.files) {
+          formData.append('files', file);
+        }
+        return this.http
           .post(
             `hospital/home-care/${action.homeCareRequestId}/message`,
-            action
+            formData,
           )
           .pipe(
             map(() =>
               sendHomeCareMessageSuccess({
                 homeCareRequestId: action.homeCareRequestId,
-              })
+              }),
             ),
-            catchError(() => of(sendHomeCareMessageError()))
-          )
-      )
-    )
+            catchError(() => of(sendHomeCareMessageError())),
+          );
+      }),
+    ),
   );
 
   sendHomeCareMessageSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendHomeCareMessageSuccess),
       switchMap((action) =>
-        of(getHomeCareMessages({ homeCareRequestId: action.homeCareRequestId }))
-      )
-    )
+        of(
+          getHomeCareMessages({ homeCareRequestId: action.homeCareRequestId }),
+        ),
+      ),
+    ),
+  );
+
+  downloadHomeCareMessageAttachment$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(downloadHomeCareMessageAttachment),
+        switchMap((action) => {
+          this.http
+            .get(
+              `hospital/home-care/message/${action.messageId}/attachments/${action.attachment.id}`,
+              {
+                responseType: 'blob',
+              },
+            )
+            .subscribe((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = action.attachment.fileName;
+              a.click();
+
+              window.URL.revokeObjectURL(url);
+            });
+          return of();
+        }),
+      ),
+    { dispatch: false },
   );
 }

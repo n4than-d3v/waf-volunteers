@@ -25,6 +25,10 @@ public class EmailService : IEmailService
 
     public async Task SendEmailAsync(Email email)
     {
+#if DEBUG
+        return;
+#endif
+
         var credential = new ClientSecretCredential(
             tenantId: _settings.TenantId,
             clientId: _settings.Client.Id,

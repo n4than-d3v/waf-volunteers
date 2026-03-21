@@ -3,6 +3,7 @@ import {
   DispositionReason,
   getDisposition,
   getWeightUnit,
+  HomeCarer,
   Patient,
   PatientStatus,
   ReadOnlyWrapper,
@@ -16,6 +17,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import {
   selectDispositionReasons,
+  selectHomeCarers,
   selectReleaseTypes,
   selectRequestHomeCare,
   selectSetDisposition,
@@ -23,6 +25,7 @@ import {
 } from '../../selectors';
 import {
   getDispositionReasons,
+  getHomeCarers,
   getReleaseTypes,
   getTransferLocations,
   markPatientDead,
@@ -64,6 +67,7 @@ export class HospitalPatientStatusComponent implements OnInit {
   dispositionReasons$: Observable<ReadOnlyWrapper<DispositionReason[]>>;
   releaseTypes$: Observable<ReadOnlyWrapper<ReleaseType[]>>;
   transferLocations$: Observable<ReadOnlyWrapper<TransferLocation[]>>;
+  homeCarers$: Observable<ReadOnlyWrapper<HomeCarer[]>>;
 
   setDispositionTask$: Observable<Task>;
   requestHomeCareTask$: Observable<Task>;
@@ -91,9 +95,9 @@ export class HospitalPatientStatusComponent implements OnInit {
     transferLocationId: new FormControl('', [Validators.required]),
   });
 
-  // Next steps: allow home care requests to be created from here
   homeCareForm = new FormGroup({
     notes: new FormControl(''),
+    homeCarerId: new FormControl(''),
   });
 
   updating:
@@ -111,6 +115,7 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.dispositionReasons$ = this.store.select(selectDispositionReasons);
     this.releaseTypes$ = this.store.select(selectReleaseTypes);
     this.transferLocations$ = this.store.select(selectTransferLocations);
+    this.homeCarers$ = this.store.select(selectHomeCarers);
     this.setDispositionTask$ = this.store.select(selectSetDisposition);
     this.requestHomeCareTask$ = this.store.select(selectRequestHomeCare);
   }
@@ -119,6 +124,7 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(getDispositionReasons());
     this.store.dispatch(getReleaseTypes());
     this.store.dispatch(getTransferLocations());
+    this.store.dispatch(getHomeCarers());
     this.addDieDispositionReason();
     this.addPtsDispositionReason();
   }
@@ -185,6 +191,7 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.ptsForm.reset();
     this.releaseForm.reset();
     this.transferForm.reset();
+    this.homeCareForm.reset();
   }
 
   resetStatus() {
@@ -276,6 +283,9 @@ export class HospitalPatientStatusComponent implements OnInit {
       requestHomeCare({
         patientId: this.patient.id,
         notes: this.homeCareForm.value.notes || '',
+        homeCarerId: this.homeCareForm.value.homeCarerId
+          ? Number(this.homeCareForm.value.homeCarerId)
+          : null,
       }),
     );
     this.reset();

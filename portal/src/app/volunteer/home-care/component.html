@@ -74,7 +74,12 @@ requests.data; track request.id) {
       <strong>{{ request.variant.friendlyName }}</strong>
     </p>
     <p>Patient reference <strong>{{ request.reference }}</strong></p>
-    <p>Pickup location <strong>{{ request.pen.reference }}</strong></p>
+    <p>
+      Pickup location
+      <strong>
+        @if (request.pen) { {{ request.pen.reference }} } @else { Unknown }
+      </strong>
+    </p>
     <p>
       Pickup date
       <strong>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</strong>
@@ -99,8 +104,27 @@ requests.data; track request.id) {
     <div class="chat">
       @for (message of messages.data; track message.id) {
       <div class="message" [class.message--me]="message.me">
-        <div class="content">{{ message.message }}</div>
+        <div class="content">
+          @if (message.weightValue) {
+          <strong>
+            {{ message.weightValue }} {{ getWeightUnit(message.weightUnit)
+            }}</strong
+          >
+          - } {{ message.message }}
+        </div>
         <div class="underneath">
+          @if (message.attachments && message.attachments.length > 0) {
+          <div class="files">
+            @for (attachment of message.attachments; track attachment.id) {
+            <button
+              (click)="download(message, attachment)"
+              class="button button--none"
+            >
+              🔗 {{ attachment.fileName }}
+            </button>
+            }
+          </div>
+          }
           <div class="author">
             @if (!message.me) { {{ message.author.firstName }} {{
             message.author.lastName }} }
@@ -110,14 +134,59 @@ requests.data; track request.id) {
       </div>
       }
     </div>
+    } @else {
+    <p class="no-messages">No messages for this patient</p>
     } }
     <div class="send">
+      @if (!addingMessage) {
+      <div class="buttons">
+        <button (click)="addingMessage = true" class="button button--primary">
+          Add message
+        </button>
+      </div>
+      } @else {
       <form [formGroup]="messageForm">
-        <textarea id="message" formControlName="message"></textarea>
+        <h3>Add message</h3>
+        <div class="field">
+          <label for="weight">Weight</label>
+          <div class="input-with-units">
+            <input
+              id="weight"
+              type="number"
+              formControlName="weightValue"
+              autocomplete="off"
+            />
+            <select id="weightUnit" formControlName="weightUnit">
+              <option value="1">g</option>
+              <option value="2">kg</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">
+            Message
+            <span class="required">*</span>
+          </label>
+          <textarea id="message" formControlName="message"></textarea>
+        </div>
+        <div class="field">
+          <label for="files">Attachments</label>
+          <input
+            id="files"
+            type="file"
+            multiple
+            (change)="onFileChange($event)"
+          />
+        </div>
       </form>
       @if (attemptedSave && !messageForm.valid) {
-      <div class="error">Please provide message</div>
+      <div class="error">Message is required</div>
       } @if (!saving) {
+      <p class="thank-you">
+        The entire vet team will receive a notification when you send a message,
+        so please kindly avoid sending "okay" / "thank you" messages.<br />Much
+        appreciated 😊🙏🏽
+      </p>
       <div class="buttons">
         <button (click)="sendMessage()" class="button button--primary">
           Send
@@ -127,7 +196,7 @@ requests.data; track request.id) {
       <spinner></spinner>
       } @else if (task.error) {
       <div class="error">Error occurred</div>
-      } }
+      } } }
     </div>
   </div>
   }

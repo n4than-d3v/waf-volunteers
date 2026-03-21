@@ -36,6 +36,10 @@ public partial class BeaconService : IBeaconService
 
     public async Task<bool> UpdateActiveVolunteerAsync(int beaconId, UpdateBeaconInfo beaconInfo)
     {
+#if DEBUG
+        return true;
+#endif
+
         var payload = JsonContent.Create(beaconInfo);
         var response = await _client.PatchAsync($"entity/person/{beaconId}", payload);
         return response.IsSuccessStatusCode;
@@ -104,6 +108,10 @@ public partial class BeaconService : IBeaconService
 
     public async Task UpdatePatientReferenceAsync(int id, string reference)
     {
+#if DEBUG
+        return;
+#endif
+
         try
         {
             await _client.PatchAsJsonAsync($"entity/c_patient_admissions/{id}", new
@@ -118,6 +126,10 @@ public partial class BeaconService : IBeaconService
 
     public async Task UpdatePatientDispositionAsync(int id, BeaconDisposition disposition)
     {
+#if DEBUG
+        return;
+#endif
+
         try
         {
             string dispositionString = "";

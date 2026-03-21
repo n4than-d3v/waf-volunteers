@@ -56,12 +56,6 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
         if (patient.Rechecks?.Any() ?? false)
             patient.Rechecks = [.. patient.Rechecks.OrderByDescending(x => x.Due)];
 
-        if (patient.PrescriptionInstructions?.Any() ?? false)
-            patient.PrescriptionInstructions = [.. patient.PrescriptionInstructions.OrderByDescending(x => x.Start)];
-
-        if (patient.PrescriptionMedications?.Any() ?? false)
-            patient.PrescriptionMedications = [.. patient.PrescriptionMedications.OrderByDescending(x => x.Start)];
-
         return Results.Ok(patient);
     }
 }
@@ -251,7 +245,8 @@ public static class ViewPatientExtensions
         return x
             .Include(y => y.HomeCareRequests).ThenInclude(r => r.Requester)
             .Include(y => y.HomeCareRequests).ThenInclude(r => r.Responder)
-            .Include(y => y.HomeCareMessages).ThenInclude(m => m.Author);
+            .Include(y => y.HomeCareMessages).ThenInclude(m => m.Author)
+            .Include(y => y.HomeCareMessages).ThenInclude(m => m.Attachments);
     }
 
     public static IQueryable<Patient> IncludeOutcome(this IQueryable<Patient> x)

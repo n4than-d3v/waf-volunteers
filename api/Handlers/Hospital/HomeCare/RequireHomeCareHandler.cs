@@ -15,6 +15,7 @@ public class RequireHomeCare : IRequest<IResult>
 {
     public int PatientId { get; set; }
     public string Notes { get; set; }
+    public int? HomeCarerId { get; set; }
 
     public RequireHomeCare WithId(int id)
     {
@@ -57,8 +58,23 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
             Notes = request.Notes
         };
 
+        if (request.HomeCarerId != null)
+        {
+            var homeCarer = await _repository.Get<Account>(request.HomeCarerId.Value);
+            if (homeCarer == null) return Results.BadRequest();
+
+            patient.Status = PatientStatus.ReceivingHomeCare;
+
+            homeCareRequest.Responder = homeCarer;
+            homeCareRequest.Responded = DateTime.UtcNow;
+            homeCareRequest.Pickup = DateTime.UtcNow;
+        }
+
         _repository.Create(homeCareRequest);
         await _repository.SaveChangesAsync();
+
+        // Don't send notifications if home carer already assigned
+        if (request.HomeCarerId != null) return Results.Created();
 
         string species = patient.SpeciesVariant?.FriendlyName ?? patient.SuspectedSpecies?.Description ?? "Unknown";
         var accounts = await _repository.GetAll<Account>(x => x.Status == AccountStatus.Active, tracking: false);

@@ -96,10 +96,13 @@ public class Patient : Entity
                 .Select(x => new Weight { Date = x.Noted, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
             var rechecks = (Rechecks ?? []).Where(x => x.Rechecked.HasValue && 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Rechecked!.Value, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var homeCareMessages = (HomeCareMessages ?? []).Where(x => 0 < (x.WeightValue ?? 0))
+                .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
             var weights = new List<Weight>();
             weights.AddRange(exams);
             weights.AddRange(notes);
             weights.AddRange(rechecks);
+            weights.AddRange(homeCareMessages);
             return weights.OrderByDescending(x => x.Date).FirstOrDefault();
         }
     }

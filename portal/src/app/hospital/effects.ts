@@ -26,6 +26,7 @@ import {
   ListPatientBoard,
   Dashboard,
   Food,
+  HomeCarer,
 } from './state';
 import { catchError, delay, map, mergeMap, of, switchMap } from 'rxjs';
 import {
@@ -203,6 +204,13 @@ import {
   getFoods,
   getFoodsSuccess,
   getFoodsError,
+  downloadHomeCareMessageAttachment,
+  getHomeCarers,
+  getHomeCarersSuccess,
+  getHomeCarersError,
+  homeCarerTransfer,
+  homeCarerTransferSuccess,
+  homeCarerTransferError,
 } from './actions';
 
 @Injectable()
@@ -448,6 +456,20 @@ export class HospitalEffects {
             ),
             catchError(() => of(getTransferLocationsError())),
           ),
+      ),
+    ),
+  );
+
+  // Home carers
+
+  getHomeCarers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getHomeCarers),
+      switchMap(() =>
+        this.http.get<HomeCarer[]>('hospital/home-care/home-carers').pipe(
+          map((homeCarers) => getHomeCarersSuccess({ homeCarers })),
+          catchError(() => of(getHomeCarersError())),
+        ),
       ),
     ),
   );
@@ -1367,16 +1389,49 @@ export class HospitalEffects {
     ),
   );
 
+  // Home carer transfer
+
+  homeCarerTransfer$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(homeCarerTransfer),
+      switchMap((action) =>
+        this.http
+          .post(
+            `hospital/home-care/${action.homeCareRequestId}/transfer`,
+            action,
+          )
+          .pipe(
+            map(() =>
+              homeCarerTransferSuccess({ patientId: action.patientId }),
+            ),
+            catchError(() => of(homeCarerTransferError())),
+          ),
+      ),
+    ),
+  );
+
+  homeCarerTransferSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(homeCarerTransferSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
   // Send home care message
 
   sendHomeCareMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(sendHomeCareMessage),
-      switchMap((action) =>
-        this.http
+      switchMap((action) => {
+        const formData = new FormData();
+        formData.append('homeCareRequestId', String(action.homeCareRequestId));
+        formData.append('message', action.message);
+        return this.http
           .post(
             `hospital/home-care/${action.homeCareRequestId}/message`,
-            action,
+            formData,
           )
           .pipe(
             map(() =>
@@ -1386,8 +1441,8 @@ export class HospitalEffects {
               }),
             ),
             catchError(() => of(sendHomeCareMessageError())),
-          ),
-      ),
+          );
+      }),
     ),
   );
 
@@ -1398,6 +1453,35 @@ export class HospitalEffects {
         of(getPatient({ id: action.patientId, silent: true })),
       ),
     ),
+  );
+
+  // Download home care message attachment
+
+  downloadHomeCareMessageAttachment$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(downloadHomeCareMessageAttachment),
+        switchMap((action) => {
+          this.http
+            .get(
+              `hospital/home-care/message/${action.messageId}/attachments/${action.attachment.id}`,
+              {
+                responseType: 'blob',
+              },
+            )
+            .subscribe((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = action.attachment.fileName;
+              a.click();
+
+              window.URL.revokeObjectURL(url);
+            });
+          return of();
+        }),
+      ),
+    { dispatch: false },
   );
 
   // Search patient

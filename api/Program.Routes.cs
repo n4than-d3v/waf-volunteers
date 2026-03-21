@@ -363,12 +363,42 @@ public partial class Program
             .AddNote("Vet accepts patient back as an inpatient")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalHomeCare.MapPost("/{id:int}/transfer", (IMediator mediator, int id, TransferHomeCare request) => mediator.Send(request.WithId(id)))
+            .AddNote("Vet transfers home carer")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalHomeCare.MapGet("/home-carers", (IMediator mediator) => mediator.Send(new GetHomeCarers { }))
+            .AddNote("Vet views home carer")
+            .RequireAuthorization(vetPolicy);
+
         apiHospitalHomeCare.MapGet("/{id:int}/messages", (IMediator mediator, int id) => mediator.Send(new ViewHomeCareMessages { HomeCareRequestId = id }))
             .AddNote("Orphan feeder views home care messages")
             .RequireAuthorization(orphanFeederPolicy);
 
-        apiHospitalHomeCare.MapPost("/{id:int}/message", (IMediator mediator, int id, AddHomeCareMessage request) => mediator.Send(request.WithId(id)))
+        apiHospitalHomeCare.MapPost("/{id:int}/message", async (IMediator mediator, HttpRequest httpReq) =>
+        {
+            var form = await httpReq.ReadFormAsync();
+            _ = int.TryParse(form["homeCareRequestId"], out int homeCareRequestId);
+            _ = int.TryParse(form["weightValue"], out int weightValue);
+            _ = int.TryParse(form["weightUnit"], out int weightUnit);
+
+            var request = new AddHomeCareMessage
+            {
+                HomeCareRequestId = homeCareRequestId,
+                WeightValue = string.IsNullOrWhiteSpace(form["weightValue"]) ? null : weightValue,
+                WeightUnit = string.IsNullOrWhiteSpace(form["weightUnit"]) ? null :
+                    (Api.Database.Entities.Hospital.Patients.Exams.WeightUnit)weightUnit,
+                Message = string.IsNullOrWhiteSpace(form["message"]) ? string.Empty : form["message"],
+                Files = form.Files
+            };
+
+            return await mediator.Send(request);
+        })
             .AddNote("Vet or orphan feeder sends home care message")
+            .RequireAuthorization(vetOrOrphanFeederPolicy);
+
+        apiHospitalHomeCare.MapGet("/message/{messageId:int}/attachments/{attachmentId:int}", (IMediator mediator, int messageId, int attachmentId) => mediator.Send(new DownloadHomeCareMessageAttachment { MessageId = messageId, AttachmentId = attachmentId }))
+            .AddNote("Vet or orphan feeder downloads message attachment")
             .RequireAuthorization(vetOrOrphanFeederPolicy);
 
         apiHospitalHomeCare.MapGet("/outstanding", (IMediator mediator) => mediator.Send(new ViewOutstandingHomeCareRequests()))

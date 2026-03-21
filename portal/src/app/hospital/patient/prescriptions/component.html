@@ -25,61 +25,14 @@ patient.prescriptionMedications.length === 0) {
     </tr>
   </thead>
   <tbody>
-    @for (prescription of patient.prescriptionInstructions; let index = $index;
-    track prescription.id) { @if (index < maxIndex) {
+    @for (prescription of getPrescriptions(); track prescription.id; let index =
+    $index) { @if (index < maxIndex) {
     <tr>
       <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
-      <td colspan="4"></td>
-      <td>{{ prescription.instructions }}</td>
-      <td>
-        @if (isVet && patient.status != PatientStatus.Dispositioned) {
-        <button
-          (click)="prepareEditInstruction(prescription)"
-          class="button button--none"
-        >
-          ✏️
-        </button>
-        <button
-          (click)="removeInstruction(prescription.id)"
-          class="button button--none"
-        >
-          🗑️
-        </button>
-        }
-      </td>
-    </tr>
-    @if (showAdministrations && prescription.administrations.length > 0) {
-    <tr class="administration-header">
-      <td colspan="3"></td>
-      <th>Administered</th>
-      <th>On</th>
-      <th>By</th>
-      <th>Success</th>
-      <th>Comments</th>
-      <td></td>
-    </tr>
-    @for (administration of prescription.administrations; track
-    administration.id) {
-    <tr>
-      <td colspan="4"></td>
-      <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
-      <td>
-        {{ administration.administrator.firstName }} {{
-        administration.administrator.lastName }}
-      </td>
-      <td>{{ administration.success ? 'Success' : 'Fail' }}</td>
-      <td>{{ administration.comments }}</td>
-      <td></td>
-    </tr>
-    } } } } @for (prescription of patient.prescriptionMedications; let index =
-    $index; track prescription.id) { @if (index < maxIndex -
-    patient.prescriptionInstructions.length) {
-    <tr>
-      <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
-      <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
-      <td>{{ prescription.frequency }}</td>
+
+      @if (isMedication(prescription)) {
       <td>{{ prescription.medication.activeSubstance }}</td>
       <td>
         {{ prescription.medicationConcentration.form }}, {{
@@ -92,8 +45,14 @@ patient.prescriptionMedications.length === 0) {
       </td>
       <td>{{ prescription.quantityValue }} {{ prescription.quantityUnit }}</td>
       <td>{{ prescription.comments }}</td>
+      } @else {
+      <td colspan="4"></td>
+      <td>{{ prescription.instructions }}</td>
+      }
+
       <td>
-        @if (isVet && patient.status != PatientStatus.Dispositioned) {
+        @if (isVet && patient.status != PatientStatus.Dispositioned) { @if
+        (isMedication(prescription)) {
         <button
           (click)="prepareEditMedication(prescription)"
           class="button button--none"
@@ -106,9 +65,23 @@ patient.prescriptionMedications.length === 0) {
         >
           🗑️
         </button>
-        }
+        } @else {
+        <button
+          (click)="prepareEditInstruction(prescription)"
+          class="button button--none"
+        >
+          ✏️
+        </button>
+        <button
+          (click)="removeInstruction(prescription.id)"
+          class="button button--none"
+        >
+          🗑️
+        </button>
+        } }
       </td>
     </tr>
+
     @if (showAdministrations && prescription.administrations.length > 0) {
     <tr class="administration-header">
       <td colspan="3"></td>
@@ -119,6 +92,7 @@ patient.prescriptionMedications.length === 0) {
       <th>Comments</th>
       <td></td>
     </tr>
+
     @for (administration of prescription.administrations; track
     administration.id) {
     <tr>
@@ -135,8 +109,8 @@ patient.prescriptionMedications.length === 0) {
     } } } }
   </tbody>
 </table>
-@if (maxIndex < patient.prescriptionInstructions.length +
-patient.prescriptionMedications.length) {
+@if (maxIndex < (patient.prescriptionInstructions.length +
+patient.prescriptionMedications.length)) {
 <p>
   <a class="load-more" (click)="maxIndex += 5">Load more...</a>
 </p>

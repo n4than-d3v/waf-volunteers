@@ -37,13 +37,20 @@
         }
       </tbody>
     </table>
-    @if (!droppingOff) { @if (isVet && !request.dropoff) {
-    <div class="buttons">
+
+    @if (!(droppingOff || transferring)) { @if (isVet && !request.dropoff) {
+    <div class="buttons main-buttons">
       <button
         (click)="droppingOff = request.id"
         class="button button--secondary-invert"
       >
-        🏠 Home carer returned patient
+        🏥 Patient returned to hospital
+      </button>
+      <button
+        (click)="transferring = request.id"
+        class="button button--secondary-invert"
+      >
+        🔄 Transfer to another home carer
       </button>
     </div>
     } } @else if (droppingOff == request.id) {
@@ -102,6 +109,43 @@
       </div>
       }
     </form>
+    } @else if (transferring == request.id) {
+    <form [formGroup]="transferForm" class="transfer">
+      <div class="fields">
+        <div class="field">
+          <label for="homeCarerId">
+            Home carer
+            <span class="required">*</span>
+          </label>
+          <select id="homeCarerId" formControlName="homeCarerId">
+            @if (homeCarers$ | async; as homeCarers) { @if (homeCarers.loading)
+            {
+            <spinner />
+            } @else if (homeCarers.error) {
+            <div class="error">Error occurred</div>
+            } @else if (homeCarers.data) { @for (homeCarer of homeCarers.data;
+            track homeCarer.id) {
+            <option [value]="homeCarer.id">
+              {{ homeCarer.firstName }} {{ homeCarer.lastName }}
+            </option>
+            } } }
+          </select>
+        </div>
+      </div>
+      @if (attemptedSave && !transferForm.valid) {
+      <div class="error">Please fill in all required fields</div>
+      } @if (!saving) {
+      <div class="buttons">
+        <button
+          (click)="homeCareTransfer(request.id)"
+          class="button button--primary"
+        >
+          Save
+        </button>
+        <button (click)="reset()" class="button button--secondary">Back</button>
+      </div>
+      }
+    </form>
     }
   </div>
   <form [formGroup]="messageForm">
@@ -111,7 +155,9 @@
         <tr>
           <th>Date</th>
           <th>Author</th>
+          <th>Weight</th>
           <th>Message</th>
+          <th>Attachment</th>
         </tr>
       </thead>
       <tbody>
@@ -119,7 +165,22 @@
         <tr>
           <td>{{ message.date | date: 'dd MMM yyyy HH:mm' }}</td>
           <td>{{ message.author.firstName }} {{ message.author.lastName }}</td>
+          <td>
+            @if (message.weightValue) { {{ message.weightValue }} {{
+            getWeightUnit(message.weightUnit) }} }
+          </td>
           <td>{{ message.message }}</td>
+          <td>
+            @if (message.attachments) { @for (attachment of message.attachments;
+            track attachment.id) {
+            <button
+              (click)="download(message, attachment)"
+              class="button button--none"
+            >
+              🔗 {{ attachment.fileName }}
+            </button>
+            } }
+          </td>
         </tr>
         }
       </tbody>
@@ -159,6 +220,10 @@
 } @else if (task.error) {
 <div class="error">Error occurred</div>
 } } @if (messageTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} } @if (transferTask$ | async; as task) { @if (task.loading) {
 <spinner></spinner>
 } @else if (task.error) {
 <div class="error">Error occurred</div>

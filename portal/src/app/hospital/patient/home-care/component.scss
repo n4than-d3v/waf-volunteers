@@ -9,6 +9,15 @@ table:has(thead) {
     border-left: none;
     border-right: none;
     align-content: flex-start;
+
+    .button--none {
+      font-size: 1rem;
+      color: var(--theme-color-5);
+      text-overflow: ellipsis;
+      max-width: 15rem;
+      overflow: hidden;
+      text-wrap-mode: nowrap;
+    }
   }
 
   th {
@@ -75,11 +84,23 @@ table:not(:has(thead)) {
   gap: 0.5rem;
 }
 
+.main-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .button--secondary-invert {
+    padding: 0.25rem 0.5rem;
+    max-width: max-content;
+  }
+}
+
 .home-care-request:not(:last-child) {
   margin-bottom: 1rem;
 }
 
-.drop-off {
+.drop-off,
+.transfer {
   > * {
     margin-bottom: 0.5rem;
   }

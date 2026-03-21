@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
+  getWeightUnit,
   HomeCareMessage,
   HomeCareRequest,
   ReadOnlyWrapper,
@@ -16,6 +17,7 @@ import {
 } from './selectors';
 import {
   acceptHomeCareRequest,
+  downloadHomeCareMessageAttachment,
   getHomeCareMessages,
   getMyActiveHomeCareRequests,
   getOutstandingHomeCareRequests,
@@ -61,8 +63,12 @@ export class VolunteerHomeCareComponent implements OnInit {
   });
 
   viewingMessages: number | null = null;
+  addingMessage = false;
   messageForm = new FormGroup({
     message: new FormControl('', [Validators.required]),
+    weightValue: new FormControl(''),
+    weightUnit: new FormControl('1'),
+    files: new FormControl<File[] | null>(null),
   });
 
   saving = false;
@@ -74,6 +80,25 @@ export class VolunteerHomeCareComponent implements OnInit {
     this.messages$ = this.store.select(selectHomeCareMessages);
     this.acceptRequest$ = this.store.select(selectAcceptHomeCareRequest);
     this.sendMessage$ = this.store.select(selectSendHomeCareMessage);
+  }
+
+  getWeightUnit = getWeightUnit;
+
+  onFileChange(event: any) {
+    const files = event.target.files as FileList;
+    this.messageForm.controls.files.setValue(Array.from(files));
+  }
+
+  download(
+    message: HomeCareMessage,
+    attachment: { id: number; fileName: string },
+  ) {
+    this.store.dispatch(
+      downloadHomeCareMessageAttachment({
+        messageId: message.id,
+        attachment,
+      }),
+    );
   }
 
   reset() {
@@ -96,7 +121,7 @@ export class VolunteerHomeCareComponent implements OnInit {
           'T' +
           this.acceptForm.value.pickupTime! +
           'Z',
-      })
+      }),
     );
     this.reset();
   }
@@ -106,7 +131,7 @@ export class VolunteerHomeCareComponent implements OnInit {
     this.store.dispatch(
       getHomeCareMessages({
         homeCareRequestId,
-      })
+      }),
     );
   }
 
@@ -118,7 +143,16 @@ export class VolunteerHomeCareComponent implements OnInit {
       sendHomeCareMessage({
         homeCareRequestId: this.viewingMessages!,
         message: this.messageForm.value.message!,
-      })
+        weightValue: this.messageForm.value.weightValue
+          ? Number(this.messageForm.value.weightValue)
+          : null,
+        weightUnit:
+          this.messageForm.value.weightUnit &&
+          this.messageForm.value.weightValue
+            ? Number(this.messageForm.value.weightUnit)
+            : null,
+        files: this.messageForm.value.files || [],
+      }),
     );
     this.reset();
   }

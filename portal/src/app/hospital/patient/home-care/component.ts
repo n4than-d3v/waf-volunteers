@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   Area,
   getWeightUnit,
+  HomeCareMessage,
+  HomeCarer,
   Patient,
   PatientStatus,
   ReadOnlyWrapper,
@@ -18,8 +20,10 @@ import {
 import { Store } from '@ngrx/store';
 import {
   addNote,
+  downloadHomeCareMessageAttachment,
   getAreas,
   homeCarerDropOff,
+  homeCarerTransfer,
   sendHomeCareMessage,
 } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
@@ -28,7 +32,9 @@ import {
   selectAddNote,
   selectAreas,
   selectDropOffHomeCare,
+  selectHomeCarers,
   selectMessageHomeCare,
+  selectTransferHomeCare,
 } from '../../selectors';
 import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
@@ -51,17 +57,21 @@ export class HospitalPatientHomeCareComponent implements OnInit {
   @Input({ required: true }) isVet!: boolean;
 
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
+  homeCarers$: Observable<ReadOnlyWrapper<HomeCarer[]>>;
 
   dropOffAreaId = '';
   dropOffPenId = '';
 
   messageTask$: Observable<Task>;
   dropOffTask$: Observable<Task>;
+  transferTask$: Observable<Task>;
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
+    this.homeCarers$ = this.store.select(selectHomeCarers);
     this.messageTask$ = this.store.select(selectMessageHomeCare);
     this.dropOffTask$ = this.store.select(selectDropOffHomeCare);
+    this.transferTask$ = this.store.select(selectTransferHomeCare);
   }
 
   ngOnInit() {
@@ -69,6 +79,7 @@ export class HospitalPatientHomeCareComponent implements OnInit {
   }
 
   droppingOff: number | null = null;
+  transferring: number | null = null;
   saving = false;
   attemptedSave = false;
 
@@ -83,6 +94,10 @@ export class HospitalPatientHomeCareComponent implements OnInit {
     penId: new FormControl('', [Validators.required]),
   });
 
+  transferForm = new FormGroup({
+    homeCarerId: new FormControl('', [Validators.required]),
+  });
+
   homeCareDropOff(homeCareRequestId: number) {
     this.attemptedSave = true;
     if (!this.dropOffForm.valid) return;
@@ -95,6 +110,34 @@ export class HospitalPatientHomeCareComponent implements OnInit {
       }),
     );
     this.reset();
+  }
+
+  homeCareTransfer(homeCareRequestId: number) {
+    this.attemptedSave = true;
+    if (!this.transferForm.valid) return;
+    this.saving = true;
+    this.store.dispatch(
+      homeCarerTransfer({
+        patientId: this.patient.id,
+        homeCareRequestId,
+        homeCarerId: Number(this.transferForm.value.homeCarerId),
+      }),
+    );
+    this.reset();
+  }
+
+  getWeightUnit = getWeightUnit;
+
+  download(
+    message: HomeCareMessage,
+    attachment: { id: number; fileName: string },
+  ) {
+    this.store.dispatch(
+      downloadHomeCareMessageAttachment({
+        messageId: message.id,
+        attachment,
+      }),
+    );
   }
 
   sendMessage(homeCareRequestId: number) {
@@ -140,10 +183,12 @@ export class HospitalPatientHomeCareComponent implements OnInit {
   }
 
   reset() {
+    this.transferring = null;
     this.droppingOff = null;
     this.attemptedSave = false;
     this.saving = false;
     this.messageForm.reset();
     this.dropOffForm.reset();
+    this.transferForm.reset();
   }
 }

@@ -39,7 +39,7 @@ public class ViewHomeCareMessagesHandler : IRequestHandler<ViewHomeCareMessages,
         {
             var messages = await _repository.GetAll<HomeCareMessage>(x =>
                 x.Patient.Id == activeHomeCareRequest.Patient.Id, tracking: false,
-                action: x => x.Include(y => y.Patient).Include(y => y.Author));
+                action: x => x.Include(y => y.Patient).Include(y => y.Author).Include(y => y.Attachments));
 
             foreach (var message in messages)
             {

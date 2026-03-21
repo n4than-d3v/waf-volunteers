@@ -171,6 +171,12 @@ import {
   getFoods,
   getFoodsSuccess,
   getFoodsError,
+  getHomeCarers,
+  getHomeCarersSuccess,
+  getHomeCarersError,
+  homeCarerTransfer,
+  homeCarerTransferSuccess,
+  homeCarerTransferError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -566,6 +572,33 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     transferLocations: {
       ...state.transferLocations,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Home carers
+  on(getHomeCarers, (state) => ({
+    ...state,
+    homeCarers: {
+      ...state.homeCarers,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getHomeCarersSuccess, (state, { homeCarers }) => ({
+    ...state,
+    homeCarers: {
+      ...state.homeCarers,
+      data: homeCarers,
+      loading: false,
+    },
+  })),
+  on(getHomeCarersError, (state) => ({
+    ...state,
+    homeCarers: {
+      ...state.homeCarers,
       loading: false,
       error: true,
     },
@@ -1037,6 +1070,32 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     dropOffHomeCare: {
       ...state.dropOffHomeCare,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Home carer transfer
+  on(homeCarerTransfer, (state) => ({
+    ...state,
+    transferHomeCare: {
+      ...state.transferHomeCare,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(homeCarerTransferSuccess, (state) => ({
+    ...state,
+    transferHomeCare: {
+      ...state.transferHomeCare,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(homeCarerTransferError, (state) => ({
+    ...state,
+    transferHomeCare: {
+      ...state.transferHomeCare,
       loading: false,
       error: true,
     },

@@ -308,6 +308,23 @@
           <label for="notes"> Notes </label>
           <textarea id="notes" formControlName="notes"></textarea>
         </div>
+        <div class="field">
+          <label for="homeCarerId"> Home carer </label>
+          <select id="homeCarerId" formControlName="homeCarerId">
+            <option value="">(request)</option>
+            @if (homeCarers$ | async; as homeCarers) { @if (homeCarers.loading)
+            {
+            <spinner />
+            } @else if (homeCarers.error) {
+            <div class="error">Error occurred</div>
+            } @else if (homeCarers.data) { @for (homeCarer of homeCarers.data;
+            track homeCarer.id) {
+            <option [value]="homeCarer.id">
+              {{ homeCarer.firstName }} {{ homeCarer.lastName }}
+            </option>
+            } } }
+          </select>
+        </div>
       </div>
       @if (attemptedSave && !homeCareForm.valid) {
       <div class="error">Please fill in all required fields</div>

@@ -18,6 +18,7 @@ public class CreateAccount : IRequest<IResult>
     public string Email { get; set; }
 
     public AccountRoles Roles { get; set; }
+    public HomeCarerPermissions HomeCarerPermissions { get; set; }
 }
 
 public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
@@ -47,6 +48,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             password: "-",
             AccountStatus.Active,
             request.Roles,
+            request.HomeCarerPermissions,
             lastLoggedIn: null,
             userAgent: null,
             _encryptionService.Encrypt(request.FirstName ?? string.Empty, salt),

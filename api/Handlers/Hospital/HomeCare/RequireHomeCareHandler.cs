@@ -82,6 +82,12 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
         foreach (var account in accounts)
         {
             if (!account.Roles.HasFlag(AccountRoles.BEACON_ORPHAN_FEEDER)) continue;
+            if (!(patient.Species != null &&
+                (
+                    patient.Species.HomeCarerPermissions == null ||
+                    patient.Species.HomeCarerPermissions == HomeCarerPermissions.None ||
+                    (account.HomeCarerPermissions & patient.Species.HomeCarerPermissions.Value) != 0
+                ))) continue;
 
             var subscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
             if (!string.IsNullOrWhiteSpace(subscription))

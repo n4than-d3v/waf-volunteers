@@ -93,6 +93,7 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                     password: "-",
                     AccountStatus.Active,
                     AccountRoles.None,
+                    HomeCarerPermissions.None,
                     lastLoggedIn: null,
                     userAgent: null,
                     _encryptionService.Encrypt(string.Empty, salt),

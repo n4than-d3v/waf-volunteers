@@ -26,6 +26,19 @@ export enum Status {
   Inactive = 1,
 }
 
+export enum HomeCarerPermissions {
+  None = 0,
+
+  Foxes = 1,
+  Badgers = 2,
+  Pigeons = 4,
+  Doves = 8,
+  GardenBirds = 16,
+  Rodents = 32,
+  Hedgehogs = 64,
+  Rabbits = 128,
+}
+
 const roleEnumToLabel = (value: string): string => {
   return value
     .toLowerCase() // beacon_animal_husbandry
@@ -41,6 +54,14 @@ export const roleList = Object.keys(Roles)
     name: key,
     display: roleEnumToLabel(key),
     value: Roles[key as keyof typeof Roles],
+  }));
+
+export const homeCarerPermissionList = Object.keys(HomeCarerPermissions)
+  .filter((key) => isNaN(Number(key)))
+  .map((key) => ({
+    name: key,
+    display: key === 'GardenBirds' ? 'Garden birds' : key,
+    value: HomeCarerPermissions[key as keyof typeof HomeCarerPermissions],
   }));
 
 export interface Session {

@@ -16,7 +16,13 @@ import {
   selectProfilesLoading,
   selectProfileUpdateSuccess,
 } from '../selectors';
-import { roleList, Roles, Status } from '../../../shared/token.provider';
+import {
+  homeCarerPermissionList,
+  HomeCarerPermissions,
+  roleList,
+  Roles,
+  Status,
+} from '../../../shared/token.provider';
 import { getUser, getUsers, updateUser } from '../actions';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Profile } from '../state';
@@ -45,6 +51,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
   userId: number = 0;
 
   roles = roleList;
+  homeCarerPermissions = homeCarerPermissionList;
 
   loading$: Observable<boolean>;
   updated$: Observable<boolean>;
@@ -80,6 +87,16 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
       APP_ADMIN: new FormControl(false),
       APP_CLOCKING: new FormControl(false),
       APP_BOARDS: new FormControl(false),
+    }),
+    homeCarerPermissions: new FormGroup({
+      Foxes: new FormControl(false),
+      Badgers: new FormControl(false),
+      Pigeons: new FormControl(false),
+      Doves: new FormControl(false),
+      GardenBirds: new FormControl(false),
+      Rodents: new FormControl(false),
+      Hedgehogs: new FormControl(false),
+      Rabbits: new FormControl(false),
     }),
   });
 
@@ -139,6 +156,32 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
             APP_ADMIN: !!(profile.roles & Roles.APP_ADMIN),
             APP_CLOCKING: !!(profile.roles & Roles.APP_CLOCKING),
             APP_BOARDS: !!(profile.roles & Roles.APP_BOARDS),
+          },
+          homeCarerPermissions: {
+            Foxes: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Foxes
+            ),
+            Badgers: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Badgers
+            ),
+            Pigeons: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Pigeons
+            ),
+            Doves: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Doves
+            ),
+            GardenBirds: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.GardenBirds
+            ),
+            Rodents: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Rodents
+            ),
+            Hedgehogs: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Hedgehogs
+            ),
+            Rabbits: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Rabbits
+            ),
           },
         });
       });
@@ -212,6 +255,31 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
               : 0) |
             (this.form.controls.roles.controls.APP_BOARDS.value
               ? Roles.APP_BOARDS
+              : 0),
+          homeCarerPermissions:
+            (this.form.controls.homeCarerPermissions.controls.Foxes.value
+              ? HomeCarerPermissions.Foxes
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Badgers.value
+              ? HomeCarerPermissions.Badgers
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Pigeons.value
+              ? HomeCarerPermissions.Pigeons
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Doves.value
+              ? HomeCarerPermissions.Doves
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.GardenBirds.value
+              ? HomeCarerPermissions.GardenBirds
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Rodents.value
+              ? HomeCarerPermissions.Rodents
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Hedgehogs.value
+              ? HomeCarerPermissions.Hedgehogs
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Rabbits.value
+              ? HomeCarerPermissions.Rabbits
               : 0),
         },
       }),

@@ -1,4 +1,4 @@
-﻿using Api.Database.Entities.Hospital.Patients.Exams;
+﻿using Api.Database.Entities.Account;
 
 namespace Api.Database.Entities.Hospital.Patients;
 
@@ -6,6 +6,7 @@ public class Species : Entity
 {
     public string Name { get; set; }
     public SpeciesType SpeciesType { get; set; }
+    public HomeCarerPermissions? HomeCarerPermissions { get; set; }
     public List<SpeciesVariant> Variants { get; set; }
 }
 

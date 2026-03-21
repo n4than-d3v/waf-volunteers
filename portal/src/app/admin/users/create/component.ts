@@ -14,7 +14,13 @@ import {
   selectProfilesError,
   selectProfilesLoading,
 } from '../selectors';
-import { roleList, Roles, Status } from '../../../shared/token.provider';
+import {
+  homeCarerPermissionList,
+  HomeCarerPermissions,
+  roleList,
+  Roles,
+  Status,
+} from '../../../shared/token.provider';
 import { createUser } from '../actions';
 import { RouterLink } from '@angular/router';
 
@@ -60,7 +66,19 @@ export class AdminUsersCreateComponent {
       APP_CLOCKING: new FormControl(false),
       APP_BOARDS: new FormControl(false),
     }),
+    homeCarerPermissions: new FormGroup({
+      Foxes: new FormControl(false),
+      Badgers: new FormControl(false),
+      Pigeons: new FormControl(false),
+      Doves: new FormControl(false),
+      GardenBirds: new FormControl(false),
+      Rodents: new FormControl(false),
+      Hedgehogs: new FormControl(false),
+      Rabbits: new FormControl(false),
+    }),
   });
+
+  homeCarerPermissions = homeCarerPermissionList;
 
   constructor(private store: Store) {
     this.loading$ = this.store.select(selectProfilesLoading);
@@ -124,6 +142,31 @@ export class AdminUsersCreateComponent {
               : 0) |
             (this.form.controls.roles.controls.APP_BOARDS.value
               ? Roles.APP_BOARDS
+              : 0),
+          homeCarerPermissions:
+            (this.form.controls.homeCarerPermissions.controls.Foxes.value
+              ? HomeCarerPermissions.Foxes
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Badgers.value
+              ? HomeCarerPermissions.Badgers
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Pigeons.value
+              ? HomeCarerPermissions.Pigeons
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Doves.value
+              ? HomeCarerPermissions.Doves
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.GardenBirds.value
+              ? HomeCarerPermissions.GardenBirds
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Rodents.value
+              ? HomeCarerPermissions.Rodents
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Hedgehogs.value
+              ? HomeCarerPermissions.Hedgehogs
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Rabbits.value
+              ? HomeCarerPermissions.Rabbits
               : 0),
         },
       }),

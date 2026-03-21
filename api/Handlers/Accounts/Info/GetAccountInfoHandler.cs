@@ -53,6 +53,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
             cars,
             roles = user.Roles,
             status = user.Status,
+            homeCarerPermissions = user.HomeCarerPermissions,
             subscribed = !string.IsNullOrWhiteSpace(subscription),
             subscription
         });

@@ -34,6 +34,7 @@ export interface Profile {
   subscribed?: boolean;
   roles: number;
   status: number;
+  homeCarerPermissions: number;
 }
 
 export const initialProfilesState: ProfilesState = {

@@ -11,6 +11,7 @@ public class Account : Entity
     public string Password { get; private set; }
     public AccountStatus Status { get; private set; }
     public AccountRoles Roles { get; private set; }
+    public HomeCarerPermissions HomeCarerPermissions { get; private set; }
     public DateTime? LastLoggedIn { get; private set; }
     public string? UserAgent { get; private set; }
 
@@ -37,12 +38,13 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, HomeCarerPermissions homeCarerPermissions, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
         Status = status;
         Roles = roles;
+        HomeCarerPermissions = homeCarerPermissions;
         LastLoggedIn = lastLoggedIn;
         UserAgent = userAgent;
         FirstName = firstName;
@@ -55,12 +57,13 @@ public class Account : Entity
         Salt = salt;
     }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, HomeCarerPermissions homeCarerPermissions, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
         Status = status;
         Roles = roles;
+        HomeCarerPermissions = homeCarerPermissions;
         LastLoggedIn = lastLoggedIn;
         UserAgent = userAgent;
         FirstName = firstName;
@@ -119,6 +122,11 @@ public class Account : Entity
         Status = status;
     }
 
+    public void UpdateHomeCarerPermissions(HomeCarerPermissions homeCarerPermissions)
+    {
+        HomeCarerPermissions = homeCarerPermissions;
+    }
+
     public void Login(string userAgent)
     {
         LastLoggedIn = DateTime.UtcNow;
@@ -156,4 +164,19 @@ public enum AccountRoles
     APP_ADMIN = 2048,
     APP_CLOCKING = 4096,
     APP_BOARDS = 8192
+}
+
+[Flags]
+public enum HomeCarerPermissions
+{
+    None = 0,
+
+    Foxes = 1,
+    Badgers = 2,
+    Pigeons = 4,
+    Doves = 8,
+    GardenBirds = 16,
+    Rodents = 32,
+    Hedgehogs = 64,
+    Rabbits = 128
 }

@@ -71,5 +71,25 @@
     </div>
     } }
   </div>
+  @if (form.value.roles?.BEACON_ORPHAN_FEEDER) {
+  <br />
+  <h2>Orphan feeder permissions</h2>
+  <div formGroupName="homeCarerPermissions">
+    @for (homeCarerPermission of homeCarerPermissions; track
+    homeCarerPermission.value) { @if (homeCarerPermission.value) {
+    <div class="field">
+      <label for="homeCarerPermission-{{ homeCarerPermission.name }}"
+        >{{ homeCarerPermission.display }}</label
+      >
+      <input
+        type="checkbox"
+        id="homeCarerPermission-{{ homeCarerPermission.name }}"
+        name="homeCarerPermission-{{ homeCarerPermission.name }}"
+        [formControlName]="homeCarerPermission.name"
+      />
+    </div>
+    } }
+  </div>
+  }
   <button class="button button--primary" (click)="save()">Save</button>
 </form>

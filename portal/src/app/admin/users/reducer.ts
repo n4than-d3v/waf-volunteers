@@ -84,6 +84,8 @@ export const profilesReducer = createReducer<ProfilesState>(
     loading: true,
     profiles: null,
     error: false,
+    created: null,
+    updated: false,
   })),
   on(getUsersSuccess, (state, { users }) => ({
     ...state,
@@ -150,5 +152,5 @@ export const profilesReducer = createReducer<ProfilesState>(
     loading: false,
     created: null,
     error: true,
-  }))
+  })),
 );

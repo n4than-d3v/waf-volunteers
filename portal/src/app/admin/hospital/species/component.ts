@@ -29,6 +29,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { HomeCarerPermissions } from '../../../shared/token.provider';
 
 @Component({
   selector: 'admin-hospital-species',
@@ -59,6 +60,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   speciesForm = new FormGroup({
     name: new FormControl(''),
     speciesType: new FormControl(''),
+    homeCarerPermissions: new FormControl(''),
   });
 
   speciesVariantForm = new FormGroup({
@@ -136,6 +138,9 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.speciesForm.controls.name.setValue(species.name);
     this.speciesForm.controls.speciesType.setValue(
       species.speciesType.toString(),
+    );
+    this.speciesForm.controls.homeCarerPermissions.setValue(
+      species.homeCarerPermissions?.toString() || '',
     );
     this.previousScroll = window.scrollY;
     window.scroll(0, 0);
@@ -224,6 +229,10 @@ export class AdminHospitalSpeciesComponent implements OnInit {
         species: {
           name: this.speciesForm.controls.name.value || '',
           speciesType: Number(this.speciesForm.controls.speciesType.value),
+          homeCarerPermissions: this.speciesForm.controls.homeCarerPermissions
+            .value
+            ? Number(this.speciesForm.controls.homeCarerPermissions.value)
+            : null,
         },
       }),
     );
@@ -269,6 +278,10 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           id: this.updatingSpecies!.id,
           name: this.speciesForm.controls.name.value || '',
           speciesType: Number(this.speciesForm.controls.speciesType.value),
+          homeCarerPermissions: this.speciesForm.controls.homeCarerPermissions
+            .value
+            ? Number(this.speciesForm.controls.homeCarerPermissions.value)
+            : null,
         },
       }),
     );
@@ -319,4 +332,5 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   SpeciesType = SpeciesType;
+  HomeCarerPermissions = HomeCarerPermissions;
 }

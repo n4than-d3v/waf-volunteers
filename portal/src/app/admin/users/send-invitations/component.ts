@@ -8,7 +8,7 @@ import { getUsers, individualRollout, teamRollout } from '../actions';
 import { getTimes } from '../../rota/actions';
 import { daysOfWeek, Time, Wrapper } from '../../rota/state';
 import { Observable } from 'rxjs';
-import { Profile } from '../state';
+import { ProfileSummary } from '../state';
 import {
   selectProfiles,
   selectProfilesError,
@@ -34,7 +34,7 @@ import { selectTimes } from '../../rota/selectors';
 export class AdminUsersSendInvitationsComponent implements OnInit {
   daysOfWeek = daysOfWeek;
 
-  users$: Observable<Profile[] | null>;
+  users$: Observable<ProfileSummary[] | null>;
   times$: Observable<Wrapper<Time>>;
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
@@ -63,7 +63,7 @@ export class AdminUsersSendInvitationsComponent implements OnInit {
       teamRollout({
         day: Number(this.day),
         timeId: Number(this.time),
-      })
+      }),
     );
   }
 
@@ -71,7 +71,7 @@ export class AdminUsersSendInvitationsComponent implements OnInit {
     this.store.dispatch(
       individualRollout({
         username: this.username,
-      })
+      }),
     );
   }
 }

@@ -44,6 +44,20 @@
         <option [value]="SpeciesType.Reptile">Reptile</option>
       </select>
     </div>
+    <div class="field">
+      <label for="homeCarerPermissions">Home carer permission required</label>
+      <select id="homeCarerPermissions" formControlName="homeCarerPermissions">
+        <option value=""></option>
+        <option [value]="HomeCarerPermissions.Foxes">Foxes</option>
+        <option [value]="HomeCarerPermissions.Badgers">Badgers</option>
+        <option [value]="HomeCarerPermissions.Pigeons">Pigeons</option>
+        <option [value]="HomeCarerPermissions.Doves">Doves</option>
+        <option [value]="HomeCarerPermissions.GardenBirds">Garden birds</option>
+        <option [value]="HomeCarerPermissions.Rodents">Rodents</option>
+        <option [value]="HomeCarerPermissions.Hedgehogs">Hedgehogs</option>
+        <option [value]="HomeCarerPermissions.Rabbits">Rabbits</option>
+      </select>
+    </div>
     <div class="buttons">
       <button (click)="createSpecies()" class="button button--primary">
         Save
@@ -106,6 +120,20 @@
         <option [value]="SpeciesType.Raptor">Raptor</option>
         <option [value]="SpeciesType.Amphibian">Amphibian</option>
         <option [value]="SpeciesType.Reptile">Reptile</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="homeCarerPermissions">Home carer permission required</label>
+      <select id="homeCarerPermissions" formControlName="homeCarerPermissions">
+        <option value=""></option>
+        <option [value]="HomeCarerPermissions.Foxes">Foxes</option>
+        <option [value]="HomeCarerPermissions.Badgers">Badgers</option>
+        <option [value]="HomeCarerPermissions.Pigeons">Pigeons</option>
+        <option [value]="HomeCarerPermissions.Doves">Doves</option>
+        <option [value]="HomeCarerPermissions.GardenBirds">Garden birds</option>
+        <option [value]="HomeCarerPermissions.Rodents">Rodents</option>
+        <option [value]="HomeCarerPermissions.Hedgehogs">Hedgehogs</option>
+        <option [value]="HomeCarerPermissions.Rabbits">Rabbits</option>
       </select>
     </div>
     <div class="buttons">

@@ -1,4 +1,5 @@
 ﻿using Api.Database;
+using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Patients;
 using MediatR;
 
@@ -9,6 +10,7 @@ public class UpsertSpecies : IRequest<IResult>
     public int? Id { get; set; }
     public string Name { get; set; }
     public SpeciesType SpeciesType { get; set; }
+    public HomeCarerPermissions? HomeCarerPermissions { get; set; }
 }
 
 public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IResult>
@@ -30,13 +32,15 @@ public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IRe
 
             species.Name = request.Name;
             species.SpeciesType = request.SpeciesType;
+            species.HomeCarerPermissions = request.HomeCarerPermissions;
         }
         else
         {
             species = new Species
             {
                 Name = request.Name,
-                SpeciesType = request.SpeciesType
+                SpeciesType = request.SpeciesType,
+                HomeCarerPermissions = request.HomeCarerPermissions
             };
             _repository.Create(species);
         }

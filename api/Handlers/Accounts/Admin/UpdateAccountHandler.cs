@@ -19,6 +19,7 @@ public class UpdateAccount : IRequest<IResult>
 
     public AccountRoles Roles { get; set; }
     public AccountStatus Status { get; set; }
+    public HomeCarerPermissions HomeCarerPermissions { get; set; }
 
     public UpdateAccount WithId(int id)
     {
@@ -54,6 +55,7 @@ public class UpdateAccountHandler : IRequestHandler<UpdateAccount, IResult>
 
         user.UpdateRoles(request.Roles);
         user.UpdateStatus(request.Status);
+        user.UpdateHomeCarerPermissions(request.HomeCarerPermissions);
 
         await _repository.SaveChangesAsync();
 

@@ -1,4 +1,5 @@
 import { Feeding } from '../../hospital/state';
+import { HomeCarerPermissions } from '../../shared/token.provider';
 
 export interface AdminHospitalManagementState {
   foods: Wrapper<Food>;
@@ -136,6 +137,7 @@ export interface Area extends CreateAreaCommand {
 export interface CreateSpeciesCommand {
   name: string;
   speciesType: SpeciesType;
+  homeCarerPermissions: HomeCarerPermissions | null;
 }
 
 export interface CreateSpeciesVariantCommand {

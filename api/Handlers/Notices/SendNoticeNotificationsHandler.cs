@@ -49,6 +49,8 @@ public class SendNoticeNotificationsHandler : IRequestHandler<SendNoticeNotifica
 
             foreach (var notice in notices)
             {
+                notice.Sent = true;
+
                 foreach (var account in accounts)
                 {
                     if (!notice.ShouldShow(account)) continue;
@@ -72,8 +74,6 @@ public class SendNoticeNotificationsHandler : IRequestHandler<SendNoticeNotifica
                     {
                     }
                 }
-
-                notice.Sent = true;
             }
 
             await _repository.SaveChangesAsync();

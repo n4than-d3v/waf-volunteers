@@ -82,8 +82,10 @@ table:has(thead) {
 
 .add,
 .rem {
-  width: 3rem;
-  margin-top: 1.65rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 1.85rem;
+  font-size: 0.75rem;
 }
 
 .right-align {
@@ -106,20 +108,31 @@ table:has(thead) {
         margin-bottom: 0.5rem;
 
         input[type="time"] {
-          padding: 0.45rem 0.5rem;
+          padding: 0.15rem 0.5rem;
         }
 
         input[type="number"],
         input[type="text"] {
           max-width: 6rem;
+          padding: 0.25rem 0.5rem;
+        }
+
+        select {
+          max-width: max-content;
+          padding: 0.25rem 0.5rem;
         }
       }
 
       &:nth-child(2) {
-        .field:nth-child(2) {
-          margin-top: 2.125rem;
-          margin-left: 0.75rem;
+        input[type="text"] {
+          padding: 0.25rem 0.5rem;
         }
+      }
+
+      .checkboxes {
+        margin-left: 0.75rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0rem;
       }
     }
   }

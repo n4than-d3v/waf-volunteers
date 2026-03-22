@@ -288,17 +288,17 @@ export const formatFeeding = (feeding: Feeding[]) => {
       }
     }
 
-    if (guidance.quantityValue > 0) {
+    if (guidance.quantityValue >= 0) {
+      const message =
+        guidance.quantityValue === 0
+          ? `${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`
+          : `${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`;
       if (every) {
         for (const intervalTime of times) {
-          acc[intervalTime].push(
-            `${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
-          );
+          acc[intervalTime].push(message);
         }
       } else {
-        acc[formattedTime].push(
-          `${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`,
-        );
+        acc[formattedTime].push(message);
       }
     }
 

@@ -74,7 +74,9 @@
                   <span>hours</span>
                 </div>
               </div>
-              }
+              } @if
+              (!dietForm.controls.feeding.controls[i].controls.noQuantity.value)
+              {
               <div class="field">
                 <label for="quantityValue-{{ i }}">
                   Quantity
@@ -101,6 +103,7 @@
                   </select>
                 </div>
               </div>
+              }
               <div class="field">
                 <label for="foodId-{{ i }}">
                   Food
@@ -120,13 +123,26 @@
                 <label for="notes-{{ i }}"> Notes </label>
                 <input id="notes-{{ i }}" type="text" formControlName="notes" />
               </div>
-              <div class="field">
-                <label for="topUp-{{ i }}"> Top up </label>
-                <input
-                  id="topUp-{{ i }}"
-                  type="checkbox"
-                  formControlName="topUp"
-                />
+              <div class="checkboxes">
+                <div class="field">
+                  <label for="topUp-{{ i }}"> Top up </label>
+                  <input
+                    id="topUp-{{ i }}"
+                    type="checkbox"
+                    formControlName="topUp"
+                  />
+                </div>
+                <div class="field">
+                  <label for="noQuantity-{{ i }}">
+                    As much as {{ patient.sex === 1 ? 'he wants' : patient.sex
+                    === 2 ? 'she wants' : 'they want' }}
+                  </label>
+                  <input
+                    id="noQuantity-{{ i }}"
+                    type="checkbox"
+                    formControlName="noQuantity"
+                  />
+                </div>
               </div>
             </div>
           </div>

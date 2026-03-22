@@ -68,8 +68,8 @@
             <p><strong>{{ feeding.time }}</strong></p>
             @for (food of feeding.items; track food.food) {
             <p class="food">
-              {{ formatNumber(food.quantityValue) }} {{ food.quantityUnit }} {{
-              food.food }}
+              @if (food.quantityValue) { {{ formatNumber(food.quantityValue) }}
+              {{ food.quantityUnit }} } {{ food.food }}
             </p>
             } } }
           </div>
@@ -169,10 +169,11 @@
             <p class="time">{{ feeding.time }}</p>
             @for (detail of feeding.details; track detail) {
             <p class="details">
-              {{ formatNumber(detail.quantityTotal) }} {{ detail.quantityUnit }}
-              {{ detail.food }} @if (detail.quantityEach !=
-              detail.quantityTotal) { ({{ formatNumber(detail.quantityEach) }}
-              {{ detail.quantityUnit }} each) } @if (detail.notes) {
+              @if (detail.quantityTotal) { {{ formatNumber(detail.quantityTotal)
+              }} {{ detail.quantityUnit }} } {{ detail.food }} @if
+              (detail.quantityEach != detail.quantityTotal) { ({{
+              formatNumber(detail.quantityEach) }} {{ detail.quantityUnit }}
+              each) } @if (detail.notes) {
               <span class="notes">{{ detail.notes }}</span>
               } @if (detail.topUp) {
               <span class="top-up">&nbsp;(top up)</span>

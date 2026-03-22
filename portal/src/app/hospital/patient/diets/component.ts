@@ -8,6 +8,7 @@ import {
 } from '../../state';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import {
+  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
@@ -55,6 +56,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         quantityUnit: FormControl<string | null>;
         notes: FormControl<string | null>;
         topUp: FormControl<boolean | null>;
+        noQuantity: FormControl<boolean | null>;
       }>
     >([]),
   });
@@ -124,6 +126,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         quantityUnit: feeding.quantityUnit,
         notes: feeding.notes,
         topUp: feeding.topUp,
+        noQuantity: !feeding.quantityValue,
         foodId: String(feeding.food.id),
       });
     }
@@ -149,17 +152,32 @@ export class HospitalPatientDietsComponent implements OnInit {
   }
 
   addFeedingGuidance() {
-    const formGroup = new FormGroup({
-      foodId: new FormControl('', [Validators.required]),
-      timeKind: new FormControl('Specific'),
-      time: new FormControl('', [Validators.required]),
-      quantityValue: new FormControl('', [Validators.required]),
-      quantityUnit: new FormControl(''),
-      notes: new FormControl(''),
-      topUp: new FormControl(false),
-    });
+    const formGroup = new FormGroup(
+      {
+        foodId: new FormControl('', [Validators.required]),
+        timeKind: new FormControl('Specific'),
+        time: new FormControl('', [Validators.required]),
+        quantityValue: new FormControl(''),
+        quantityUnit: new FormControl(''),
+        notes: new FormControl(''),
+        topUp: new FormControl(false),
+        noQuantity: new FormControl(false),
+      },
+      { validators: this.quantityValidator },
+    );
     this.dietForm.controls.feeding.push(formGroup);
     return formGroup;
+  }
+
+  quantityValidator(group: AbstractControl) {
+    const noQuantity = group.get('noQuantity')?.value;
+    const quantityValue = group.get('quantityValue')?.value;
+
+    if (!noQuantity && !quantityValue) {
+      return { quantityRequired: true };
+    }
+
+    return null;
   }
 
   removeFeedingGuidance(index: number) {
@@ -211,8 +229,12 @@ export class HospitalPatientDietsComponent implements OnInit {
         update: 'feeding',
         feeding: this.dietForm.controls.feeding.controls.map((group) => ({
           time: this.convertTime(group.value.time!),
-          quantityUnit: group.value.quantityUnit! || ' ',
-          quantityValue: Number(group.value.quantityValue!),
+          quantityUnit: group.value.noQuantity
+            ? ''
+            : group.value.quantityUnit! || ' ',
+          quantityValue: Number(
+            group.value.noQuantity ? 0 : group.value.quantityValue!,
+          ),
           notes: group.value.notes,
           topUp: group.value.topUp || false,
           foodId: Number(group.value.foodId!),

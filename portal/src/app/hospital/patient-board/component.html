@@ -170,27 +170,24 @@
             @for (group of groupFeeding(feeding.details); track group.key) { @if
             (group.title) {
             <p class="group">{{ group.title }}</p>
-            }
-            <table class="details">
-              @for (detail of group.details; track detail) {
-              <tr class="item">
-                <td class="quantity">
-                  @if (detail.quantityTotal) { {{
-                  formatNumber(detail.quantityTotal) }} {{ detail.quantityUnit
-                  }} }
-                </td>
-                <td class="food">{{ detail.food }}</td>
-                <td class="each">
-                  @if (detail.quantityEach != detail.quantityTotal) { ({{
-                  formatNumber(detail.quantityEach) }} {{ detail.quantityUnit }}
-                  each) }
-                </td>
-                <td>@if (detail.notes) { {{ detail.notes }} }</td>
-              </tr>
-              <tr class="notes"></tr>
+            } @for (detail of group.details; track detail) {
+            <p class="details">
+              @if (detail.quantityTotal) {
+              <span class="quantity"
+                >{{ formatNumber(detail.quantityTotal) }} {{ detail.quantityUnit
+                }}</span
+              >
               }
-            </table>
-            }
+              <span class="food"> {{ detail.food }} </span>
+              @if (detail.quantityEach != detail.quantityTotal) {
+              <span class="each">
+                ({{ formatNumber(detail.quantityEach) }} {{ detail.quantityUnit
+                }} each)
+              </span>
+              } @if (detail.notes) {
+              <span class="notes"> {{ detail.notes }} </span> }
+            </p>
+            } }
           </div>
         </div>
       </div>

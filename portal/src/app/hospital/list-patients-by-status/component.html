@@ -19,11 +19,26 @@
       <option [value]="25">25</option>
       <option [value]="50">50</option>
       <option [value]="100">100</option>
+      <option [value]="150">150</option>
+      <option [value]="200">200</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="sortBy">Sort by</label>
+    <select
+      id="sortBy"
+      [ngModel]="sortBy$ | async"
+      (ngModelChange)="sortBy$.next($event)"
+    >
+      <option [value]="1">Date admitted</option>
+      <option [value]="2">Species</option>
+      <option [value]="3">Location</option>
     </select>
   </div>
   <div class="field">
     <label for="pages">&nbsp;</label>
-    @if (totalPages$ | async; as totalPages) {
+    @if (patients$ | async; as patients) { @if (!patients.loading &&
+    patients.data) { @if (totalPages$ | async; as totalPages) {
     <div class="pagination">
       <button class="nav" (click)="goToPage(1)" [disabled]="page === 1">
         &#x219E;
@@ -44,8 +59,9 @@
       >
         &#x21A0;
       </button>
+      <div class="showing">{{ showingMessage }}</div>
     </div>
-    }
+    } } }
   </div>
 </div>
 
@@ -66,7 +82,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) {
+    @for (patient of patients.data.patients; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -93,7 +109,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) {
+    @for (patient of patients.data.patients; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -136,7 +152,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) {
+    @for (patient of patients.data.patients; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -176,8 +192,9 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) {
+    @for (patient of patients.data.patients; track patient.id) {
     <tr>
+      @let latestRequest = getLatestHomeCareRequest(patient.homeCareRequests);
       <td>
         @if (patient.lastMessageSentByOrphanFeeder) { 🔴 }
         <a (click)="view(patient)">{{ patient.reference }}</a>
@@ -185,10 +202,7 @@
       <td>{{ patient.species?.name }}</td>
       <td>{{ patient.speciesVariant?.name }}</td>
       <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
-      <td>
-        @for (request of patient.homeCareRequests; track request.id) { {{
-        request.pickup | date: 'dd MMM yyyy HH:mm' }} }
-      </td>
+      <td>{{ latestRequest?.pickup | date: 'dd MMM yyyy HH:mm' }}</td>
       @if (patient.pen) {
       <td>
         {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
@@ -201,8 +215,8 @@
       </td>
       }
       <td>
-        @for (request of patient.homeCareRequests; track request.id) { {{
-        request.responder?.firstName }} {{ request.responder?.lastName }} }
+        {{ latestRequest?.responder?.firstName }} {{
+        latestRequest?.responder?.lastName }}
       </td>
     </tr>
     }
@@ -221,7 +235,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (patient of patients.data; track patient.id) {
+    @for (patient of patients.data.patients; track patient.id) {
     <tr>
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>

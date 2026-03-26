@@ -55,6 +55,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
         notes: FormControl<string | null>;
+        dish: FormControl<string | null>;
         topUp: FormControl<boolean | null>;
         noQuantity: FormControl<boolean | null>;
       }>
@@ -125,6 +126,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         quantityValue: String(feeding.quantityValue),
         quantityUnit: feeding.quantityUnit,
         notes: feeding.notes,
+        dish: feeding.dish,
         topUp: feeding.topUp,
         noQuantity: !feeding.quantityValue,
         foodId: String(feeding.food.id),
@@ -160,6 +162,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         quantityValue: new FormControl(''),
         quantityUnit: new FormControl(''),
         notes: new FormControl(''),
+        dish: new FormControl(''),
         topUp: new FormControl(false),
         noQuantity: new FormControl(false),
       },
@@ -236,6 +239,7 @@ export class HospitalPatientDietsComponent implements OnInit {
             group.value.noQuantity ? 0 : group.value.quantityValue!,
           ),
           notes: group.value.notes,
+          dish: group.value.dish,
           topUp: group.value.topUp || false,
           foodId: Number(group.value.foodId!),
         })),

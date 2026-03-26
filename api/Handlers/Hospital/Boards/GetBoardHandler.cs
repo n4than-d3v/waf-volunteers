@@ -300,6 +300,9 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 Notes = string.Join(" ", group.Where(g => !string.IsNullOrWhiteSpace(g.Feeding.Notes))
                                                .Select(g => g.Feeding.Notes)
                                                .Distinct()),
+                Dish = string.Join(" ", group.Where(g => !string.IsNullOrWhiteSpace(g.Feeding.Dish))
+                                               .Select(g => g.Feeding.Dish)
+                                               .Distinct()),
                 TopUp = group.Any(g => g.Feeding.TopUp)
             }).ToArray();
 
@@ -399,5 +402,6 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public string Food { get; set; }
         public bool TopUp { get; set; }
         public string Notes { get; set; }
+        public string Dish { get; set; }
     }
 }

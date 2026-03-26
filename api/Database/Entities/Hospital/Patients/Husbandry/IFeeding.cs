@@ -8,4 +8,5 @@ public interface IFeeding
     public Food Food { get; set; }
     public bool TopUp { get; set; }
     public string? Notes { get; set; }
+    public string? Dish { get; set; }
 }

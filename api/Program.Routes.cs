@@ -349,7 +349,7 @@ public partial class Program
             .AddNote("View patient counts by status")
             .RequireAuthorization(signedInPolicy);
 
-        apiHospitalPatient.MapGet("/status/{status:int}", (IMediator mediator, int status, string search, int page, int pageSize) => mediator.Send(new ViewPatients { Status = (PatientStatus)status, Search = search, Page = page, PageSize = pageSize }))
+        apiHospitalPatient.MapGet("/status/{status:int}", (IMediator mediator, int status, string search, int page, int pageSize, int sortBy) => mediator.Send(new ViewPatients { Status = (PatientStatus)status, Search = search, Page = page, PageSize = pageSize, SortBy = (SortPatientsBy)sortBy }))
             .AddNote("Filter patients by status")
             .RequireAuthorization(signedInPolicy);
 

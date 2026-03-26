@@ -27,6 +27,7 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
         public int FoodId { get; set; }
         public bool TopUp { get; set; }
         public string? Notes { get; set; }
+        public string? Dish { get; set; }
     }
 
     public UpdatePatientBasicDetails WithId(int id)
@@ -80,45 +81,26 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
         patient.Tags.RemoveAll(x => !request.TagIds.Contains(x.Id));
         patient.Tags.AddRange(tags.Where(x => request.TagIds.Contains(x.Id)));
 
-        var existingDiets = patient.Feeding.ToList();
+        patient.Feeding ??= [];
+        patient.Feeding.RemoveAll(x => true);
 
-        foreach (var existingItem in existingDiets)
+        foreach (var item in request.Feeding)
         {
-            if (!request.Feeding.Any(r => r.QuantityUnit == existingItem.QuantityUnit && r.Time == existingItem.Time && r.FoodId == existingItem.Food.Id))
-            {
-                patient.Feeding.Remove(existingItem);
-                _repository.Delete(existingItem);
-            }
-        }
+            var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
+            if (food == null) return Results.BadRequest();
 
-        foreach (var item in request.Feeding.OrderBy(x => x.QuantityValue))
-        {
-            var existingItem = existingDiets.FirstOrDefault(x => x.QuantityUnit == item.QuantityUnit && x.Time == item.Time && x.Food.Id == item.FoodId);
-            if (existingItem != null)
+            var newDiet = new PatientFeeding
             {
-                existingItem.QuantityValue = item.QuantityValue;
-                existingItem.QuantityUnit = item.QuantityUnit;
-                existingItem.TopUp = item.TopUp;
-                existingItem.Notes = item.Notes;
-            }
-            else
-            {
-                var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
-                if (food == null) return Results.BadRequest();
+                Food = food,
+                Time = item.Time,
+                QuantityValue = item.QuantityValue,
+                QuantityUnit = item.QuantityUnit,
+                TopUp = item.TopUp,
+                Notes = item.Notes,
+                Patient = patient
+            };
 
-                var newDiet = new PatientFeeding
-                {
-                    Food = food,
-                    Time = item.Time,
-                    QuantityValue = item.QuantityValue,
-                    QuantityUnit = item.QuantityUnit,
-                    TopUp = item.TopUp,
-                    Notes = item.Notes,
-                    Patient = patient
-                };
-
-                patient.Feeding.Add(newDiet);
-            }
+            patient.Feeding.Add(newDiet);
         }
 
         await _repository.SaveChangesAsync();

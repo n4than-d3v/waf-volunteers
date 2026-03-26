@@ -167,18 +167,29 @@
         <div class="feeding">
           <div>
             <p class="time">{{ feeding.time }}</p>
-            @for (detail of feeding.details; track detail) {
-            <p class="details">
-              @if (detail.quantityTotal) { {{ formatNumber(detail.quantityTotal)
-              }} {{ detail.quantityUnit }} } {{ detail.food }} @if
-              (detail.quantityEach != detail.quantityTotal) { ({{
-              formatNumber(detail.quantityEach) }} {{ detail.quantityUnit }}
-              each) } @if (detail.notes) {
-              <span class="notes">{{ detail.notes }}</span>
-              } @if (detail.topUp) {
-              <span class="top-up">&nbsp;(top up)</span>
+            @for (group of groupFeeding(feeding.details); track group.key) { @if
+            (group.title) {
+            <p class="group">{{ group.title }}</p>
+            }
+            <table class="details">
+              @for (detail of group.details; track detail) {
+              <tr class="item">
+                <td class="quantity">
+                  @if (detail.quantityTotal) { {{
+                  formatNumber(detail.quantityTotal) }} {{ detail.quantityUnit
+                  }} }
+                </td>
+                <td class="food">{{ detail.food }}</td>
+                <td class="each">
+                  @if (detail.quantityEach != detail.quantityTotal) { ({{
+                  formatNumber(detail.quantityEach) }} {{ detail.quantityUnit }}
+                  each) }
+                </td>
+                <td>@if (detail.notes) { {{ detail.notes }} }</td>
+              </tr>
+              <tr class="notes"></tr>
               }
-            </p>
+            </table>
             }
           </div>
         </div>

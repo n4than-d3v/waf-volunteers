@@ -76,6 +76,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
         quantityValue: FormControl<string | null>;
         quantityUnit: FormControl<string | null>;
         notes: FormControl<string | null>;
+        dish: FormControl<string | null>;
         topUp: FormControl<boolean | null>;
       }>
     >([]),
@@ -96,6 +97,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
       quantityValue: new FormControl('', [Validators.required]),
       quantityUnit: new FormControl('', [Validators.required]),
       notes: new FormControl(''),
+      dish: new FormControl(''),
       topUp: new FormControl(false),
     });
     this.speciesVariantForm.controls.feedingGuidance.push(formGroup);
@@ -178,6 +180,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           formGroup.controls.time.setValue(fg.time);
         }
         formGroup.controls.notes.setValue(fg.notes);
+        formGroup.controls.dish.setValue(fg.dish);
         formGroup.controls.topUp.setValue(fg.topUp);
       });
     }
@@ -259,6 +262,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
               quantityValue: Number(fg.quantityValue),
               quantityUnit: fg.quantityUnit,
               notes: fg.notes,
+              dish: fg.dish,
               topUp: fg.topUp || false,
             })) || [],
         },
@@ -314,6 +318,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
               quantityValue: Number(fg.quantityValue),
               quantityUnit: fg.quantityUnit,
               notes: fg.notes,
+              dish: fg.dish,
               topUp: fg.topUp || false,
             })) || [],
         },

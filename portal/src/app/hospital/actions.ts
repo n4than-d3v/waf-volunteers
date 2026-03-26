@@ -59,12 +59,13 @@ export const getPatientsByStatus = createAction(
     search: string;
     page: number;
     pageSize: number;
+    sortBy: number;
     silent: boolean;
   }>(),
 );
 export const getPatientsByStatusSuccess = createAction(
   '[HMS-V] Get patients by status: success',
-  props<{ patients: ListPatient[] }>(),
+  props<{ total: number; patients: ListPatient[] }>(),
 );
 export const getPatientsByStatusError = createAction(
   '[HMS-V] Get patients by status: error',

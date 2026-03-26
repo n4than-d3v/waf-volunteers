@@ -9,6 +9,7 @@ import {
 } from 'rxjs';
 import {
   getDisposition,
+  HomeCareRequest,
   ListPatient,
   PatientCounts,
   PatientStatus,
@@ -25,6 +26,7 @@ import moment from 'moment';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, skip } from 'rxjs/operators';
 import { SpinnerComponent } from '../../shared/spinner/component';
+import { formatFractionalNumber } from '../../admin/hospital/state';
 
 @Component({
   selector: 'hospital-list-patients-by-status',
@@ -34,59 +36,86 @@ import { SpinnerComponent } from '../../shared/spinner/component';
   imports: [AsyncPipe, DatePipe, SpinnerComponent, FormsModule],
 })
 export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
+  readonly LS_SORT_BY = 'hospital-list-sort-by';
   readonly LS_PAGE_SIZE = 'hospital-list-page-size';
   readonly LS_SEARCH = 'hospital-list-page-search';
 
   @Input() set status(status: PatientStatus) {
     this._status = status;
-    console.log('initial set status');
+    this.useLocalStorage();
     this.dispatch(false);
   }
 
   _status: PatientStatus | null = null;
 
+  showingMessage = '';
   search$: BehaviorSubject<string>;
   totalPages$: Observable<number>;
   pageSize$: BehaviorSubject<number>;
+  sortBy$: BehaviorSubject<number>;
   page = 1;
 
   PatientStatus = PatientStatus;
   getDisposition = getDisposition;
 
   patientCounts$: Observable<ReadOnlyWrapper<PatientCounts>>;
-  patients$: Observable<ReadOnlyWrapper<ListPatient[]>>;
+  patients$: Observable<
+    ReadOnlyWrapper<{ total: number; patients: ListPatient[] }>
+  >;
 
   subscription: Subscription | null = null;
 
   constructor(private store: Store) {
-    let pageSize = 25;
-    let pageSizeFromLS = localStorage.getItem(this.LS_PAGE_SIZE);
-    if (pageSizeFromLS) {
-      pageSize = Number(pageSizeFromLS);
-    }
-    this.pageSize$ = new BehaviorSubject<number>(pageSize);
-
-    let search = '';
-    let searchFromLS = localStorage.getItem(this.LS_SEARCH);
-    if (searchFromLS) {
-      search = String(searchFromLS);
-    }
-    this.search$ = new BehaviorSubject<string>(search);
+    this.sortBy$ = new BehaviorSubject<number>(1);
+    this.pageSize$ = new BehaviorSubject<number>(25);
+    this.search$ = new BehaviorSubject<string>('');
 
     this.patients$ = this.store.select(selectPatientsByStatus);
     this.patientCounts$ = this.store.select(selectPatientCounts);
+
     this.totalPages$ = combineLatest([
-      this.patientCounts$,
+      this.patients$,
       this.pageSize$,
       this.search$,
     ]).pipe(
-      map(([counts, pageSize, _]) => {
-        if (!counts?.data || !this._status) return 1;
+      map(([patients, pageSize, _]) => {
+        if (!patients?.data || !this._status) return 1;
 
-        const total = this.getTotalForStatus(counts.data, this._status);
+        const total = patients.data.total;
+        this.setShowingMessage(total);
         return Math.max(1, Math.ceil(total / pageSize));
       }),
     );
+  }
+
+  private useLocalStorage() {
+    if (!this._status) return;
+
+    const sortByLS = localStorage.getItem(this.LS_SORT_BY + this._status);
+    const pageSizeLS = localStorage.getItem(this.LS_PAGE_SIZE + this._status);
+    const searchLS = localStorage.getItem(this.LS_SEARCH + this._status);
+
+    this.sortBy$.next(sortByLS ? Number(sortByLS) : 1);
+    this.pageSize$.next(pageSizeLS ? Number(pageSizeLS) : 25);
+    this.search$.next(searchLS ?? '');
+  }
+
+  getLatestHomeCareRequest(requests: HomeCareRequest[]) {
+    if (!requests?.length) return null;
+
+    const pickups = [...requests].filter((x) => x.pickup);
+    if (pickups.length === 0) return null;
+
+    return pickups.sort(
+      (a, b) => new Date(b.pickup!).getTime() - new Date(a.pickup!).getTime(),
+    )[0];
+  }
+
+  private setShowingMessage(total: number) {
+    const pageSize = Number(this.pageSize$.getValue());
+    const from = (this.page - 1) * pageSize + 1;
+    const to = Math.min(total, from + pageSize - 1);
+    this.showingMessage = `Showing ${formatFractionalNumber(from)} to ${formatFractionalNumber(to)} of ${formatFractionalNumber(total)}`;
   }
 
   duration(patient: ListPatient) {
@@ -141,28 +170,6 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
     return pages;
   }
 
-  private getTotalForStatus(
-    counts: PatientCounts,
-    status: PatientStatus,
-  ): number {
-    switch (status) {
-      case PatientStatus.PendingInitialExam:
-        return counts.pendingInitialExam;
-      case PatientStatus.Inpatient:
-        return counts.inpatient;
-      case PatientStatus.PendingHomeCare:
-        return counts.pendingHomeCare;
-      case PatientStatus.ReceivingHomeCare:
-        return counts.receivingHomeCare;
-      case PatientStatus.ReadyForRelease:
-        return counts.readyForRelease;
-      case PatientStatus.Dispositioned:
-        return counts.dispositioned;
-      default:
-        return 0;
-    }
-  }
-
   nextPage() {
     this.page++;
     console.log('nextPage');
@@ -185,11 +192,14 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   private dispatch(silent: boolean) {
     if (!this._status) return;
 
+    const sortBy = this.sortBy$.getValue();
+    localStorage.setItem(this.LS_SORT_BY + this._status, sortBy.toString());
+
     const pageSize = this.pageSize$.getValue();
-    localStorage.setItem(this.LS_PAGE_SIZE, pageSize.toString());
+    localStorage.setItem(this.LS_PAGE_SIZE + this._status, pageSize.toString());
 
     const search = this.search$.getValue();
-    localStorage.setItem(this.LS_SEARCH, search.toString());
+    localStorage.setItem(this.LS_SEARCH + this._status, search.toString());
 
     this.store.dispatch(
       getPatientsByStatus({
@@ -197,6 +207,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
         search,
         page: this.page,
         pageSize,
+        sortBy,
         silent,
       }),
     );
@@ -215,6 +226,14 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
           console.log('search');
           this.dispatch(false);
         }),
+    );
+
+    this.subscription.add(
+      this.sortBy$.pipe(skip(1)).subscribe((_) => {
+        this.page = 1; // reset page
+        console.log('sortBy');
+        this.dispatch(false);
+      }),
     );
 
     this.subscription.add(

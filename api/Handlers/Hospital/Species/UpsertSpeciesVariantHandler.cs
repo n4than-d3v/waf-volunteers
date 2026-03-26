@@ -24,6 +24,7 @@ public class UpsertSpeciesVariant : IRequest<IResult>
         public int FoodId { get; set; }
         public bool TopUp { get; set; }
         public string? Notes { get; set; }
+        public string? Dish { get; set; }
     }
 }
 
@@ -71,45 +72,26 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
             _repository.Create(speciesVariant);
         }
 
-        var existingGuidance = speciesVariant.FeedingGuidance.ToList();
-
-        foreach (var existingItem in existingGuidance)
-        {
-            if (!request.FeedingGuidance.Any(r => r.Time == existingItem.Time && r.FoodId == existingItem.Food.Id))
-            {
-                speciesVariant.FeedingGuidance.Remove(existingItem);
-                _repository.Delete(existingItem);
-            }
-        }
+        speciesVariant.FeedingGuidance.RemoveAll(x => true);
 
         foreach (var item in request.FeedingGuidance)
         {
-            var existingItem = existingGuidance.FirstOrDefault(x => x.Time == item.Time && x.Food.Id == item.FoodId);
-            if (existingItem != null)
-            {
-                existingItem.QuantityValue = item.QuantityValue;
-                existingItem.QuantityUnit = item.QuantityUnit;
-                existingItem.TopUp = item.TopUp;
-                existingItem.Notes = item.Notes;
-            }
-            else
-            {
-                var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
-                if (food == null) return Results.BadRequest();
+            var food = foods.FirstOrDefault(f => f.Id == item.FoodId);
+            if (food == null) return Results.BadRequest();
 
-                var newGuidance = new SpeciesVariantFeeding
-                {
-                    Food = food,
-                    Time = item.Time,
-                    QuantityValue = item.QuantityValue,
-                    QuantityUnit = item.QuantityUnit,
-                    TopUp = item.TopUp,
-                    Notes = item.Notes,
-                    SpeciesVariant = speciesVariant
-                };
+            var newGuidance = new SpeciesVariantFeeding
+            {
+                Food = food,
+                Time = item.Time,
+                QuantityValue = item.QuantityValue,
+                QuantityUnit = item.QuantityUnit,
+                TopUp = item.TopUp,
+                Notes = item.Notes,
+                Dish = item.Dish,
+                SpeciesVariant = speciesVariant
+            };
 
-                speciesVariant.FeedingGuidance.Add(newGuidance);
-            }
+            speciesVariant.FeedingGuidance.Add(newGuidance);
         }
 
         await _repository.SaveChangesAsync();

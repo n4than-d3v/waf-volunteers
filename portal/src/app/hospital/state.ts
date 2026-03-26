@@ -7,7 +7,7 @@ export interface HospitalState {
   dashboard: ReadOnlyWrapper<Dashboard>;
 
   patientCounts: ReadOnlyWrapper<PatientCounts>;
-  patientsByStatus: ReadOnlyWrapper<ListPatient[]>;
+  patientsByStatus: ReadOnlyWrapper<{ total: number; patients: ListPatient[] }>;
 
   patient: ReadOnlyWrapper<Patient>;
   searchPatient: Task & { id: number | null };
@@ -458,6 +458,7 @@ export interface Feeding {
   quantityValue: number;
   quantityUnit: string;
   notes: string;
+  dish: string;
   topUp: boolean;
   food: { id: number; name: string };
 }
@@ -720,6 +721,7 @@ export interface PatientBoardAreaPenTaskDetails {
   food: string;
   topUp: string;
   notes: string;
+  dish: string;
 }
 
 export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
@@ -741,7 +743,10 @@ export const initialHospitalState: HospitalState = {
   markPenClean: createTask(),
   dashboard: createReadOnlyWrapper<Dashboard>(),
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
-  patientsByStatus: createReadOnlyWrapper<ListPatient[]>(),
+  patientsByStatus: createReadOnlyWrapper<{
+    total: number;
+    patients: ListPatient[];
+  }>(),
   patient: createReadOnlyWrapper<Patient>(),
   searchPatient: { ...createTask(), id: null },
   attitudes: createReadOnlyWrapper<Attitude[]>(),

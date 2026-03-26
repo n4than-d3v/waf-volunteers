@@ -41,8 +41,8 @@ th {
     padding: 0.25rem 0.5rem;
   }
 
-  select {
-    width: 6ch;
+  select#pageSize {
+    width: 7ch;
   }
 }
 
@@ -74,5 +74,11 @@ th {
     &.nav {
       font-weight: bold;
     }
+  }
+
+  .showing {
+    color: #555555;
+    padding-left: 0.25rem;
+    font-size: 1rem;
   }
 }

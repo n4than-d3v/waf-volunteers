@@ -193,6 +193,12 @@ h1 {
             font-size: 1rem;
           }
 
+          .group {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: rgb(45, 45, 45);
+          }
+
           ul {
             margin-left: 1rem;
 
@@ -202,9 +208,36 @@ h1 {
           }
 
           .details {
-            color: rgb(57, 57, 57);
-            font-size: 0.9rem;
             margin-top: -0.125rem;
+
+            tr.item:not(:first-child) td {
+              padding-top: 0rem;
+              border-top: solid 1px rgb(138, 138, 138);
+            }
+
+            tr.notes td {
+              text-align: right;
+              font-style: italic;
+            }
+
+            td {
+              color: rgb(57, 57, 57);
+              font-size: 0.9rem;
+              padding: 0.125rem 0.25rem;
+              border: none;
+
+              &.quantity {
+                text-align: right;
+                width: 1%;
+              }
+
+              &.quantity,
+              &.each,
+              &.food {
+                white-space: nowrap;
+                vertical-align: top;
+              }
+            }
           }
         }
       }

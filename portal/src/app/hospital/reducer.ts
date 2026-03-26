@@ -271,11 +271,11 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: false,
     },
   })),
-  on(getPatientsByStatusSuccess, (state, { patients }) => ({
+  on(getPatientsByStatusSuccess, (state, { total, patients }) => ({
     ...state,
     patientsByStatus: {
       ...state.patientsByStatus,
-      data: patients,
+      data: { total, patients },
       loading: false,
     },
   })),

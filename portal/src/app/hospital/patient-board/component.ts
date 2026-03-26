@@ -15,6 +15,7 @@ import {
   PatientBoard,
   PatientBoardArea,
   PatientBoardAreaPen,
+  PatientBoardAreaPenTaskDetails,
   ReadOnlyWrapper,
 } from '../state';
 import { selectPatientBoard, selectPatientBoards } from '../selectors';
@@ -28,6 +29,7 @@ import {
   formatFractionalNumber,
   PatientBoardAreaDisplayType,
 } from '../../admin/hospital/state';
+import { FoodSection } from './food-section';
 
 @Pipe({
   name: 'sortBoardAreas',
@@ -229,6 +231,33 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
+  }
+
+  groupFeeding(items: PatientBoardAreaPenTaskDetails[]): FoodSection[] {
+    const hasDishes = items.some((item) => !!item.dish);
+    const hasTopUps = items.some((item) => item.topUp);
+
+    const map = new Map<string, FoodSection>();
+
+    for (const item of items) {
+      const key = `${item.dish}__${item.topUp}`;
+
+      if (!map.has(key)) {
+        map.set(key, {
+          key,
+          title: (
+            (item.topUp ? '(Top up)' : hasTopUps ? '(Feed)' : '') +
+            ' ' +
+            (item.dish ? item.dish : hasDishes ? 'Separate' : '')
+          ).trim(),
+          details: [],
+        });
+      }
+
+      map.get(key)!.details.push(item);
+    }
+
+    return Array.from(map.values());
   }
 
   anyOtherBoards(areas: PatientBoardArea[]) {

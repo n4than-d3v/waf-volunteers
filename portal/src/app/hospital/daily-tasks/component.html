@@ -22,12 +22,8 @@
       rows="3"
     ></textarea>
   </div>
-  @if (performingRecheck.requireWeight) {
   <div class="field require-weight">
-    <label for="weight">
-      Weight
-      <span class="required">*</span>
-    </label>
+    <label for="weight"> Weight </label>
     <div class="input-with-units">
       <input
         id="weight"
@@ -41,7 +37,6 @@
       </select>
     </div>
   </div>
-  }
   <div class="hint">
     If you are using a shared device, please add your initials in the comment.
   </div>
@@ -72,14 +67,6 @@
       <option value="1">Veterinarian</option>
       <option value="2">Technician</option>
     </select>
-  </div>
-  <div class="field">
-    <label for="requireWeight"> Require weight </label>
-    <input
-      type="checkbox"
-      id="requireWeight"
-      [(ngModel)]="newRecheckRequireWeight[performingRecheck.id]"
-    />
   </div>
   <div class="field new-recheck-description">
     <label for="description">
@@ -402,10 +389,6 @@ administerPrescriptionTask.error) {
                   <th>Status</th>
                   <th>For</th>
                   <th>Recheck</th>
-                  @if (showMe.doneRechecks) {
-                  <th>Weight</th>
-                  <th>Comments</th>
-                  }
                   <th></th>
                 </tr>
               </thead>
@@ -426,14 +409,6 @@ administerPrescriptionTask.error) {
                   </td>
                   <td>{{ getRecheckRoles(recheck.roles) }}</td>
                   <td>{{ recheck.description }}</td>
-                  @if (showMe.doneRechecks) {
-                  <td>
-                    @if (recheck.weightValue && recheck.weightUnit) { {{
-                    recheck.weightValue }} {{ getWeightUnit(recheck.weightUnit)
-                    }} }
-                  </td>
-                  <td>{{ recheck.comments }}</td>
-                  }
                   <td>
                     @if (!recheck.rechecked) {
                     <div class="buttons buttons--check">

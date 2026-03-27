@@ -292,8 +292,8 @@ export const formatFeeding = (feeding: Feeding[]) => {
     if (guidance.quantityValue >= 0) {
       const message =
         guidance.quantityValue === 0
-          ? `${guidance.dish || ''} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`
-          : `${guidance.dish || ''} ${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.notes || ''} ${guidance.topUp ? '(top up)' : ''}`;
+          ? `${guidance.food.name} ${guidance.topUp ? '(top up)' : ''}`
+          : `${formatFractionalNumber(guidance.quantityValue)} ${guidance.quantityUnit} ${guidance.food.name} ${guidance.topUp ? '(top up)' : ''}`;
       if (every) {
         for (const intervalTime of times) {
           acc[intervalTime].push(message);

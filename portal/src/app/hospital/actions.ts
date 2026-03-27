@@ -520,7 +520,6 @@ export const addRecheck = createAction(
     roles: number;
     description: string;
     due: string;
-    requireWeight: boolean;
   }>(),
 );
 export const addRecheckSuccess = createAction(
@@ -539,7 +538,6 @@ export const updateRecheck = createAction(
     roles: number;
     description: string;
     due: string;
-    requireWeight: boolean;
   }>(),
 );
 export const updateRecheckSuccess = createAction(

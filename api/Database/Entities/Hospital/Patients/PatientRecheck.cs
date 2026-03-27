@@ -15,13 +15,9 @@ public class PatientRecheck : Entity
     public DateOnly Due { get; set; }
     public string Description { get; set; }
     public RecheckRoles Roles { get; set; }
-    public bool RequireWeight { get; set; }
 
     public Rechecker? Rechecker { get; set; }
     public DateTime? Rechecked { get; set; }
-    public string? Comments { get; set; }
-    public decimal? WeightValue { get; set; }
-    public WeightUnit? WeightUnit { get; set; }
 
     [NotMapped]
     public int ViewPatientId => Patient.Id;

@@ -320,10 +320,6 @@ export interface ListRecheck {
   roles: number;
   rechecker: { firstName: string; lastName: string } | null;
   rechecked: string | null;
-  comments: string | null;
-  requireWeight: boolean;
-  weightValue: number | null;
-  weightUnit: number | null;
 
   viewPatientId: number;
   reference: string;

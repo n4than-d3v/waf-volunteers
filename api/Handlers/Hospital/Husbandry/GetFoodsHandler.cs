@@ -20,6 +20,6 @@ public class GetFoodsHandler : IRequestHandler<GetFoods, IResult>
     public async Task<IResult> Handle(GetFoods request, CancellationToken cancellationToken)
     {
         var foods = await _repository.GetAll<Food>(x => true, tracking: false);
-        return Results.Ok(foods);
+        return Results.Ok(foods.OrderBy(x => x.Name));
     }
 }

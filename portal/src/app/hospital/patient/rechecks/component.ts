@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import {
   getRecheckRoles,
-  getWeightUnit,
   ListRecheck,
   Patient,
   PatientStatus,
@@ -61,7 +60,6 @@ export class HospitalPatientRechecksComponent {
     roles: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     due: new FormControl('', [Validators.required]),
-    requireWeight: new FormControl(false, { nonNullable: true }),
   });
 
   prepareEdit(recheck: ListRecheck) {
@@ -70,7 +68,6 @@ export class HospitalPatientRechecksComponent {
       roles: String(recheck.roles),
       description: recheck.description,
       due: recheck.due,
-      requireWeight: recheck.requireWeight,
     });
   }
 
@@ -85,7 +82,6 @@ export class HospitalPatientRechecksComponent {
         roles: Number(this.recheckForm.value.roles),
         description: this.recheckForm.value.description!,
         due: this.recheckForm.value.due!,
-        requireWeight: this.recheckForm.value.requireWeight!,
       }),
     );
     this.reset();
@@ -101,7 +97,6 @@ export class HospitalPatientRechecksComponent {
         roles: Number(this.recheckForm.value.roles),
         description: this.recheckForm.value.description!,
         due: this.recheckForm.value.due!,
-        requireWeight: this.recheckForm.value.requireWeight!,
       }),
     );
     this.reset();
@@ -128,5 +123,4 @@ export class HospitalPatientRechecksComponent {
   }
 
   getRecheckRoles = getRecheckRoles;
-  getWeightUnit = getWeightUnit;
 }

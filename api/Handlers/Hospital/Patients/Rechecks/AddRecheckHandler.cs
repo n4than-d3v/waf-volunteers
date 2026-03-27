@@ -11,7 +11,6 @@ public class AddRecheck : IRequest<IResult>
     public RecheckRoles Roles { get; set; }
     public string Description { get; set; }
     public DateOnly Due { get; set; }
-    public bool RequireWeight { get; set; }
 
     public AddRecheck WithId(int id)
     {
@@ -41,7 +40,6 @@ public class AddRecheckHandler : IRequestHandler<AddRecheck, IResult>
             Patient = patient,
             Description = request.Description,
             Roles = request.Roles,
-            RequireWeight = request.RequireWeight,
             Due = request.Due
         };
 

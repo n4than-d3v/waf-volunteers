@@ -87,7 +87,7 @@ export class VolunteerRotaComponent implements OnInit {
         timeId: shift.time.id!,
         jobId: shift.job.id!,
         shiftType,
-      })
+      }),
     );
   }
 
@@ -100,7 +100,7 @@ export class VolunteerRotaComponent implements OnInit {
         missingReasonId: this.missingReasonId!,
         customMissingReason: this.customMissingReason,
         shiftType,
-      })
+      }),
     );
     this.askingWhyDenying = null;
     this.missingReasonId = -1;
@@ -121,7 +121,7 @@ export class VolunteerRotaComponent implements OnInit {
         timeId: Number(this.irregularShiftTime),
         jobId: Number(this.irregularShiftJob),
         shiftType: ShiftType.Extra,
-      })
+      }),
     );
     this.cancelSigningUpExtra();
   }
@@ -142,7 +142,7 @@ export class VolunteerRotaComponent implements OnInit {
 
   formatWorkExperiences(shift: Shift) {
     return shift.workExperiences
-      .map((x) => `${x.name} - ${x.notes}`)
+      .map((x) => (x.notes ? `${x.name} - ${x.notes}` : x.name))
       .join(', ');
   }
 

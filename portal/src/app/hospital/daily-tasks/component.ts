@@ -86,7 +86,6 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
   isAddingRecheck = false;
   newRecheckDue: any = {};
   newRecheckRoles: any = {};
-  newRecheckRequireWeight: any = {};
   newRecheckDescription: any = {};
 
   constructor(
@@ -223,7 +222,6 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
     this.isAddingRecheck = false;
     this.newRecheckDue = {};
     this.newRecheckRoles = {};
-    this.newRecheckRequireWeight = {};
     this.newRecheckDescription = {};
     setTimeout(() => {
       window.scroll(0, this.previousScroll);
@@ -235,13 +233,6 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
 
   performRecheck(recheck: ListRecheck) {
     this.invalid = null;
-    if (
-      recheck.requireWeight &&
-      !(this.weightUnit[recheck.id] && this.weightValue[recheck.id])
-    ) {
-      this.invalid = recheck.id;
-      return;
-    }
     if (
       this.isAddingRecheck &&
       !(
@@ -271,7 +262,6 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
         addRecheck({
           due: this.newRecheckDue[recheck.id],
           roles: Number(this.newRecheckRoles[recheck.id]),
-          requireWeight: this.newRecheckRequireWeight[recheck.id] || false,
           description: this.newRecheckDescription[recheck.id],
           patientId: recheck.viewPatientId,
         }),

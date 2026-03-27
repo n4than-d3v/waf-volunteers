@@ -12,7 +12,6 @@ public class UpdateRecheck : IRequest<IResult>
     public RecheckRoles Roles { get; set; }
     public string Description { get; set; }
     public DateOnly Due { get; set; }
-    public bool RequireWeight { get; set; }
 
     public UpdateRecheck WithId(int id)
     {
@@ -37,7 +36,6 @@ public class UpdateRecheckHandler : IRequestHandler<UpdateRecheck, IResult>
 
         recheck.Description = request.Description;
         recheck.Roles = request.Roles;
-        recheck.RequireWeight = request.RequireWeight;
         recheck.Due = request.Due;
 
         await _repository.SaveChangesAsync();

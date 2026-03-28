@@ -5,7 +5,8 @@ import { VolunteerProfileComponent } from './volunteer/profile/component';
 import { VolunteerNoticesComponent } from './volunteer/notices/component';
 import { VolunteerNoticeViewComponent } from './volunteer/notices/view/component';
 import { VolunteerHomeCareComponent } from './volunteer/home-care/component';
-import { isAuthenticated, isOrphanFeeder } from './authentication/guards';
+import { isOrphanFeeder } from './authentication/guards';
+import { VolunteerPatientSummaryComponent } from './volunteer/patient-summary/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -20,6 +21,10 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: VolunteerProfileComponent,
+  },
+  {
+    path: 'patients',
+    component: VolunteerPatientSummaryComponent,
   },
   {
     path: 'notices',

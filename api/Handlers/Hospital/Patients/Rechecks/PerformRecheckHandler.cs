@@ -46,6 +46,8 @@ public class PerformRecheckHandler : IRequestHandler<PerformRecheck, IResult>
 
         recheck.Rechecker = rechecker;
         recheck.Rechecked = DateTime.UtcNow;
+        recheck.Patient.LastUpdatedDetails = DateTime.UtcNow;
+
         await _repository.SaveChangesAsync();
 
         if (request.WeightValue.HasValue || !string.IsNullOrWhiteSpace(request.Comments))

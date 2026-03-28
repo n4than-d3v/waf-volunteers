@@ -49,6 +49,7 @@ public class MarkPatientReleasedHandler : IRequestHandler<MarkPatientReleased, I
 
         patient.DispositionReasons?.Clear();
         patient.Disposition = Disposition.Released;
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;
         patient.Status = PatientStatus.Dispositioned;

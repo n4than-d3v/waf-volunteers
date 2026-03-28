@@ -46,6 +46,7 @@ public class Patient : Entity
     #region Ongoing care
 
     public PatientStatus Status { get; set; }
+    public DateTime LastUpdatedStatus { get; set; }
     public Pen? Pen { get; set; }
     [NotMapped]
     public Area? Area => Pen?.Area;

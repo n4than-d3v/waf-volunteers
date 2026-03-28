@@ -15,6 +15,7 @@ import {
   PatientBoard,
   PatientBoardArea,
   PatientBoardAreaPen,
+  PatientBoardAreaPenFeeding,
   PatientBoardAreaPenTaskDetails,
   ReadOnlyWrapper,
 } from '../state';
@@ -136,6 +137,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       '.tags',
       '.tasks',
       '.feeding-times',
+      '.force-feeds',
     ];
 
     // Group pens by row
@@ -179,22 +181,26 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     });
   }
 
-  shouldShowTime(time: string): boolean {
+  private nowToDecimal() {
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinutes = now.getMinutes();
 
     // Convert current time to decimal hours for easier comparison
-    const nowDecimal = currentHour + currentMinutes / 60;
+    return currentHour + currentMinutes / 60;
+  }
 
-    // Helper: convert "HH:MM" string to decimal hours
-    const timeToDecimal = (t: string) => {
-      const [h, m] = t.split(':').map(Number);
-      return h + m / 60;
-    };
+  // Helper: convert "HH:MM" string to decimal hours
+  private timeToDecimal(t: string) {
+    const [h, m] = t.split(':').map(Number);
+    return h + m / 60;
+  }
+
+  shouldShowTime(time: string): boolean {
+    const nowDecimal = this.nowToDecimal();
 
     if (/^\d{2}:\d{2}$/.test(time)) {
-      const targetDecimal = timeToDecimal(time);
+      const targetDecimal = this.timeToDecimal(time);
 
       if (0 <= nowDecimal && nowDecimal < 12.5)
         return 0 <= targetDecimal && targetDecimal <= 12.99;
@@ -233,6 +239,43 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
+  isCurrentShift(shift: 'M' | 'A' | 'E') {
+    const nowDecimal = this.nowToDecimal();
+
+    if (shift === 'M' && 0 <= nowDecimal && nowDecimal < 13) return true;
+    if (shift === 'A' && 13 <= nowDecimal && nowDecimal < 18) return true;
+    if (shift === 'E' && 18 <= nowDecimal && nowDecimal < 24) return true;
+    return false;
+  }
+
+  isNow(time: string) {
+    if (/^\d{2}:\d{2}$/.test(time)) {
+      const nowDecimal = this.nowToDecimal();
+      const timeDecimal = this.timeToDecimal(time);
+      return Math.abs(nowDecimal - timeDecimal) < 0.5;
+    }
+    return false;
+  }
+
+  hasForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]) {
+    return feedings.some((item) => item.forceFeed);
+  }
+
+  getForceFeeds(feedings: PatientBoardAreaPenFeeding[]) {
+    const times = feedings.filter((time) => this.shouldShowTime(time.time));
+    if (!times.some((time) => this.hasForceFeeds(time.details))) return [];
+
+    const result = new Set<string>();
+
+    times.forEach((time) => {
+      time.details.forEach((item) => {
+        const description = `${item.quantityEach} ${item.quantityUnit} ${item.food}`;
+        result.add(description.trim());
+      });
+    });
+    return result;
+  }
+
   groupFeeding(items: PatientBoardAreaPenTaskDetails[]): FoodSection[] {
     const hasDishes = items.some((item) => !!item.dish);
     const hasTopUps = items.some((item) => item.topUp);
@@ -240,13 +283,19 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     const map = new Map<string, FoodSection>();
 
     for (const item of items) {
-      const key = `${item.dish}__${item.topUp}`;
+      const key = `${item.dish}__${item.topUp}__${item.forceFeed}`;
 
       if (!map.has(key)) {
         map.set(key, {
           key,
           title: (
-            (item.topUp ? '(Top up)' : hasTopUps ? '(Feed)' : '') +
+            (item.forceFeed
+              ? '(Force feed)'
+              : item.topUp
+                ? '(Top up)'
+                : hasTopUps
+                  ? '(Feed)'
+                  : '') +
             ' ' +
             (item.dish ? item.dish : hasDishes ? 'Separate' : '')
           ).trim(),

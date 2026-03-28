@@ -40,8 +40,11 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
         var pen = await _repository.Get<Pen>(request.PenId, action: x => x.Include(y => y.Patients));
         if (pen == null) return Results.BadRequest();
 
+        int? previousPenId = null;
+
         if (patient.Pen != null)
         {
+            previousPenId = patient.Pen.Id;
             var movement = new PatientMovement
             {
                 Patient = patient,
@@ -58,8 +61,6 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 
         await _repository.SaveChangesAsync();
 
-        await _mediator.Send(new MarkPenNeedsCleaning { Id = patient.Pen.Id }, cancellationToken);
-
         if (request.NewAreaId.HasValue)
         {
             await _mediator.Send(new MovePen
@@ -69,6 +70,10 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
             }, cancellationToken);
         }
 
+        if (previousPenId.HasValue)
+        {
+            await _mediator.Send(new MarkPenNeedsCleaning { Id = previousPenId.Value }, cancellationToken);
+        }
 
         return Results.NoContent();
     }

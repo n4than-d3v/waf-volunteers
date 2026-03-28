@@ -41,6 +41,7 @@ public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientRead
             action: x => x.IncludeAdmission().IncludeBasicDetails());
         if (patient == null) return Results.BadRequest();
 
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.Status = PatientStatus.ReadyForRelease;
 

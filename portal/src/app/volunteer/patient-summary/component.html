@@ -1,0 +1,59 @@
+<a class="back-link" [routerLink]="'../../'">Back</a>
+
+<h1>Patients</h1>
+
+@if (summary$ | async; as summary) { @if (summary.loading) {
+<spinner></spinner>
+} @else if (summary.error) {
+<div class="error">Error occurred</div>
+} @else if (summary.data) {
+<div class="summary">
+  We are treating <strong>{{ summary.data.total }}</strong> patients, across
+  <strong>{{ summary.data.uniqueSpecies }}</strong> different species.
+</div>
+
+<div class="species-types">
+  <div class="species-type">
+    <div class="name">Mammals</div>
+    <div class="number">{{ summary.data.mammals }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Pigeons &amp; Doves</div>
+    <div class="number">{{ summary.data.pigeons }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Waterfowl</div>
+    <div class="number">{{ summary.data.waterfowl }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Raptors</div>
+    <div class="number">{{ summary.data.raptors }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Other birds</div>
+    <div class="number">{{ summary.data.otherBirds }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Amphibians</div>
+    <div class="number">{{ summary.data.amphibians }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Reptiles</div>
+    <div class="number">{{ summary.data.reptiles }}</div>
+  </div>
+  <div class="species-type">
+    <div class="name">Rodents</div>
+    <div class="number">{{ summary.data.rodents }}</div>
+  </div>
+</div>
+
+@for (species of summary.data.species; track species.name) {
+<div class="species">
+  <h3 class="name">{{ species.name }}</h3>
+  <ul>
+    @for (variant of species.variants; track variant.name) {
+    <li>{{ variant.total }}x {{ variant.name }}</li>
+    }
+  </ul>
+</div>
+} } }

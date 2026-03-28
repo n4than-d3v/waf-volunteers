@@ -66,6 +66,7 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
             dispositionReasons.Add(dispositionReason!);
         }
 
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;
         patient.DispositionReasons = dispositionReasons;

@@ -44,12 +44,17 @@
 </div>
 }
 
-<button
-  class="button button--secondary summary-button"
-  (click)="expandFeedingSummary = !expandFeedingSummary"
->
-  {{ expandFeedingSummary ? 'Hide' : 'Show' }} species summary
-</button>
+<div class="buttons">
+  <button class="button button--primary" (click)="viewingBoard = null">
+    Change board
+  </button>
+  <button
+    class="button button--secondary summary-button"
+    (click)="expandFeedingSummary = !expandFeedingSummary"
+  >
+    {{ expandFeedingSummary ? 'Hide' : 'Show' }} species summary
+  </button>
+</div>
 @if (expandFeedingSummary) {
 <div class="summary">
   @for (summary of board.data.summary; track summary.species) {
@@ -121,7 +126,7 @@
       }
     </div>
     <div class="tasks">
-      <div class="task">
+      <div class="task" [class.task--current-shift]="isCurrentShift('M')">
         <p class="time">Mor</p>
         <button
           (click)="markComplete(pen, 1)"
@@ -130,7 +135,7 @@
           @if (pen.morning) { ✔️ } @else { &nbsp; }
         </button>
       </div>
-      <div class="task">
+      <div class="task" [class.task--current-shift]="isCurrentShift('A')">
         <p class="time">Aft</p>
         <button
           (click)="markComplete(pen, 2)"
@@ -139,7 +144,7 @@
           @if (pen.afternoon) { ✔️ } @else { &nbsp; }
         </button>
       </div>
-      <div class="task">
+      <div class="task" [class.task--current-shift]="isCurrentShift('E')">
         <p class="time">Eve</p>
         <button
           (click)="markComplete(pen, 3)"
@@ -149,11 +154,21 @@
         </button>
       </div>
     </div>
-    @if (!expandedPens.includes(pen.reference)) {
+    @if (!expandedPens.includes(pen.reference)) { @let forceFeeds =
+    getForceFeeds(pen.feedings);
+    <div class="force-feeds">
+      @for (forceFeed of forceFeeds; track forceFeed) {
+      <p class="item">{{ forceFeed }}</p>
+      }
+    </div>
     <div class="feeding-times">
       @for (feeding of pen.feedings; track feeding.time) { @if
       (shouldShowTime(feeding.time)) {
-      <p class="time">{{ feeding.time }}</p>
+      <p class="time" [class.time--now]="isNow(feeding.time)">
+        {{ feeding.time }}@if (hasForceFeeds(feeding.details)) {<span class="ff"
+          >(FF)</span
+        >}
+      </p>
       } } @if (isPenExpandable(pen)) {
       <span class="expand" (click)="expandPen(pen)"> [?] </span>
       }

@@ -37,6 +37,7 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
             action: x => x.IncludeBasicDetails().IncludeOutcome());
         if (patient == null) return Results.BadRequest();
 
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.Status = PatientStatus.Inpatient;
         patient.TransferLocation = null;

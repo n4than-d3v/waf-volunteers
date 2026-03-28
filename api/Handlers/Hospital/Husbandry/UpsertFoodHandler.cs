@@ -10,6 +10,7 @@ public class UpsertFood : IRequest<IResult>
     public string Name { get; set; }
     public string? Notes { get; set; }
     public string? Substitute { get; set; }
+    public bool ForceFeed { get; set; }
 }
 
 public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
@@ -32,6 +33,7 @@ public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
             food.Name = request.Name;
             food.Notes = request.Notes;
             food.Substitute = request.Substitute;
+            food.ForceFeed = request.ForceFeed;
         }
         else
         {
@@ -39,7 +41,8 @@ public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
             {
                 Name = request.Name,
                 Notes = request.Notes,
-                Substitute = request.Substitute
+                Substitute = request.Substitute,
+                ForceFeed = request.ForceFeed
             };
             _repository.Create(food);
         }

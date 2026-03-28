@@ -522,6 +522,10 @@ public partial class Program
         apiHospitalBoards.MapPost("/complete-task", (IMediator mediator, MarkBoardTaskComplete request) => mediator.Send(request))
             .AddNote("User marks a task on a board as completed")
             .RequireAuthorization(signedInPolicy);
+
+        apiHospital.MapGet("/summary", (IMediator mediator) => mediator.Send(new GetPatientSummary()))
+            .AddNote("Volunteer views summary list of patients")
+            .RequireAuthorization(signedInPolicy);
     }
 
     private static void RegisterAccountRoutes(RouteGroupBuilder api)

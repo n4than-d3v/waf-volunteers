@@ -25,6 +25,7 @@ export interface CreateFoodCommand {
   name: string;
   notes: string;
   substitute: string;
+  forceFeed: boolean;
 }
 
 export interface Food extends CreateFoodCommand {

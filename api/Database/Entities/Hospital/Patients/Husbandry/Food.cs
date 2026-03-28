@@ -7,4 +7,6 @@ public class Food : Entity
     public string? Notes { get; set; }
 
     public string? Substitute { get; set; }
+
+    public bool ForceFeed { get; set; } = false;
 }

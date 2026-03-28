@@ -165,6 +165,7 @@ export interface HomeCarer {
 export interface ListPatient {
   beaconId: number;
   admitted: string;
+  lastUpdatedStatus: string;
   admitter: {
     beaconId: number;
     fullName: string;
@@ -715,6 +716,7 @@ export interface PatientBoardAreaPenTaskDetails {
   quantityTotal: number;
   quantityUnit: string;
   food: string;
+  forceFeed: boolean;
   topUp: string;
   notes: string;
   dish: string;

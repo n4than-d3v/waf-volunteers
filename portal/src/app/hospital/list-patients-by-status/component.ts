@@ -118,8 +118,8 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
     this.showingMessage = `Showing ${formatFractionalNumber(from)} to ${formatFractionalNumber(to)} of ${formatFractionalNumber(total)}`;
   }
 
-  duration(patient: ListPatient) {
-    const start = moment(patient.admitted);
+  duration(date: string) {
+    const start = moment(date);
     const end = moment();
 
     const months = end.diff(start, 'months');

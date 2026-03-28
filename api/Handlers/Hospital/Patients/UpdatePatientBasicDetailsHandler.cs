@@ -59,6 +59,15 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
         var speciesVariant = await _repository.Get<SpeciesVariant>(request.SpeciesVariantId);
         if (speciesVariant == null) return Results.BadRequest();
 
+        if (patient.Species != null && patient.Species.Id != request.SpeciesId)
+        {
+            await _mediator.Send(new AddPatientNote
+            {
+                PatientId = request.PatientId,
+                Comments = $"Species updated from {patient.Species.Name} to {species.Name}"
+            }, cancellationToken);
+        }
+
         if (patient.SpeciesVariant != null && patient.SpeciesVariant.Id != request.SpeciesVariantId)
         {
             await _mediator.Send(new AddPatientNote

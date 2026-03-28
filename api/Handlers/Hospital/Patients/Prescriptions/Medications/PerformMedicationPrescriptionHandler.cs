@@ -3,6 +3,7 @@ using Api.Database.Entities.Account;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
 using Api.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Handlers.Hospital.Patients.Prescriptions.Medications;
 
@@ -32,12 +33,13 @@ public class PerformMedicationPrescriptionHandler : IRequestHandler<PerformMedic
 
     public async Task<IResult> Handle(PerformMedicationPrescription request, CancellationToken cancellationToken)
     {
-        var prescription = await _repository.Get<PatientPrescriptionMedication>(request.PrescriptionId);
+        var prescription = await _repository.Get<PatientPrescriptionMedication>(request.PrescriptionId, action: x => x.Include(y => y.Patient));
         if (prescription == null) return Results.BadRequest();
 
         var administrator = await _repository.Get<Account>(_userContext.Id);
         if (administrator == null) return Results.BadRequest();
 
+        prescription.Patient.LastUpdatedDetails = DateTime.UtcNow;
         var administration = new PatientPrescriptionMedicationAdministration
         {
             PatientPrescriptionMedication = prescription,

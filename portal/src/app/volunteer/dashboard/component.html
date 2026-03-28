@@ -31,7 +31,7 @@
     class="module"
     style="--bg: var(--theme-color-6)"
   >
-    <img src="images/home-care.svg" alt="Notices icon" />
+    <img src="images/home-care.svg" alt="Home care icon" />
     <p>Home care</p>
   </a>
   } @if (isAuxiliary) {
@@ -40,7 +40,7 @@
     class="module"
     style="--bg: var(--theme-color-2)"
   >
-    <img src="images/hospital-vet.svg" alt="Notices icon" />
+    <img src="images/hospital-vet.svg" alt="Hospital icon" />
     <p>Hospital</p>
   </a>
   <a
@@ -50,6 +50,15 @@
   >
     <img src="images/learn.svg" alt="Learning icon" />
     <p>Learning</p>
+  </a>
+  } @else {
+  <a
+    [routerLink]="'../patients'"
+    class="module"
+    style="--bg: var(--theme-color-2)"
+  >
+    <img src="images/hospital-vet.svg" alt="Patients icon" />
+    <p>Patients</p>
   </a>
   }
 </div>

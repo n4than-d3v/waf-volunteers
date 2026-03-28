@@ -286,7 +286,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         foreach (var timeGroup in times)
         {
             var groups = timeGroup
-                .GroupBy(f => new { f.Feeding.QuantityUnit, f.Feeding.Food.Name })
+                .GroupBy(f => new { f.Feeding.QuantityUnit, f.Feeding.Food.Name, f.Feeding.Food.ForceFeed })
                 .OrderBy(g => g.Key.Name);
 
             if (!groups.Any()) continue;
@@ -294,6 +294,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             var details = groups.Select(group => new PatientBoardAreaPenTaskDetails
             {
                 Food = group.Key.Name,
+                ForceFeed = group.Key.ForceFeed,
                 QuantityEach = group.Average(g => g.Feeding.QuantityValue),
                 QuantityTotal = group.Sum(g => g.Feeding.QuantityValue),
                 QuantityUnit = group.Key.QuantityUnit,
@@ -400,6 +401,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public decimal QuantityTotal { get; set; }
         public string QuantityUnit { get; set; }
         public string Food { get; set; }
+        public bool ForceFeed { get; set; }
         public bool TopUp { get; set; }
         public string Notes { get; set; }
         public string Dish { get; set; }

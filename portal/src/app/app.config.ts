@@ -45,6 +45,8 @@ import { hospitalStockReducer } from './hospital/stock/reducer';
 import { HospitalStockEffects } from './hospital/stock/effects';
 import { AuxDevPlanEffects } from './vet/aux-dev-plans/effects';
 import { auxDevPlanReducer } from './vet/aux-dev-plans/reducer';
+import { patientSummaryReducer } from './volunteer/patient-summary/reducer';
+import { PatientSummaryEffects } from './volunteer/patient-summary/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -96,6 +98,7 @@ export const appConfig: ApplicationConfig = {
       rota: rotaReducer,
       notices: noticesReducer,
       orphanFeeder: orphanFeederReducer,
+      patientSummary: patientSummaryReducer,
 
       // Admin
       profiles: profilesReducer,
@@ -123,6 +126,7 @@ export const appConfig: ApplicationConfig = {
       RotaEffects,
       NoticesEffects,
       OrphanFeederEffects,
+      PatientSummaryEffects,
 
       // Admin
       ProfilesEffects,

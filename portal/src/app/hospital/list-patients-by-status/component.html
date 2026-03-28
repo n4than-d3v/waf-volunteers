@@ -95,8 +95,7 @@
     }
   </tbody>
 </table>
-} @else if (_status === PatientStatus.Inpatient || _status
-===PatientStatus.ReadyForRelease) {
+} @else if (_status === PatientStatus.Inpatient) {
 <table>
   <thead>
     <tr>
@@ -133,8 +132,53 @@
         <span class="long-term">Long term</span>
         } @if (patient.isOutdated) {
         <span class="outdated">Outdated</span>
-        } {{ duration(patient) }}
+        } {{ duration(patient.admitted) }}
       </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} @else if (_status ===PatientStatus.ReadyForRelease) {
+<table>
+  <thead>
+    <tr>
+      <th>Reference</th>
+      <th>Species</th>
+      <th>Variant</th>
+      <th>Pen</th>
+      <th>Date admitted</th>
+      <th>Stay</th>
+      <th>Ready to release</th>
+      <th>Waiting for</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (patient of patients.data.patients; track patient.id) {
+    <tr>
+      <td>
+        <a (click)="view(patient)">{{ patient.reference }}</a>
+      </td>
+      <td>{{ patient.species?.name }}</td>
+      <td>{{ patient.speciesVariant?.name }}</td>
+      @if (patient.pen) {
+      <td>
+        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
+        }
+      </td>
+      } @else {
+      <td>
+        <span class="outdated">Homeless</span>
+      </td>
+      }
+      <td>{{ patient.admitted | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>
+        @if (patient.isLongTerm) {
+        <span class="long-term">Long term</span>
+        } {{ duration(patient.admitted) }}
+      </td>
+      <td>{{ patient.lastUpdatedStatus | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ duration(patient.lastUpdatedStatus) }}</td>
     </tr>
     }
   </tbody>

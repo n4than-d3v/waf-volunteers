@@ -35,16 +35,20 @@ public class GetPatientSummaryHandler : IRequestHandler<GetPatientSummary, IResu
                     Name = speciesGroup.Key != null ? speciesGroup.Key.Name : "Unknown",
                     SpeciesType = speciesGroup.Key.SpeciesType,
                     Variants = speciesGroup
-                        .GroupBy(p => new { p.SpeciesVariant.Id, p.SpeciesVariant.FriendlyName, p.SpeciesVariant.Order })
-                        .OrderBy(g => g.Key != null ? g.Key.Order : 0)
-                        .Select(variantGroup => new PatientSummarySpeciesVariant
+                        .GroupBy(p => p.SpeciesVariant.FriendlyName)
+                        .Select(g => new
                         {
-                            Name = variantGroup.Key != null ? variantGroup.Key.FriendlyName : "Unknown",
-                            Total = variantGroup.Count()
+                            Name = g.Key ?? "Unknown",
+                            Total = g.Count(),
+                            Order = g.Min(x => x.SpeciesVariant.Order) // or Max / First depending on your logic
                         })
-                        .ToList()
-                })
-                .ToList()
+                        .OrderBy(x => x.Order)
+                        .Select(x => new PatientSummarySpeciesVariant
+                        {
+                            Name = x.Name,
+                            Total = x.Total
+                        }).ToList()
+                }).ToList()
         };
 
         return Results.Ok(summary);

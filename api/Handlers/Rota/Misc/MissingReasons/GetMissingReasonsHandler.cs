@@ -19,7 +19,7 @@ public class GetMissingReasonsHandler : IRequestHandler<GetMissingReasons, IResu
 
     public async Task<IResult> Handle(GetMissingReasons request, CancellationToken cancellationToken)
     {
-        var missingReasons = await _repository.GetAll<MissingReason>(x => true, tracking: false);
+        var missingReasons = await _repository.GetAll<MissingReason>(x => x.Deleted == false, tracking: false);
         return Results.Ok(missingReasons.OrderBy(x => x.Id));
     }
 }

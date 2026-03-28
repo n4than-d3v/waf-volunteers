@@ -39,7 +39,7 @@ public class UpdateMissingReasonsHandler : IRequestHandler<UpdateMissingReasons,
             else
             {
                 // Delete reasons that no longer exist
-                _repository.Delete(missingReason);
+                missingReason.Deleted = true;
             }
         }
 

@@ -40,7 +40,7 @@ public class GetPatientSummaryHandler : IRequestHandler<GetPatientSummary, IResu
                         {
                             Name = g.Key ?? "Unknown",
                             Total = g.Count(),
-                            Order = g.Min(x => x.SpeciesVariant.Order) // or Max / First depending on your logic
+                            Order = g.Max(x => x.SpeciesVariant.Order) // or Max / First depending on your logic
                         })
                         .OrderBy(x => x.Order)
                         .Select(x => new PatientSummarySpeciesVariant

@@ -155,12 +155,13 @@
       </div>
     </div>
     @if (!expandedPens.includes(pen.reference)) { @let forceFeeds =
-    getForceFeeds(pen.feedings);
+    getForceFeeds(pen.feedings); @if (forceFeeds.length) {
     <div class="force-feeds">
       @for (forceFeed of forceFeeds; track forceFeed) {
       <p class="item">{{ forceFeed }}</p>
       }
     </div>
+    }
     <div class="feeding-times">
       @for (feeding of pen.feedings; track feeding.time) { @if
       (shouldShowTime(feeding.time)) {

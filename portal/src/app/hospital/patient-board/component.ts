@@ -273,7 +273,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
         result.add(description.trim());
       });
     });
-    return result;
+    return [...result];
   }
 
   groupFeeding(items: PatientBoardAreaPenTaskDetails[]): FoodSection[] {

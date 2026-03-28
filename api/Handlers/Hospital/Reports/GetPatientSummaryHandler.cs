@@ -28,14 +28,14 @@ public class GetPatientSummaryHandler : IRequestHandler<GetPatientSummary, IResu
         var summary = new PatientSummary
         {
             Species = patients
-                .GroupBy(p => p.Species)
+                .GroupBy(p => new { p.Species.Id, p.Species.Name, p.Species.SpeciesType })
                 .OrderBy(g => g.Key != null ? g.Key.Name : "")
                 .Select(speciesGroup => new PatientSummarySpecies
                 {
                     Name = speciesGroup.Key != null ? speciesGroup.Key.Name : "Unknown",
                     SpeciesType = speciesGroup.Key.SpeciesType,
                     Variants = speciesGroup
-                        .GroupBy(p => p.SpeciesVariant)
+                        .GroupBy(p => new { p.SpeciesVariant.Id, p.SpeciesVariant.FriendlyName, p.SpeciesVariant.Order })
                         .OrderBy(g => g.Key != null ? g.Key.Order : 0)
                         .Select(variantGroup => new PatientSummarySpeciesVariant
                         {

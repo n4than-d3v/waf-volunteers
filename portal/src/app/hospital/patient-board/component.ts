@@ -76,6 +76,9 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   expandedPens: string[] = [];
 
   expandFeedingSummary = false;
+  showPatientReferences = false;
+  showPensWithoutFeeds = true;
+  showPensNeedCleaning = true;
 
   subscription: Subscription | null = null;
 
@@ -125,6 +128,16 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   isPenExpandable(pen: PatientBoardAreaPen): boolean {
     if (!pen.feedings?.length) return false;
     return pen.feedings.some((f) => this.shouldShowTime(f.time));
+  }
+
+  shouldShowPen(pen: PatientBoardAreaPen) {
+    if (pen.needsCleaning) {
+      return this.showPensNeedCleaning;
+    }
+    if (!this.showPensWithoutFeeds) {
+      return this.hasFeeds(pen.feedings || []);
+    }
+    return true;
   }
 
   formatNumber = formatFractionalNumber;
@@ -255,6 +268,10 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       return Math.abs(nowDecimal - timeDecimal) < 0.5;
     }
     return false;
+  }
+
+  hasFeeds(feedings: PatientBoardAreaPenFeeding[]) {
+    return feedings.some((time) => this.shouldShowTime(time.time));
   }
 
   hasForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]) {

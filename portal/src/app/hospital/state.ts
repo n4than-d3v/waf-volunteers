@@ -693,6 +693,7 @@ export interface PatientBoardAreaPen {
   id: number;
   reference: string;
   patients: string[] | null;
+  patientReferences: string[] | null;
   tags: string[] | null;
 
   hasCustomDiet: boolean;

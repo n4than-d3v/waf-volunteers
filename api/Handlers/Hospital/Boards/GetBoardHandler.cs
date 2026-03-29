@@ -236,7 +236,8 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             Id = pen.Id,
             Reference = pen.Reference,
             NeedsCleaning = pen.NeedsCleaning,
-            Patients = []
+            Patients = [],
+            PatientReferences = []
         }).ToList();
     }
 
@@ -256,6 +257,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 {
                     Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
+                    PatientReferences = [.. penPatients.Select(x => x.Reference).OrderBy(x => x)],
                     HasCustomDiet = penPatients.Any(patient => patient.Feeding?.Any() ?? false),
                     Morning = InMemoryBoardTasks.IsComplete(penId, 1),
                     Afternoon = InMemoryBoardTasks.IsComplete(penId, 2),
@@ -377,6 +379,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public int Id { get; set; }
         public string Reference { get; set; }
         public List<string> Patients { get; set; }
+        public List<string> PatientReferences { get; set; }
         public List<string> Tags { get; set; }
 
         public bool HasCustomDiet { get; set; }

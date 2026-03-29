@@ -64,6 +64,10 @@ h1 {
     max-width: max-content;
     --min-height: 0rem;
 
+    &:not(.show) {
+      display: none;
+    }
+
     &.expanded {
       max-width: 20rem;
     }
@@ -246,17 +250,45 @@ h1 {
         }
       }
     }
+
+    .patient-references {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      p {
+        font-size: 1.125rem;
+        font-weight: bold;
+        color: var(--theme-color-1);
+      }
+    }
   }
 }
 
-.buttons {
+.top {
   display: flex;
-  gap: 0.5rem;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
 
-  .button {
-    margin-bottom: 0.5rem;
-    margin-left: -2px;
-    padding: 0.25rem 0.5rem;
+  .buttons {
+    display: flex;
+    gap: 0.5rem;
+
+    .button {
+      margin-left: -2px;
+      padding: 0.25rem 0.5rem;
+    }
+  }
+
+  .filter {
+    display: flex;
+    gap: 1rem;
+
+    label {
+      font-size: 1rem;
+    }
   }
 }
 

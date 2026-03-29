@@ -44,16 +44,50 @@
 </div>
 }
 
-<div class="buttons">
-  <button class="button button--primary" (click)="viewingBoard = null">
-    Change board
-  </button>
-  <button
-    class="button button--secondary summary-button"
-    (click)="expandFeedingSummary = !expandFeedingSummary"
-  >
-    {{ expandFeedingSummary ? 'Hide' : 'Show' }} species summary
-  </button>
+<div class="top">
+  <div class="buttons">
+    <button class="button button--primary" (click)="viewingBoard = null">
+      Change board
+    </button>
+  </div>
+  <div class="filter">
+    <div>
+      <div class="field">
+        <label for="expandFeedingSummary"> Show species summary </label>
+        <input
+          type="checkbox"
+          id="expandFeedingSummary"
+          [(ngModel)]="expandFeedingSummary"
+        />
+      </div>
+      <div class="field">
+        <label for="showPatientReferences"> Show patient references </label>
+        <input
+          type="checkbox"
+          id="showPatientReferences"
+          [(ngModel)]="showPatientReferences"
+        />
+      </div>
+    </div>
+    <div>
+      <div class="field">
+        <label for="showPensWithoutFeeds"> Show pens without feeds </label>
+        <input
+          type="checkbox"
+          id="showPensWithoutFeeds"
+          [(ngModel)]="showPensWithoutFeeds"
+        />
+      </div>
+      <div class="field">
+        <label for="showPensNeedCleaning"> Show pens that need cleaning </label>
+        <input
+          type="checkbox"
+          id="showPensNeedCleaning"
+          [(ngModel)]="showPensNeedCleaning"
+        />
+      </div>
+    </div>
+  </div>
 </div>
 @if (expandFeedingSummary) {
 <div class="summary">
@@ -93,7 +127,11 @@
   (area.displayType === PatientBoardAreaDisplayType.ShowPatients) { @if
   (area.pens != null && area.pens.length > 0) { @for (pen of area.pens; track
   pen.reference) {
-  <div class="pen" [class.expanded]="expandedPens.includes(pen.reference)">
+  <div
+    class="pen"
+    [class.expanded]="expandedPens.includes(pen.reference)"
+    [class.show]="shouldShowPen(pen)"
+  >
     <div class="location">{{ pen.reference }}</div>
     @if (pen.needsCleaning) {
     <div class="patients">
@@ -101,7 +139,7 @@
     </div>
     <div class="tags"></div>
     <div class="tasks">
-      <div class="task">
+      <div class="task task--current-shift">
         <p class="time">ASAP</p>
         <button
           (click)="markClean(pen)"
@@ -116,6 +154,13 @@
     <div class="patients">
       @for (patient of pen.patients; track patient) {
       <p>{{ patient }}</p>
+      } @if (showPatientReferences) {
+      <div class="patient-references">
+        @for (patientReference of pen.patientReferences; track patientReference)
+        {
+        <p>{{ patientReference }}</p>
+        }
+      </div>
       }
     </div>
     <div class="tags">
@@ -215,11 +260,11 @@
 </div>
 @if (anyOtherBoards(board.data.areas)) {
 <div class="other-boards-wrapper">
-  <h2>Other areas</h2>
+  <h2>Other boards to check</h2>
   <div class="pens">
     @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if
     (area.displayType === PatientBoardAreaDisplayType.SummarisePatients) {
-    <div class="pen">
+    <div class="pen show">
       <div class="location">{{ area.area.area.name }}</div>
       <div class="patients">
         @for (summary of area.summary; track summary) {

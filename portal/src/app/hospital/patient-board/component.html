@@ -126,12 +126,8 @@
   @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if
   (area.displayType === PatientBoardAreaDisplayType.ShowPatients) { @if
   (area.pens != null && area.pens.length > 0) { @for (pen of area.pens; track
-  pen.reference) {
-  <div
-    class="pen"
-    [class.expanded]="expandedPens.includes(pen.reference)"
-    [class.show]="shouldShowPen(pen)"
-  >
+  pen.reference) { @if (shouldShowPen(pen)) {
+  <div class="pen" [class.expanded]="expandedPens.includes(pen.reference)">
     <div class="location">{{ pen.reference }}</div>
     @if (pen.needsCleaning) {
     <div class="patients">
@@ -256,7 +252,7 @@
     </div>
     } }
   </div>
-  } } } }
+  } } } } }
 </div>
 @if (anyOtherBoards(board.data.areas)) {
 <div class="other-boards-wrapper">
@@ -264,7 +260,7 @@
   <div class="pens">
     @for (area of board.data.areas | sortBoardAreas; track area.area.id) { @if
     (area.displayType === PatientBoardAreaDisplayType.SummarisePatients) {
-    <div class="pen show">
+    <div class="pen">
       <div class="location">{{ area.area.area.name }}</div>
       <div class="patients">
         @for (summary of area.summary; track summary) {

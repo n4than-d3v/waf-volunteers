@@ -64,10 +64,6 @@ h1 {
     max-width: max-content;
     --min-height: 0rem;
 
-    &:not(.show) {
-      display: none;
-    }
-
     &.expanded {
       max-width: 20rem;
     }

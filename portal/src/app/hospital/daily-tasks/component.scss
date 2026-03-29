@@ -258,3 +258,22 @@ a {
 button {
   padding: 0.25rem 0.5rem;
 }
+
+.warnings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .warning {
+    padding: 0.25rem 0.5rem;
+    margin-right: 0.125rem;
+    border-left: solid 5px rgb(82, 12, 12);
+    background-color: rgb(255 199 199);
+
+    .batch-number,
+    .brand {
+      font-weight: bold;
+      color: rgb(82, 12, 12);
+    }
+  }
+}

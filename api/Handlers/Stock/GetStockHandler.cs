@@ -20,15 +20,19 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
 
     public async Task<IResult> Handle(GetStock request, CancellationToken cancellationToken)
     {
+        var stock = await GetStock();
+        return Results.Ok(stock.OrderBy(x => x.Medication));
+    }
+
+    public async Task<IEnumerable<ItemWrapper>> GetStock()
+    {
         var items = await _repository.GetAll<StockItem>(x => true, tracking: false,
             action: x => x
                 .Include(y => y.Medication)
                 .Include(y => y.MedicationConcentration)
                 .Include(y => y.Batches)
                     .ThenInclude(y => y.Usages));
-        return Results.Ok(items
-            .Select(x => new ItemWrapper(x))
-            .OrderBy(x => x.Medication));
+        return items.Select(x => new ItemWrapper(x));
     }
 
     public class ItemWrapper
@@ -37,8 +41,10 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
         {
             Id = item.Id;
             Medication = item.Medication.ActiveSubstance;
+            MedicationId = item.Medication.Id;
             var concentration = item.MedicationConcentration;
             MedicationConcentration = $"{concentration.Form} ({concentration.ConcentrationValue} {concentration.ConcentrationUnit})";
+            MedicationConcentrationId = item.MedicationConcentration.Id;
             Brand = item.Brand;
             Measurement = item.Measurement;
             AfterOpeningLifetimeDays = item.AfterOpeningLifetimeDays;
@@ -51,7 +57,9 @@ public class GetStockHandler : IRequestHandler<GetStock, IResult>
 
         public int Id { get; set; }
         public string Medication { get; set; }
+        internal int MedicationId { get; set; }
         public string MedicationConcentration { get; set; }
+        internal int MedicationConcentrationId { get; set; }
         public string Brand { get; set; }
 
         public StockMeasurement Measurement { get; set; }

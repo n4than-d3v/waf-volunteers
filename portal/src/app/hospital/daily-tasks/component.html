@@ -425,7 +425,20 @@ administerPrescriptionTask.error) {
                 } }
               </tbody>
             </table>
-            } @if (shouldShowPrescriptions(patient)) {
+            } @if (shouldShowPrescriptions(patient)) { @if (patient.warnings &&
+            patient.warnings.length > 0) {
+            <div class="warnings">
+              @for (warning of patient.warnings; track warning.batchNumber) {
+              <p class="warning">
+                🚨
+                <span class="brand">{{ warning.brand }}</span> batch
+                <span class="batch-number">{{ warning.batchNumber }}</span>
+                @if (warning.expiry) { has expired } @else if
+                (warning.expiryInUse) { (in-use) has expired }
+              </p>
+              }
+            </div>
+            }
             <table class="prescriptions">
               <thead>
                 <tr>

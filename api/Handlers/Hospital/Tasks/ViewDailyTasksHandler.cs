@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Api.Handlers.Hospital.Patients;
 using Api.Database.Entities.Hospital.Locations;
-using Api.Database.Entities.Hospital.Patients.Medications;
+using Api.Handlers.Stock;
 
 namespace Api.Handlers.Hospital.Tasks;
 
@@ -38,6 +38,9 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
             .DistinctBy(x => x.Id)
             .ToList();
 
+        var handler = new GetStockHandler(_repository);
+        var allStock = (await handler.GetStock()).ToList();
+
         List<DailyTasksReportAreaPenPatient> GetPatientsInPen(Pen pen)
         {
             var patientsInPen = allPatients
@@ -58,11 +61,26 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
                     .Where(x => x.Patient.Id == patient.Id)
                     .ToList();
 
+                var warnings = new List<DailyTasksReportAreaPenPatientWarning>();
+                var stock = allStock.Where(x => patientMedications.Any(y => y.MedicationConcentration.Id == x.MedicationConcentrationId));
+                var expiredItems = stock.Where(x => x.Expired || x.ExpiredAfterOpening);
+                if (expiredItems.Any())
+                {
+                    foreach (var item in expiredItems)
+                        foreach (var batch in item.Batches.Where(x => x.Expired || x.ExpiredAfterOpening))
+                            warnings.Add(
+                                new DailyTasksReportAreaPenPatientWarning(
+                                    batch.Number, item.Brand,
+                                    batch.Expired, batch.ExpiredAfterOpening)
+                            );
+                }
+
                 return new DailyTasksReportAreaPenPatient(
                     patient,
                     patientRechecks,
                     patientInstructions,
-                    patientMedications
+                    patientMedications,
+                    warnings
                 );
             })
             .ToList();
@@ -116,10 +134,14 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
         public List<DailyTasksReportAreaPenPatient> Patients { get; set; }
     }
 
+    public record DailyTasksReportAreaPenPatientWarning(string BatchNumber, string Brand, bool Expiry, bool ExpiryInUse);
+
     public class DailyTasksReportAreaPenPatient(
         Patient patient,
         IReadOnlyList<PatientRecheck> rechecks,
-        IReadOnlyList<PatientPrescriptionInstruction> prescriptionInstructions, IReadOnlyList<PatientPrescriptionMedication> prescriptionMedications)
+        IReadOnlyList<PatientPrescriptionInstruction> prescriptionInstructions,
+        IReadOnlyList<PatientPrescriptionMedication> prescriptionMedications,
+        IReadOnlyList<DailyTasksReportAreaPenPatientWarning> warnings)
     {
         private readonly Patient _patient = patient;
 
@@ -132,6 +154,7 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
         public IReadOnlyList<PatientRecheck> Rechecks { get; set; } = rechecks;
         public IReadOnlyList<PatientPrescriptionInstruction> PrescriptionInstructions { get; set; } = prescriptionInstructions;
         public IReadOnlyList<PatientPrescriptionMedication> PrescriptionMedications { get; set; } = prescriptionMedications;
+        public IReadOnlyList<DailyTasksReportAreaPenPatientWarning> Warnings { get; set; } = warnings;
     }
 
     private async Task<IReadOnlyList<PatientRecheck>> GetRechecks(DateOnly date)

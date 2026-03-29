@@ -154,6 +154,14 @@ export interface DailyTasksReportAreaPenPatient {
   rechecks: ListRecheck[];
   prescriptionInstructions: PrescriptionInstruction[];
   prescriptionMedications: PrescriptionMedication[];
+  warnings: DailyTasksReportAreaPenPatientWarning[];
+}
+
+export interface DailyTasksReportAreaPenPatientWarning {
+  batchNumber: string;
+  brand: string;
+  expiry: boolean;
+  expiryInUse: boolean;
 }
 
 export interface HomeCarer {

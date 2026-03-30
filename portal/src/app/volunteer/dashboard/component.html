@@ -51,14 +51,17 @@
     <img src="images/learn.svg" alt="Learning icon" />
     <p>Learning</p>
   </a>
-  } @else {
+  }
   <a
     [routerLink]="'../patients'"
     class="module"
-    style="--bg: var(--theme-color-2)"
+    style="--bg: var(--theme-color-3)"
   >
     <img src="images/hospital-vet.svg" alt="Patients icon" />
+    @if (isAuxiliary) {
+    <p>Summary</p>
+    } @else {
     <p>Patients</p>
+    }
   </a>
-  }
 </div>

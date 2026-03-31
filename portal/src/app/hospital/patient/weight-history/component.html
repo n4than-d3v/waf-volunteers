@@ -25,10 +25,10 @@
 >
   @if (change) { @if (change.status === 'same') { ⚖️ No change in weight since
   admission } @else if (change.status === 'gained') { 📈 Gained
-  <strong>{{ change.weightChange }} g</strong> over {{ change.duration }} }
-  @else if (change.status === 'lost') { 📉 Lost
-  <strong>{{ change.weightChange }} g</strong> over {{ change.duration }} } }
-  @else { ⚖️ No weight information available }
+  <strong>{{ formatNumber(change.weightChange) }} g</strong> over {{
+  change.duration }} } @else if (change.status === 'lost') { 📉 Lost
+  <strong>{{ formatNumber(change.weightChange) }} g</strong> over {{
+  change.duration }} } } @else { ⚖️ No weight information available }
 </p>
 
 @if (patient.weightHistory.length > 1) {

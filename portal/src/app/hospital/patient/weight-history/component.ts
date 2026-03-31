@@ -19,6 +19,7 @@ import {
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { todayLinePlugin } from '../../dashboard/today-line.plugin';
+import { formatFractionalNumber } from '../../../admin/hospital/state';
 
 Chart.register(...registerables, zoomPlugin, todayLinePlugin);
 
@@ -137,6 +138,8 @@ export class HospitalPatientWeightHistoryComponent
     this.buildWeightChart(this.patient.weightHistory);
   }
 
+  formatNumber = formatFractionalNumber;
+
   private buildWeightChart(weights: PatientWeight[]) {
     const sorted = [...weights].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
@@ -208,14 +211,18 @@ export class HospitalPatientWeightHistoryComponent
                 let changeText = '';
 
                 if (previousWeight === null) {
-                  return [`${currentWeight} g`, '', '⚖️ Initial weight'];
+                  return [
+                    `${this.formatNumber(currentWeight)} g`,
+                    '',
+                    '⚖️ Initial weight',
+                  ];
                 }
 
                 const diff = currentWeight - previousWeight;
                 if (diff > 0) {
-                  changeText = `📈 Gained ${diff} g`;
+                  changeText = `📈 Gained ${this.formatNumber(diff)} g`;
                 } else if (diff < 0) {
-                  changeText = `📉 Lost ${Math.abs(diff)} g`;
+                  changeText = `📉 Lost ${this.formatNumber(Math.abs(diff))} g`;
                 } else {
                   changeText = '⚖️ No change';
                 }
@@ -223,7 +230,12 @@ export class HospitalPatientWeightHistoryComponent
                 const duration =
                   '📅 Over ' + this.getDuration(previousDate!, currentDate);
 
-                return [`${currentWeight} g`, '', changeText, duration];
+                return [
+                  `${this.formatNumber(currentWeight)} g`,
+                  '',
+                  changeText,
+                  duration,
+                ];
               },
             },
           },

@@ -66,6 +66,8 @@ export class HospitalPatientDietsComponent implements OnInit {
   attemptedSave = false;
   saving = false;
 
+  maxIndex = 5;
+
   constructor(private store: Store) {
     this.foods$ = this.store.select(selectFoods);
     this.task$ = this.store.select(selectUpdateDiets);

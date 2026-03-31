@@ -26,6 +26,7 @@ import { HospitalPatientStatusComponent } from './status/component';
 import { HospitalPatientHomeCareComponent } from './home-care/component';
 import { TokenProvider } from '../../shared/token.provider';
 import { HospitalPatientLabsComponent } from './labs/component';
+import { HospitalPatientWeightHistoryComponent } from './weight-history/component';
 
 @Component({
   selector: 'hospital-patient',
@@ -40,6 +41,7 @@ import { HospitalPatientLabsComponent } from './labs/component';
     HospitalPatientAdmissionComponent,
     HospitalPatientDetailsComponent,
     HospitalPatientStatusComponent,
+    HospitalPatientWeightHistoryComponent,
     HospitalPatientLocationComponent,
     HospitalPatientDietsComponent,
     HospitalPatientTagsComponent,
@@ -67,7 +69,10 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
 
   subscription: Subscription | null = null;
 
-  constructor(private store: Store, private tokenProvider: TokenProvider) {
+  constructor(
+    private store: Store,
+    private tokenProvider: TokenProvider,
+  ) {
     this.patient$ = this.store.select(selectPatient);
   }
 
@@ -80,7 +85,7 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
         getPatient({
           id: this._id,
           silent: true,
-        })
+        }),
       );
     });
   }

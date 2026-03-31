@@ -7,6 +7,13 @@
       </tr>
     </tbody>
   </table>
+  @if (!moving) { @if (isVet && patient.status != PatientStatus.Dispositioned) {
+  <div class="buttons">
+    <button (click)="moving = true" class="button button--secondary-invert">
+      📍 Move
+    </button>
+  </div>
+  } }
 </div>
 @if (patient.movements.length > 0) {
 <table>
@@ -27,13 +34,7 @@
     }
   </tbody>
 </table>
-} @if (!moving) { @if (isVet && patient.status != PatientStatus.Dispositioned) {
-<div class="buttons">
-  <button (click)="moving = true" class="button button--secondary-invert">
-    📍 Move
-  </button>
-</div>
-} } @else {
+} @if (moving) {
 <form [formGroup]="moveForm">
   <div class="field">
     <label for="area">

@@ -20,6 +20,14 @@ table:has(thead) {
     }
   }
 
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  td:nth-child(4) {
+    max-width: 25rem;
+  }
+
   th {
     background-color: var(--theme-color-5);
   }
@@ -30,7 +38,7 @@ table:has(thead) {
 }
 
 table:not(:has(thead)) {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0rem;
 
   tbody {
     td {
@@ -63,15 +71,17 @@ table:not(:has(thead)) {
 }
 
 .flex {
-  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
 
   .field {
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
   }
 
   textarea {
     min-width: 40rem;
     font-size: 1rem;
+    margin-bottom: 0rem;
   }
 
   button {
@@ -95,8 +105,23 @@ table:not(:has(thead)) {
   }
 }
 
-.home-care-request:not(:last-child) {
-  margin-bottom: 1rem;
+.home-care-request {
+  padding-left: 0.25rem;
+  margin-left: 0.25rem;
+
+  &:not(:last-child) {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    border-bottom: solid 2px rgb(201, 201, 201);
+  }
+
+  .field {
+    padding-left: 0.25rem;
+  }
+
+  .buttons {
+    align-items: flex-end;
+  }
 }
 
 .drop-off,
@@ -116,4 +141,11 @@ table:not(:has(thead)) {
       padding: 0.25rem 0.5rem;
     }
   }
+}
+
+.load-more {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--theme-color-5);
+  cursor: pointer;
 }

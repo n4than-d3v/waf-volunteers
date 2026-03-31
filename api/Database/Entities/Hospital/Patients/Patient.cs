@@ -87,23 +87,32 @@ public class Patient : Entity
 
     #region Helpers
 
-    public Weight? LatestWeight
+    [NotMapped]
+    public IReadOnlyList<Weight> WeightHistory
     {
         get
         {
             var exams = (Exams ?? []).Where(x => 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+
             var notes = (Notes ?? []).Where(x => 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Noted, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+
             var homeCareMessages = (HomeCareMessages ?? []).Where(x => 0 < (x.WeightValue ?? 0))
                 .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
-            var weights = new List<Weight>();
-            weights.AddRange(exams);
-            weights.AddRange(notes);
-            weights.AddRange(homeCareMessages);
-            return weights.OrderByDescending(x => x.Date).FirstOrDefault();
+
+            return [.. exams
+                .Concat(notes)
+                .Concat(homeCareMessages)
+                .OrderBy(x => x.Date)];
         }
     }
+
+    [NotMapped]
+    public Weight? InitialWeight => WeightHistory.FirstOrDefault();
+
+    [NotMapped]
+    public Weight? LatestWeight => WeightHistory.LastOrDefault();
 
     public class Weight
     {

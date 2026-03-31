@@ -1,0 +1,36 @@
+<table>
+  <tbody>
+    <tr>
+      <td>Weight on intake</td>
+      <td>
+        @if (patient.initialWeight) { {{ patient.initialWeight.weightValue }} {{
+        getWeightUnit(patient.initialWeight.weightUnit) }} }
+      </td>
+    </tr>
+    <tr>
+      <td>Latest reported weight</td>
+      <td>
+        @if (patient.latestWeight) { {{ patient.latestWeight.weightValue }} {{
+        getWeightUnit(patient.latestWeight.weightUnit) }} }
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+@let change = getSummaryMessage();
+<p
+  class="change"
+  [class.gained]="change?.status === 'gained'"
+  [class.lost]="change?.status === 'lost'"
+>
+  @if (change) { @if (change.status === 'same') { ⚖️ No change in weight since
+  admission } @else if (change.status === 'gained') { 📈 Gained
+  <strong>{{ change.weightChange }} g</strong> over {{ change.duration }} }
+  @else if (change.status === 'lost') { 📉 Lost
+  <strong>{{ change.weightChange }} g</strong> over {{ change.duration }} } }
+  @else { ⚖️ No weight information available }
+</p>
+
+@if (patient.weightHistory.length > 1) {
+<canvas #weightLine></canvas>
+}

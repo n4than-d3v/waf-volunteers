@@ -258,10 +258,15 @@ export interface Patient extends ListPatient {
   homeCareMessages: HomeCareMessage[];
   faecalTests: ListFaecalTest[];
   bloodTests: ListBloodTest[];
-  latestWeight: {
-    weightUnit: number;
-    weightValue: number;
-  } | null;
+  weightHistory: PatientWeight[];
+  initialWeight: PatientWeight | null;
+  latestWeight: PatientWeight | null;
+}
+
+export interface PatientWeight {
+  date: string;
+  weightUnit: number;
+  weightValue: number;
 }
 
 export interface ListFaecalTest {
@@ -299,7 +304,9 @@ export function getSex(sex: number): string {
   }
 }
 
-export function getWeightUnit(weightUnit: number | null): string {
+export function getWeightUnit(
+  weightUnit: number | null,
+): 'g' | 'kg' | 'oz' | 'lbs' | '' {
   switch (weightUnit) {
     case 1:
       return 'g';

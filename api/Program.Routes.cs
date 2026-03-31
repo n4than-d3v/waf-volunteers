@@ -258,7 +258,7 @@ public partial class Program
             {
                 var form = await httpReq.ReadFormAsync();
                 _ = int.TryParse(form["patientId"], out int patientId);
-                _ = int.TryParse(form["weightValue"], out int weightValue);
+                _ = decimal.TryParse(form["weightValue"], out decimal weightValue);
                 _ = int.TryParse(form["weightUnit"], out int weightUnit);
 
                 var request = new AddPatientNote
@@ -379,7 +379,7 @@ public partial class Program
         {
             var form = await httpReq.ReadFormAsync();
             _ = int.TryParse(form["homeCareRequestId"], out int homeCareRequestId);
-            _ = int.TryParse(form["weightValue"], out int weightValue);
+            _ = decimal.TryParse(form["weightValue"], out decimal weightValue);
             _ = int.TryParse(form["weightUnit"], out int weightUnit);
 
             var request = new AddHomeCareMessage

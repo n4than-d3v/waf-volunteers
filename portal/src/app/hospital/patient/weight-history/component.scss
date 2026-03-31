@@ -1,0 +1,36 @@
+canvas {
+  width: 30rem;
+  max-height: 15rem;
+}
+
+table:not(:has(thead)) tbody {
+  td {
+    font-size: 1.125rem;
+    padding: 0.125rem 0.25rem;
+    border: none;
+  }
+
+  td:nth-child(2) {
+    font-weight: bold;
+    padding-left: 1rem;
+  }
+
+  tr {
+    background-color: transparent !important;
+  }
+}
+
+.change {
+  padding: 0.5rem 0.75rem;
+  background-color: #ddeaff;
+  margin: 0.5rem 0rem;
+  font-size: 1rem;
+
+  &.gained {
+    background-color: #e2f4c8;
+  }
+
+  &.lost {
+    background-color: #ffd9dc;
+  }
+}

@@ -19,7 +19,6 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import {
-  addNote,
   downloadHomeCareMessageAttachment,
   getAreas,
   homeCarerDropOff,
@@ -29,7 +28,6 @@ import {
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { Observable } from 'rxjs';
 import {
-  selectAddNote,
   selectAreas,
   selectDropOffHomeCare,
   selectHomeCarers,
@@ -58,6 +56,8 @@ export class HospitalPatientHomeCareComponent implements OnInit {
 
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
   homeCarers$: Observable<ReadOnlyWrapper<HomeCarer[]>>;
+
+  maxIndex = 5;
 
   dropOffAreaId = '';
   dropOffPenId = '';

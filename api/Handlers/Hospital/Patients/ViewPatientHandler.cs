@@ -56,6 +56,9 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
         if (patient.Rechecks?.Any() ?? false)
             patient.Rechecks = [.. patient.Rechecks.OrderByDescending(x => x.Due)];
 
+        if (patient.HomeCareMessages?.Any() ?? false)
+            patient.HomeCareMessages = [.. patient.HomeCareMessages.OrderByDescending(x => x.Date)];
+
         return Results.Ok(patient);
     }
 }

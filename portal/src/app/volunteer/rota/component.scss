@@ -137,6 +137,7 @@ img {
   strong {
     display: block;
     font-size: 1.125rem;
+    margin-top: 0.25rem;
   }
 
   p {
@@ -144,14 +145,12 @@ img {
   }
 
   p.newbies {
-    background-color: pink;
+    color: rgb(138, 61, 74);
     max-width: max-content;
-    padding: 0.125rem 0.25rem;
   }
 
   p.work-experiences {
-    color: rgb(76, 76, 118);
+    color: rgb(69, 69, 130);
     max-width: max-content;
-    padding: 0.125rem 0.25rem;
   }
 }

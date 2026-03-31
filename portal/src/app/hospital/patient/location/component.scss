@@ -2,7 +2,8 @@
   display: flex;
   gap: 2.5rem;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
 
   table {
     flex: 1;
@@ -57,7 +58,7 @@ table:has(thead) {
 .buttons {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  align-items: flex-end;
 
   button {
     padding: 0.125rem 0.25rem;
@@ -66,4 +67,9 @@ table:has(thead) {
 
 select {
   padding: 0.25rem 0.5rem;
+}
+
+form {
+  margin-top: 0.5rem;
+  margin-left: 0.25rem;
 }

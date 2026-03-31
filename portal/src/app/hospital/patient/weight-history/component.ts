@@ -10,12 +10,14 @@ import {
 } from '@angular/core';
 import { getWeightUnit, Patient, PatientWeight } from '../../state';
 import moment from 'moment';
+import 'chartjs-adapter-moment';
 
 import {
   Chart,
   ChartConfiguration,
   ChartDataset,
   registerables,
+  ScatterDataPoint,
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { todayLinePlugin } from '../../dashboard/today-line.plugin';
@@ -109,23 +111,6 @@ export class HospitalPatientWeightHistoryComponent
     }
   }
 
-  private updateWeightChart(weights: PatientWeight[]) {
-    if (!this.chart) return;
-
-    const sorted = [...weights].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
-
-    const labels = sorted.map((w) => moment(w.date).format('D MMM YYYY'));
-    const data = sorted.map((w) => this.getWeightG(w));
-
-    this.chart.data.labels = labels;
-    this.chart.data.datasets[0].data = data;
-
-    // Optional: update colors if needed
-    this.chart.update();
-  }
-
   private tryBuildChart() {
     if (!this.viewReady || !this.patient) return;
 
@@ -145,31 +130,34 @@ export class HospitalPatientWeightHistoryComponent
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
     );
 
-    const labels = sorted.map((w) => moment(w.date).format('D MMM YYYY'));
-    const data = sorted.map((w) => this.getWeightG(w));
+    const data: ScatterDataPoint[] = sorted.map((w) => ({
+      x: new Date(w.date).getTime(),
+      y: this.getWeightG(w),
+    }));
 
     const dataset: ChartDataset<'line'> = {
       label: 'Weight (g)',
       data,
-      borderColor: '#7ca661', // default green
+      parsing: false,
+      borderColor: '#7ca661',
       backgroundColor: 'rgba(183, 219, 245, 0.2)',
       borderWidth: 2,
       fill: true,
       tension: 0.25,
-      pointRadius: 0,
-      pointHoverRadius: 0,
+      pointRadius: 2,
+      pointHoverRadius: 2,
+      pointBackgroundColor: 'rgb(110, 110, 110)',
+      pointBorderColor: 'rgb(110, 110, 110)',
       segment: {
         borderColor: (ctx) => {
-          // ctx.p0 = start point, ctx.p1 = end point of the segment
           return (ctx.p1.parsed.y || 0) > (ctx.p0.parsed.y || 0)
             ? '#7ca661'
             : '#a8555a';
         },
         backgroundColor: (ctx) => {
-          // optional: semi-transparent fill based on gain/loss
           return (ctx.p1.parsed.y || 0) > (ctx.p0.parsed.y || 0)
-            ? 'rgba(124, 166, 97, 0.2)' // green fill
-            : 'rgba(168, 85, 90, 0.2)'; // red fill
+            ? 'rgba(124, 166, 97, 0.2)'
+            : 'rgba(168, 85, 90, 0.2)';
         },
       },
     };
@@ -177,7 +165,6 @@ export class HospitalPatientWeightHistoryComponent
     const config: ChartConfiguration<'line'> = {
       type: 'line',
       data: {
-        labels,
         datasets: [dataset],
       },
       options: {
@@ -194,19 +181,17 @@ export class HospitalPatientWeightHistoryComponent
             displayColors: false,
             callbacks: {
               label: (ctx) => {
-                const currentWeight = ctx.parsed.y || 0;
-                const previousWeight =
+                const current = ctx.raw as { x: number | Date; y: number };
+                const previous =
                   ctx.dataIndex > 0
-                    ? (ctx.dataset.data[ctx.dataIndex - 1] as number)
+                    ? (ctx.dataset.data[ctx.dataIndex - 1] as {
+                        x: number | Date;
+                        y: number;
+                      })
                     : null;
 
-                const currentDate = ctx.chart.data.labels![
-                  ctx.dataIndex
-                ] as string;
-                const previousDate =
-                  ctx.dataIndex > 0
-                    ? (ctx.chart.data.labels![ctx.dataIndex - 1] as string)
-                    : null;
+                const currentWeight = current.y;
+                const previousWeight = previous?.y ?? null;
 
                 let changeText = '';
 
@@ -219,6 +204,7 @@ export class HospitalPatientWeightHistoryComponent
                 }
 
                 const diff = currentWeight - previousWeight;
+
                 if (diff > 0) {
                   changeText = `📈 Gained ${this.formatNumber(diff)} g`;
                 } else if (diff < 0) {
@@ -227,8 +213,15 @@ export class HospitalPatientWeightHistoryComponent
                   changeText = '⚖️ No change';
                 }
 
+                const currentDate = moment(current.x);
+                const previousDate = moment(previous!.x);
+
                 const duration =
-                  '📅 Over ' + this.getDuration(previousDate!, currentDate);
+                  '📅 Over ' +
+                  this.getDuration(
+                    previousDate.toISOString(),
+                    currentDate.toISOString(),
+                  );
 
                 return [
                   `${this.formatNumber(currentWeight)} g`,
@@ -242,8 +235,14 @@ export class HospitalPatientWeightHistoryComponent
         },
         scales: {
           x: {
-            type: 'category',
-            ticks: { autoSkip: true, maxRotation: 90, minRotation: 0 },
+            type: 'time',
+            time: {
+              unit: 'day',
+              tooltipFormat: 'D MMM YYYY',
+            },
+            ticks: {
+              autoSkip: true,
+            },
           },
           y: {
             title: { display: true, text: 'Weight (g)' },

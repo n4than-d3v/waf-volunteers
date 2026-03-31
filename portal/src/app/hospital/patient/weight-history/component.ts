@@ -39,6 +39,8 @@ export class HospitalPatientWeightHistoryComponent
   private chart: Chart | null = null;
   private viewReady = false;
 
+  private previousWeights: string = '{}';
+
   @ViewChild('weightLine') weightLine?: ElementRef<HTMLCanvasElement>;
 
   ngAfterViewInit() {
@@ -118,6 +120,12 @@ export class HospitalPatientWeightHistoryComponent
       setTimeout(() => this.tryBuildChart(), 0);
       return;
     }
+
+    if (JSON.stringify(this.patient.weightHistory) === this.previousWeights) {
+      return;
+    }
+
+    this.previousWeights = JSON.stringify(this.patient.weightHistory);
 
     this.chart?.destroy();
     this.buildWeightChart(this.patient.weightHistory);

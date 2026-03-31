@@ -37,13 +37,6 @@ PatientStatus.PendingInitialExam) {
     ></hospital-patient-details>
   </section>
   <section>
-    <h3>Location</h3>
-    <hospital-patient-location
-      [patient]="patient.data"
-      [isVet]="isVet"
-    ></hospital-patient-location>
-  </section>
-  <section>
     <h3>Status</h3>
     <hospital-patient-status
       [patient]="patient.data"
@@ -65,13 +58,22 @@ PatientStatus.PendingInitialExam) {
       [isVet]="isVet"
     ></hospital-patient-diets>
   </section>
-  <section>
-    <h3>Tags</h3>
-    <hospital-patient-tags
-      [patient]="patient.data"
-      [isVet]="isVet"
-    ></hospital-patient-tags>
-  </section>
+  <div>
+    <section>
+      <h3>Location</h3>
+      <hospital-patient-location
+        [patient]="patient.data"
+        [isVet]="isVet"
+      ></hospital-patient-location>
+    </section>
+    <section>
+      <h3>Tags</h3>
+      <hospital-patient-tags
+        [patient]="patient.data"
+        [isVet]="isVet"
+      ></hospital-patient-tags>
+    </section>
+  </div>
 </div>
 @if (patient.data.homeCareRequests.length > 0) {
 <section>

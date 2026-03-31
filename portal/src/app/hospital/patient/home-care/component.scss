@@ -37,6 +37,10 @@ table:has(thead) {
   }
 }
 
+.row:nth-child(2) table {
+  margin-top: 0.125rem;
+}
+
 table:not(:has(thead)) {
   margin-bottom: 0rem;
 
@@ -45,17 +49,27 @@ table:not(:has(thead)) {
       font-size: 1.125rem;
       padding: 0.125rem 0.25rem;
       border: none;
-    }
+      vertical-align: top;
 
-    td:nth-child(2) {
-      font-weight: bold;
-      padding-left: 1rem;
+      &:nth-child(1) {
+        width: 8rem;
+      }
+
+      &:nth-child(2) {
+        font-weight: bold;
+        padding-left: 1rem;
+        max-width: 35rem;
+      }
     }
 
     tr {
       background-color: transparent !important;
     }
   }
+}
+
+.message-form .flex {
+  margin-top: 1rem;
 }
 
 .row {
@@ -92,6 +106,11 @@ table:not(:has(thead)) {
 .buttons {
   display: flex;
   gap: 0.5rem;
+
+  &.send-buttons {
+    align-items: center;
+    margin-bottom: -4.75rem;
+  }
 }
 
 .main-buttons {
@@ -119,7 +138,7 @@ table:not(:has(thead)) {
     padding-left: 0.25rem;
   }
 
-  .buttons {
+  .main-buttons {
     align-items: flex-end;
   }
 }

@@ -30,6 +30,8 @@ public class AddHomeCareMessage : IRequest<IResult>
 
 public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResult>
 {
+    private const string Acknowledgement = "(acknowledged)";
+
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
     private readonly IEncryptionService _encryptionService;
@@ -93,6 +95,15 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
 
         if (homeCareRequest.Responder != null && homeCareRequest.Responder.Id != author.Id)
         {
+            string notificationTitle = "Home care message";
+            string notificationBody = $"You have received a new message regarding patient {homeCareRequest.Reference}";
+
+            if (homeCareMessage.Message == Acknowledgement)
+            {
+                notificationTitle = "Message acknowledged";
+                notificationBody = $"Your previous message regarding patient {homeCareRequest.Reference} has been acknowledged";
+            }
+
             var account = homeCareRequest.Responder;
 
             var subscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
@@ -101,8 +112,8 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
                 var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
                 await _pushService.Send(push, new PushNotification
                 {
-                    Title = "Home care message",
-                    Body = $"You have received a new message regarding patient {homeCareRequest.Reference}",
+                    Title = notificationTitle,
+                    Body = notificationBody,
                     Url = "/volunteer/home-care"
                 }, account.Id);
             }

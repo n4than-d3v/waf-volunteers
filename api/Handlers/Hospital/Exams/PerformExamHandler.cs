@@ -213,6 +213,7 @@ public class PerformExamHandler : IRequestHandler<PerformExam, IResult>
             patient.SpeciesVariant = speciesVariant;
             patient.Sex = exam.Sex;
             patient.LastUpdatedDetails = DateTime.UtcNow;
+            patient.LastUpdatedStatus = DateTime.UtcNow;
         }
 
         await _repository.SaveChangesAsync();

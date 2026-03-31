@@ -34,7 +34,7 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
     public async Task<IResult> Handle(MarkPatientInCentre request, CancellationToken cancellationToken)
     {
         var patient = await _repository.Get<Patient>(request.PatientId,
-            action: x => x.IncludeBasicDetails().IncludeOutcome());
+            action: x => x.IncludeBasicDetails().IncludeOutcome().IncludeHomeCare());
         if (patient == null) return Results.BadRequest();
 
         patient.LastUpdatedStatus = DateTime.UtcNow;
@@ -46,6 +46,8 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
         patient.Dispositioner = null;
         patient.Dispositioned = null;
         patient.DispositionReasons?.Clear();
+
+        patient.HomeCareRequests.RemoveAll(x => x.Pickup == null);
 
         await _repository.SaveChangesAsync();
 

@@ -39,6 +39,7 @@ public class DroppedOffHomeCareHandler : IRequestHandler<DroppedOffHomeCare, IRe
 
         var patient = homeCareRequest.Patient;
 
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.Status = PatientStatus.Inpatient;
         homeCareRequest.Dropoff = DateTime.UtcNow;
 

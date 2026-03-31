@@ -43,6 +43,7 @@ public class AcceptHomeCareHandler : IRequestHandler<AcceptHomeCare, IResult>
 
         var patient = homeCareRequest.Patient;
 
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.Status = PatientStatus.ReceivingHomeCare;
 
         homeCareRequest.Responder = responder;

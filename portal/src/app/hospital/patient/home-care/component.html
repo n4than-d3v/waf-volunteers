@@ -27,154 +27,184 @@
       </tbody>
     </table>
   </div>
-  } @else {
   <div class="row">
     <table>
       <tbody>
         <tr>
-          <td>Requested</td>
-          <td>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</td>
-        </tr>
-        <tr>
-          <td>Pickup</td>
-          <td>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</td>
+          <td>Notes</td>
+          <td>{{ request.notes || '(blank)' }}</td>
         </tr>
       </tbody>
     </table>
-    <table>
-      <tbody>
-        <tr>
-          <td>Home carer</td>
-          @if (request.responder) {
-          <td>
-            {{ request.responder.firstName }} {{ request.responder.lastName }}
-          </td>
-          } @else {
-          <td>(unknown)</td>
-          }
-        </tr>
-        <tr>
-          <td>Returned</td>
-          @if (request.dropoff) {
-          <td>{{ request.dropoff | date: 'dd MMM yyyy HH:mm' }}</td>
-          } @else {
-          <td>(still in care)</td>
-          }
-        </tr>
-      </tbody>
-    </table>
-
-    @if (!(droppingOff || transferring)) { @if (isVet && !request.dropoff) {
-    <div class="buttons main-buttons">
-      <button
-        (click)="droppingOff = request.id"
-        class="button button--secondary-invert"
-      >
-        🏥 Patient returned to hospital
-      </button>
-      <button
-        (click)="transferring = request.id"
-        class="button button--secondary-invert"
-      >
-        🔄 Transfer to another home carer
-      </button>
+  </div>
+  } @else {
+  <div class="row">
+    <div>
+      <div class="row">
+        <table>
+          <tbody>
+            <tr>
+              <td>Requested</td>
+              <td>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</td>
+            </tr>
+            <tr>
+              <td>Pickup</td>
+              <td>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <tbody>
+            <tr>
+              <td>Home carer</td>
+              @if (request.responder) {
+              <td>
+                {{ request.responder.firstName }} {{ request.responder.lastName
+                }}
+              </td>
+              } @else {
+              <td>(unknown)</td>
+              }
+            </tr>
+            <tr>
+              <td>Returned</td>
+              @if (request.dropoff) {
+              <td>{{ request.dropoff | date: 'dd MMM yyyy HH:mm' }}</td>
+              } @else {
+              <td>(still in care)</td>
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="row">
+        <table>
+          <tbody>
+            <tr>
+              <td>Notes</td>
+              <td>{{ request.notes || '(blank)' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    } } @else if (droppingOff == request.id) {
-    <form [formGroup]="dropOffForm" class="drop-off">
-      <div class="field">
-        <label for="area">
-          Area
-          <span class="required">*</span>
-        </label>
-        @if (areas$ | async; as areas) { @if (areas.loading) {
-        <spinner />
-        } @else if (areas.error) {
-        <div class="error">Error occurred</div>
-        } @else if (areas.data) {
-        <hospital-patient-autocomplete
-          [id]="'areaId'"
-          [inline]="true"
-          [label]="''"
-          [control]="'areaId'"
-          [formGroup]="dropOffForm"
-          [items]="convertAreas(areas.data)"
-        ></hospital-patient-autocomplete>
-        } }
-      </div>
-      <div class="field">
-        <label for="pen">
-          Pen
-          <span class="required">*</span>
-        </label>
-        @if (areas$ | async; as areas) { @if (areas.loading) {
-        <spinner />
-        } @else if (areas.error) {
-        <div class="error">Error occurred</div>
-        } @else if (areas.data) {
-        <hospital-patient-autocomplete
-          [id]="'penId'"
-          [inline]="true"
-          [label]="''"
-          [control]="'penId'"
-          [formGroup]="dropOffForm"
-          [items]="convertPens(areas.data)"
-        ></hospital-patient-autocomplete>
-        } }
-      </div>
-      @if (attemptedSave && !dropOffForm.valid) {
-      <div class="error">Please fill in all required fields</div>
-      } @if (!saving) {
-      <div class="buttons">
+    <div class="row">
+      @if (!(droppingOff || transferring)) { @if (isVet && !request.dropoff) {
+      <div class="buttons main-buttons">
         <button
-          (click)="homeCareDropOff(request.id)"
-          class="button button--primary"
+          (click)="droppingOff = request.id"
+          class="button button--secondary-invert"
         >
-          Save
+          🏥 Patient returned to hospital
         </button>
-        <button (click)="reset()" class="button button--secondary">Back</button>
+        <button
+          (click)="transferring = request.id"
+          class="button button--secondary-invert"
+        >
+          🔄 Transfer to another home carer
+        </button>
       </div>
-      }
-    </form>
-    } @else if (transferring == request.id) {
-    <form [formGroup]="transferForm" class="transfer">
-      <div class="fields">
+      } } @else if (droppingOff == request.id) {
+      <form [formGroup]="dropOffForm" class="drop-off">
         <div class="field">
-          <label for="homeCarerId">
-            Home carer
+          <label for="area">
+            Area
             <span class="required">*</span>
           </label>
-          <select id="homeCarerId" formControlName="homeCarerId">
-            @if (homeCarers$ | async; as homeCarers) { @if (homeCarers.loading)
-            {
-            <spinner />
-            } @else if (homeCarers.error) {
-            <div class="error">Error occurred</div>
-            } @else if (homeCarers.data) { @for (homeCarer of homeCarers.data;
-            track homeCarer.id) {
-            <option [value]="homeCarer.id">
-              {{ homeCarer.firstName }} {{ homeCarer.lastName }}
-            </option>
-            } } }
-          </select>
+          @if (areas$ | async; as areas) { @if (areas.loading) {
+          <spinner />
+          } @else if (areas.error) {
+          <div class="error">Error occurred</div>
+          } @else if (areas.data) {
+          <hospital-patient-autocomplete
+            [id]="'areaId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'areaId'"
+            [formGroup]="dropOffForm"
+            [items]="convertAreas(areas.data)"
+          ></hospital-patient-autocomplete>
+          } }
         </div>
-      </div>
-      @if (attemptedSave && !transferForm.valid) {
-      <div class="error">Please fill in all required fields</div>
-      } @if (!saving) {
-      <div class="buttons">
-        <button
-          (click)="homeCareTransfer(request.id)"
-          class="button button--primary"
-        >
-          Save
-        </button>
-        <button (click)="reset()" class="button button--secondary">Back</button>
-      </div>
+        <div class="field">
+          <label for="pen">
+            Pen
+            <span class="required">*</span>
+          </label>
+          @if (areas$ | async; as areas) { @if (areas.loading) {
+          <spinner />
+          } @else if (areas.error) {
+          <div class="error">Error occurred</div>
+          } @else if (areas.data) {
+          <hospital-patient-autocomplete
+            [id]="'penId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'penId'"
+            [formGroup]="dropOffForm"
+            [items]="convertPens(areas.data)"
+          ></hospital-patient-autocomplete>
+          } }
+        </div>
+        @if (attemptedSave && !dropOffForm.valid) {
+        <div class="error">Please fill in all required fields</div>
+        } @if (!saving) {
+        <div class="buttons">
+          <button
+            (click)="homeCareDropOff(request.id)"
+            class="button button--primary"
+          >
+            Save
+          </button>
+          <button (click)="reset()" class="button button--secondary">
+            Back
+          </button>
+        </div>
+        }
+      </form>
+      } @else if (transferring == request.id) {
+      <form [formGroup]="transferForm" class="transfer">
+        <div class="fields">
+          <div class="field">
+            <label for="homeCarerId">
+              Home carer
+              <span class="required">*</span>
+            </label>
+            <select id="homeCarerId" formControlName="homeCarerId">
+              @if (homeCarers$ | async; as homeCarers) { @if
+              (homeCarers.loading) {
+              <spinner />
+              } @else if (homeCarers.error) {
+              <div class="error">Error occurred</div>
+              } @else if (homeCarers.data) { @for (homeCarer of homeCarers.data;
+              track homeCarer.id) {
+              <option [value]="homeCarer.id">
+                {{ homeCarer.firstName }} {{ homeCarer.lastName }}
+              </option>
+              } } }
+            </select>
+          </div>
+        </div>
+        @if (attemptedSave && !transferForm.valid) {
+        <div class="error">Please fill in all required fields</div>
+        } @if (!saving) {
+        <div class="buttons">
+          <button
+            (click)="homeCareTransfer(request.id)"
+            class="button button--primary"
+          >
+            Save
+          </button>
+          <button (click)="reset()" class="button button--secondary">
+            Back
+          </button>
+        </div>
+        }
+      </form>
       }
-    </form>
-    }
+    </div>
   </div>
-  <form [formGroup]="messageForm">
+  <form class="message-form" [formGroup]="messageForm">
     @if (isVet && patient.status != PatientStatus.Dispositioned &&
     !request.dropoff) {
     <div class="flex">
@@ -189,12 +219,19 @@
         ></textarea>
       </div>
       @if (!saving) {
-      <div class="buttons">
+      <div class="buttons send-buttons">
         <button
           (click)="sendMessage(request.id)"
           class="button button--secondary-invert"
         >
           💬 Send
+        </button>
+        <span>or</span>
+        <button
+          (click)="markAsRead(request.id)"
+          class="button button--secondary-invert"
+        >
+          👌 Acknowledge
         </button>
       </div>
       }
@@ -220,7 +257,11 @@
             @if (message.weightValue) { {{ message.weightValue }} {{
             getWeightUnit(message.weightUnit) }} }
           </td>
-          <td>{{ message.message }}</td>
+          <td>
+            @if (message.message === '(acknowledged)') {
+            <em>Acknowledged previous message</em>
+            } @else { {{ message.message }} }
+          </td>
           <td>
             @if (message.attachments) { @for (attachment of message.attachments;
             track attachment.id) {

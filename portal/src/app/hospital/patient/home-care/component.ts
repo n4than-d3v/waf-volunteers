@@ -140,6 +140,19 @@ export class HospitalPatientHomeCareComponent implements OnInit {
     );
   }
 
+  markAsRead(homeCareRequestId: number) {
+    this.attemptedSave = true;
+    this.saving = true;
+    this.store.dispatch(
+      sendHomeCareMessage({
+        patientId: this.patient.id,
+        homeCareRequestId,
+        message: '(acknowledged)',
+      }),
+    );
+    this.reset();
+  }
+
   sendMessage(homeCareRequestId: number) {
     this.attemptedSave = true;
     if (!this.messageForm.valid) return;

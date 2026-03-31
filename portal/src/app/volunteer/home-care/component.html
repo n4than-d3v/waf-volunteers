@@ -110,7 +110,9 @@ requests.data; track request.id) {
             {{ message.weightValue }} {{ getWeightUnit(message.weightUnit)
             }}</strong
           >
-          - } {{ message.message }}
+          - } @if (message.message === '(acknowledged)') {
+          <em>Acknowledged previous message</em>
+          } @else { {{ message.message }} }
         </div>
         <div class="underneath">
           @if (message.attachments && message.attachments.length > 0) {

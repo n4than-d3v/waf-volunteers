@@ -48,6 +48,7 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
         var requester = await _repository.Get<Account>(_userContext.Id);
         if (requester == null) return Results.BadRequest();
 
+        patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.Status = PatientStatus.PendingHomeCare;
 
         var homeCareRequest = new HomeCareRequest

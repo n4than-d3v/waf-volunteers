@@ -18,7 +18,7 @@
         <td>{{ note.noted | date: 'dd MMM yyyy HH:mm' }}</td>
         <td>{{ note.noter.firstName }} {{ note.noter.lastName }}</td>
         <td>
-          {{ note.weightValue ? note.weightValue +
+          {{ note.weightValue ? note.weightValue + ' ' +
           getWeightUnit(note.weightUnit) : '' }}
         </td>
         <td>{{ note.comments }}</td>

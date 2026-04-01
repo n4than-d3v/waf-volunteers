@@ -108,6 +108,7 @@ export class VolunteerHomeCareComponent implements OnInit {
     this.attemptedSave = false;
     this.acceptForm.reset();
     this.messageForm.reset();
+    this.messageForm.controls.weightUnit.setValue('1');
   }
 
   accept() {

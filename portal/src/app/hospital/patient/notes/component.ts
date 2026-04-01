@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   getWeightUnit,
   ListNote,
@@ -37,7 +37,7 @@ import { selectAddNote } from '../../selectors';
     ReactiveFormsModule,
   ],
 })
-export class HospitalPatientNotesComponent {
+export class HospitalPatientNotesComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
 
@@ -62,6 +62,12 @@ export class HospitalPatientNotesComponent {
     files: new FormControl<File[] | null>(null),
   });
 
+  ngOnInit() {
+    this.noteForm.patchValue({
+      weightUnit: String(this.patient.latestWeight?.weightUnit || '1'),
+    });
+  }
+
   onFileChange(event: any) {
     const files = event.target.files as FileList;
     this.noteForm.controls.files.setValue(Array.from(files));
@@ -85,9 +91,10 @@ export class HospitalPatientNotesComponent {
         weightValue: this.noteForm.value.weightValue
           ? Number(this.noteForm.value.weightValue)
           : null,
-        weightUnit: this.noteForm.value.weightUnit
-          ? Number(this.noteForm.value.weightUnit)
-          : null,
+        weightUnit:
+          this.noteForm.value.weightValue && this.noteForm.value.weightUnit
+            ? Number(this.noteForm.value.weightUnit)
+            : null,
         comments: this.noteForm.value.comments || '',
       }),
     );
@@ -112,9 +119,10 @@ export class HospitalPatientNotesComponent {
         weightValue: this.noteForm.value.weightValue
           ? Number(this.noteForm.value.weightValue)
           : null,
-        weightUnit: this.noteForm.value.weightUnit
-          ? Number(this.noteForm.value.weightUnit)
-          : null,
+        weightUnit:
+          this.noteForm.value.weightValue && this.noteForm.value.weightUnit
+            ? Number(this.noteForm.value.weightUnit)
+            : null,
         comments: this.noteForm.value.comments || '',
         files: this.noteForm.value.files || [],
       }),
@@ -137,6 +145,9 @@ export class HospitalPatientNotesComponent {
     this.adding = false;
     this.editing = null;
     this.noteForm.reset();
+    this.noteForm.patchValue({
+      weightUnit: String(this.patient.latestWeight?.weightUnit || '1'),
+    });
   }
 
   getWeightUnit = getWeightUnit;

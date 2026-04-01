@@ -100,6 +100,34 @@ export class HospitalPatientDietsComponent implements OnInit {
     }
   }
 
+  getLimitedInstructions() {
+    const result: {
+      time: string;
+      items: string[];
+    }[] = [];
+    let count = 0;
+
+    for (const feeding of this.getInstructions()) {
+      const items: string[] = [];
+      result.push({ time: feeding.time, items });
+      for (const item of feeding.items) {
+        if (count >= this.maxIndex) return result;
+
+        items.push(item);
+        count++;
+      }
+    }
+
+    return result;
+  }
+
+  getTotalInstructionsCount() {
+    return this.getInstructions().reduce(
+      (total, feeding) => total + feeding.items.length,
+      0,
+    );
+  }
+
   getInstructions() {
     if (this.patient.feeding.length > 0)
       return formatFeeding(this.patient.feeding);

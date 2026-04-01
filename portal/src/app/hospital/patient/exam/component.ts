@@ -102,7 +102,7 @@ export class HospitalPatientExamComponent implements OnInit {
     speciesVariantId: new FormControl('', [Validators.required]),
     sex: new FormControl('', [Validators.required]),
     weightValue: new FormControl('', [Validators.required]),
-    weightUnit: new FormControl('', [Validators.required]),
+    weightUnit: new FormControl('1', [Validators.required]),
     temperature: new FormControl(''),
     attitudeId: new FormControl(''),
     bodyConditionId: new FormControl(''),
@@ -318,9 +318,11 @@ export class HospitalPatientExamComponent implements OnInit {
           weightValue: this.examForm.controls.weightValue.value
             ? Number(this.examForm.controls.weightValue.value)
             : null,
-          weightUnit: this.examForm.controls.weightUnit.value
-            ? Number(this.examForm.controls.weightUnit.value)
-            : null,
+          weightUnit:
+            this.examForm.controls.weightValue.value &&
+            this.examForm.controls.weightUnit.value
+              ? Number(this.examForm.controls.weightUnit.value)
+              : null,
           temperature: this.examForm.controls.temperature.value
             ? Number(this.examForm.controls.temperature.value)
             : null,

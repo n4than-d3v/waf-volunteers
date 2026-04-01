@@ -115,6 +115,7 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
 
   beginPerformingRecheck(recheck: ListRecheck) {
     this.previousScroll = window.scrollY;
+    this.weightUnit[recheck.id] = '1';
     this.performingRecheck = recheck;
   }
 
@@ -249,9 +250,10 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
         recheckId: recheck.id,
         date: this.date,
         comments: this.comments[recheck.id] || '',
-        weightUnit: this.weightUnit[recheck.id]
-          ? Number(this.weightUnit[recheck.id])
-          : null,
+        weightUnit:
+          this.weightValue[recheck.id] && this.weightUnit[recheck.id]
+            ? Number(this.weightUnit[recheck.id])
+            : null,
         weightValue: this.weightValue[recheck.id]
           ? Number(this.weightValue[recheck.id])
           : null,

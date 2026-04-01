@@ -5,17 +5,17 @@
   <p>Feeding boards will show the following instructions:</p>
   <table>
     <tbody>
-      @for (feeding of getInstructions(); let lastTime = $last; let index =
-      $index; track feeding.time) { @if (index < maxIndex) { @for (item of
-      feeding.items; let first = $first; let lastFood = $last; track item) {
+      @for (feeding of getLimitedInstructions(); let lastTime = $last; track
+      feeding.time) { @for (item of feeding.items; let first = $first; let
+      lastFood = $last; track item) {
       <tr [class.last]="lastFood && !lastTime">
         <td>@if (first) { {{ feeding.time }} }</td>
         <td>{{ item }}</td>
       </tr>
-      } } }
+      } }
     </tbody>
   </table>
-  @if (maxIndex < getInstructions().length) {
+  @if (maxIndex < getTotalInstructionsCount()) {
   <p>
     <a class="load-more" (click)="maxIndex += 5"> Load more... </a>
   </p>

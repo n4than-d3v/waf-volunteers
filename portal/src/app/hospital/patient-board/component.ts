@@ -134,15 +134,9 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       map(([wrapper]) => {
         if (!wrapper.data) return null;
 
-        console.log({
-          wrapper,
-          showPensWithoutFeeds: this.showPensWithoutFeeds$.value,
-          showPensNeedCleaning: this.showPensNeedCleaning$.value,
-        });
-
         return {
           board: { ...wrapper.data.board },
-          areas: wrapper.data.areas.map(
+          areas: (wrapper.data.areas || []).map(
             (area): PatientBoardAreaVm => ({
               ...area,
               pens: (area.pens || []).map(
@@ -152,9 +146,9 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
                   nextFeeding: this.getNextFeeding(pen.feedings || []),
                   forceFeeds: this.getForceFeeds(pen.feedings || []),
                   isExpandable: this.isPenExpandable(pen),
-                  feedings: pen.feedings.map(
+                  feedings: (pen.feedings || []).map(
                     (feeding): PatientBoardAreaPenFeedingVm => {
-                      const details = feeding.details.map(
+                      const details = (feeding.details || []).map(
                         (detail): PatientBoardAreaPenTaskDetailsVm => ({
                           ...detail,
                           quantityEachFormatted: formatFractionalNumber(
@@ -175,7 +169,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
                       };
                     },
                   ),
-                  feedingSummaries: pen.feedingSummaries.map(
+                  feedingSummaries: (pen.feedingSummaries || []).map(
                     (summary): PatientBoardAreaPenFeedingSummaryVm => ({
                       ...summary,
                       quantityEachFormatted: formatFractionalNumber(
@@ -187,16 +181,16 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
               ),
             }),
           ),
-          summary: wrapper.data.summary.map(
+          summary: (wrapper.data.summary || []).map(
             (summary): PatientBoardSummaryVm => ({
               ...summary,
-              variants: summary.variants.map(
+              variants: (summary.variants || []).map(
                 (variant): PatientBoardSummaryVariantVm => ({
                   ...variant,
-                  feeding: variant.feeding.map(
+                  feeding: (variant.feeding || []).map(
                     (feeding): PatientBoardSummaryFeedingVm => ({
                       ...feeding,
-                      items: feeding.items.map(
+                      items: (feeding.items || []).map(
                         (item): PatientBoardSummaryFeedingItemVm => ({
                           ...item,
                           quantityValueFormatted: formatFractionalNumber(

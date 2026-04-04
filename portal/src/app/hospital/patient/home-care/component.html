@@ -226,6 +226,7 @@
         >
           💬 Send
         </button>
+        @if (patient.lastMessageSentByOrphanFeeder) {
         <span>or</span>
         <button
           (click)="markAsRead(request.id)"
@@ -233,6 +234,7 @@
         >
           👌 Acknowledge
         </button>
+        }
       </div>
       }
     </div>

@@ -356,6 +356,7 @@ export const upsertBoard = createAction(
   props<{
     id: number | null;
     name: string;
+    forBirds: boolean;
     areas: { areaId: number; displayType: PatientBoardAreaDisplayType }[];
   }>(),
 );

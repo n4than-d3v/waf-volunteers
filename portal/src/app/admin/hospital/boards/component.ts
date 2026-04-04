@@ -26,6 +26,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
   addingMessage: number | null = null;
 
   name = '';
+  forBirds = false;
   areaDisplayTypes: { [key: string]: string } = {};
 
   filter = '';
@@ -62,6 +63,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
 
   prepareEdit(board: PatientBoard) {
     this.name = board.name;
+    this.forBirds = board.forBirds;
     this.areaDisplayTypes = {};
     for (const area of board.areas) {
       this.areaDisplayTypes[String(area.area.id)] = String(area.displayType);
@@ -95,6 +97,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
       upsertBoard({
         id: this.adding ? null : this.editing,
         name: this.name,
+        forBirds: this.forBirds,
         areas: Object.keys(this.areaDisplayTypes).map((areaId) => ({
           areaId: Number(areaId),
           displayType: Number(this.areaDisplayTypes[areaId]),
@@ -109,6 +112,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
     this.editing = null;
     this.addingMessage = null;
     this.name = '';
+    this.forBirds = false;
     this.areaDisplayTypes = {};
     this.message = '';
     this.resetDateRange();

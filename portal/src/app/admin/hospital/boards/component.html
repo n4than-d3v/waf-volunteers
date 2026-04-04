@@ -29,6 +29,10 @@
     <label for="name">Name</label>
     <input type="text" id="name" [(ngModel)]="name" />
   </div>
+  <div class="field">
+    <label for="forBirds">For birds</label>
+    <input type="checkbox" id="forBirds" [(ngModel)]="forBirds" />
+  </div>
   @if (areas$ | async; as areas) {
   <div class="areas">
     @for (area of areas.data || []; track area.id) {
@@ -84,6 +88,7 @@
     <tr>
       <th>Name</th>
       <th>Areas</th>
+      <th>For birds</th>
       <th></th>
     </tr>
   </thead>
@@ -103,6 +108,7 @@
           }
         </div>
       </td>
+      <td>{{ board.forBirds ? 'Yes' : '' }}</td>
       <td>
         <div class="buttons">
           <button (click)="prepareEdit(board)" class="button button--secondary">

@@ -11,6 +11,7 @@ public class UpsertBoard : IRequest<IResult>
     public int? Id { get; set; }
 
     public string Name { get; set; }
+    public bool ForBirds { get; set; }
     public List<UpsertBoardArea> Areas { get; set; }
 
     public class UpsertBoardArea
@@ -48,6 +49,7 @@ public class UpsertBoardHandler : IRequestHandler<UpsertBoard, IResult>
         if (board == null) return Results.BadRequest();
 
         board.Name = request.Name;
+        board.ForBirds = request.ForBirds;
         foreach (var upsertArea in request.Areas)
         {
             var area = areas.FirstOrDefault(x => x.Id == upsertArea.AreaId);

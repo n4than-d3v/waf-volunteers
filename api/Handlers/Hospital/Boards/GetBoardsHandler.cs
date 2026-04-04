@@ -22,6 +22,12 @@ public class GetBoardsHandler : IRequestHandler<GetBoards, IResult>
     {
         var boards = await _repository.GetAll<Board>(x => true, tracking: false,
             action: x => x.Include(y => y.Areas).ThenInclude(y => y.Area));
+
+        foreach (var board in boards)
+        {
+            board.Areas = [.. board.Areas.OrderBy(x => x.Area.Name)];
+        }
+
         return Results.Ok(boards.OrderBy(x => x.Name));
     }
 }

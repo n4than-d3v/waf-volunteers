@@ -1,7 +1,7 @@
-import { PatientBoardAreaPenTaskDetails } from '../state';
+import { PatientBoardAreaPenTaskDetailsVm } from './board.model';
 
 export interface FoodSection {
   key: string;
   title: string;
-  details: PatientBoardAreaPenTaskDetails[];
+  details: PatientBoardAreaPenTaskDetailsVm[];
 }

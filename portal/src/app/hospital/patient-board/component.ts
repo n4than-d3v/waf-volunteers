@@ -9,7 +9,14 @@ import { Store } from '@ngrx/store';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable, Subscription, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  Subscription,
+  timer,
+} from 'rxjs';
 import {
   ListPatientBoard,
   PatientBoard,
@@ -31,13 +38,25 @@ import {
   PatientBoardAreaDisplayType,
 } from '../../admin/hospital/state';
 import { FoodSection } from './food-section';
+import {
+  PatientBoardAreaPenFeedingSummaryVm,
+  PatientBoardAreaPenFeedingVm,
+  PatientBoardAreaPenTaskDetailsVm,
+  PatientBoardAreaPenVm,
+  PatientBoardAreaVm,
+  PatientBoardSummaryFeedingItemVm,
+  PatientBoardSummaryFeedingVm,
+  PatientBoardSummaryVariantVm,
+  PatientBoardSummaryVm,
+  PatientBoardVm,
+} from './board.model';
 
 @Pipe({
   name: 'sortBoardAreas',
   standalone: true,
 })
 export class SortBoardAreasPipe implements PipeTransform {
-  transform(areas: PatientBoardArea[]): PatientBoardArea[] {
+  transform(areas: PatientBoardAreaVm[]): PatientBoardAreaVm[] {
     if (!areas) return [];
 
     return areas.slice().sort((a, b) => {
@@ -64,27 +83,141 @@ export class SortBoardAreasPipe implements PipeTransform {
   selector: 'patient-board',
   standalone: true,
   templateUrl: './component.html',
-  styleUrls: ['./component.scss', './emergency.scss'],
+  styleUrls: [
+    './component.scss',
+    './board-main.scss',
+    './board-bird.scss',
+    './emergency.scss',
+  ],
   imports: [AsyncPipe, SpinnerComponent, SortBoardAreasPipe, FormsModule],
 })
 export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   boards$: Observable<ReadOnlyWrapper<ListPatientBoard[]>>;
-  board$: Observable<ReadOnlyWrapper<PatientBoard>>;
+  board$: Observable<PatientBoardVm | null>;
 
   viewingBoard: number | null = null;
 
-  expandedPens: string[] = [];
+  expandedPens: { [key: string]: boolean } = {};
 
   expandFeedingSummary = false;
   showPatientReferences = false;
-  showPensWithoutFeeds = true;
-  showPensNeedCleaning = true;
+
+  showPensWithoutFeeds$ = new BehaviorSubject(true);
+  showPensNeedCleaning$ = new BehaviorSubject(true);
+
+  get showPensWithoutFeeds(): boolean {
+    return this.showPensWithoutFeeds$.value;
+  }
+
+  set showPensWithoutFeeds(val: boolean) {
+    this.showPensWithoutFeeds$.next(val);
+  }
+
+  get showPensNeedCleaning(): boolean {
+    return this.showPensNeedCleaning$.value;
+  }
+
+  set showPensNeedCleaning(val: boolean) {
+    this.showPensNeedCleaning$.next(val);
+  }
 
   subscription: Subscription | null = null;
 
   constructor(private store: Store) {
     this.boards$ = this.store.select(selectPatientBoards);
-    this.board$ = this.store.select(selectPatientBoard);
+    const patientBoard$ = this.store.select(selectPatientBoard);
+    this.board$ = combineLatest([
+      patientBoard$,
+      this.showPensWithoutFeeds$,
+      this.showPensNeedCleaning$,
+    ]).pipe(
+      map(([wrapper]) => {
+        if (!wrapper.data) return null;
+
+        console.log({
+          wrapper,
+          showPensWithoutFeeds: this.showPensWithoutFeeds$.value,
+          showPensNeedCleaning: this.showPensNeedCleaning$.value,
+        });
+
+        return {
+          board: { ...wrapper.data.board },
+          areas: wrapper.data.areas.map(
+            (area): PatientBoardAreaVm => ({
+              ...area,
+              pens: (area.pens || []).map(
+                (pen): PatientBoardAreaPenVm => ({
+                  ...pen,
+                  shouldShow: this.shouldShowPen(pen),
+                  nextFeeding: this.getNextFeeding(pen.feedings || []),
+                  forceFeeds: this.getForceFeeds(pen.feedings || []),
+                  isExpandable: this.isPenExpandable(pen),
+                  feedings: pen.feedings.map(
+                    (feeding): PatientBoardAreaPenFeedingVm => {
+                      const details = feeding.details.map(
+                        (detail): PatientBoardAreaPenTaskDetailsVm => ({
+                          ...detail,
+                          quantityEachFormatted: formatFractionalNumber(
+                            detail.quantityEach,
+                          ),
+                          quantityTotalFormatted: formatFractionalNumber(
+                            detail.quantityTotal,
+                          ),
+                        }),
+                      );
+                      return {
+                        ...feeding,
+                        details,
+                        isNow: this.isNow(feeding.time),
+                        shouldShow: this.shouldShowTime(feeding.time),
+                        hasForceFeeds: this.hasForceFeeds(feeding.details),
+                        groups: this.groupFeeding(details),
+                      };
+                    },
+                  ),
+                  feedingSummaries: pen.feedingSummaries.map(
+                    (summary): PatientBoardAreaPenFeedingSummaryVm => ({
+                      ...summary,
+                      quantityEachFormatted: formatFractionalNumber(
+                        summary.quantityEach,
+                      ),
+                    }),
+                  ),
+                }),
+              ),
+            }),
+          ),
+          summary: wrapper.data.summary.map(
+            (summary): PatientBoardSummaryVm => ({
+              ...summary,
+              variants: summary.variants.map(
+                (variant): PatientBoardSummaryVariantVm => ({
+                  ...variant,
+                  feeding: variant.feeding.map(
+                    (feeding): PatientBoardSummaryFeedingVm => ({
+                      ...feeding,
+                      items: feeding.items.map(
+                        (item): PatientBoardSummaryFeedingItemVm => ({
+                          ...item,
+                          quantityValueFormatted: formatFractionalNumber(
+                            item.quantityValue,
+                          ),
+                        }),
+                      ),
+                      shouldShow: this.shouldShowTime(feeding.time),
+                    }),
+                  ),
+                }),
+              ),
+            }),
+          ),
+          anyOtherBoards: this.anyOtherBoards(wrapper.data.areas),
+          isMorning: this.isCurrentShift('M'),
+          isAfternoon: this.isCurrentShift('A'),
+          isEvening: this.isCurrentShift('E'),
+        };
+      }),
+    );
   }
 
   PatientBoardAreaDisplayType = PatientBoardAreaDisplayType;
@@ -117,81 +250,19 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     );
   }
 
-  expandPen(pen: PatientBoardAreaPen) {
-    this.expandedPens.push(pen.reference);
-  }
-
-  collapsePen(pen: PatientBoardAreaPen) {
-    this.expandedPens = this.expandedPens.filter((x) => x !== pen.reference);
-  }
-
-  isPenExpandable(pen: PatientBoardAreaPen): boolean {
+  private isPenExpandable(pen: PatientBoardAreaPen): boolean {
     if (!pen.feedings?.length) return false;
     return pen.feedings.some((f) => this.shouldShowTime(f.time));
   }
 
-  shouldShowPen(pen: PatientBoardAreaPen) {
+  private shouldShowPen(pen: PatientBoardAreaPen) {
     if (pen.needsCleaning) {
-      return this.showPensNeedCleaning;
+      return this.showPensNeedCleaning$.value;
     }
-    if (!this.showPensWithoutFeeds) {
+    if (!this.showPensWithoutFeeds$.value) {
       return this.hasFeeds(pen.feedings || []);
     }
     return true;
-  }
-
-  formatNumber = formatFractionalNumber;
-
-  private normalizeChildHeightsPerRow() {
-    const pens = Array.from(document.querySelectorAll<HTMLElement>('.pen'));
-    const childSelectors = [
-      '.location',
-      '.patients',
-      '.tags',
-      '.tasks',
-      '.feeding-times',
-      '.force-feeds',
-    ];
-
-    // Group pens by row
-    const rows: HTMLElement[][] = [];
-    let currentRowTop = -1;
-    let currentRow: HTMLElement[] = [];
-
-    pens.forEach((pen) => {
-      if (pen.offsetTop !== currentRowTop) {
-        // new row
-        if (currentRow.length) rows.push(currentRow);
-        currentRow = [pen];
-        currentRowTop = pen.offsetTop;
-      } else {
-        currentRow.push(pen);
-      }
-    });
-    if (currentRow.length) rows.push(currentRow);
-
-    // Normalize each child type per row
-    rows.forEach((row) => {
-      childSelectors.forEach((selector) => {
-        const elements = row.flatMap((pen) =>
-          Array.from(pen.querySelectorAll<HTMLElement>(selector)),
-        );
-        if (!elements.length) return;
-
-        // Find max height
-        let maxHeight = 0;
-        elements.forEach((el) => {
-          el.style.setProperty('--min-height', `0px`);
-          const height = el.offsetHeight;
-          if (height > maxHeight) maxHeight = height;
-        });
-
-        // Apply max height to all elements in this row
-        elements.forEach((el) => {
-          el.style.setProperty('--min-height', `${maxHeight + 1}px`);
-        });
-      });
-    });
   }
 
   private nowToDecimal() {
@@ -209,22 +280,18 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     return h + m / 60;
   }
 
-  shouldShowTime(time: string): boolean {
+  private shouldShowTime(time: string): boolean {
     const nowDecimal = this.nowToDecimal();
 
     if (/^\d{2}:\d{2}$/.test(time)) {
       const targetDecimal = this.timeToDecimal(time);
 
-      if (0 <= nowDecimal && nowDecimal < 12.5)
-        return 0 <= targetDecimal && targetDecimal <= 12.99;
-      if (12.5 <= nowDecimal && nowDecimal < 13)
-        return 0 <= targetDecimal && targetDecimal <= 17.99;
-      if (13 <= nowDecimal && nowDecimal < 17.5)
-        return 13 <= targetDecimal && targetDecimal <= 17.99;
-      if (17.5 <= nowDecimal && nowDecimal < 18)
-        return 13 <= targetDecimal && targetDecimal <= 23.99;
+      if (0 <= nowDecimal && nowDecimal < 13)
+        return 0 <= targetDecimal && targetDecimal < 13;
+      if (13 <= nowDecimal && nowDecimal < 18)
+        return 13 <= targetDecimal && targetDecimal < 18;
       if (18 <= nowDecimal && nowDecimal < 24)
-        return 18 <= targetDecimal && targetDecimal <= 23.99;
+        return 18 <= targetDecimal && targetDecimal < 24;
 
       return false;
     }
@@ -232,27 +299,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  ngOnInit() {
-    this.store.dispatch(viewPatientBoards());
-    this.subscription = new Subscription();
-    this.subscription.add(
-      timer(0, 10_000).subscribe(() => {
-        if (!this.viewingBoard) return;
-        this.viewBoard(this.viewingBoard);
-      }),
-    );
-    this.subscription.add(
-      timer(0, 250).subscribe(() => {
-        this.normalizeChildHeightsPerRow();
-      }),
-    );
-  }
-
-  ngOnDestroy() {
-    this.subscription?.unsubscribe();
-  }
-
-  isCurrentShift(shift: 'M' | 'A' | 'E') {
+  private isCurrentShift(shift: 'M' | 'A' | 'E') {
     const nowDecimal = this.nowToDecimal();
 
     if (shift === 'M' && 0 <= nowDecimal && nowDecimal < 13) return true;
@@ -261,24 +308,38 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  isNow(time: string) {
+  private getNextFeeding(
+    feedings: PatientBoardAreaPenFeeding[],
+  ): { isNow: boolean; time: string } | null {
+    const nowDecimal = this.nowToDecimal();
+    const next = feedings
+      .filter((f) => /^\d{2}:\d{2}$/.test(f.time))
+      .filter((f) => this.shouldShowTime(f.time))
+      .map((f) => ({ ...f, decimalTime: this.timeToDecimal(f.time) }))
+      .filter((f) => f.decimalTime >= nowDecimal - 0.25)
+      .sort((a, b) => a.decimalTime - b.decimalTime);
+    if (next.length === 0) return null;
+    return { isNow: this.isNow(next[0].time), time: next[0].time };
+  }
+
+  private isNow(time: string) {
     if (/^\d{2}:\d{2}$/.test(time)) {
       const nowDecimal = this.nowToDecimal();
       const timeDecimal = this.timeToDecimal(time);
-      return Math.abs(nowDecimal - timeDecimal) < 0.5;
+      return Math.abs(nowDecimal - timeDecimal) < 0.25;
     }
     return false;
   }
 
-  hasFeeds(feedings: PatientBoardAreaPenFeeding[]) {
+  private hasFeeds(feedings: PatientBoardAreaPenFeeding[]) {
     return feedings.some((time) => this.shouldShowTime(time.time));
   }
 
-  hasForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]) {
+  private hasForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]) {
     return feedings.some((item) => item.forceFeed);
   }
 
-  getForceFeeds(feedings: PatientBoardAreaPenFeeding[]) {
+  private getForceFeeds(feedings: PatientBoardAreaPenFeeding[]) {
     const times = feedings.filter((time) => this.shouldShowTime(time.time));
     if (!times.some((time) => this.hasForceFeeds(time.details))) return [];
 
@@ -293,7 +354,9 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     return [...result];
   }
 
-  groupFeeding(items: PatientBoardAreaPenTaskDetails[]): FoodSection[] {
+  private groupFeeding(
+    items: PatientBoardAreaPenTaskDetailsVm[],
+  ): FoodSection[] {
     const hasDishes = items.some((item) => !!item.dish);
     const hasTopUps = items.some((item) => item.topUp);
 
@@ -326,10 +389,25 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     return Array.from(map.values());
   }
 
-  anyOtherBoards(areas: PatientBoardArea[]) {
+  private anyOtherBoards(areas: PatientBoardArea[]) {
     return areas.some(
       (area) =>
         area.displayType === PatientBoardAreaDisplayType.SummarisePatients,
     );
+  }
+
+  ngOnInit() {
+    this.store.dispatch(viewPatientBoards());
+    this.subscription = new Subscription();
+    this.subscription.add(
+      timer(0, 10_000).subscribe(() => {
+        if (!this.viewingBoard) return;
+        this.viewBoard(this.viewingBoard);
+      }),
+    );
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 }

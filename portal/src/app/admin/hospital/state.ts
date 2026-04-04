@@ -214,6 +214,7 @@ export function getSpeciesType(type: SpeciesType) {
 export interface PatientBoard {
   id: number;
   name: string;
+  forBirds: boolean;
   areas: PatientBoardArea[];
 }
 

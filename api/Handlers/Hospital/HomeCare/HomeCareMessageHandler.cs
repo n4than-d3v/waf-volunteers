@@ -56,6 +56,8 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
         var author = await _repository.Get<Account>(_userContext.Id);
         if (author == null) return Results.BadRequest();
 
+        homeCareRequest.Patient.LastUpdatedDetails = DateTime.UtcNow;
+
         var homeCareMessage = new HomeCareMessage
         {
             Date = DateTime.UtcNow,

@@ -54,6 +54,11 @@ public static class InMemoryBoardTasks
     {
         return _tasksCompleted.ContainsKey(new BoardTask { PenId = penId, TaskId = taskId });
     }
+
+    public static IReadOnlyList<int> GetCompletedTasks(int penId)
+    {
+        return _tasksCompleted.Keys.Where(x => x.PenId == penId).Select(x => x.TaskId).ToList();
+    }
 }
 
 public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
@@ -262,13 +267,41 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Morning = InMemoryBoardTasks.IsComplete(penId, 1),
                     Afternoon = InMemoryBoardTasks.IsComplete(penId, 2),
                     Evening = InMemoryBoardTasks.IsComplete(penId, 3),
+                    Tasks = InMemoryBoardTasks.GetCompletedTasks(penId),
                     Feedings = GetPatientBoardAreaPenFeedings(g.Key.PenId.Value, penPatients),
+                    FeedingSummaries = GetPatientBoardAreaPenFeedingSummaries(g.Key.PenId.Value, penPatients),
                     Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
                     Reference = g.Key.PenReference
                 };
             })
             .OrderBy(x => x.Reference)
             .ToList();
+    }
+
+    private static List<PatientBoardAreaPenFeedingSummary> GetPatientBoardAreaPenFeedingSummaries(int penId, IReadOnlyList<Patient> patients)
+    {
+        var feedingSummaries = new List<PatientBoardAreaPenFeedingSummary>();
+
+        var times = patients
+            .SelectMany(patient => patient.Feeding.Any()
+                ? patient.Feeding.ToList<IFeeding>()
+                : patient.SpeciesVariant!.FeedingGuidance.ToList<IFeeding>())
+            .Where(f => f.QuantityValue >= 0 && f.Time.StartsWith("Every") && !f.Food.ForceFeed)
+            .GroupBy(f => new { f.Time, f.Food.Name, f.QuantityUnit })
+            .OrderBy(f => f.Key.Time);
+
+        foreach (var time in times)
+        {
+            feedingSummaries.Add(new PatientBoardAreaPenFeedingSummary
+            {
+                Interval = time.Key.Time,
+                Food = time.Key.Name,
+                QuantityEach = time.Average(x => x.QuantityValue),
+                QuantityUnit = time.Key.QuantityUnit
+            });
+        }
+
+        return feedingSummaries;
     }
 
     private static List<PatientBoardAreaPenFeeding> GetPatientBoardAreaPenFeedings(int penId, IReadOnlyList<Patient> patients)
@@ -312,6 +345,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             feedings.Add(new PatientBoardAreaPenFeeding
             {
                 Time = timeGroup.Key.ToString(@"hh\:mm"),
+                TimeId = int.Parse(timeGroup.Key.ToString("hhmm")),
                 Details = details,
             });
         }
@@ -387,14 +421,25 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public bool Morning { get; set; }
         public bool Afternoon { get; set; }
         public bool Evening { get; set; }
+        public IReadOnlyList<int> Tasks { get; set; }
 
         public List<PatientBoardAreaPenFeeding> Feedings { get; set; }
+        public List<PatientBoardAreaPenFeedingSummary> FeedingSummaries { get; set; }
         public bool NeedsCleaning { get; set; }
+    }
+
+    public class PatientBoardAreaPenFeedingSummary
+    {
+        public string Interval { get; set; }
+        public string Food { get; set; }
+        public decimal QuantityEach { get; set; }
+        public string QuantityUnit { get; set; }
     }
 
     public class PatientBoardAreaPenFeeding
     {
         public string Time { get; set; }
+        public int TimeId { get; set; }
         public PatientBoardAreaPenTaskDetails[] Details { get; set; }
     }
 

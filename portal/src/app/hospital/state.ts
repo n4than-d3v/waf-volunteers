@@ -662,6 +662,7 @@ export interface ListPatientBoard {
 export interface PatientBoard {
   board: {
     name: string;
+    forBirds: boolean;
     messages: {
       id: number;
       message: string;
@@ -691,7 +692,6 @@ export interface PatientBoardSummaryFeeding {
 }
 
 export interface PatientBoardSummaryFeedingItem {
-  time: string;
   quantityValue: number;
   quantityUnit: string;
   food: string;
@@ -716,14 +716,24 @@ export interface PatientBoardAreaPen {
   morning: boolean;
   afternoon: boolean;
   evening: boolean;
+  tasks: number[];
 
   feedings: PatientBoardAreaPenFeeding[];
+  feedingSummaries: PatientBoardAreaPenFeedingSummary[];
 
   needsCleaning: boolean;
 }
 
+export interface PatientBoardAreaPenFeedingSummary {
+  interval: string;
+  food: string;
+  quantityEach: number;
+  quantityUnit: string;
+}
+
 export interface PatientBoardAreaPenFeeding {
   time: string;
+  timeId: number;
   details: PatientBoardAreaPenTaskDetails[];
 }
 

@@ -1,0 +1,217 @@
+.pens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0rem;
+  margin-bottom: 1rem;
+
+  .pen {
+    display: flex;
+    flex-direction: column;
+    border: solid 2px black;
+    margin-left: -2px;
+    margin-bottom: -2px;
+    max-width: max-content;
+
+    .patients {
+      min-height: 4rem;
+    }
+
+    .tags {
+      min-height: 1.5rem;
+    }
+
+    .tasks {
+      min-height: max-content;
+    }
+
+    .feeding-times {
+      min-height: max-content;
+    }
+
+    .location {
+      background-color: var(--theme-color-5);
+      border-bottom: solid 2px black;
+      color: white;
+      padding: 0rem 0.5rem;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+
+    .patients {
+      padding: 0.25rem;
+      padding-bottom: 0rem;
+
+      .instruction {
+        color: var(--theme-color-2);
+        font-weight: bold;
+        padding: 0rem 0.25rem;
+      }
+    }
+
+    .tags {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      padding: 0rem 0.25rem;
+
+      .custom-diet {
+        color: var(--theme-color-1);
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .tag {
+        color: var(--theme-color-2);
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+    }
+
+    .tasks {
+      display: flex;
+      padding: 0rem 1px;
+      border-top: solid 2px black;
+      border-bottom: solid 2px black;
+
+      .task {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        background-color: rgb(233, 233, 233);
+        filter: opacity(0.5);
+
+        &.task--current-shift {
+          filter: opacity(1);
+        }
+
+        &:not(:last-child) {
+          .time {
+            border-right: solid 2px rgb(136, 136, 136);
+          }
+
+          button {
+            border-right: solid 2px rgb(136, 136, 136);
+          }
+        }
+
+        .time {
+          font-weight: bold;
+          font-size: 1rem;
+          text-align: center;
+          padding: 0rem 0.25rem;
+        }
+
+        .button {
+          padding: 0.125rem;
+          max-height: 2.25rem;
+          border: none;
+          background-color: white;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
+
+    .force-feeds {
+      display: flex;
+      flex-direction: column;
+      padding: 0.25rem 0.25rem 0rem;
+
+      .item {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+    }
+
+    .feeding-times {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0rem 0.25rem;
+      column-gap: 0.5rem;
+
+      .time {
+        font-size: 1rem;
+
+        .ff {
+          font-size: 0.75rem;
+          padding-left: 0.135rem;
+        }
+
+        &.time--now {
+          font-weight: bold;
+          background-color: var(--theme-primary);
+          padding: 0rem 0.25rem;
+          color: white;
+        }
+      }
+    }
+
+    .expand,
+    .collapse {
+      color: var(--theme-primary);
+      text-decoration: underline;
+      cursor: pointer;
+      font-weight: bold;
+      padding: 0.125rem 0.25rem;
+      font-size: 1rem;
+    }
+
+    .feeding-expanded {
+      min-height: var(--min-height);
+
+      .expand {
+        flex: 1;
+        text-align: right;
+      }
+
+      .feedings {
+        .feeding {
+          padding: 0.25rem 0.25rem;
+
+          .time {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+
+          .group {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: rgb(45, 45, 45);
+          }
+
+          ul {
+            margin-left: 1rem;
+
+            li {
+              margin-bottom: 0.25rem;
+            }
+          }
+
+          .details {
+            color: rgb(57, 57, 57);
+            font-size: 0.9rem;
+            margin-top: -0.125rem;
+
+            .notes {
+              font-style: italic;
+            }
+          }
+        }
+      }
+    }
+
+    .patient-references {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+
+      p {
+        font-size: 1.125rem;
+        font-weight: bold;
+        color: var(--theme-color-1);
+      }
+    }
+  }
+}

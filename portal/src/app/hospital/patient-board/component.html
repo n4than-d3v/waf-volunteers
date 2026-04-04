@@ -353,8 +353,6 @@
           @if (pen.tasks.includes(feeding.timeId)) { ✔️ } @else { &nbsp; }
         </button>
       </div>
-
-      <p class="time" [class.time--now]="feeding.isNow"></p>
       } } @if (pen.isExpandable) {
       <span class="expand" (click)="expandedPens[pen.reference] = true">
         [?]

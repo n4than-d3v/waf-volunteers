@@ -11,6 +11,7 @@
   .nursery-pen {
     display: flex;
     flex: 0 0 calc(50% - 0.5rem);
+    border-right: solid 2px var(--theme-color-5);
 
     justify-content: space-between;
     align-items: center;
@@ -19,10 +20,6 @@
     &:nth-child(1),
     &:nth-child(2) {
       border-top: solid 2px var(--theme-color-5);
-    }
-
-    &.expanded {
-      max-width: 20rem;
     }
 
     .location {
@@ -44,8 +41,9 @@
     }
 
     .location {
-      background-color: var(--theme-color-5);
-      color: white;
+      border-left: solid 2px var(--theme-color-5);
+      border-right: solid 2px var(--theme-color-5);
+      color: var(--theme-color-5);
       font-weight: bold;
       font-size: 1.25rem;
       align-self: stretch;
@@ -194,6 +192,9 @@
     }
 
     .feeding-times {
+      align-items: center;
+      align-self: flex-start;
+
       .time {
         font-size: 1rem;
 
@@ -222,8 +223,6 @@
     }
 
     .feeding-expanded {
-      min-height: var(--min-height);
-
       .expand {
         flex: 1;
         text-align: right;
@@ -265,16 +264,10 @@
       }
     }
 
-    .patient-references {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-
-      p {
-        font-size: 1.125rem;
-        font-weight: bold;
-        color: var(--theme-color-1);
-      }
+    .references {
+      font-size: 1.125rem;
+      font-weight: bold;
+      color: var(--theme-color-1);
     }
   }
 }

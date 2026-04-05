@@ -27,8 +27,18 @@ import {
   Dashboard,
   Food,
   HomeCarer,
+  supportedEmbeddedContentTypes,
 } from './state';
-import { catchError, delay, map, mergeMap, of, switchMap } from 'rxjs';
+import {
+  catchError,
+  delay,
+  ignoreElements,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import {
   getPatient,
   getPatientCounts,
@@ -211,6 +221,7 @@ import {
   homeCarerTransfer,
   homeCarerTransferSuccess,
   homeCarerTransferError,
+  showEmbeddedContent,
 } from './actions';
 
 @Injectable()
@@ -839,19 +850,37 @@ export class HospitalEffects {
 
   // Download note attachment
 
-  downloadNoteAttachment$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(downloadNoteAttachment),
-        switchMap((action) => {
-          this.http
-            .get(
-              `hospital/patients/${action.patientId}/notes/${action.noteId}/attachments/${action.attachment.id}`,
-              {
-                responseType: 'blob',
+  downloadNoteAttachment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(downloadNoteAttachment),
+      switchMap((action) => {
+        const url = `hospital/patients/${action.patientId}/notes/${action.noteId}/attachments/${action.attachment.id}`;
+
+        if (
+          supportedEmbeddedContentTypes.includes(action.attachment.contentType)
+        ) {
+          return of(
+            showEmbeddedContent({
+              attachment: {
+                ...action.attachment,
+                url,
               },
-            )
-            .subscribe((blob) => {
+            }),
+            setTab({
+              tab: {
+                code: 'VIEW_EMBEDDED_CONTENT',
+                title: action.attachment.fileName,
+              },
+            }),
+          );
+        }
+
+        return this.http
+          .get(url, {
+            responseType: 'blob',
+          })
+          .pipe(
+            tap((blob) => {
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
@@ -859,11 +888,12 @@ export class HospitalEffects {
               a.click();
 
               window.URL.revokeObjectURL(url);
-            });
-          return of();
-        }),
-      ),
-    { dispatch: false },
+            }),
+            ignoreElements(),
+            catchError(() => of()),
+          );
+      }),
+    ),
   );
 
   // Add faecal test
@@ -1018,19 +1048,37 @@ export class HospitalEffects {
 
   // Download blood test attachment
 
-  downloadBloodTestAttachment$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(downloadBloodTestAttachment),
-        switchMap((action) => {
-          this.http
-            .get(
-              `hospital/patients/${action.patientId}/blood-tests/${action.bloodTestId}/attachments/${action.attachment.id}`,
-              {
-                responseType: 'blob',
+  downloadBloodTestAttachment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(downloadBloodTestAttachment),
+      switchMap((action) => {
+        const url = `hospital/patients/${action.patientId}/blood-tests/${action.bloodTestId}/attachments/${action.attachment.id}`;
+
+        if (
+          supportedEmbeddedContentTypes.includes(action.attachment.contentType)
+        ) {
+          return of(
+            showEmbeddedContent({
+              attachment: {
+                ...action.attachment,
+                url,
               },
-            )
-            .subscribe((blob) => {
+            }),
+            setTab({
+              tab: {
+                code: 'VIEW_EMBEDDED_CONTENT',
+                title: action.attachment.fileName,
+              },
+            }),
+          );
+        }
+
+        return this.http
+          .get(url, {
+            responseType: 'blob',
+          })
+          .pipe(
+            tap((blob) => {
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
@@ -1038,11 +1086,12 @@ export class HospitalEffects {
               a.click();
 
               window.URL.revokeObjectURL(url);
-            });
-          return of();
-        }),
-      ),
-    { dispatch: false },
+            }),
+            ignoreElements(),
+            catchError(() => of()),
+          );
+      }),
+    ),
   );
 
   // Add recheck
@@ -1462,19 +1511,37 @@ export class HospitalEffects {
 
   // Download home care message attachment
 
-  downloadHomeCareMessageAttachment$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(downloadHomeCareMessageAttachment),
-        switchMap((action) => {
-          this.http
-            .get(
-              `hospital/home-care/message/${action.messageId}/attachments/${action.attachment.id}`,
-              {
-                responseType: 'blob',
+  downloadHomeCareMessageAttachment$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(downloadHomeCareMessageAttachment),
+      switchMap((action) => {
+        const url = `hospital/home-care/message/${action.messageId}/attachments/${action.attachment.id}`;
+
+        if (
+          supportedEmbeddedContentTypes.includes(action.attachment.contentType)
+        ) {
+          return of(
+            showEmbeddedContent({
+              attachment: {
+                ...action.attachment,
+                url,
               },
-            )
-            .subscribe((blob) => {
+            }),
+            setTab({
+              tab: {
+                code: 'VIEW_EMBEDDED_CONTENT',
+                title: action.attachment.fileName,
+              },
+            }),
+          );
+        }
+
+        return this.http
+          .get(url, {
+            responseType: 'blob',
+          })
+          .pipe(
+            tap((blob) => {
               const url = window.URL.createObjectURL(blob);
               const a = document.createElement('a');
               a.href = url;
@@ -1482,11 +1549,12 @@ export class HospitalEffects {
               a.click();
 
               window.URL.revokeObjectURL(url);
-            });
-          return of();
-        }),
-      ),
-    { dispatch: false },
+            }),
+            ignoreElements(),
+            catchError(() => of()),
+          );
+      }),
+    ),
   );
 
   // Search patient

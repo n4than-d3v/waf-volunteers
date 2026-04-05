@@ -1,0 +1,15 @@
+@if (attachment$ | async; as attachment) { @if (isImage$ | async) {
+<img [src]="attachment.url" />
+} @else if (isVideo$ | async) {
+<video controls>
+  <source [src]="attachment.url" [type]="attachment.contentType" />
+  Your browser does not support the video tag.
+</video>
+} @else if (isAudio$ | async) {
+<audio controls>
+  <source [src]="attachment.url" [type]="attachment.contentType" />
+  Your browser does not support the audio tag.
+</audio>
+} @else {
+<embed [src]="attachment.url" [type]="attachment.contentType" />
+} }

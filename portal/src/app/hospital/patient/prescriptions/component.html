@@ -28,8 +28,8 @@ patient.prescriptionMedications.length === 0) {
     @for (prescription of getPrescriptions(); track prescription.id; let index =
     $index) { @if (index < maxIndex) {
     <tr>
-      <td>{{ prescription.start | date: 'dd MMM yyyy' }}</td>
-      <td>{{ prescription.end | date: 'dd MMM yyyy' }}</td>
+      <td>{{ prescription.start | date: 'd MMM yyyy' }}</td>
+      <td>{{ prescription.end | date: 'd MMM yyyy' }}</td>
       <td>{{ prescription.frequency }}</td>
 
       @if (isMedication(prescription)) {
@@ -97,7 +97,7 @@ patient.prescriptionMedications.length === 0) {
     administration.id) {
     <tr>
       <td colspan="4"></td>
-      <td>{{ administration.administered | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ administration.administered | date: 'd MMM yyyy HH:mm' }}</td>
       <td>
         {{ administration.administrator.firstName }} {{
         administration.administrator.lastName }}

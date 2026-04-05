@@ -17,6 +17,8 @@
     align-items: center;
     border-bottom: solid 2px var(--theme-color-5);
 
+    min-width: 50rem;
+
     &:nth-child(1),
     &:nth-child(2) {
       border-top: solid 2px var(--theme-color-5);

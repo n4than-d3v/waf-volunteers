@@ -228,3 +228,8 @@ export const selectMarkPenClean = createSelector(
   selectHospitalState,
   (state) => state.markPenClean,
 );
+
+export const selectAttachment = createSelector(
+  selectHospitalState,
+  (state) => state.attachment,
+);

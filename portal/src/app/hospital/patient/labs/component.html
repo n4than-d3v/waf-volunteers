@@ -16,7 +16,7 @@
     @for (test of patient.bloodTests; let index = $index; track test.id) { @if
     (index < maxBloodIndex) {
     <tr>
-      <td>{{ test.tested | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ test.tested | date: 'd MMM yyyy HH:mm' }}</td>
       <td>{{ test.tester.firstName }} {{ test.tester.lastName }}</td>
       <td>{{ test.comments }}</td>
       <td>
@@ -68,7 +68,7 @@
     @for (test of patient.faecalTests; let index = $index; track test.id) { @if
     (index < maxFaecalIndex) {
     <tr>
-      <td>{{ test.tested | date: 'dd MMM yyyy HH:mm' }}</td>
+      <td>{{ test.tested | date: 'd MMM yyyy HH:mm' }}</td>
       <td>{{ test.tester.firstName }} {{ test.tester.lastName }}</td>
       <td>{{ formatPosNeg(test.float) }}</td>
       <td>{{ formatPosNeg(test.direct) }}</td>

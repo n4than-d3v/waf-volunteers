@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import {
+  Attachment,
   ListBloodTest,
   ListFaecalTest,
   Patient,
@@ -175,10 +176,7 @@ export class HospitalPatientLabsComponent {
     this.reset();
   }
 
-  download(
-    bloodTest: ListBloodTest,
-    attachment: { id: number; fileName: string },
-  ) {
+  download(bloodTest: ListBloodTest, attachment: Attachment) {
     this.store.dispatch(
       downloadBloodTestAttachment({
         patientId: this.patient.id,

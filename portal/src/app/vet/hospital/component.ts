@@ -14,6 +14,7 @@ import { setPage } from '../../hospital/stock/actions';
 import { HospitalDailyTasksComponent } from '../../hospital/daily-tasks/component';
 import { HospitalPatientBoardComponent } from '../../hospital/patient-board/component';
 import { HospitalDashboardComponent } from '../../hospital/dashboard/component';
+import { HospitalPatientViewAttachmentComponent } from '../../hospital/patient/view-attachment/component';
 
 @Component({
   selector: 'vet-hospital',
@@ -30,6 +31,7 @@ import { HospitalDashboardComponent } from '../../hospital/dashboard/component';
     HospitalDailyTasksComponent,
     HospitalStockListComponent,
     HospitalPatientBoardComponent,
+    HospitalPatientViewAttachmentComponent,
   ],
 })
 export class VetHospitalComponent implements OnDestroy {

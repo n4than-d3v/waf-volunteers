@@ -79,8 +79,8 @@
       <td>
         @for (event of interaction.interactions; track event.opened) {
         <div class="flex-thirds">
-          <p>{{ event.opened | date: 'dd MMM yyyy HH:mm:ss' }}</p>
-          <p>{{ event.closed | date: 'dd MMM yyyy HH:mm:ss' }}</p>
+          <p>{{ event.opened | date: 'd MMM yyyy HH:mm:ss' }}</p>
+          <p>{{ event.closed | date: 'd MMM yyyy HH:mm:ss' }}</p>
           <p>{{ event.duration }}</p>
         </div>
         }

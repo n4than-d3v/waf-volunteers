@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
+  Attachment,
   getWeightUnit,
   HomeCareMessage,
   HomeCareRequest,
@@ -89,10 +90,7 @@ export class VolunteerHomeCareComponent implements OnInit {
     this.messageForm.controls.files.setValue(Array.from(files));
   }
 
-  download(
-    message: HomeCareMessage,
-    attachment: { id: number; fileName: string },
-  ) {
+  download(message: HomeCareMessage, attachment: Attachment) {
     this.store.dispatch(
       downloadHomeCareMessageAttachment({
         messageId: message.id,

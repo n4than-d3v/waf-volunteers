@@ -45,7 +45,7 @@
   <p class="last-updated" [class.outdated]="patient.isOutdated">
     @if (patient.isOutdated) {
     <span>Check if up to date</span>
-    } Last updated {{ patient.lastUpdatedDetails | date: 'dd MMM yyyy HH:mm' }}
+    } Last updated {{ patient.lastUpdatedDetails | date: 'd MMM yyyy HH:mm' }}
   </p>
   }
 </div>

@@ -25,8 +25,8 @@
     @for (batch of page.item.batches; track batch.id; let last = $last) {
     <tr>
       <td>{{ batch.number }}</td>
-      <td>{{ batch.date | date: 'dd MMM yyyy' }}</td>
-      <td>{{ batch.expiry | date: 'dd MMM yyyy' }}</td>
+      <td>{{ batch.date | date: 'd MMM yyyy' }}</td>
+      <td>{{ batch.expiry | date: 'd MMM yyyy' }}</td>
       <td>
         {{ batch.deliveredQuantity }} {{ getMeasurement(page.item.measurement)
         }}
@@ -86,8 +86,8 @@
     @for (usage of batch.usages; track usage.id) {
     <tr>
       <td colspan="2"></td>
-      <td>{{ usage.date | date: 'dd MMM yyyy' }} ({{ usage.signedOutBy }})</td>
-      <td>{{ usage.expiry | date: 'dd MMM yyyy' }}</td>
+      <td>{{ usage.date | date: 'd MMM yyyy' }} ({{ usage.signedOutBy }})</td>
+      <td>{{ usage.expiry | date: 'd MMM yyyy' }}</td>
       <td>{{ usage.quantity }} {{ getMeasurement(page.item.measurement) }}</td>
       <td>
         @if (usage.expired) {
@@ -97,7 +97,7 @@
         }
       </td>
       <td colspan="2">
-        @if (usage.disposed) { {{ usage.disposed | date: 'dd MMM yyyy' }} ({{
+        @if (usage.disposed) { {{ usage.disposed | date: 'd MMM yyyy' }} ({{
         usage.disposedBy }}) } @else { Still in use }
       </td>
       <td>

@@ -59,7 +59,7 @@
     <tr>
       <td>{{ user.username }}</td>
       <td>{{ user.firstName }} {{ user.lastName }}</td>
-      <td>{{ user.lastLoggedIn | date: 'dd MMM yyyy HH:mm'}}</td>
+      <td>{{ user.lastLoggedIn | date: 'd MMM yyyy HH:mm'}}</td>
       <td>{{ user.userAgent }}</td>
       <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
       <td>

@@ -21,3 +21,7 @@ h1 {
     }
   }
 }
+
+.margin-left-lists ::ng-deep p {
+  min-height: 1.125rem;
+}

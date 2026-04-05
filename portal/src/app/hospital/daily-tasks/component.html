@@ -403,7 +403,7 @@ administerPrescriptionTask.error) {
                     <span class="due">Due</span>
                     } } @else {
                     <span class="overdue">
-                      Overdue ({{ recheck.due | date: 'dd MMM yyyy' }})
+                      Overdue ({{ recheck.due | date: 'd MMM yyyy' }})
                     </span>
                     }
                   </td>
@@ -466,15 +466,15 @@ administerPrescriptionTask.error) {
                   <td>
                     {{ prescription.frequency }}<br />
                     <span class="date">
-                      {{ prescription.start | date: 'dd MMM yyyy'}} - {{
-                      prescription.end | date: 'dd MMM yyyy'}}</span
+                      {{ prescription.start | date: 'd MMM yyyy'}} - {{
+                      prescription.end | date: 'd MMM yyyy'}}</span
                     >
                   </td>
                   <td>
                     @if (getMostRecent(prescription) !== '') { {{
                     getDurationSinceMostRecent(prescription) }} ago<br />
                     <span class="date">
-                      {{ getMostRecent(prescription) | date: 'dd MMM yyyy HH:mm'
+                      {{ getMostRecent(prescription) | date: 'd MMM yyyy HH:mm'
                       }}
                     </span>
                     }

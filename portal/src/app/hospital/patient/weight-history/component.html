@@ -1,19 +1,32 @@
 <table>
   <tbody>
+    @if (patient.initialWeight) {
     <tr>
-      <td>Weight on intake</td>
       <td>
-        @if (patient.initialWeight) { {{ patient.initialWeight.weightValue }} {{
-        getWeightUnit(patient.initialWeight.weightUnit) }} }
+        Weight on intake
+        <span class="date">
+          {{ patient.initialWeight.date | date: 'd MMM yyyy' }}
+        </span>
+      </td>
+      <td>
+        {{ patient.initialWeight.weightValue }} {{
+        getWeightUnit(patient.initialWeight.weightUnit) }}
       </td>
     </tr>
+    } @if (patient.latestWeight) {
     <tr>
-      <td>Latest reported weight</td>
       <td>
-        @if (patient.latestWeight) { {{ patient.latestWeight.weightValue }} {{
-        getWeightUnit(patient.latestWeight.weightUnit) }} }
+        Latest reported weight
+        <span class="date">
+          {{ patient.latestWeight.date | date: 'd MMM yyyy' }}
+        </span>
+      </td>
+      <td>
+        {{ patient.latestWeight.weightValue }} {{
+        getWeightUnit(patient.latestWeight.weightUnit) }}
       </td>
     </tr>
+    }
   </tbody>
 </table>
 

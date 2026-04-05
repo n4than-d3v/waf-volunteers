@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   Area,
+  Attachment,
   getWeightUnit,
   HomeCareMessage,
   HomeCarer,
@@ -128,10 +129,7 @@ export class HospitalPatientHomeCareComponent implements OnInit {
 
   getWeightUnit = getWeightUnit;
 
-  download(
-    message: HomeCareMessage,
-    attachment: { id: number; fileName: string },
-  ) {
+  download(message: HomeCareMessage, attachment: Attachment) {
     this.store.dispatch(
       downloadHomeCareMessageAttachment({
         messageId: message.id,

@@ -18,9 +18,7 @@ requests.data; track request.id) {
     @if (request.notes) {
     <p>{{ request.notes }}</p>
     }
-    <p>
-      Requested <em>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</em>
-    </p>
+    <p>Requested <em>{{ request.requested | date: 'd MMM yyyy HH:mm' }}</em></p>
   </div>
   @if (!accepting) {
   <div class="buttons">
@@ -82,7 +80,7 @@ requests.data; track request.id) {
     </p>
     <p>
       Pickup date
-      <strong>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</strong>
+      <strong>{{ request.pickup | date: 'd MMM yyyy HH:mm' }}</strong>
     </p>
     @if (request.notes) {
     <p>{{ request.notes }}</p>
@@ -131,7 +129,7 @@ requests.data; track request.id) {
             @if (!message.me) { {{ message.author.firstName }} {{
             message.author.lastName }} }
           </div>
-          <div class="date">{{ message.date | date: 'dd MMM yyyy HH:mm' }}</div>
+          <div class="date">{{ message.date | date: 'd MMM yyyy HH:mm' }}</div>
         </div>
       </div>
       }

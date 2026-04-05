@@ -171,7 +171,8 @@
           (click)="markComplete(pen, 1)"
           class="button button--secondary-invert"
         >
-          @if (pen.morning) { ✔️ } @else { &nbsp; }
+          @if (pen.morning) { ✔️ } @else if (tickingTask ===
+          `${pen.reference}_1`) { ... } @else { &nbsp; }
         </button>
       </div>
       <div class="task" [class.task--current-shift]="board.isAfternoon">
@@ -180,7 +181,8 @@
           (click)="markComplete(pen, 2)"
           class="button button--secondary-invert"
         >
-          @if (pen.afternoon) { ✔️ } @else { &nbsp; }
+          @if (pen.afternoon) { ✔️ } @else if (tickingTask ===
+          `${pen.reference}_2`) { ... } @else { &nbsp; }
         </button>
       </div>
       <div class="task" [class.task--current-shift]="board.isEvening">
@@ -189,7 +191,8 @@
           (click)="markComplete(pen, 3)"
           class="button button--secondary-invert"
         >
-          @if (pen.evening) { ✔️ } @else { &nbsp; }
+          @if (pen.evening) { ✔️ } @else if (tickingTask ===
+          `${pen.reference}_3`) { ... } @else { &nbsp; }
         </button>
       </div>
     </div>
@@ -274,7 +277,7 @@
           (click)="markClean(pen)"
           class="button button--secondary-invert"
         >
-          &nbsp;
+          @if (tickingTask === `${pen.reference}`) { ... } @else { &nbsp; }
         </button>
       </div>
     </div>
@@ -310,7 +313,9 @@
           class="button button--secondary-invert"
         >
           <span>
-            @if (pen.tasks.includes(feeding.timeId)) { ✔️ } @else { &nbsp; }
+            @if (pen.tasks.includes(feeding.timeId)) { ✔️ } @else if
+            (tickingTask === `${pen.reference}_${feeding.timeId}`) { ... } @else
+            { &nbsp; }
           </span>
         </button>
       </div>
@@ -350,7 +355,11 @@
           (click)="markComplete(pen, feeding.timeId)"
           class="button button--secondary-invert"
         >
-          @if (pen.tasks.includes(feeding.timeId)) { ✔️ } @else { &nbsp; }
+          <span>
+            @if (pen.tasks.includes(feeding.timeId)) { ✔️ } @else if
+            (tickingTask === `${pen.reference}_${feeding.timeId}`) { ... } @else
+            { &nbsp; }
+          </span>
         </button>
       </div>
       } } @if (pen.isExpandable) {

@@ -10,7 +10,7 @@ import { Patient, PatientStatus, ReadOnlyWrapper } from '../../hospital/state';
 import { Store } from '@ngrx/store';
 import { selectPatient } from '../../hospital/selectors';
 import { getPatient } from '../actions';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { HospitalPatientExamComponent } from './exam/component';
 import { HospitalPatientAdmissionComponent } from './admission/component';

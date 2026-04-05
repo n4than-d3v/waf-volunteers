@@ -177,6 +177,8 @@ import {
   homeCarerTransfer,
   homeCarerTransferSuccess,
   homeCarerTransferError,
+  showEmbeddedContent,
+  hideEmbeddedContent,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1361,5 +1363,13 @@ export const hospitalReducer = createReducer<HospitalState>(
       loading: false,
       error: false,
     },
+  })),
+  on(showEmbeddedContent, (state, { attachment }) => ({
+    ...state,
+    attachment,
+  })),
+  on(hideEmbeddedContent, (state) => ({
+    ...state,
+    attachment: null,
   })),
 );

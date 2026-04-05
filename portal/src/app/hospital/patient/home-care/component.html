@@ -6,7 +6,7 @@
       <tbody>
         <tr>
           <td>Requested</td>
-          <td>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</td>
+          <td>{{ request.requested | date: 'd MMM yyyy HH:mm' }}</td>
         </tr>
         <tr>
           <td>Pickup</td>
@@ -45,11 +45,11 @@
           <tbody>
             <tr>
               <td>Requested</td>
-              <td>{{ request.requested | date: 'dd MMM yyyy HH:mm' }}</td>
+              <td>{{ request.requested | date: 'd MMM yyyy HH:mm' }}</td>
             </tr>
             <tr>
               <td>Pickup</td>
-              <td>{{ request.pickup | date: 'dd MMM yyyy HH:mm' }}</td>
+              <td>{{ request.pickup | date: 'd MMM yyyy HH:mm' }}</td>
             </tr>
           </tbody>
         </table>
@@ -69,7 +69,7 @@
             <tr>
               <td>Returned</td>
               @if (request.dropoff) {
-              <td>{{ request.dropoff | date: 'dd MMM yyyy HH:mm' }}</td>
+              <td>{{ request.dropoff | date: 'd MMM yyyy HH:mm' }}</td>
               } @else {
               <td>(still in care)</td>
               }
@@ -253,7 +253,7 @@
         @for (message of patient.homeCareMessages; let index = $index; track
         message.id) { @if (index < maxIndex) {
         <tr>
-          <td>{{ message.date | date: 'dd MMM yyyy HH:mm' }}</td>
+          <td>{{ message.date | date: 'd MMM yyyy HH:mm' }}</td>
           <td>{{ message.author.firstName }} {{ message.author.lastName }}</td>
           <td>
             @if (message.weightValue) { {{ message.weightValue }} {{

@@ -135,7 +135,7 @@ addingWorkExperience)) {
   <div class="included-dates">
     @for (weDate of workExperienceDates; track weDate.date) {
     <div class="included-date">
-      <p>{{ weDate.date | date: 'dd MMM yyyy' }}</p>
+      <p>{{ weDate.date | date: 'd MMM yyyy' }}</p>
       <p>{{ weDate.notes }}</p>
     </div>
     }

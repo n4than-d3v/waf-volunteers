@@ -26,6 +26,8 @@ import {
   Dashboard,
   Food,
   HomeCarer,
+  Attachment,
+  EmbeddedContent,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -385,10 +387,7 @@ export const downloadNoteAttachment = createAction(
   props<{
     patientId: number;
     noteId: number;
-    attachment: {
-      id: number;
-      fileName: string;
-    };
+    attachment: Attachment;
   }>(),
 );
 
@@ -504,10 +503,7 @@ export const downloadBloodTestAttachment = createAction(
   props<{
     patientId: number;
     bloodTestId: number;
-    attachment: {
-      id: number;
-      fileName: string;
-    };
+    attachment: Attachment;
   }>(),
 );
 
@@ -794,10 +790,7 @@ export const downloadHomeCareMessageAttachment = createAction(
   '[HMS-V] Download home care message attachment',
   props<{
     messageId: number;
-    attachment: {
-      id: number;
-      fileName: string;
-    };
+    attachment: Attachment;
   }>(),
 );
 
@@ -943,3 +936,12 @@ export const markPenCleanSuccess = createAction(
   props<{ boardId: number }>(),
 );
 export const markPenCleanError = createAction('[HMS-V] Mark pen clean: error');
+
+export const showEmbeddedContent = createAction(
+  '[HMS-V] Show embedded content',
+  props<{ attachment: EmbeddedContent }>(),
+);
+
+export const hideEmbeddedContent = createAction(
+  '[HMS-V] Hide embedded content',
+);

@@ -108,8 +108,7 @@ table:not(:has(thead)) {
   gap: 0.5rem;
 
   &.send-buttons {
-    align-items: center;
-    margin-bottom: -4.75rem;
+    align-items: flex-end;
   }
 }
 

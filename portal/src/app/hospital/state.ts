@@ -12,6 +12,8 @@ export interface HospitalState {
   patient: ReadOnlyWrapper<Patient>;
   searchPatient: Task & { id: number | null };
 
+  attachment: EmbeddedContent | null;
+
   // Exams
   performExam: Task;
   attitudes: ReadOnlyWrapper<Attitude[]>;
@@ -72,7 +74,8 @@ export type TabCode =
   | 'VIEW_PATIENT'
   | 'VIEW_DAILY_TASKS'
   | 'VIEW_STOCK'
-  | 'VIEW_BOARDS';
+  | 'VIEW_BOARDS'
+  | 'VIEW_EMBEDDED_CONTENT';
 
 export interface Tab {
   code: TabCode;
@@ -237,6 +240,51 @@ export interface HomeCareRequest {
   pen: Pen;
 }
 
+export interface EmbeddedContent extends Attachment {
+  url: string;
+}
+
+export const supportedEmbeddedImageTypes = [
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'image/avif',
+  'image/svg+xml',
+  'image/bmp',
+  'image/x-icon',
+];
+
+export const supportedEmbeddedVideoTypes = [
+  'video/mp4',
+  'video/webm',
+  'video/ogg',
+];
+
+export const supportedEmbeddedAudioTypes = [
+  'audio/mpeg',
+  'audio/ogg',
+  'audio/wav',
+  'audio/webm',
+  'audio/aac',
+  'audio/flac',
+];
+
+export const supportedEmbeddedContentTypes = [
+  ...supportedEmbeddedImageTypes,
+  ...supportedEmbeddedVideoTypes,
+  ...supportedEmbeddedAudioTypes,
+  'application/pdf',
+  'text/html',
+  'text/plain',
+];
+
+export interface Attachment {
+  id: number;
+  fileName: string;
+  contentType: string;
+}
+
 export interface HomeCareMessage {
   id: number;
   author: { firstName: string; lastName: string };
@@ -244,7 +292,7 @@ export interface HomeCareMessage {
   message: string;
   weightValue: number | null;
   weightUnit: number | null;
-  attachments: { id: number; fileName: string }[];
+  attachments: Attachment[];
   me: boolean;
 }
 
@@ -283,7 +331,7 @@ export interface ListBloodTest {
   tester: { firstName: string; lastName: string };
   tested: string;
   comments: string;
-  attachments: { id: number; fileName: string }[];
+  attachments: Attachment[];
 }
 
 export interface Movement {
@@ -352,7 +400,7 @@ export interface ListNote {
   weightValue: number | null;
   weightUnit: number | null;
   comments: string;
-  attachments: { id: number; fileName: string }[];
+  attachments: Attachment[];
 }
 
 export enum ExamType {
@@ -773,6 +821,7 @@ export const initialHospitalState: HospitalState = {
   }>(),
   patient: createReadOnlyWrapper<Patient>(),
   searchPatient: { ...createTask(), id: null },
+  attachment: null,
   attitudes: createReadOnlyWrapper<Attitude[]>(),
   bodyConditions: createReadOnlyWrapper<BodyCondition[]>(),
   dehydrations: createReadOnlyWrapper<Dehydration[]>(),

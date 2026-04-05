@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  Attachment,
   getWeightUnit,
   ListNote,
   Patient,
@@ -130,7 +131,7 @@ export class HospitalPatientNotesComponent implements OnInit {
     this.reset();
   }
 
-  download(note: ListNote, attachment: { id: number; fileName: string }) {
+  download(note: ListNote, attachment: Attachment) {
     this.store.dispatch(
       downloadNoteAttachment({
         patientId: this.patient.id,

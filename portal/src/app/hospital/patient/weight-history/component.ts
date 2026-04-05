@@ -22,6 +22,7 @@ import {
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { todayLinePlugin } from '../../dashboard/today-line.plugin';
 import { formatFractionalNumber } from '../../../admin/hospital/state';
+import { DatePipe } from '@angular/common';
 
 Chart.register(...registerables, zoomPlugin, todayLinePlugin);
 
@@ -30,6 +31,7 @@ Chart.register(...registerables, zoomPlugin, todayLinePlugin);
   standalone: true,
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
+  imports: [DatePipe],
 })
 export class HospitalPatientWeightHistoryComponent
   implements AfterViewInit, OnDestroy

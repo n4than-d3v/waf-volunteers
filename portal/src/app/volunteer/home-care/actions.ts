@@ -1,5 +1,9 @@
 import { createAction, props } from '@ngrx/store';
-import { HomeCareMessage, HomeCareRequest } from '../../hospital/state';
+import {
+  Attachment,
+  HomeCareMessage,
+  HomeCareRequest,
+} from '../../hospital/state';
 
 export const getOutstandingHomeCareRequests = createAction(
   '[HMS-O] Get outstanding home care requests',
@@ -56,10 +60,7 @@ export const downloadHomeCareMessageAttachment = createAction(
   '[HMS-O] Download home care message attachment',
   props<{
     messageId: number;
-    attachment: {
-      id: number;
-      fileName: string;
-    };
+    attachment: Attachment;
   }>(),
 );
 

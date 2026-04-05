@@ -13,7 +13,7 @@
   <div class="timeline-item">
     <div class="timeline-dot"></div>
     <div class="timeline-content">
-      <p class="date">{{ notice.created | date: 'dd MMM yyyy' }}</p>
+      <p class="date">{{ notice.created | date: 'd MMM yyyy' }}</p>
       <p class="title">
         {{ notice.title }} @if (notice.hasAttachments) {
         <img class="has-attachments" src="images/notices/attachment.svg" />

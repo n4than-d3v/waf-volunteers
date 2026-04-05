@@ -113,7 +113,7 @@ export class HospitalPatientViewAttachmentComponent
     const img = this.mediaImage.nativeElement;
     const overlay = this.zoomOverlay.nativeElement;
     const zoomed = this.zoomImg.nativeElement;
-    const zoomFactor = 3;
+    const zoomFactor = 2;
 
     const wrapperRect = img.parentElement!.getBoundingClientRect();
 

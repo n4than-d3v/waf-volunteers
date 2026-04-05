@@ -1,5 +1,15 @@
 @if (attachment$ | async; as attachment) { @if (isImage$ | async) {
-<img [src]="attachment.url" />
+<div
+  class="media-wrapper"
+  (mousemove)="moveZoom($event)"
+  (mouseleave)="hideZoom()"
+>
+  <img [src]="attachment.url" #mediaImage />
+
+  <div class="zoom-overlay" #zoomOverlay>
+    <img [src]="attachment.url" #zoomImg />
+  </div>
+</div>
 } @else if (isVideo$ | async) {
 <video controls>
   <source [src]="attachment.url" [type]="attachment.contentType" />

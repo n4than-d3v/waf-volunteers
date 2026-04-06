@@ -25,7 +25,13 @@ export class LoginEffects {
             password: action.password,
           })
           .pipe(
-            map((response: any) => loginSuccess({ token: response.token })),
+            map((response: any) => {
+              this.tokenProvider.setCredentials(
+                action.username,
+                action.password,
+              );
+              return loginSuccess({ token: response.token });
+            }),
             catchError((error: HttpErrorResponse) => {
               console.log(error);
               if (error.status === 400) {
@@ -78,6 +84,8 @@ export class LoginEffects {
       switchMap(() => {
         if (this.tokenProvider.isTokenStillAlive()) {
           return of(loginSuccess({ token: this.tokenProvider.getToken()! }));
+        } else if (this.tokenProvider.hasCredentials()) {
+          return of(login(this.tokenProvider.getCredentials()));
         }
         return of();
       }),

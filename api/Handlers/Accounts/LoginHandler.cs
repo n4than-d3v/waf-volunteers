@@ -199,11 +199,6 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 
         int expiry = _settings.ExpiresInMinutes;
 
-        if (roles.HasFlag(AccountRoles.APP_BOARDS) || roles.HasFlag(AccountRoles.APP_CLOCKING))
-        {
-            expiry = 60 * 24 * 365;
-        }
-
         var token = new JwtSecurityToken(
             issuer: _settings.Issuer,
             audience: _settings.Audience,

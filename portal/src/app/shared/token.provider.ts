@@ -77,6 +77,10 @@ export interface Session {
 export class TokenProvider {
   private readonly LS_KEY = 'token';
 
+  private readonly storeCredentials = ['boards', 'inout'];
+  private readonly LS_USERNAME = 'username';
+  private readonly LS_PASSWORD = 'password';
+
   public getToken() {
     return localStorage.getItem(this.LS_KEY);
   }
@@ -102,6 +106,24 @@ export class TokenProvider {
 
   public hasToken() {
     return !!this.getToken();
+  }
+
+  public hasCredentials() {
+    const credentials = this.getCredentials();
+    return !!credentials.username && !!credentials.password;
+  }
+
+  public getCredentials() {
+    const username = localStorage.getItem(this.LS_USERNAME) || '';
+    const password = localStorage.getItem(this.LS_PASSWORD) || '';
+    return { username, password };
+  }
+
+  public setCredentials(username: string, password: string) {
+    if (!this.storeCredentials.includes(username.toLowerCase())) return;
+
+    localStorage.setItem(this.LS_USERNAME, username);
+    localStorage.setItem(this.LS_PASSWORD, password);
   }
 
   public isTokenStillAlive() {

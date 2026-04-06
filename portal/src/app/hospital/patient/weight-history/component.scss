@@ -3,6 +3,11 @@ canvas {
   max-height: 15rem;
 }
 
+span.date {
+  color: #6e6e6e;
+  font-size: 0.8rem;
+}
+
 table:not(:has(thead)) tbody {
   td {
     font-size: 1.125rem;

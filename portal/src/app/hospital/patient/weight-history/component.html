@@ -5,7 +5,7 @@
       <td>
         Weight on intake
         <span class="date">
-          {{ patient.initialWeight.date | date: 'd MMM yyyy' }}
+          ({{ patient.initialWeight.date | date: 'd MMM yyyy' }})
         </span>
       </td>
       <td>
@@ -18,7 +18,7 @@
       <td>
         Latest reported weight
         <span class="date">
-          {{ patient.latestWeight.date | date: 'd MMM yyyy' }}
+          ({{ patient.latestWeight.date | date: 'd MMM yyyy' }})
         </span>
       </td>
       <td>

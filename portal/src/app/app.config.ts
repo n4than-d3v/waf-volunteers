@@ -47,6 +47,8 @@ import { AuxDevPlanEffects } from './vet/aux-dev-plans/effects';
 import { auxDevPlanReducer } from './vet/aux-dev-plans/reducer';
 import { patientSummaryReducer } from './volunteer/patient-summary/reducer';
 import { PatientSummaryEffects } from './volunteer/patient-summary/effects';
+import { retryInterceptor } from './retry.interceptor';
+import { authInterceptor } from './auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -87,7 +89,14 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     TokenProvider,
-    provideHttpClient(withInterceptors([baseUrlInterceptor, tokenInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        baseUrlInterceptor,
+        tokenInterceptor,
+        retryInterceptor,
+        authInterceptor,
+      ]),
+    ),
     provideStore<AppState>({
       login: loginReducer,
       forgotPassword: forgotPasswordReducer,

@@ -72,7 +72,6 @@ public class RotaService : IRotaService
 
     public async Task<IReadOnlyList<Day>> GetRotaAsync(DateOnly start, DateOnly end)
     {
-        var missingReasons = await _repository.GetAll<MissingReason>(x => true, tracking: false);
         var regularShifts = await _repository.GetAll<RegularShift>(x => x.Account.Status == AccountStatus.Active, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job));
         var attendances = await _repository.GetAll<Attendance>(x => start <= x.Date && x.Date <= end, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job).Include(y => y.MissingReason));
         var times = await _repository.GetAll<TimeRange>(x => true, tracking: false);
@@ -309,7 +308,7 @@ public class RotaService : IRotaService
             };
         }
 
-        var missingReasons = await _repository.GetAll<MissingReason>(x => true, tracking: false);
+        var missingReasons = await _repository.GetAll<MissingReason>(x => x.Deleted == false, tracking: false);
         var userRegularShifts = await _repository.GetAll<RegularShift>(
             x => x.Account.Id == userId, tracking: false,
             action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job));

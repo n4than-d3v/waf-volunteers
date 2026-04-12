@@ -11,7 +11,7 @@ import { SafeYoutubePipe } from '../../../vet/aux-dev-plans/tasks/component';
 })
 export class LearningCategoryComponent {
   @Input({ required: true }) category!: LearningCategory;
-  @Input({ required: true }) parent!: LearningCategory;
+  @Input({ required: true }) parent!: LearningCategory | null;
 
   showChildren = false;
 }

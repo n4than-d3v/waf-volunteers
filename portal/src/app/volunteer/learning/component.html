@@ -8,5 +8,5 @@
 <div class="error">Error occurred</div>
 } @if (categories$ | async; as categories) { @for (category of categories;track
 category.id) {
-<learning-category [category]="category" />
+<learning-category [category]="category" [parent]="null" />
 } }

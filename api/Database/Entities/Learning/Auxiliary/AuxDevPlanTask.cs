@@ -1,4 +1,4 @@
-﻿namespace Api.Database.Entities.Learning;
+﻿namespace Api.Database.Entities.Learning.Auxiliary;
 
 public class AuxDevPlanTask : Entity
 {

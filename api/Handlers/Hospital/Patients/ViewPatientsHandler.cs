@@ -19,7 +19,10 @@ public enum SortPatientsBy
 {
     Admitted = 1,
     Species = 2,
-    Location = 3
+    Location = 3,
+    HomeCarer = 4,
+    LastUpdatedStatus = 5,
+    Dispositioned = 6,
 }
 
 public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
@@ -41,7 +44,8 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
         int total = 0;
 
         var patients = await _repository.GetAll<Patient>(
-            x => true, tracking: false,
+            x => true,
+            tracking: false,
             x =>
             {
                 var filtered = ApplyFilter(request, x);
@@ -57,7 +61,8 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
                     .IncludeHusbandry()
                     .IncludeHomeCare()
                     .IncludeOutcome();
-            });
+            }
+        );
 
         foreach (var patient in patients)
         {
@@ -70,16 +75,33 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
     private IQueryable<Patient> ApplyFilter(ViewPatients request, DbSet<Patient> x)
     {
         return x.Where(y =>
-            y.Status == request.Status &&
-            (
-                request.Search == "" ||
-                y.Reference.ToUpper().Contains(request.Search) ||
-                (y.Name != null && y.Name.ToUpper().Contains(request.Search)) ||
-                (y.SuspectedSpecies != null && y.SuspectedSpecies.Description.ToUpper().Contains(request.Search)) ||
-                (y.InitialLocation != null && y.InitialLocation.Description.ToUpper().Contains(request.Search)) ||
-                (y.Species != null && y.Species.Name.ToUpper().Contains(request.Search)) ||
-                (y.SpeciesVariant != null && y.SpeciesVariant.FriendlyName.ToUpper().Contains(request.Search)) ||
-                (y.Pen != null && y.Pen.Area != null && (y.Pen.Area.Code + "-" + y.Pen.Code).ToUpper().Contains(request.Search))
+            y.Status == request.Status
+            && (
+                request.Search == ""
+                || y.Reference.ToUpper().Contains(request.Search)
+                || (y.Name != null && y.Name.ToUpper().Contains(request.Search))
+                || (
+                    y.CurrentHomeCarer != null
+                    && y.CurrentHomeCarer.ToUpper().Contains(request.Search)
+                )
+                || (
+                    y.SuspectedSpecies != null
+                    && y.SuspectedSpecies.Description.ToUpper().Contains(request.Search)
+                )
+                || (
+                    y.InitialLocation != null
+                    && y.InitialLocation.Description.ToUpper().Contains(request.Search)
+                )
+                || (y.Species != null && y.Species.Name.ToUpper().Contains(request.Search))
+                || (
+                    y.SpeciesVariant != null
+                    && y.SpeciesVariant.FriendlyName.ToUpper().Contains(request.Search)
+                )
+                || (
+                    y.Pen != null
+                    && y.Pen.Area != null
+                    && (y.Pen.Area.Code + "-" + y.Pen.Code).ToUpper().Contains(request.Search)
+                )
             )
         );
     }
@@ -88,23 +110,40 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
     {
         return request.SortBy switch
         {
-            SortPatientsBy.Admitted =>
-                query.OrderByDescending(x => x.Admitted),
+            SortPatientsBy.Admitted => query.OrderByDescending(x => x.Admitted),
 
-            SortPatientsBy.Location =>
-                query.OrderBy(y => y.Pen != null && y.Pen.Area != null
-                        ? (y.Pen.Area.Code + "-" + y.Pen.Code)
-                        : "")
-                     .ThenByDescending(y => y.Admitted),
+            SortPatientsBy.Location => query
+                .OrderBy(y =>
+                    y.Pen != null && y.Pen.Area != null ? (y.Pen.Area.Code + "-" + y.Pen.Code) : ""
+                )
+                .ThenByDescending(y => y.Admitted),
 
-            SortPatientsBy.Species =>
-                query.OrderBy(y =>
-                        y.Species != null ? y.Species.Name :
-                        y.SuspectedSpecies != null ? y.SuspectedSpecies.Description : "")
-                     .ThenBy(y => y.SpeciesVariant != null ? y.SpeciesVariant.Order : 0)
-                     .ThenByDescending(y => y.Admitted),
+            SortPatientsBy.Species => query
+                .OrderBy(y =>
+                    y.Species != null ? y.Species.Name
+                    : y.SuspectedSpecies != null ? y.SuspectedSpecies.Description
+                    : ""
+                )
+                .ThenBy(y => y.SpeciesVariant != null ? y.SpeciesVariant.Order : 0)
+                .ThenByDescending(y => y.Admitted),
 
-            _ => query.OrderByDescending(x => x.Admitted)
+            SortPatientsBy.HomeCarer => query
+                .OrderBy(y => y.CurrentHomeCarer)
+                .ThenByDescending(y =>
+                    y.HomeCareRequests.Where(r => r.Dropoff == null && r.Pickup != null)
+                        .Max(r => r.Pickup)
+                    ?? DateTime.MinValue
+                ),
+
+            SortPatientsBy.LastUpdatedStatus => query
+                .OrderBy(y => y.LastUpdatedStatus)
+                .ThenByDescending(y => y.Admitted),
+
+            SortPatientsBy.Dispositioned => query
+                .OrderByDescending(y => y.Dispositioned)
+                .ThenByDescending(y => y.Admitted),
+
+            _ => query.OrderByDescending(x => x.Admitted),
         };
     }
 }

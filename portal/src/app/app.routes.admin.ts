@@ -15,6 +15,7 @@ import { AdminNoticeDeleteComponent } from './admin/notices/delete/component';
 import { AdminNoticeUpdateComponent } from './admin/notices/update/component';
 import { AdminRotaViewClockingsComponent } from './admin/rota/clockings/component';
 import { AdminNoticeInteractionSummaryComponent } from './admin/notices/interaction-summary/component';
+import { AdminLearningCategoriesComponent } from './admin/learning/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -79,5 +80,9 @@ export const routes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'learning',
+    component: AdminLearningCategoriesComponent,
   },
 ];

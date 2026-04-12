@@ -10,4 +10,5 @@ public class Job : Entity
 
     public int[] ShowOthersInJobIds { get; set; }
     public int[] CanAlsoDoJobIds { get; set; }
+    public string? Suffix { get; set; }
 }

@@ -1,8 +1,8 @@
 ﻿using Api.Database;
-using Api.Database.Entities.Learning;
+using Api.Database.Entities.Learning.Auxiliary;
 using MediatR;
 
-namespace Api.Handlers.Learning;
+namespace Api.Handlers.Learning.Auxiliary;
 
 public class UpsertAuxDevPlanTask : IRequest<IResult>
 {
@@ -21,12 +21,16 @@ public class UpsertAuxDevPlanTaskHandler : IRequestHandler<UpsertAuxDevPlanTask,
         _repository = repository;
     }
 
-    public async Task<IResult> Handle(UpsertAuxDevPlanTask request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(
+        UpsertAuxDevPlanTask request,
+        CancellationToken cancellationToken
+    )
     {
         if (request.Id.HasValue)
         {
             var existing = await _repository.Get<AuxDevPlanTask>(request.Id.Value);
-            if (existing == null) return Results.BadRequest();
+            if (existing == null)
+                return Results.BadRequest();
 
             existing.Name = request.Name;
             existing.Explanation = request.Explanation;
@@ -38,7 +42,7 @@ public class UpsertAuxDevPlanTaskHandler : IRequestHandler<UpsertAuxDevPlanTask,
             {
                 Name = request.Name,
                 Explanation = request.Explanation,
-                YouTube = request.YouTube
+                YouTube = request.YouTube,
             };
 
             _repository.Create(task);

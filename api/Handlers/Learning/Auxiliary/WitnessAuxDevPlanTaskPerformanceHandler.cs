@@ -1,10 +1,10 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Account;
-using Api.Database.Entities.Learning;
+using Api.Database.Entities.Learning.Auxiliary;
 using Api.Services;
 using MediatR;
 
-namespace Api.Handlers.Learning;
+namespace Api.Handlers.Learning.Auxiliary;
 
 public class WitnessAuxDevPlanTaskPerformance : IRequest<IResult>
 {
@@ -14,27 +14,37 @@ public class WitnessAuxDevPlanTaskPerformance : IRequest<IResult>
     public bool SignedOff { get; set; }
 }
 
-public class WitnessAuxDevPlanTaskPerformanceHandler : IRequestHandler<WitnessAuxDevPlanTaskPerformance, IResult>
+public class WitnessAuxDevPlanTaskPerformanceHandler
+    : IRequestHandler<WitnessAuxDevPlanTaskPerformance, IResult>
 {
     private readonly IDatabaseRepository _repository;
     private readonly IUserContext _userContext;
 
-    public WitnessAuxDevPlanTaskPerformanceHandler(IDatabaseRepository repository, IUserContext userContext)
+    public WitnessAuxDevPlanTaskPerformanceHandler(
+        IDatabaseRepository repository,
+        IUserContext userContext
+    )
     {
         _repository = repository;
         _userContext = userContext;
     }
 
-    public async Task<IResult> Handle(WitnessAuxDevPlanTaskPerformance request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(
+        WitnessAuxDevPlanTaskPerformance request,
+        CancellationToken cancellationToken
+    )
     {
         var task = await _repository.Get<AuxDevPlanTask>(request.TaskId);
-        if (task == null) return Results.BadRequest();
+        if (task == null)
+            return Results.BadRequest();
 
         var performer = await _repository.Get<Account>(request.PerformerId);
-        if (performer == null) return Results.BadRequest();
+        if (performer == null)
+            return Results.BadRequest();
 
         var witnesser = await _repository.Get<Account>(_userContext.Id);
-        if (witnesser == null) return Results.BadRequest();
+        if (witnesser == null)
+            return Results.BadRequest();
 
         var witness = new AuxDevPlanTaskWitness
         {
@@ -43,7 +53,7 @@ public class WitnessAuxDevPlanTaskPerformanceHandler : IRequestHandler<WitnessAu
             PerformedBy = performer,
             WitnessedBy = witnesser,
             Notes = request.Notes,
-            SignedOff = request.SignedOff
+            SignedOff = request.SignedOff,
         };
 
         _repository.Create(witness);

@@ -52,6 +52,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
 
   jobs: Job[] = [];
   newJobName = '';
+  newJobSuffix = '';
   newJobBeaconAssociatedRole = '';
 
   missingReasons: MissingReason[] = [];
@@ -88,7 +89,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
         .select(selectMissingReasons)
         .subscribe(
           (missingReasons) =>
-            (this.missingReasons = structuredClone(missingReasons.data))
+            (this.missingReasons = structuredClone(missingReasons.data)),
         ),
       this.store
         .select(selectTimes)
@@ -101,7 +102,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
               timeId: r.time.id,
               jobId: r.job.id,
             })),
-          ])
+          ]),
       ),
       this.store.select(selectAssignableShifts).subscribe(
         (assignableShifts) =>
@@ -111,13 +112,13 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
               timeId: r.time.id,
               jobId: r.job.id,
             })),
-          ])
+          ]),
       ),
       this.store
         .select(selectAssignableAreas)
         .subscribe(
           (assignableAreas) =>
-            (this.assignableAreas = structuredClone(assignableAreas.data))
+            (this.assignableAreas = structuredClone(assignableAreas.data)),
         ),
     ];
   }
@@ -141,7 +142,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
 
   removeMissingReason(missingReason: MissingReason) {
     this.missingReasons = this.missingReasons.filter(
-      (m) => m !== missingReason
+      (m) => m !== missingReason,
     );
   }
 
@@ -155,13 +156,13 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
 
   removeAssignableShift(assignableShift: AssignableShift) {
     this.assignableShifts = this.assignableShifts.filter(
-      (a) => a !== assignableShift
+      (a) => a !== assignableShift,
     );
   }
 
   removeAssignableArea(assignableArea: AssignableArea) {
     this.assignableAreas = this.assignableAreas.filter(
-      (a) => a !== assignableArea
+      (a) => a !== assignableArea,
     );
   }
 
@@ -190,7 +191,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       | 'times'
       | 'requirements'
       | 'assignableAreas'
-      | 'assignableShifts'
+      | 'assignableShifts',
   ) {
     if (type === 'jobs') {
       if (this.newJobName) {
@@ -199,6 +200,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
           beaconAssociatedRole: Number(this.newJobBeaconAssociatedRole || '0'),
           showOthersInJobIds: [],
           canAlsoDoJobIds: [],
+          suffix: this.newJobSuffix,
         });
       }
       this.newJobName = '';
@@ -209,7 +211,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateJobs({
           jobs: this.jobs,
-        })
+        }),
       );
     } else if (type === 'missingReasons') {
       if (this.newMissingReasonName) {
@@ -219,7 +221,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateMissingReasons({
           missingReasons: this.missingReasons,
-        })
+        }),
       );
     } else if (type === 'times') {
       if (this.newTimeName && this.newTimeStart && this.newTimeEnd) {
@@ -241,7 +243,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateTimes({
           times: this.times,
-        })
+        }),
       );
     } else if (type === 'requirements') {
       if (
@@ -270,7 +272,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateRequirements({
           requirements: this.requirements,
-        })
+        }),
       );
     } else if (type === 'assignableShifts') {
       if (
@@ -297,7 +299,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateAssignableShifts({
           assignableShifts: this.assignableShifts,
-        })
+        }),
       );
     } else if (type === 'assignableAreas') {
       if (this.newAssignableAreaName) {
@@ -307,7 +309,7 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.store.dispatch(
         updateAssignableAreas({
           assignableAreas: this.assignableAreas,
-        })
+        }),
       );
     }
   }

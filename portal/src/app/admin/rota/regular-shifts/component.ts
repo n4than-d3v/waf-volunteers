@@ -42,7 +42,10 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
   jobs$: Observable<Wrapper<Job>>;
   times$: Observable<Wrapper<Time>>;
 
-  constructor(private store: Store, private route: ActivatedRoute) {
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+  ) {
     this.regularShifts$ = this.store.select(selectRegularShifts);
     this.jobs$ = this.store.select(selectJobs);
     this.times$ = this.store.select(selectTimes);
@@ -50,7 +53,7 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
 
   deleteRegularShift(regularShiftId: number) {
     this.store.dispatch(
-      deleteRegularShift({ userId: this.userId, regularShiftId })
+      deleteRegularShift({ userId: this.userId, regularShiftId }),
     );
   }
 
@@ -68,6 +71,7 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
           job: {
             id: 0,
             name: '',
+            suffix: '',
             beaconAssociatedRole: 0,
             showOthersInJobIds: [],
             canAlsoDoJobIds: [],
@@ -81,7 +85,7 @@ export class AdminUsersUpdateRegularShiftsComponent implements OnInit {
           },
           id: -1,
         },
-      })
+      }),
     );
     this.newRegularShiftDay = -1;
     this.newRegularShiftWeek = null;

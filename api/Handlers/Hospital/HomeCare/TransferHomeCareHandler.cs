@@ -31,21 +31,32 @@ public class TransferHomeCareHandler : IRequestHandler<TransferHomeCare, IResult
 
     public async Task<IResult> Handle(TransferHomeCare request, CancellationToken cancellationToken)
     {
-        var existingHomeCareRequest = await _repository.Get<HomeCareRequest>(request.HomeCareRequestId, action: x => x.Include(y => y.Patient));
-        if (existingHomeCareRequest == null) return Results.BadRequest();
+        var existingHomeCareRequest = await _repository.Get<HomeCareRequest>(
+            request.HomeCareRequestId,
+            action: x => x.Include(y => y.Patient)
+        );
+        if (existingHomeCareRequest == null)
+            return Results.BadRequest();
 
         var responder = await _repository.Get<Account>(request.HomeCarerId);
-        if (responder == null) return Results.BadRequest();
+        if (responder == null)
+            return Results.BadRequest();
 
         existingHomeCareRequest.Dropoff = DateTime.UtcNow;
+        var patient = existingHomeCareRequest.Patient;
+        patient.CurrentHomeCarer = null;
+
         await _repository.SaveChangesAsync();
 
-        await _mediator.Send(new RequireHomeCare
-        {
-            PatientId = existingHomeCareRequest.Patient.Id,
-            HomeCarerId = request.HomeCarerId,
-            Notes = existingHomeCareRequest.Notes
-        }, cancellationToken);
+        await _mediator.Send(
+            new RequireHomeCare
+            {
+                PatientId = existingHomeCareRequest.Patient.Id,
+                HomeCarerId = request.HomeCarerId,
+                Notes = existingHomeCareRequest.Notes,
+            },
+            cancellationToken
+        );
 
         return Results.Accepted();
     }

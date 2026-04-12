@@ -1,0 +1,17 @@
+.buttons {
+  display: flex;
+  gap: 0.25rem;
+
+  &.with-space {
+    margin-top: 1rem;
+  }
+
+  button {
+    padding: 0.125rem 0.25rem;
+
+    &.add,
+    &.remove {
+      padding: 0.125rem 0.5rem;
+    }
+  }
+}

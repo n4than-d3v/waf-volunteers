@@ -49,6 +49,8 @@ import { patientSummaryReducer } from './volunteer/patient-summary/reducer';
 import { PatientSummaryEffects } from './volunteer/patient-summary/effects';
 import { retryInterceptor } from './retry.interceptor';
 import { authInterceptor } from './auth.interceptor';
+import { adminLearningReducer } from './admin/learning/reducer';
+import { AdminLearningEffects } from './admin/learning/effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -114,6 +116,7 @@ export const appConfig: ApplicationConfig = {
       rotaManagement: rotaManagementReducer,
       noticeManagement: noticeManagementReducer,
       adminHospitalManagement: adminHospitalManagementReducer,
+      adminLearning: adminLearningReducer,
 
       // Hospital
       hospital: hospitalReducer,
@@ -142,6 +145,7 @@ export const appConfig: ApplicationConfig = {
       RotaManagementEffects,
       NoticeManagementEffects,
       AdminHospitalManagementEffects,
+      AdminLearningEffects,
 
       // Hospital
       HospitalEffects,

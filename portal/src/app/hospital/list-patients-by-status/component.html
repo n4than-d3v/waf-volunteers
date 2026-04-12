@@ -30,7 +30,15 @@
       [ngModel]="sortBy$ | async"
       (ngModelChange)="sortBy$.next($event)"
     >
+      @if (_status === PatientStatus.ReceivingHomeCare) {
+      <option [value]="4">Home carer</option>
+      }
       <option [value]="1">Date admitted</option>
+      @if (_status === PatientStatus.ReadyForRelease) {
+      <option [value]="5">Wait time</option>
+      } @if (_status === PatientStatus.Dispositioned) {
+      <option [value]="6">Date dispositioned</option>
+      }
       <option [value]="2">Species</option>
       <option [value]="3">Location</option>
     </select>

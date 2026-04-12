@@ -1,4 +1,5 @@
 import { AdminHospitalManagementState } from './admin/hospital/state';
+import { AdminLearningState } from './admin/learning/state';
 import { NoticeManagementState } from './admin/notices/state';
 import { RotaManagementState } from './admin/rota/state';
 import { ProfilesState } from './admin/users/state';
@@ -30,6 +31,7 @@ export interface AppState {
   rotaManagement: RotaManagementState;
   noticeManagement: NoticeManagementState;
   adminHospitalManagement: AdminHospitalManagementState;
+  adminLearning: AdminLearningState;
 
   // Hospital
   hospital: HospitalState;

@@ -1,0 +1,15 @@
+.container {
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+
+  &.has-children {
+    border-left: solid 2px grey;
+  }
+
+  .header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}

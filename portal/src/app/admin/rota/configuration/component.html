@@ -12,6 +12,7 @@
           <th>Beacon role</th>
           <th>Show others in...</th>
           <th>Can also do...</th>
+          <th>Suffix</th>
           <th></th>
         </tr>
       </thead>
@@ -61,6 +62,9 @@
               />
             </div>
             }}
+          </td>
+          <td>
+            <input type="text" [(ngModel)]="job.suffix" />
           </td>
           <td>
             <button class="button button--secondary" (click)="removeJob(job)">

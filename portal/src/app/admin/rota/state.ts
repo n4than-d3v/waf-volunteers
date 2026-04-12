@@ -38,6 +38,7 @@ export interface Job {
   beaconAssociatedRole: number;
   showOthersInJobIds: number[];
   canAlsoDoJobIds: number[];
+  suffix: string;
 }
 
 export interface MissingReason {

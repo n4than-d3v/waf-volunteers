@@ -16,6 +16,7 @@ public class UpdateJobs : IRequest<IResult>
         public AccountRoles BeaconAssociatedRole { get; set; }
         public int[] ShowOthersInJobIds { get; set; }
         public int[] CanAlsoDoJobIds { get; set; }
+        public string? Suffix { get; set; }
     }
 }
 
@@ -39,6 +40,7 @@ public class UpdateJobsHandler : IRequestHandler<UpdateJobs, IResult>
             {
                 // Update existing job details
                 job.Name = updatedJob.Name;
+                job.Suffix = updatedJob.Suffix;
                 job.BeaconAssociatedRole = updatedJob.BeaconAssociatedRole;
                 job.ShowOthersInJobIds = updatedJob.ShowOthersInJobIds;
                 job.CanAlsoDoJobIds = updatedJob.CanAlsoDoJobIds;
@@ -53,13 +55,16 @@ public class UpdateJobsHandler : IRequestHandler<UpdateJobs, IResult>
         foreach (var job in request.Jobs.Where(j => j.Id == null))
         {
             // Create new jobs
-            _repository.Create(new Job
-            {
-                Name = job.Name,
-                BeaconAssociatedRole = job.BeaconAssociatedRole,
-                ShowOthersInJobIds = job.ShowOthersInJobIds,
-                CanAlsoDoJobIds = job.CanAlsoDoJobIds
-            });
+            _repository.Create(
+                new Job
+                {
+                    Name = job.Name,
+                    Suffix = job.Suffix,
+                    BeaconAssociatedRole = job.BeaconAssociatedRole,
+                    ShowOthersInJobIds = job.ShowOthersInJobIds,
+                    CanAlsoDoJobIds = job.CanAlsoDoJobIds,
+                }
+            );
         }
 
         await _repository.SaveChangesAsync();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Rota, Shift, ShiftType } from './state';
+import { Rota, Shift, ShiftType, UrgentShift } from './state';
 import {
   selectConfirmedShift,
   selectConfirmingShift,
@@ -78,6 +78,12 @@ export class VolunteerRotaComponent implements OnInit {
 
     this.denying$ = this.store.select(selectDenyingShift);
     this.denied$ = this.store.select(selectDeniedShift);
+  }
+
+  hasNotAlreadyConfirmedAsRegular(rota: Rota, shift: UrgentShift) {
+    const onDate = rota.rota.find((x) => x.date === shift.date);
+    if (onDate && onDate.confirmed) return false;
+    return true;
   }
 
   confirm(shift: Shift, shiftType: ShiftType) {

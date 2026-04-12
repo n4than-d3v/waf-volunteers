@@ -13,3 +13,6 @@ portal/.angular
 portal/.vscode
 portal/node_modules
 portal/dist
+
+.vscode
+.config

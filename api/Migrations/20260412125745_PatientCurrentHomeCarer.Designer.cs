@@ -3,6 +3,7 @@ using System;
 using Api.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20260412125745_PatientCurrentHomeCarer")]
+    partial class PatientCurrentHomeCarer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1582,7 +1585,7 @@ namespace Api.Migrations
                     b.ToTable("SpeciesVariants");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Learning.Auxiliary.AuxDevPlanTask", b =>
+            modelBuilder.Entity("Api.Database.Entities.Learning.AuxDevPlanTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1607,7 +1610,7 @@ namespace Api.Migrations
                     b.ToTable("AuxDevPlanTasks");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Learning.Auxiliary.AuxDevPlanTaskWitness", b =>
+            modelBuilder.Entity("Api.Database.Entities.Learning.AuxDevPlanTaskWitness", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1643,31 +1646,6 @@ namespace Api.Migrations
                     b.HasIndex("WitnessedById");
 
                     b.ToTable("AuxDevPlanTaskWitnesses");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Learning.Husbandry.HusbandryLearningCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int?>("ParentId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("YouTube")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("HusbandryLearningCategories");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Notices.Notice", b =>
@@ -1918,9 +1896,6 @@ namespace Api.Migrations
                     b.PrimitiveCollection<int[]>("ShowOthersInJobIds")
                         .IsRequired()
                         .HasColumnType("integer[]");
-
-                    b.Property<string>("Suffix")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -2860,7 +2835,7 @@ namespace Api.Migrations
                     b.Navigation("Species");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Learning.Auxiliary.AuxDevPlanTaskWitness", b =>
+            modelBuilder.Entity("Api.Database.Entities.Learning.AuxDevPlanTaskWitness", b =>
                 {
                     b.HasOne("Api.Database.Entities.Account.Account", "PerformedBy")
                         .WithMany()
@@ -2868,7 +2843,7 @@ namespace Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Api.Database.Entities.Learning.Auxiliary.AuxDevPlanTask", "Task")
+                    b.HasOne("Api.Database.Entities.Learning.AuxDevPlanTask", "Task")
                         .WithMany("Witnesses")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2885,15 +2860,6 @@ namespace Api.Migrations
                     b.Navigation("Task");
 
                     b.Navigation("WitnessedBy");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Learning.Husbandry.HusbandryLearningCategory", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Learning.Husbandry.HusbandryLearningCategory", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Notices.NoticeAttachment", b =>
@@ -3249,14 +3215,9 @@ namespace Api.Migrations
                     b.Navigation("FeedingGuidance");
                 });
 
-            modelBuilder.Entity("Api.Database.Entities.Learning.Auxiliary.AuxDevPlanTask", b =>
+            modelBuilder.Entity("Api.Database.Entities.Learning.AuxDevPlanTask", b =>
                 {
                     b.Navigation("Witnesses");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Learning.Husbandry.HusbandryLearningCategory", b =>
-                {
-                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("Api.Database.Entities.Rota.WorkExperience", b =>

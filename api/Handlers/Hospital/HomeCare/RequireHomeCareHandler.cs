@@ -31,7 +31,12 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
     private readonly IEncryptionService _encryptionService;
     private readonly IPushService _pushService;
 
-    public RequireHomeCareHandler(IDatabaseRepository repository, IUserContext userContext, IEncryptionService encryptionService, IPushService pushService)
+    public RequireHomeCareHandler(
+        IDatabaseRepository repository,
+        IUserContext userContext,
+        IEncryptionService encryptionService,
+        IPushService pushService
+    )
     {
         _repository = repository;
         _userContext = userContext;
@@ -41,30 +46,39 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
 
     public async Task<IResult> Handle(RequireHomeCare request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId,
-            action: x => x.IncludeBasicDetails());
-        if (patient == null) return Results.BadRequest();
+        var patient = await _repository.Get<Patient>(
+            request.PatientId,
+            action: x => x.IncludeBasicDetails()
+        );
+        if (patient == null)
+            return Results.BadRequest();
 
         var requester = await _repository.Get<Account>(_userContext.Id);
-        if (requester == null) return Results.BadRequest();
+        if (requester == null)
+            return Results.BadRequest();
 
         patient.LastUpdatedStatus = DateTime.UtcNow;
         patient.Status = PatientStatus.PendingHomeCare;
+        patient.CurrentHomeCarer = null;
 
         var homeCareRequest = new HomeCareRequest
         {
             Patient = patient,
             Requester = requester,
             Requested = DateTime.UtcNow,
-            Notes = request.Notes
+            Notes = request.Notes,
         };
 
         if (request.HomeCarerId != null)
         {
             var homeCarer = await _repository.Get<Account>(request.HomeCarerId.Value);
-            if (homeCarer == null) return Results.BadRequest();
+            if (homeCarer == null)
+                return Results.BadRequest();
 
             patient.Status = PatientStatus.ReceivingHomeCare;
+            var firstName = _encryptionService.Decrypt(homeCarer.FirstName, homeCarer.Salt);
+            var lastName = _encryptionService.Decrypt(homeCarer.LastName, homeCarer.Salt);
+            patient.CurrentHomeCarer = $"{firstName} {lastName}";
 
             homeCareRequest.Responder = homeCarer;
             homeCareRequest.Responded = DateTime.UtcNow;
@@ -75,31 +89,51 @@ public class RequireHomeCareHandler : IRequestHandler<RequireHomeCare, IResult>
         await _repository.SaveChangesAsync();
 
         // Don't send notifications if home carer already assigned
-        if (request.HomeCarerId != null) return Results.Created();
+        if (request.HomeCarerId != null)
+            return Results.Created();
 
-        string species = patient.SpeciesVariant?.FriendlyName ?? patient.SuspectedSpecies?.Description ?? "Unknown";
-        var accounts = await _repository.GetAll<Account>(x => x.Status == AccountStatus.Active, tracking: false);
+        string species =
+            patient.SpeciesVariant?.FriendlyName
+            ?? patient.SuspectedSpecies?.Description
+            ?? "Unknown";
+        var accounts = await _repository.GetAll<Account>(
+            x => x.Status == AccountStatus.Active,
+            tracking: false
+        );
 
         foreach (var account in accounts)
         {
-            if (!account.Roles.HasFlag(AccountRoles.BEACON_ORPHAN_FEEDER)) continue;
-            if (!(patient.Species != null &&
-                (
-                    patient.Species.HomeCarerPermissions == null ||
-                    patient.Species.HomeCarerPermissions == HomeCarerPermissions.None ||
-                    (account.HomeCarerPermissions & patient.Species.HomeCarerPermissions.Value) != 0
-                ))) continue;
+            if (!account.Roles.HasFlag(AccountRoles.BEACON_ORPHAN_FEEDER))
+                continue;
+            if (
+                !(
+                    patient.Species != null
+                    && (
+                        patient.Species.HomeCarerPermissions == null
+                        || patient.Species.HomeCarerPermissions == HomeCarerPermissions.None
+                        || (
+                            account.HomeCarerPermissions
+                            & patient.Species.HomeCarerPermissions.Value
+                        ) != 0
+                    )
+                )
+            )
+                continue;
 
             var subscription = _encryptionService.Decrypt(account.PushSubscription, account.Salt);
             if (!string.IsNullOrWhiteSpace(subscription))
             {
                 var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
-                await _pushService.Send(push, new PushNotification
-                {
-                    Title = "Home care required",
-                    Body = $"{species} requires home care. Can you please help?",
-                    Url = "/volunteer/home-care"
-                }, account.Id);
+                await _pushService.Send(
+                    push,
+                    new PushNotification
+                    {
+                        Title = "Home care required",
+                        Body = $"{species} requires home care. Can you please help?",
+                        Url = "/volunteer/home-care",
+                    },
+                    account.Id
+                );
             }
         }
 

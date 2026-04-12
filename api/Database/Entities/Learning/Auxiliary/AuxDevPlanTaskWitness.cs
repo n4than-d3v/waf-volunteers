@@ -1,7 +1,7 @@
-﻿using Acc = Api.Database.Entities.Account.Account;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using Acc = Api.Database.Entities.Account.Account;
 
-namespace Api.Database.Entities.Learning;
+namespace Api.Database.Entities.Learning.Auxiliary;
 
 public class AuxDevPlanTaskWitness : Entity
 {

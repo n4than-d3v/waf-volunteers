@@ -1,0 +1,27 @@
+@for (category of categories; track category.id) {
+<div
+  class="container"
+  [class.has-children]="category.children && category.children.length"
+>
+  <div class="header">
+    <p>{{ category.name }}</p>
+    <admin-learning-categories-add [parent]="category" />
+  </div>
+  @if (category.youTube) {
+  <iframe
+    width="560"
+    height="315"
+    [src]="category.youTube| safeYoutube"
+    title="YouTube video player"
+    frameborder="0"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+  } @if (category.children && category.children.length) {
+  <admin-learning-categories-render
+    [categories]="category.children"
+    [parent]="category"
+  />
+  }
+</div>
+}

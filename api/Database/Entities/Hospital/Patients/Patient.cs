@@ -1,4 +1,5 @@
-﻿using Api.Database.Entities.Hospital.Locations;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients.Admission;
 using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.HomeCare;
@@ -6,7 +7,6 @@ using Api.Database.Entities.Hospital.Patients.Husbandry;
 using Api.Database.Entities.Hospital.Patients.Labs;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
-using System.ComponentModel.DataAnnotations.Schema;
 using Dispositioner = Api.Database.Entities.Account.Account;
 
 namespace Api.Database.Entities.Hospital.Patients;
@@ -36,10 +36,14 @@ public class Patient : Entity
     public SpeciesVariant? SpeciesVariant { get; set; }
     public Sex? Sex { get; set; }
     public DateTime? LastUpdatedDetails { get; set; }
+
     [NotMapped]
-    public bool IsLongTerm => Admitted <= DateTime.UtcNow.AddDays(-(SpeciesVariant?.LongTermDays ?? 28));
+    public bool IsLongTerm =>
+        Admitted <= DateTime.UtcNow.AddDays(-(SpeciesVariant?.LongTermDays ?? 28));
+
     [NotMapped]
-    public bool IsOutdated => LastUpdatedDetails != null && LastUpdatedDetails <= DateTime.UtcNow.AddDays(-7);
+    public bool IsOutdated =>
+        LastUpdatedDetails != null && LastUpdatedDetails <= DateTime.UtcNow.AddDays(-7);
 
     #endregion
 
@@ -48,6 +52,7 @@ public class Patient : Entity
     public PatientStatus Status { get; set; }
     public DateTime LastUpdatedStatus { get; set; }
     public Pen? Pen { get; set; }
+
     [NotMapped]
     public Area? Area => Pen?.Area;
 
@@ -61,12 +66,14 @@ public class Patient : Entity
     public List<PatientFeeding> Feeding { get; set; }
     public List<HomeCareRequest> HomeCareRequests { get; set; }
     public List<HomeCareMessage> HomeCareMessages { get; set; }
-    public bool? LastMessageSentByOrphanFeeder => (HomeCareMessages?.Any() ?? false)
-        ? HomeCareMessages
-            .OrderByDescending(m => m.Date)
-            .First()
-            .Author?.Roles.HasFlag(Account.AccountRoles.BEACON_ORPHAN_FEEDER)
-        : null;
+    public string? CurrentHomeCarer { get; set; }
+    public bool? LastMessageSentByOrphanFeeder =>
+        (HomeCareMessages?.Any() ?? false)
+            ? HomeCareMessages
+                .OrderByDescending(m => m.Date)
+                .First()
+                .Author?.Roles.HasFlag(Account.AccountRoles.BEACON_ORPHAN_FEEDER)
+            : null;
     public List<PatientFaecalTest> FaecalTests { get; set; }
     public List<PatientBloodTest> BloodTests { get; set; }
 
@@ -92,19 +99,34 @@ public class Patient : Entity
     {
         get
         {
-            var exams = (Exams ?? []).Where(x => 0 < (x.WeightValue ?? 0))
-                .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var exams = (Exams ?? [])
+                .Where(x => 0 < (x.WeightValue ?? 0))
+                .Select(x => new Weight
+                {
+                    Date = x.Date,
+                    WeightValue = x.WeightValue,
+                    WeightUnit = x.WeightUnit,
+                });
 
-            var notes = (Notes ?? []).Where(x => 0 < (x.WeightValue ?? 0))
-                .Select(x => new Weight { Date = x.Noted, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var notes = (Notes ?? [])
+                .Where(x => 0 < (x.WeightValue ?? 0))
+                .Select(x => new Weight
+                {
+                    Date = x.Noted,
+                    WeightValue = x.WeightValue,
+                    WeightUnit = x.WeightUnit,
+                });
 
-            var homeCareMessages = (HomeCareMessages ?? []).Where(x => 0 < (x.WeightValue ?? 0))
-                .Select(x => new Weight { Date = x.Date, WeightValue = x.WeightValue, WeightUnit = x.WeightUnit });
+            var homeCareMessages = (HomeCareMessages ?? [])
+                .Where(x => 0 < (x.WeightValue ?? 0))
+                .Select(x => new Weight
+                {
+                    Date = x.Date,
+                    WeightValue = x.WeightValue,
+                    WeightUnit = x.WeightUnit,
+                });
 
-            return [.. exams
-                .Concat(notes)
-                .Concat(homeCareMessages)
-                .OrderBy(x => x.Date)];
+            return [.. exams.Concat(notes).Concat(homeCareMessages).OrderBy(x => x.Date)];
         }
     }
 
@@ -124,7 +146,6 @@ public class Patient : Entity
     #endregion
 }
 
-
 public enum PatientStatus
 {
     PendingInitialExam = 1,
@@ -132,5 +153,5 @@ public enum PatientStatus
     PendingHomeCare = 3,
     ReceivingHomeCare = 4,
     ReadyForRelease = 5,
-    Dispositioned = 6
+    Dispositioned = 6,
 }

@@ -23,7 +23,11 @@ public class RotaService : IRotaService
 
     private readonly RotaSettings _settings;
 
-    public RotaService(IDatabaseRepository repository, IEncryptionService encryptionService, IOptions<RotaSettings> settings)
+    public RotaService(
+        IDatabaseRepository repository,
+        IEncryptionService encryptionService,
+        IOptions<RotaSettings> settings
+    )
     {
         _repository = repository;
         _encryptionService = encryptionService;
@@ -35,56 +39,119 @@ public class RotaService : IRotaService
         var days = await GetRotaAsync(start, end);
 
         var clockings = await _repository.GetAll<AttendanceClocking>(
-            x => start <= x.Attendance.Date && x.Attendance.Date <= end, tracking: false,
-            action: x => x.Include(y => y.Attendance).ThenInclude(y => y.Account));
+            x => start <= x.Attendance.Date && x.Attendance.Date <= end,
+            tracking: false,
+            action: x => x.Include(y => y.Attendance).ThenInclude(y => y.Account)
+        );
 
-        return [.. days
-            .SelectMany(d => d.Shifts)
-            .SelectMany(s => s.Jobs)
-            .SelectMany(j => j.Volunteers)
-            .GroupBy(v => new { v.Id, v.FullName })
-            .Select(g => {
-                var report = new Report
+        return
+        [
+            .. days.SelectMany(d => d.Shifts)
+                .SelectMany(s => s.Jobs)
+                .SelectMany(j => j.Volunteers)
+                .GroupBy(v => new { v.Id, v.FullName })
+                .Select(g =>
                 {
-                    Id = g.Key.Id,
-                    FullName = g.Key.FullName,
-                    RegularUnresponded = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == null)),
-                    RegularYes = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == true)),
-                    RegularNo = g.Count(v => v.Type == AttendanceType.Regular && (v.Confirmed == false)),
-                    RegularTotal = g.Count(v => v.Type == AttendanceType.Regular),
-                    CameInRegular = clockings.Count(v => v.Attendance.Type == AttendanceType.Regular && v.Attendance.Account.Id == g.Key.Id),
-                    UrgentYes = g.Count(v => (v.Type == AttendanceType.Urgent) && (v.Confirmed == true)),
-                    UrgentNo = g.Count(v => (v.Type == AttendanceType.Urgent) && (v.Confirmed == false)),
-                    CameInUrgent = clockings.Count(v => v.Attendance.Type == AttendanceType.Urgent && v.Attendance.Account.Id == g.Key.Id),
-                    ExtraYes = g.Count(v => (v.Type == AttendanceType.Extra) && (v.Confirmed == true)),
-                    ExtraNo = g.Count(v => (v.Type == AttendanceType.Extra) && (v.Confirmed == false)),
-                    CameInExtra = clockings.Count(v => v.Attendance.Type == AttendanceType.Extra && v.Attendance.Account.Id == g.Key.Id)
-                };
+                    var report = new Report
+                    {
+                        Id = g.Key.Id,
+                        FullName = g.Key.FullName,
+                        RegularUnresponded = g.Count(v =>
+                            v.Type == AttendanceType.Regular && (v.Confirmed == null)
+                        ),
+                        RegularYes = g.Count(v =>
+                            v.Type == AttendanceType.Regular && (v.Confirmed == true)
+                        ),
+                        RegularNo = g.Count(v =>
+                            v.Type == AttendanceType.Regular && (v.Confirmed == false)
+                        ),
+                        RegularTotal = g.Count(v => v.Type == AttendanceType.Regular),
+                        CameInRegular = clockings.Count(v =>
+                            v.Attendance.Type == AttendanceType.Regular
+                            && v.Attendance.Account.Id == g.Key.Id
+                        ),
+                        UrgentYes = g.Count(v =>
+                            (v.Type == AttendanceType.Urgent) && (v.Confirmed == true)
+                        ),
+                        UrgentNo = g.Count(v =>
+                            (v.Type == AttendanceType.Urgent) && (v.Confirmed == false)
+                        ),
+                        CameInUrgent = clockings.Count(v =>
+                            v.Attendance.Type == AttendanceType.Urgent
+                            && v.Attendance.Account.Id == g.Key.Id
+                        ),
+                        ExtraYes = g.Count(v =>
+                            (v.Type == AttendanceType.Extra) && (v.Confirmed == true)
+                        ),
+                        ExtraNo = g.Count(v =>
+                            (v.Type == AttendanceType.Extra) && (v.Confirmed == false)
+                        ),
+                        CameInExtra = clockings.Count(v =>
+                            v.Attendance.Type == AttendanceType.Extra
+                            && v.Attendance.Account.Id == g.Key.Id
+                        ),
+                    };
 
-                report.RegularNoShows = report.RegularYes - report.CameInRegular;
-                report.UrgentNoShows = report.UrgentYes - report.CameInUrgent;
-                report.ExtraNoShows = report.ExtraYes - report.CameInExtra;
+                    report.RegularNoShows = report.RegularYes - report.CameInRegular;
+                    report.UrgentNoShows = report.UrgentYes - report.CameInUrgent;
+                    report.ExtraNoShows = report.ExtraYes - report.CameInExtra;
 
-                return report;
-            })
-            .OrderBy(r => r.FullName)];
+                    return report;
+                })
+                .OrderBy(r => r.FullName),
+        ];
     }
 
     public async Task<IReadOnlyList<Day>> GetRotaAsync(DateOnly start, DateOnly end)
     {
-        var regularShifts = await _repository.GetAll<RegularShift>(x => x.Account.Status == AccountStatus.Active, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job));
-        var attendances = await _repository.GetAll<Attendance>(x => start <= x.Date && x.Date <= end, tracking: false, action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job).Include(y => y.MissingReason));
+        var regularShifts = await _repository.GetAll<RegularShift>(
+            x => x.Account.Status == AccountStatus.Active,
+            tracking: false,
+            action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job)
+        );
+        var attendances = await _repository.GetAll<Attendance>(
+            x => start <= x.Date && x.Date <= end,
+            tracking: false,
+            action: x =>
+                x.Include(y => y.Account)
+                    .Include(y => y.Time)
+                    .Include(y => y.Job)
+                    .Include(y => y.MissingReason)
+        );
         var times = await _repository.GetAll<TimeRange>(x => true, tracking: false);
         var jobs = await _repository.GetAll<Job>(x => true, tracking: false);
-        var requirements = await _repository.GetAll<Requirement>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
-        var assignableShifts = await _repository.GetAll<AssignableShift>(x => true, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
-        var assignments = await _repository.GetAll<Assignment>(x => start <= x.Attendance.Date && x.Attendance.Date <= end, tracking: false, action: x => x.Include(y => y.Attendance).Include(y => y.Area));
-        var newbies = await _repository.GetAll<Newbie>(x => start <= x.Date && x.Date <= end, tracking: false, action: x => x.Include(y => y.Time).Include(y => y.Job));
-        var workExperiences = await _repository.GetAll<WorkExperience>(x => x.Dates.Any(y => start <= y.Date && y.Date <= end), tracking: false, action: x => x.Include(y => y.Dates));
+        var requirements = await _repository.GetAll<Requirement>(
+            x => true,
+            tracking: false,
+            action: x => x.Include(y => y.Time).Include(y => y.Job)
+        );
+        var assignableShifts = await _repository.GetAll<AssignableShift>(
+            x => true,
+            tracking: false,
+            action: x => x.Include(y => y.Time).Include(y => y.Job)
+        );
+        var assignments = await _repository.GetAll<Assignment>(
+            x => start <= x.Attendance.Date && x.Attendance.Date <= end,
+            tracking: false,
+            action: x => x.Include(y => y.Attendance).Include(y => y.Area)
+        );
+        var newbies = await _repository.GetAll<Newbie>(
+            x => start <= x.Date && x.Date <= end,
+            tracking: false,
+            action: x => x.Include(y => y.Time).Include(y => y.Job)
+        );
+        var workExperiences = await _repository.GetAll<WorkExperience>(
+            x => x.Dates.Any(y => start <= y.Date && y.Date <= end),
+            tracking: false,
+            action: x => x.Include(y => y.Dates)
+        );
 
         var days = new List<Day>();
 
-        void UpdateDayShiftJobVolunteer(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer, Attendance confirmation)
+        void UpdateDayShiftJobVolunteer(
+            Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer,
+            Attendance confirmation
+        )
         {
             volunteer.AttendanceId = confirmation.Id;
             volunteer.Confirmed = confirmation.Confirmed;
@@ -96,10 +163,14 @@ public class RotaService : IRotaService
             volunteer.AreaId = assignment?.Area?.Id;
         }
 
-        bool TryUpdateRegularDayShiftJobVolunteer(IReadOnlyList<Day.DayShift.DayShiftJob.DayShiftJobVolunteer> volunteers, Attendance confirmation)
+        bool TryUpdateRegularDayShiftJobVolunteer(
+            IReadOnlyList<Day.DayShift.DayShiftJob.DayShiftJobVolunteer> volunteers,
+            Attendance confirmation
+        )
         {
             var regular = volunteers.FirstOrDefault(x => x.Id == confirmation.Account.Id);
-            if (regular == null) return false;
+            if (regular == null)
+                return false;
 
             UpdateDayShiftJobVolunteer(regular, confirmation);
             return true;
@@ -110,7 +181,7 @@ public class RotaService : IRotaService
             return new Day.DayShift.DayShiftJob.DayShiftJobNewbie
             {
                 Id = newbie.Id,
-                Name = newbie.Name
+                Name = newbie.Name,
             };
         }
 
@@ -120,11 +191,14 @@ public class RotaService : IRotaService
             {
                 Id = workExperience.Id,
                 Name = workExperience.WorkExperience.Name,
-                Notes = workExperience.Notes
+                Notes = workExperience.Notes,
             };
         }
 
-        Day.DayShift.DayShiftJob.DayShiftJobVolunteer GetDayShiftJobVolunteer(Account account, AttendanceType type)
+        Day.DayShift.DayShiftJob.DayShiftJobVolunteer GetDayShiftJobVolunteer(
+            Account account,
+            AttendanceType type
+        )
         {
             var firstName = _encryptionService.Decrypt(account.FirstName, account.Salt);
             var lastName = _encryptionService.Decrypt(account.LastName, account.Salt);
@@ -136,23 +210,36 @@ public class RotaService : IRotaService
                 LastName = lastName,
                 FullName = $"{firstName} {lastName}",
                 Confirmed = null,
-                Type = type
+                Type = type,
             };
         }
 
         Day.DayShift.DayShiftJob GetDayShiftJob(DateOnly date, TimeRange time, Job job)
         {
-            var requirement = requirements.FirstOrDefault(x => x.Day == date.DayOfWeek && x.Time.Id == time.Id && x.Job.Id == job.Id);
-            var regulars = regularShifts.Where(x => date.IsOn(x.Day, x.Week) && x.Time.Id == time.Id && x.Job.Id == job.Id);
-            var shiftAttendances = attendances.Where(x => x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id);
-            var isAssignable = assignableShifts.Any(x => date.IsOn(x.Day) && x.Time.Id == time.Id && x.Job.Id == job.Id);
+            var requirement = requirements.FirstOrDefault(x =>
+                x.Day == date.DayOfWeek && x.Time.Id == time.Id && x.Job.Id == job.Id
+            );
+            var regulars = regularShifts.Where(x =>
+                date.IsOn(x.Day, x.Week) && x.Time.Id == time.Id && x.Job.Id == job.Id
+            );
+            var shiftAttendances = attendances.Where(x =>
+                x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id
+            );
+            var isAssignable = assignableShifts.Any(x =>
+                date.IsOn(x.Day) && x.Time.Id == time.Id && x.Job.Id == job.Id
+            );
 
-            var volunteers = regulars.Select(x => GetDayShiftJobVolunteer(x.Account, AttendanceType.Regular)).ToList();
-            var shiftNewbies = newbies.Where(x => x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id);
+            var volunteers = regulars
+                .Select(x => GetDayShiftJobVolunteer(x.Account, AttendanceType.Regular))
+                .ToList();
+            var shiftNewbies = newbies.Where(x =>
+                x.Date == date && x.Time.Id == time.Id && x.Job.Id == job.Id
+            );
 
             foreach (var confirmation in shiftAttendances)
             {
-                if (TryUpdateRegularDayShiftJobVolunteer(volunteers, confirmation)) continue;
+                if (TryUpdateRegularDayShiftJobVolunteer(volunteers, confirmation))
+                    continue;
 
                 var volunteer = GetDayShiftJobVolunteer(confirmation.Account, confirmation.Type);
                 UpdateDayShiftJobVolunteer(volunteer, confirmation);
@@ -165,7 +252,7 @@ public class RotaService : IRotaService
                 Volunteers = volunteers,
                 Newbies = shiftNewbies.Select(GetDayShiftJobNewbie).ToList(),
                 Required = requirement?.Minimum ?? 0,
-                IsAssignable = isAssignable
+                IsAssignable = isAssignable,
             };
         }
 
@@ -174,10 +261,10 @@ public class RotaService : IRotaService
             var shift = new Day.DayShift
             {
                 Time = time,
-                Jobs = [.. jobs
-                    .OrderBy(job => job.Id)
-                    .Select(job => GetDayShiftJob(date, time, job))
-                ]
+                Jobs =
+                [
+                    .. jobs.OrderBy(job => job.Id).Select(job => GetDayShiftJob(date, time, job)),
+                ],
             };
 
             var volunteers = shift.Jobs.SelectMany(x => x.Volunteers);
@@ -195,10 +282,13 @@ public class RotaService : IRotaService
                     bool nameSet = false;
                     for (int i = 1; i <= 5; i++)
                     {
-                        if (sameFirstName.Count() == sameFirstName
-                            .Select(x => $"{x.FirstName} {x.LastName[..i]}")
-                            .Distinct()
-                            .Count())
+                        if (
+                            sameFirstName.Count()
+                            == sameFirstName
+                                .Select(x => $"{x.FirstName} {x.LastName[..i]}")
+                                .Distinct()
+                                .Count()
+                        )
                         {
                             volunteer.Name = $"{volunteer.FirstName} {volunteer.LastName[..i]}";
                             nameSet = true;
@@ -217,22 +307,27 @@ public class RotaService : IRotaService
 
         for (var date = start; date <= end; date = date.AddDays(1))
         {
-            var dayWorkExperiences = workExperiences.SelectMany(x => x.Dates).Where(x => x.Date == date);
-            days.Add(new Day
-            {
-                Date = date,
-                Week =
-                    date.IsOn(DayOfWeek.Saturday)
+            var dayWorkExperiences = workExperiences
+                .SelectMany(x => x.Dates)
+                .Where(x => x.Date == date);
+            days.Add(
+                new Day
+                {
+                    Date = date,
+                    Week = date.IsOn(DayOfWeek.Saturday)
                         ? (date.IsOn(DayOfWeek.Saturday, 1) ? 1 : 2)
-                        : (date.IsOn(DayOfWeek.Sunday)
-                            ? (date.IsOn(DayOfWeek.Sunday, 1) ? 1 : 2)
-                            : null),
-                Shifts = [.. times
-                    .OrderBy(time => time.Id)
-                    .Select(time => GetDayShift(date, time))
-                ],
-                WorkExperiences = dayWorkExperiences.Select(GetDayWorkExperience).ToList()
-            });
+                        : (
+                            date.IsOn(DayOfWeek.Sunday)
+                                ? (date.IsOn(DayOfWeek.Sunday, 1) ? 1 : 2)
+                                : null
+                        ),
+                    Shifts =
+                    [
+                        .. times.OrderBy(time => time.Id).Select(time => GetDayShift(date, time)),
+                    ],
+                    WorkExperiences = dayWorkExperiences.Select(GetDayWorkExperience).ToList(),
+                }
+            );
         }
 
         return days;
@@ -240,42 +335,70 @@ public class RotaService : IRotaService
 
     public async Task<UserRota> GetVolunteerRotaAsync(DateOnly now, int userId)
     {
-        var days = await GetRotaAsync(now, now.AddDays(Math.Max(_settings.RegularShiftsDaysInAdvance, _settings.UrgentShiftsDaysInAdvance)));
+        var days = await GetRotaAsync(
+            now,
+            now.AddDays(
+                Math.Max(_settings.RegularShiftsDaysInAdvance, _settings.UrgentShiftsDaysInAdvance)
+            )
+        );
         var assignableAreas = await _repository.GetAll<AssignableArea>(x => true, tracking: false);
         var jobs = await _repository.GetAll<Job>(x => true, tracking: false);
 
-        bool IsOtherComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => (volunteer.Confirmed == true) && (IsVolunteer(volunteer) == false);
-        bool IsVolunteer(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => volunteer.Id == userId;
-        bool IsVolunteerComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => IsVolunteer(volunteer) && volunteer.Confirmed == true;
-        UserRota.Shift GetShift(Day day, Day.DayShift shift, Day.DayShift.DayShiftJob job, Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) => new()
-        {
-            Date = day.Date,
-            Time = shift.Time,
-            Job = job.Job,
-            Confirmed = volunteer.Confirmed,
-            Type = volunteer.Type,
-            MissingReason = volunteer.MissingReason,
-            CustomMissingReason = volunteer.CustomMissingReason,
-            Newbies = job.Newbies
-                .Select(x => new ShiftNewbie { Name = x.Name })
-                .ToArray(),
-            WorkExperiences = day.WorkExperiences
-                .Select(x => new ShiftWorkExperience { Name = x.Name, Notes = x.Notes })
-                .ToArray(),
-            Others = shift.Jobs
-                .Where(j => j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id))
-                .SelectMany(j => j.Volunteers)
-                .Where(IsOtherComing)
-                .OrderBy(v => v.Name)
-                .Select(v => new ShiftOther
-                {
-                    Name = v.Name,
-                    Area = assignableAreas.FirstOrDefault(x => x.Id == v.AreaId)
-                })
-                .ToArray(),
-            Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer.AreaId)
-        };
-        UserRota.UrgentShift GetUrgentShift(Day day, Day.DayShift shift, Day.DayShift.DayShiftJob job)
+        bool IsOtherComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) =>
+            (volunteer.Confirmed == true) && (IsVolunteer(volunteer) == false);
+        bool IsVolunteer(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) =>
+            volunteer.Id == userId;
+        bool IsVolunteerComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) =>
+            IsVolunteer(volunteer) && volunteer.Confirmed == true;
+        UserRota.Shift GetShift(
+            Day day,
+            Day.DayShift shift,
+            Day.DayShift.DayShiftJob job,
+            Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer
+        ) =>
+            new()
+            {
+                Date = day.Date,
+                Time = shift.Time,
+                Job = job.Job,
+                Confirmed = volunteer.Confirmed,
+                Type = volunteer.Type,
+                MissingReason = volunteer.MissingReason,
+                CustomMissingReason = volunteer.CustomMissingReason,
+                Newbies = job.Newbies.Select(x => new ShiftNewbie { Name = x.Name }).ToArray(),
+                WorkExperiences = day
+                    .WorkExperiences.Select(x => new ShiftWorkExperience
+                    {
+                        Name = x.Name,
+                        Notes = x.Notes,
+                    })
+                    .ToArray(),
+                Others = shift
+                    .Jobs.Where(j =>
+                        j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id)
+                    )
+                    .SelectMany(j => j.Volunteers, (j, v) => new { Job = j.Job, Volunteer = v })
+                    .Where(x => IsOtherComing(x.Volunteer))
+                    .OrderBy(v => v.Volunteer.Name)
+                    .Select(v => new ShiftOther
+                    {
+                        Name =
+                            v.Volunteer.Name
+                            + (
+                                string.IsNullOrWhiteSpace(v.Job.Suffix)
+                                    ? string.Empty
+                                    : (" " + v.Job.Suffix)
+                            ),
+                        Area = assignableAreas.FirstOrDefault(x => x.Id == v.Volunteer.AreaId),
+                    })
+                    .ToArray(),
+                Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer.AreaId),
+            };
+        UserRota.UrgentShift GetUrgentShift(
+            Day day,
+            Day.DayShift shift,
+            Day.DayShift.DayShiftJob job
+        )
         {
             var volunteer = job.Volunteers.FirstOrDefault(IsVolunteer);
             return new()
@@ -287,31 +410,46 @@ public class RotaService : IRotaService
                 Coming = job.Volunteers.Count(v => v.Confirmed == true),
                 Confirmed = volunteer?.Confirmed,
                 Type = volunteer?.Type ?? AttendanceType.Urgent,
-                Newbies = job.Newbies
-                    .Select(x => new ShiftNewbie { Name = x.Name })
-                    .ToArray(),
-                WorkExperiences = day.WorkExperiences
-                    .Select(x => new ShiftWorkExperience { Name = x.Name, Notes = x.Notes })
-                    .ToArray(),
-                Others = shift.Jobs
-                    .Where(j => j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id))
-                    .SelectMany(j => j.Volunteers)
-                    .Where(IsOtherComing)
-                    .OrderBy(v => v.Name)
-                    .Select(v => new ShiftOther
+                Newbies = job.Newbies.Select(x => new ShiftNewbie { Name = x.Name }).ToArray(),
+                WorkExperiences = day
+                    .WorkExperiences.Select(x => new ShiftWorkExperience
                     {
-                        Name = v.Name,
-                        Area = assignableAreas.FirstOrDefault(x => x.Id == v.AreaId)
+                        Name = x.Name,
+                        Notes = x.Notes,
                     })
                     .ToArray(),
-                Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer?.AreaId)
+                Others = shift
+                    .Jobs.Where(j =>
+                        j.Job.Id == job.Job.Id || job.Job.ShowOthersInJobIds.Contains(j.Job.Id)
+                    )
+                    .SelectMany(j => j.Volunteers, (j, v) => new { Job = j.Job, Volunteer = v })
+                    .Where(x => IsOtherComing(x.Volunteer))
+                    .OrderBy(v => v.Volunteer.Name)
+                    .Select(v => new ShiftOther
+                    {
+                        Name =
+                            v.Volunteer.Name
+                            + (
+                                string.IsNullOrWhiteSpace(v.Job.Suffix)
+                                    ? string.Empty
+                                    : (" " + v.Job.Suffix)
+                            ),
+                        Area = assignableAreas.FirstOrDefault(x => x.Id == v.Volunteer.AreaId),
+                    })
+                    .ToArray(),
+                Area = assignableAreas.FirstOrDefault(x => x.Id == volunteer?.AreaId),
             };
         }
 
-        var missingReasons = await _repository.GetAll<MissingReason>(x => x.Deleted == false, tracking: false);
+        var missingReasons = await _repository.GetAll<MissingReason>(
+            x => x.Deleted == false,
+            tracking: false
+        );
         var userRegularShifts = await _repository.GetAll<RegularShift>(
-            x => x.Account.Id == userId, tracking: false,
-            action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job));
+            x => x.Account.Id == userId,
+            tracking: false,
+            action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job)
+        );
         var allowedJobIds = userRegularShifts
             .SelectMany(x =>
             {
@@ -323,36 +461,58 @@ public class RotaService : IRotaService
             .ToList();
 
         var maxDateForRegularShifts = now.AddDays(_settings.RegularShiftsDaysInAdvance);
-        var regularShifts = days
-            .OrderBy(d => d.Date)
+        var regularShifts = days.OrderBy(d => d.Date)
             .Where(d => d.Date <= maxDateForRegularShifts)
-            .SelectMany(d => d.Shifts.SelectMany(s => s.Jobs.SelectMany(j => j.Volunteers
-                .Where(v => IsVolunteer(v) && v.Type == AttendanceType.Regular)
-                .Select(v => GetShift(d, s, j, v)))))
+            .SelectMany(d =>
+                d.Shifts.SelectMany(s =>
+                    s.Jobs.SelectMany(j =>
+                        j.Volunteers.Where(v => IsVolunteer(v) && v.Type == AttendanceType.Regular)
+                            .Select(v => GetShift(d, s, j, v))
+                    )
+                )
+            )
             .ToList();
 
-        var extraShifts = days
-            .OrderBy(d => d.Date)
+        var extraShifts = days.OrderBy(d => d.Date)
             .Where(d => d.Date <= maxDateForRegularShifts)
-            .SelectMany(d => d.Shifts.SelectMany(s => s.Jobs.SelectMany(j => j.Volunteers
-                .Where(v => IsVolunteer(v) && v.Type == AttendanceType.Extra)
-                .Select(v => GetShift(d, s, j, v)))))
+            .SelectMany(d =>
+                d.Shifts.SelectMany(s =>
+                    s.Jobs.SelectMany(j =>
+                        j.Volunteers.Where(v => IsVolunteer(v) && v.Type == AttendanceType.Extra)
+                            .Select(v => GetShift(d, s, j, v))
+                    )
+                )
+            )
             .ToList();
 
         var maxDateForUrgentShifts = now.AddDays(_settings.UrgentShiftsDaysInAdvance);
-        var urgentShifts = days
-            .OrderBy(d => d.Date)
+        var urgentShifts = days.OrderBy(d => d.Date)
             .Where(d => d.Date <= maxDateForUrgentShifts)
-            .SelectMany(d => d.Shifts.SelectMany(s => s.Jobs
-                .Where(j => allowedJobIds.Contains(j.Job.Id) && ((j.Enough == false) || j.Volunteers.Any(v => IsVolunteerComing(v) && v.Type == AttendanceType.Urgent)))
-                .Select(j => GetUrgentShift(d, s, j))))
+            .SelectMany(d =>
+                d.Shifts.SelectMany(s =>
+                    s.Jobs.Where(j =>
+                            allowedJobIds.Contains(j.Job.Id)
+                            && (
+                                (j.Enough == false)
+                                || j.Volunteers.Any(v =>
+                                    IsVolunteerComing(v) && v.Type == AttendanceType.Urgent
+                                )
+                            )
+                        )
+                        .Select(j => GetUrgentShift(d, s, j))
+                )
+            )
             .ToList();
 
-        var nextShift = days
-            .OrderBy(d => d.Date)
-            .SelectMany(d => d.Shifts
-                .OrderBy(s => s.Time.Start)
-                .SelectMany(s => s.Jobs.SelectMany(j => j.Volunteers.Where(IsVolunteerComing).Select(v => GetShift(d, s, j, v)))))
+        var nextShift = days.OrderBy(d => d.Date)
+            .SelectMany(d =>
+                d.Shifts.OrderBy(s => s.Time.Start)
+                    .SelectMany(s =>
+                        s.Jobs.SelectMany(j =>
+                            j.Volunteers.Where(IsVolunteerComing).Select(v => GetShift(d, s, j, v))
+                        )
+                    )
+            )
             .FirstOrDefault();
 
         return new()
@@ -360,10 +520,17 @@ public class RotaService : IRotaService
             Rota = regularShifts,
             UrgentShifts = urgentShifts,
             ExtraShifts = extraShifts,
-            RegularShifts = userRegularShifts.Select(x => new UserRota.RegularShift { Day = x.Day, Job = x.Job, Time = x.Time, }).ToList(),
+            RegularShifts = userRegularShifts
+                .Select(x => new UserRota.RegularShift
+                {
+                    Day = x.Day,
+                    Job = x.Job,
+                    Time = x.Time,
+                })
+                .ToList(),
             MissingReasons = [.. missingReasons.OrderBy(x => x.Id)],
             NextShift = nextShift,
-            AllowedJobs = jobs.Where(job => allowedJobIds.Contains(job.Id)).ToList()
+            AllowedJobs = jobs.Where(job => allowedJobIds.Contains(job.Id)).ToList(),
         };
     }
 }

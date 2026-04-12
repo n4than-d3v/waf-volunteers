@@ -49,7 +49,7 @@
     style="--bg: var(--theme-color-5)"
   >
     <img src="images/learn.svg" alt="Learning icon" />
-    <p>Learning</p>
+    <p>Auxiliary</p>
   </a>
   }
   <a
@@ -62,6 +62,18 @@
     <p>Summary</p>
     } @else {
     <p>Patients</p>
+    }
+  </a>
+  <a
+    [routerLink]="'../learning'"
+    class="module"
+    style="--bg: var(--theme-color-6)"
+  >
+    <img src="images/learn.svg" alt="Learning icon" />
+    @if (isAuxiliary) {
+    <p>Husbandry</p>
+    } @else {
+    <p>Training</p>
     }
   </a>
 </div>

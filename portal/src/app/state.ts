@@ -11,6 +11,7 @@ import { HospitalState } from './hospital/state';
 import { HospitalStockState } from './hospital/stock/state';
 import { AuxDevPlanState } from './vet/aux-dev-plans/state';
 import { OrphanFeederState } from './volunteer/home-care/state';
+import { LearningState } from './volunteer/learning/state';
 import { NoticesState } from './volunteer/notices/state';
 import { PatientSummaryState } from './volunteer/patient-summary/state';
 import { ProfileState } from './volunteer/profile/state';
@@ -25,6 +26,7 @@ export interface AppState {
   notices: NoticesState;
   orphanFeeder: OrphanFeederState;
   patientSummary: PatientSummaryState;
+  learning: LearningState;
 
   // Admin
   profiles: ProfilesState;

@@ -7,6 +7,7 @@ import { VolunteerNoticeViewComponent } from './volunteer/notices/view/component
 import { VolunteerHomeCareComponent } from './volunteer/home-care/component';
 import { isOrphanFeeder } from './authentication/guards';
 import { VolunteerPatientSummaryComponent } from './volunteer/patient-summary/component';
+import { VolunteerLearningComponent } from './volunteer/learning/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -25,6 +26,10 @@ export const routes: Routes = [
   {
     path: 'patients',
     component: VolunteerPatientSummaryComponent,
+  },
+  {
+    path: 'learning',
+    component: VolunteerLearningComponent,
   },
   {
     path: 'notices',

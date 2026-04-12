@@ -1,0 +1,25 @@
+<div class="container" [class.has-parent]="!!parent">
+  @if (showChildren) {
+  <button class="button button--open" (click)="showChildren = false">
+    <span>{{ category.name }}</span>
+    <span>▲</span>
+  </button>
+  @if (!((category.children && category.children.length) || category.youTube)) {
+  <p class="coming-soon">Coming soon...</p>
+  } @if (category.youTube) {
+  <iframe
+    [src]="category.youTube| safeYoutube"
+    title="YouTube video player"
+    frameborder="0"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+  } @for (child of (category.children || []); track child.id) {
+  <learning-category [category]="child" [parent]="category" />
+  } } @else {
+  <button class="button button--closed" (click)="showChildren = true">
+    <span>{{ category.name }}</span>
+    <span>▼</span>
+  </button>
+  } @if (showChildren) { }
+</div>

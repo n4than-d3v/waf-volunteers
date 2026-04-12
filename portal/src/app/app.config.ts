@@ -51,6 +51,8 @@ import { retryInterceptor } from './retry.interceptor';
 import { authInterceptor } from './auth.interceptor';
 import { adminLearningReducer } from './admin/learning/reducer';
 import { AdminLearningEffects } from './admin/learning/effects';
+import { LearningEffects } from './volunteer/learning/effects';
+import { learningReducer } from './volunteer/learning/reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -110,6 +112,7 @@ export const appConfig: ApplicationConfig = {
       notices: noticesReducer,
       orphanFeeder: orphanFeederReducer,
       patientSummary: patientSummaryReducer,
+      learning: learningReducer,
 
       // Admin
       profiles: profilesReducer,
@@ -139,6 +142,7 @@ export const appConfig: ApplicationConfig = {
       NoticesEffects,
       OrphanFeederEffects,
       PatientSummaryEffects,
+      LearningEffects,
 
       // Admin
       ProfilesEffects,

@@ -80,10 +80,12 @@ export class VolunteerRotaComponent implements OnInit {
     this.denied$ = this.store.select(selectDeniedShift);
   }
 
-  hasNotAlreadyConfirmedAsRegular(rota: Rota, shift: UrgentShift) {
-    const onDate = rota.rota.find((x) => x.date === shift.date);
-    if (onDate && onDate.confirmed) return false;
-    return true;
+  hasAlreadyConfirmedAsRegular(rota: Rota, shift: UrgentShift) {
+    const onDate = [...rota.rota, ...rota.extraShifts].find(
+      (x) => x.date === shift.date && x.time.id === shift.time.id,
+    );
+    if (onDate && onDate.confirmed) return true;
+    return false;
   }
 
   confirm(shift: Shift, shiftType: ShiftType) {

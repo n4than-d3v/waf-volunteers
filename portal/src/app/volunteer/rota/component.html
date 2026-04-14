@@ -45,8 +45,8 @@
       <p class="shift-type">{{ shift.job.name }}</p>
     </div>
     <div class="shift-footer">
-      @if (shift.confirmed != true && hasNotAlreadyConfirmedAsRegular(rota,
-      shift)) {
+      @let confirmed = shift.confirmed || hasAlreadyConfirmedAsRegular(rota,
+      shift); @if (!confirmed) {
       <p>
         Please help if you can!<br />
         There's {{ shift.coming }} coming and we need {{ shift.required -
@@ -101,14 +101,14 @@
           Confirm
         </button>
       </div>
-      } @else if (shift.confirmed || shift.others.length || shift.newbies.length
-      || shift.workExperiences.length) {
+      } @else if (confirmed || shift.others.length || shift.newbies.length ||
+      shift.workExperiences.length) {
       <div class="people-coming">
-        @if (shift.confirmed || shift.others.length) {
+        @if (confirmed || shift.others.length) {
         <strong>Who's coming?</strong>
         <p>
-          {{ shift.confirmed ? 'You' : '' }}{{ shift.confirmed &&
-          shift.others.length ? ',' : '' }} {{ formatOthers(shift) }}
+          {{ confirmed ? 'You' : '' }}{{ confirmed && shift.others.length ? ','
+          : '' }} {{ formatOthers(shift) }}
         </p>
         } @if (shift.newbies.length > 0) {
         <strong>Newbies</strong>

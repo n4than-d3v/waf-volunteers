@@ -1,18 +1,11 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './authentication/login/component';
-import { ForgotPasswordComponent } from './authentication/forgot-password/component';
-import { ResetPasswordComponent } from './authentication/reset-password/component';
 import {
   isAdmin,
   isAuthenticated,
   isBoards,
   isClocking,
-  isVet,
   isVetOrAux,
 } from './authentication/guards';
-import { InstallationComponent } from './installation/component';
-import { ClockingComponent } from './clocking/component';
-import { HospitalPatientBoardComponent } from './hospital/patient-board/component';
 
 export const routes: Routes = [
   {
@@ -22,19 +15,27 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./authentication/login/component').then((m) => m.LoginComponent),
   },
   {
     path: 'forgot-password',
-    component: ForgotPasswordComponent,
+    loadComponent: () =>
+      import('./authentication/forgot-password/component').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
   },
   {
     path: 'reset-password',
-    component: ResetPasswordComponent,
+    loadComponent: () =>
+      import('./authentication/reset-password/component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
   },
   {
     path: 'install',
-    component: InstallationComponent,
+    loadComponent: () =>
+      import('./installation/component').then((m) => m.InstallationComponent),
   },
   {
     path: 'volunteer',
@@ -46,13 +47,20 @@ export const routes: Routes = [
     canActivate: [isAuthenticated, isClocking],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-      { path: 'dashboard', component: ClockingComponent },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./clocking/component').then((m) => m.ClockingComponent),
+      },
     ],
   },
   {
     path: 'boards',
     canActivate: [isAuthenticated, isBoards],
-    component: HospitalPatientBoardComponent,
+    loadComponent: () =>
+      import('./hospital/patient-board/component').then(
+        (m) => m.HospitalPatientBoardComponent,
+      ),
   },
   {
     path: 'admin',

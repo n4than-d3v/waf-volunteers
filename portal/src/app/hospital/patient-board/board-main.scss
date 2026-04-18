@@ -14,10 +14,21 @@
 
     .patients {
       min-height: 4rem;
-    }
+      max-height: 4rem;
+      overflow-y: auto;
 
-    .tags {
-      min-height: 1.5rem;
+      &:hover {
+        overflow-y: visible;
+        max-height: max-content;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .tags {
+        padding-top: 0.7rem;
+      }
     }
 
     .tasks {
@@ -52,7 +63,6 @@
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;
-      padding: 0rem 0.25rem;
 
       .custom-diet {
         color: var(--theme-color-1);
@@ -82,6 +92,41 @@
 
         &.task--current-shift {
           filter: opacity(1);
+
+          &.task--relevant {
+            .time {
+              font-weight: bold;
+            }
+
+            button {
+              background-color: white;
+              cursor: pointer;
+            }
+          }
+        }
+
+        &:not(.task--relevant) {
+          filter: opacity(0.5);
+
+          button {
+            background-color: rgb(233, 233, 233);
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            background: repeating-linear-gradient(
+              -45deg,
+              rgba(30, 84, 78, 0.15),
+              rgba(30, 84, 78, 0.15) 10px,
+              transparent 10px,
+              transparent 20px
+            );
+
+            pointer-events: none;
+          }
         }
 
         &:not(:last-child) {
@@ -95,19 +140,19 @@
         }
 
         .time {
-          font-weight: bold;
           font-size: 1rem;
           text-align: center;
           padding: 0rem 0.25rem;
+          min-width: 3rem;
         }
 
         .button {
           padding: 0.125rem;
           max-height: 2.25rem;
           border: none;
-          background-color: white;
           outline: none !important;
           box-shadow: none !important;
+          cursor: initial;
         }
       }
     }
@@ -205,11 +250,13 @@
     .patient-references {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      max-width: 9rem;
+      column-gap: 0.5rem;
+      row-gap: 0.125rem;
+      padding-top: 0.7rem;
 
       p {
-        font-size: 1.125rem;
-        font-weight: bold;
+        font-size: 1rem;
         color: var(--theme-color-1);
       }
     }

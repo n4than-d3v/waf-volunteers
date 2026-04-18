@@ -49,10 +49,74 @@
       Change board
     </button>
   </div>
+  <div class="buttons shifts">
+    <button
+      class="button button--secondary-invert"
+      [class.is-current]="board.isMorning"
+      (click)="shift = 'M'"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        version="1.1"
+        xml:space="preserve"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        fill="#000000"
+      >
+        @for (path of svgs.morning; track path) {
+        <path [attr.d]="path"></path>
+        }
+      </svg>
+      <span class="shift-text">
+        <span class="shift-name">Morning</span>
+        <span class="shift-time">09:00 &dash; 12:59</span>
+      </span>
+    </button>
+    <button
+      class="button button--secondary-invert"
+      [class.is-current]="board.isAfternoon"
+      (click)="shift = 'A'"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        version="1.1"
+        xml:space="preserve"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        fill="#000000"
+      >
+        <path [attr.d]="svgs.afternoon"></path>
+      </svg>
+      <span class="shift-text">
+        <span class="shift-name">Afternoon</span>
+        <span class="shift-time">13:00 &dash; 17:59</span>
+      </span>
+    </button>
+    <button
+      class="button button--secondary-invert"
+      [class.is-current]="board.isEvening"
+      (click)="shift = 'E'"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        version="1.1"
+        xml:space="preserve"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        fill="#000000"
+      >
+        <path [attr.d]="svgs.evening"></path>
+      </svg>
+      <span class="shift-text">
+        <span class="shift-name">Evening</span>
+        <span class="shift-time">18:00 &dash; 22:00</span>
+      </span>
+    </button>
+  </div>
   <div class="filter">
     <div>
       <div class="field">
-        <label for="expandFeedingSummary"> Show species summary </label>
+        <label for="expandFeedingSummary"> Summary </label>
         <input
           type="checkbox"
           id="expandFeedingSummary"
@@ -60,7 +124,7 @@
         />
       </div>
       <div class="field">
-        <label for="showPatientReferences"> Show patient references </label>
+        <label for="showPatientReferences"> References </label>
         <input
           type="checkbox"
           id="showPatientReferences"
@@ -70,7 +134,7 @@
     </div>
     <div>
       <div class="field">
-        <label for="showPensWithoutFeeds"> Show pens without feeds </label>
+        <label for="showPensWithoutFeeds"> No feeds </label>
         <input
           type="checkbox"
           id="showPensWithoutFeeds"
@@ -78,7 +142,7 @@
         />
       </div>
       <div class="field">
-        <label for="showPensNeedCleaning"> Show pens that need cleaning </label>
+        <label for="showPensNeedCleaning"> Cleaning </label>
         <input
           type="checkbox"
           id="showPensNeedCleaning"
@@ -86,6 +150,18 @@
         />
       </div>
     </div>
+    @if (!board.board.forBirds) {
+    <div>
+      <div class="field">
+        <label for="showTickedOffPens"> Completed </label>
+        <input
+          type="checkbox"
+          id="showTickedOffPens"
+          [(ngModel)]="showTickedOffPens"
+        />
+      </div>
+    </div>
+    }
   </div>
 </div>
 @if (expandFeedingSummary) {
@@ -131,9 +207,8 @@
     <div class="patients">
       <span class="instruction">Please clean</span>
     </div>
-    <div class="tags"></div>
     <div class="tasks">
-      <div class="task task--current-shift">
+      <div class="task task--current-shift task--relevant">
         <p class="time">ASAP</p>
         <button
           (click)="markClean(pen)"
@@ -155,41 +230,57 @@
         <p>{{ patientReference }}</p>
         }
       </div>
-      }
-    </div>
-    <div class="tags">
-      @for (tag of pen.tags; track tag) {
-      <span class="tag">{{ tag }}</span>
-      } @if (pen.hasCustomDiet) {
-      <span class="custom-diet">Special diet</span>
+      } @if (pen.tags && pen.tags.length) {
+      <div class="tags">
+        @for (tag of pen.tags; track tag) {
+        <span class="tag">{{ tag }}</span>
+        } @if (pen.hasCustomDiet) {
+        <span class="custom-diet">Special diet</span>
+        }
+      </div>
       }
     </div>
     <div class="tasks">
-      <div class="task" [class.task--current-shift]="board.isMorning">
+      <div
+        class="task"
+        [class.task--current-shift]="board.isMorning"
+        [class.task--relevant]="pen.isMorningRelevant"
+      >
         <p class="time">Mor</p>
         <button
           (click)="markComplete(pen, 1)"
           class="button button--secondary-invert"
+          [disabled]="!pen.isMorningRelevant || !board.isMorning"
         >
           @if (pen.morning) { ✔️ } @else if (tickingTask ===
           `${pen.reference}_1`) { ... } @else { &nbsp; }
         </button>
       </div>
-      <div class="task" [class.task--current-shift]="board.isAfternoon">
+      <div
+        class="task"
+        [class.task--current-shift]="board.isAfternoon"
+        [class.task--relevant]="pen.isAfternoonRelevant"
+      >
         <p class="time">Aft</p>
         <button
           (click)="markComplete(pen, 2)"
           class="button button--secondary-invert"
+          [disabled]="!pen.isAfternoonRelevant|| !board.isAfternoon"
         >
           @if (pen.afternoon) { ✔️ } @else if (tickingTask ===
           `${pen.reference}_2`) { ... } @else { &nbsp; }
         </button>
       </div>
-      <div class="task" [class.task--current-shift]="board.isEvening">
+      <div
+        class="task"
+        [class.task--current-shift]="board.isEvening"
+        [class.task--relevant]="pen.isEveningRelevant"
+      >
         <p class="time">Eve</p>
         <button
           (click)="markComplete(pen, 3)"
           class="button button--secondary-invert"
+          [disabled]="!pen.isEveningRelevant|| !board.isEvening"
         >
           @if (pen.evening) { ✔️ } @else if (tickingTask ===
           `${pen.reference}_3`) { ... } @else { &nbsp; }
@@ -271,7 +362,7 @@
       <span class="instruction">Please clean</span>
     </div>
     <div class="tasks">
-      <div class="task task--current-shift">
+      <div class="task task--current-shift task--relevant">
         <p class="time">ASAP</p>
         <button
           (click)="markClean(pen)"

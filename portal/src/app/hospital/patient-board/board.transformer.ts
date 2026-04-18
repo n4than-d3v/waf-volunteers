@@ -18,29 +18,42 @@ import {
   PatientBoardSummaryVariantVm,
   PatientBoardSummaryVm,
   PatientBoardVm,
+  Shift,
 } from './board.model';
 import {
   formatFractionalNumber,
   PatientBoardAreaDisplayType,
 } from '../../admin/hospital/state';
 
-function isPenExpandable(pen: PatientBoardAreaPen): boolean {
+function isPenExpandable(pen: PatientBoardAreaPen, shift: Shift): boolean {
   if (!pen.feedings?.length) return false;
-  return pen.feedings.some((f) => shouldShowTime(f.time));
+  return pen.feedings.some((f) => shouldShowTime(f.time, shift));
 }
 
 function shouldShowPen(
   pen: PatientBoardAreaPen,
   showPensNeedCleaning: boolean,
   showPensWithoutFeeds: boolean,
+  showTickedOffPens: boolean,
+  shift: Shift,
 ): boolean {
   if (pen.needsCleaning) {
     return showPensNeedCleaning;
   }
-  if (!showPensWithoutFeeds) {
-    return hasFeeds(pen.feedings || []);
+
+  let response = true;
+
+  if (!showTickedOffPens) {
+    if (shift === 'M') response = !pen.morning;
+    else if (shift === 'A') response = !pen.afternoon;
+    else if (shift === 'E') response = !pen.evening;
   }
-  return true;
+
+  if (!showPensWithoutFeeds) {
+    response = response && hasFeeds(pen.feedings || [], shift);
+  }
+
+  return response;
 }
 
 function nowToDecimal(): number {
@@ -58,18 +71,13 @@ function timeToDecimal(t: string): number {
   return h + m / 60;
 }
 
-function shouldShowTime(time: string): boolean {
-  const nowDecimal = nowToDecimal();
-
+function shouldShowTime(time: string, shift: Shift): boolean {
   if (/^\d{2}:\d{2}$/.test(time)) {
     const targetDecimal = timeToDecimal(time);
 
-    if (0 <= nowDecimal && nowDecimal < 13)
-      return 0 <= targetDecimal && targetDecimal < 13;
-    if (13 <= nowDecimal && nowDecimal < 18)
-      return 13 <= targetDecimal && targetDecimal < 18;
-    if (18 <= nowDecimal && nowDecimal < 24)
-      return 18 <= targetDecimal && targetDecimal < 24;
+    if (shift === 'M') return 0 <= targetDecimal && targetDecimal < 13;
+    if (shift === 'A') return 13 <= targetDecimal && targetDecimal < 18;
+    if (shift === 'E') return 18 <= targetDecimal && targetDecimal < 24;
 
     return false;
   }
@@ -77,22 +85,14 @@ function shouldShowTime(time: string): boolean {
   return true;
 }
 
-function isCurrentShift(shift: 'M' | 'A' | 'E'): boolean {
-  const nowDecimal = nowToDecimal();
-
-  if (shift === 'M' && 0 <= nowDecimal && nowDecimal < 13) return true;
-  if (shift === 'A' && 13 <= nowDecimal && nowDecimal < 18) return true;
-  if (shift === 'E' && 18 <= nowDecimal && nowDecimal < 24) return true;
-  return false;
-}
-
 function getNextFeeding(
   feedings: PatientBoardAreaPenFeeding[],
+  shift: Shift,
 ): { isNow: boolean; time: string } | null {
   const nowDecimal = nowToDecimal();
   const next = feedings
     .filter((f) => /^\d{2}:\d{2}$/.test(f.time))
-    .filter((f) => shouldShowTime(f.time))
+    .filter((f) => shouldShowTime(f.time, shift))
     .map((f) => ({ ...f, decimalTime: timeToDecimal(f.time) }))
     .filter((f) => f.decimalTime >= nowDecimal - 0.25)
     .sort((a, b) => a.decimalTime - b.decimalTime);
@@ -109,16 +109,22 @@ function isNow(time: string): boolean {
   return false;
 }
 
-function hasFeeds(feedings: PatientBoardAreaPenFeeding[]): boolean {
-  return feedings.some((time) => shouldShowTime(time.time));
+function hasFeeds(
+  feedings: PatientBoardAreaPenFeeding[],
+  shift: Shift,
+): boolean {
+  return feedings.some((time) => shouldShowTime(time.time, shift));
 }
 
 function hasForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]): boolean {
   return feedings.some((item) => item.forceFeed);
 }
 
-function getForceFeeds(feedings: PatientBoardAreaPenFeeding[]): string[] {
-  const times = feedings.filter((time) => shouldShowTime(time.time));
+function getForceFeeds(
+  feedings: PatientBoardAreaPenFeeding[],
+  shift: Shift,
+): string[] {
+  const times = feedings.filter((time) => shouldShowTime(time.time, shift));
   if (!times.some((time) => hasForceFeeds(time.details))) return [];
 
   const result = new Set<string>();
@@ -180,6 +186,8 @@ export function transform(
   wrapper: ReadOnlyWrapper<PatientBoard>,
   showPensWithoutFeeds: boolean,
   showPensNeedCleaning: boolean,
+  showTickedOffPens: boolean,
+  shift: Shift,
 ): PatientBoardVm | null {
   if (!wrapper.data) return null;
 
@@ -195,10 +203,15 @@ export function transform(
               pen,
               showPensNeedCleaning,
               showPensWithoutFeeds,
+              showTickedOffPens,
+              shift,
             ),
-            nextFeeding: getNextFeeding(pen.feedings || []),
-            forceFeeds: getForceFeeds(pen.feedings || []),
-            isExpandable: isPenExpandable(pen),
+            nextFeeding: getNextFeeding(pen.feedings || [], shift),
+            forceFeeds: getForceFeeds(pen.feedings || [], shift),
+            isExpandable: isPenExpandable(pen, shift),
+            isMorningRelevant: isPenExpandable(pen, 'M'),
+            isAfternoonRelevant: isPenExpandable(pen, 'A'),
+            isEveningRelevant: isPenExpandable(pen, 'E'),
             feedings: (pen.feedings || []).map(
               (feeding): PatientBoardAreaPenFeedingVm => {
                 const details = (feeding.details || []).map(
@@ -216,7 +229,7 @@ export function transform(
                   ...feeding,
                   details,
                   isNow: isNow(feeding.time),
-                  shouldShow: shouldShowTime(feeding.time),
+                  shouldShow: shouldShowTime(feeding.time, shift),
                   hasForceFeeds: hasForceFeeds(feeding.details),
                   groups: groupFeeding(details),
                 };
@@ -251,7 +264,7 @@ export function transform(
                     ),
                   }),
                 ),
-                shouldShow: shouldShowTime(feeding.time),
+                shouldShow: shouldShowTime(feeding.time, shift),
               }),
             ),
           }),
@@ -259,8 +272,8 @@ export function transform(
       }),
     ),
     anyOtherBoards: anyOtherBoards(wrapper.data.areas),
-    isMorning: isCurrentShift('M'),
-    isAfternoon: isCurrentShift('A'),
-    isEvening: isCurrentShift('E'),
+    isMorning: shift === 'M',
+    isAfternoon: shift === 'A',
+    isEvening: shift === 'E',
   };
 }

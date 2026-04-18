@@ -36,8 +36,9 @@ import {
   viewPatientBoards,
 } from '../actions';
 import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
-import { PatientBoardAreaVm, PatientBoardVm } from './board.model';
+import { PatientBoardAreaVm, PatientBoardVm, Shift } from './board.model';
 import { transform } from './board.transformer';
+import { svgs } from './svgs';
 
 @Pipe({
   name: 'sortBoardAreas',
@@ -96,6 +97,10 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   showPensWithoutFeeds$ = new BehaviorSubject(true);
   showPensNeedCleaning$ = new BehaviorSubject(true);
+  showTickedOffPens$ = new BehaviorSubject(true);
+  shift$ = new BehaviorSubject<Shift>('M');
+
+  svgs = svgs;
 
   get showPensWithoutFeeds(): boolean {
     return this.showPensWithoutFeeds$.value;
@@ -113,6 +118,22 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     this.showPensNeedCleaning$.next(val);
   }
 
+  get showTickedOffPens(): boolean {
+    return this.showTickedOffPens$.value;
+  }
+
+  set showTickedOffPens(val: boolean) {
+    this.showTickedOffPens$.next(val);
+  }
+
+  get shift(): Shift {
+    return this.shift$.value;
+  }
+
+  set shift(val: Shift) {
+    this.shift$.next(val);
+  }
+
   subscription: Subscription | null = null;
 
   constructor(private store: Store) {
@@ -123,10 +144,26 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       this.store.select(selectPatientBoard),
       this.showPensWithoutFeeds$,
       this.showPensNeedCleaning$,
+      this.showTickedOffPens$,
+      this.shift$,
     ]).pipe(
-      map(([wrapper, showPensWithoutFeeds, showPensNeedCleaning]) => {
-        return transform(wrapper, showPensWithoutFeeds, showPensNeedCleaning);
-      }),
+      map(
+        ([
+          wrapper,
+          showPensWithoutFeeds,
+          showPensNeedCleaning,
+          showTickedOffPens,
+          shift,
+        ]) => {
+          return transform(
+            wrapper,
+            showPensWithoutFeeds,
+            showPensNeedCleaning,
+            showTickedOffPens,
+            shift,
+          );
+        },
+      ),
     );
   }
 

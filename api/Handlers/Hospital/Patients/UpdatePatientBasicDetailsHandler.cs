@@ -106,6 +106,7 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
                 QuantityUnit = item.QuantityUnit,
                 TopUp = item.TopUp,
                 Notes = item.Notes,
+                Dish = item.Dish,
                 Patient = patient
             };
 

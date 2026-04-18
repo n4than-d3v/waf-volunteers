@@ -1,6 +1,7 @@
 import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
-import { PatientBoardAreaPenFeeding } from '../state';
 import { FoodSection } from './food-section';
+
+export type Shift = 'M' | 'A' | 'E';
 
 export interface PatientBoardVm {
   board: {
@@ -79,6 +80,9 @@ export interface PatientBoardAreaPenVm {
   isExpandable: boolean;
   nextFeeding: { isNow: boolean; time: string } | null;
   forceFeeds: string[];
+  isMorningRelevant: boolean;
+  isAfternoonRelevant: boolean;
+  isEveningRelevant: boolean;
 }
 
 export interface PatientBoardAreaPenFeedingSummaryVm {

@@ -41,6 +41,7 @@ export class AdminHospitalFoodsComponent implements OnInit {
     notes: new FormControl(''),
     substitute: new FormControl(''),
     forceFeed: new FormControl(false),
+    sumUp: new FormControl(false),
   });
 
   constructor(private store: Store) {
@@ -64,6 +65,7 @@ export class AdminHospitalFoodsComponent implements OnInit {
     this.form.controls.notes.setValue(food.notes);
     this.form.controls.substitute.setValue(food.substitute);
     this.form.controls.forceFeed.setValue(food.forceFeed);
+    this.form.controls.sumUp.setValue(food.sumUp);
     window.scroll(0, 0);
   }
 
@@ -82,6 +84,7 @@ export class AdminHospitalFoodsComponent implements OnInit {
           notes: this.form.controls.notes.value || '',
           substitute: this.form.controls.substitute.value || '',
           forceFeed: this.form.controls.forceFeed.value || false,
+          sumUp: this.form.controls.sumUp.value || false,
         },
       }),
     );
@@ -97,6 +100,7 @@ export class AdminHospitalFoodsComponent implements OnInit {
           notes: this.form.controls.notes.value || '',
           substitute: this.form.controls.substitute.value || '',
           forceFeed: this.form.controls.forceFeed.value || false,
+          sumUp: this.form.controls.sumUp.value || false,
         },
       }),
     );

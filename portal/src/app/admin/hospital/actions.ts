@@ -357,6 +357,7 @@ export const upsertBoard = createAction(
     id: number | null;
     name: string;
     forBirds: boolean;
+    sumUp: boolean;
     areas: { areaId: number; displayType: PatientBoardAreaDisplayType }[];
   }>(),
 );

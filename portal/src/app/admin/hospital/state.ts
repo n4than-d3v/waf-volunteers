@@ -26,6 +26,7 @@ export interface CreateFoodCommand {
   notes: string;
   substitute: string;
   forceFeed: boolean;
+  sumUp: boolean;
 }
 
 export interface Food extends CreateFoodCommand {
@@ -215,6 +216,7 @@ export interface PatientBoard {
   id: number;
   name: string;
   forBirds: boolean;
+  sumUp: boolean;
   areas: PatientBoardArea[];
 }
 

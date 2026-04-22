@@ -9,4 +9,5 @@ public class Food : Entity
     public string? Substitute { get; set; }
 
     public bool ForceFeed { get; set; } = false;
+    public bool SumUp { get; set; } = false;
 }

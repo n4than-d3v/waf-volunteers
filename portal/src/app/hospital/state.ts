@@ -719,6 +719,7 @@ export interface PatientBoard {
   };
   areas: PatientBoardArea[];
   summary: PatientBoardSummary[];
+  summedUp: PatientBoardSummaryFeedingItem[] | null;
 }
 
 export interface PatientBoardSummary {

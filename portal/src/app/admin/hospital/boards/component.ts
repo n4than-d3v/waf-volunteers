@@ -27,6 +27,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
 
   name = '';
   forBirds = false;
+  sumUp = false;
   areaDisplayTypes: { [key: string]: string } = {};
 
   filter = '';
@@ -64,19 +65,23 @@ export class AdminHospitalBoardsComponent implements OnInit {
   prepareEdit(board: PatientBoard) {
     this.name = board.name;
     this.forBirds = board.forBirds;
+    this.sumUp = board.sumUp;
     this.areaDisplayTypes = {};
     for (const area of board.areas) {
       this.areaDisplayTypes[String(area.area.id)] = String(area.displayType);
     }
     this.editing = board.id;
+    window.scroll(0, 0);
   }
 
   prepareAddMessageForAllBoards() {
     this.addingMessage = -1;
+    window.scroll(0, 0);
   }
 
   prepareAddMessage(board: PatientBoard) {
     this.addingMessage = board.id;
+    window.scroll(0, 0);
   }
 
   addMessage() {
@@ -98,6 +103,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
         id: this.adding ? null : this.editing,
         name: this.name,
         forBirds: this.forBirds,
+        sumUp: this.sumUp,
         areas: Object.keys(this.areaDisplayTypes).map((areaId) => ({
           areaId: Number(areaId),
           displayType: Number(this.areaDisplayTypes[areaId]),
@@ -113,6 +119,7 @@ export class AdminHospitalBoardsComponent implements OnInit {
     this.addingMessage = null;
     this.name = '';
     this.forBirds = false;
+    this.sumUp = false;
     this.areaDisplayTypes = {};
     this.message = '';
     this.resetDateRange();

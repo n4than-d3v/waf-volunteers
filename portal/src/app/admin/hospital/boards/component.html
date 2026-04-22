@@ -33,6 +33,10 @@
     <label for="forBirds">For birds</label>
     <input type="checkbox" id="forBirds" [(ngModel)]="forBirds" />
   </div>
+  <div class="field">
+    <label for="sumUp">Show food totals</label>
+    <input type="checkbox" id="sumUp" [(ngModel)]="sumUp" />
+  </div>
   @if (areas$ | async; as areas) {
   <div class="areas">
     @for (area of areas.data || []; track area.id) {
@@ -89,6 +93,7 @@
       <th>Name</th>
       <th>Areas</th>
       <th>For birds</th>
+      <th>Food totals</th>
       <th></th>
     </tr>
   </thead>
@@ -109,6 +114,7 @@
         </div>
       </td>
       <td>{{ board.forBirds ? 'Yes' : '' }}</td>
+      <td>{{ board.sumUp ? 'Yes' : '' }}</td>
       <td>
         <div class="buttons">
           <button (click)="prepareEdit(board)" class="button button--secondary">

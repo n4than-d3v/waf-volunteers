@@ -44,6 +44,10 @@
       <label for="forceFeed">Force feed</label>
       <input id="forceFeed" type="checkbox" formControlName="forceFeed" />
     </div>
+    <div class="field">
+      <label for="sumUp">Show total on board</label>
+      <input id="sumUp" type="checkbox" formControlName="sumUp" />
+    </div>
     <div class="buttons">
       <button (click)="create()" class="button button--primary">Save</button>
       <button (click)="cancel()" class="button button--secondary">
@@ -72,6 +76,10 @@
       <label for="forceFeed">Force feed</label>
       <input id="forceFeed" type="checkbox" formControlName="forceFeed" />
     </div>
+    <div class="field">
+      <label for="sumUp">Show total on board</label>
+      <input id="sumUp" type="checkbox" formControlName="sumUp" />
+    </div>
     <div class="buttons">
       <button (click)="update()" class="button button--primary">Save</button>
       <button (click)="cancel()" class="button button--secondary">
@@ -88,6 +96,7 @@
       <th>Notes</th>
       <th>Substitute</th>
       <th>Force feed</th>
+      <th>Show total</th>
       <th></th>
     </tr>
   </thead>
@@ -98,6 +107,7 @@
       <td>{{ food.notes }}</td>
       <td>{{ food.substitute }}</td>
       <td>{{ food.forceFeed ? 'Yes' : '' }}</td>
+      <td>{{ food.sumUp ? 'Yes' : '' }}</td>
       <td>
         <button (click)="beginUpdate(food)" class="button button--secondary">
           Edit

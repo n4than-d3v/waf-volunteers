@@ -385,7 +385,18 @@
     </div>
     } }
   </div>
-  } } } } }
+  } } } } } @if (board.summedUp && board.summedUp.length) {
+  <div class="pen pen--total">
+    <div class="location">Take out</div>
+    <div class="patients">
+      @for (item of board.summedUp; track item.food) {
+      <p class="variant">
+        {{ item.quantityValue }} {{item.quantityUnit}} {{ item.food }}
+      </p>
+      }
+    </div>
+  </div>
+  }
 </div>
 } @else {
 <div class="nursery-pens">

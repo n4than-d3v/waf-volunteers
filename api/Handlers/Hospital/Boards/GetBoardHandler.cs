@@ -107,12 +107,40 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         {
             Board = board,
             Summary = GetPatientBoardSummary(patients),
+            SummedUp = board.SumUp ? await GetSummedUpFoods() : null,
             Areas = board.Areas
                 .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
                 .Select(area => CreateBoardArea(patients, area))
                 .Where(area => (area.Summary?.Any() ?? false) || (area.Pens?.Any() ?? false))
                 .ToList()
         });
+    }
+
+    private async Task<List<PatientBoardSummaryFeedingItem>> GetSummedUpFoods()
+    {
+        var patients = await _repository.GetAll<Patient>(
+            x =>
+                (x.Status == PatientStatus.Inpatient || x.Status == PatientStatus.PendingHomeCare || x.Status == PatientStatus.ReadyForRelease) &&
+                x.SpeciesVariant != null && x.Pen != null, tracking: false,
+            x => x.AsSplitQuery().IncludeBasicDetails().IncludeHusbandry());
+
+        foreach (var patient in patients)
+            patient.DecryptProperties(_encryptionService);
+
+        var summary = GetPatientBoardSummary(patients);
+        return summary
+            .SelectMany(s => s.Variants
+            .SelectMany(v => v.Feeding
+            .SelectMany(f => f.Items
+            .Where(i => i.SumUp))))
+            .GroupBy(f => new { f.Food, QuantityUnit = f.QuantityUnit.Trim() })
+            .Select(g => new PatientBoardSummaryFeedingItem
+            {
+                Food = g.Key.Food,
+                QuantityUnit = g.Key.QuantityUnit,
+                QuantityValue = g.Sum(f => f.QuantityValue)
+            })
+            .ToList();
     }
 
     private static PatientBoardArea CreateBoardArea(IReadOnlyList<Patient> patients, BoardArea area)
@@ -222,10 +250,11 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                             {
                                 Time = fg.Key.ToString(@"hh\:mm"),
                                 Items = fg
-                                    .GroupBy(fgg => new { fgg.Feeding.QuantityUnit, fgg.Feeding.Food.Name })
+                                    .GroupBy(fgg => new { fgg.Feeding.QuantityUnit, fgg.Feeding.Food.Name, fgg.Feeding.Food.SumUp })
                                     .Select(fgg => new PatientBoardSummaryFeedingItem
                                     {
                                         Food = fgg.Key.Name,
+                                        SumUp = fgg.Key.SumUp,
                                         QuantityValue = fgg.Sum(f => f.Feeding.QuantityValue),
                                         QuantityUnit = fgg.Key.QuantityUnit
                                     }).ToList()
@@ -370,6 +399,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public Board Board { get; set; }
         public List<PatientBoardArea> Areas { get; set; }
         public List<PatientBoardSummary> Summary { get; set; }
+        public List<PatientBoardSummaryFeedingItem>? SummedUp { get; set; }
     }
 
     public class PatientBoardSummary
@@ -398,6 +428,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public decimal QuantityValue { get; set; }
         public string QuantityUnit { get; set; }
         public string Food { get; set; }
+        internal bool SumUp { get; set; }
     }
 
     public class PatientBoardArea

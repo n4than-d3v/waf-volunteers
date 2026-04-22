@@ -12,6 +12,8 @@ public class UpsertBoard : IRequest<IResult>
 
     public string Name { get; set; }
     public bool ForBirds { get; set; }
+    public bool SumUp { get; set; }
+
     public List<UpsertBoardArea> Areas { get; set; }
 
     public class UpsertBoardArea
@@ -50,6 +52,8 @@ public class UpsertBoardHandler : IRequestHandler<UpsertBoard, IResult>
 
         board.Name = request.Name;
         board.ForBirds = request.ForBirds;
+        board.SumUp = request.SumUp;
+
         foreach (var upsertArea in request.Areas)
         {
             var area = areas.FirstOrDefault(x => x.Id == upsertArea.AreaId);

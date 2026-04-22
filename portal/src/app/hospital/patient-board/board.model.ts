@@ -15,6 +15,13 @@ export interface PatientBoardVm {
   };
   areas: PatientBoardAreaVm[];
   summary: PatientBoardSummaryVm[];
+  summedUp:
+    | {
+        quantityValue: number;
+        quantityUnit: string;
+        food: string;
+      }[]
+    | null;
 
   anyOtherBoards: boolean;
   isMorning: boolean;

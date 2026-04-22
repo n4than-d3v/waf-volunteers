@@ -12,6 +12,12 @@
     margin-bottom: -2px;
     max-width: max-content;
 
+    &.pen--total {
+      .location {
+        background-color: var(--theme-color-3);
+      }
+    }
+
     .patients {
       min-height: 4rem;
       max-height: 4rem;

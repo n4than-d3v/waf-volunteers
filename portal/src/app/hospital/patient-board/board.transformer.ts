@@ -299,6 +299,7 @@ export function transform(
         ),
       }),
     ),
+    summedUp: wrapper.data.summedUp,
     anyOtherBoards: anyOtherBoards(wrapper.data.areas),
     isMorning: shift === 'M',
     isAfternoon: shift === 'A',

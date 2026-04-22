@@ -44,6 +44,7 @@ import { HospitalPatientAutocompleteComponent } from '../autocomplete/component'
 export class HospitalPatientDetailsComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
+  @Input({ required: true }) canEditAfterDisposition!: boolean;
 
   task$: Observable<Task>;
 

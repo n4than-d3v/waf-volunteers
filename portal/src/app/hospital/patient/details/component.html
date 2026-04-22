@@ -33,7 +33,8 @@
     </tbody>
   </table>
 </div>
-@if (isVet && patient.status != PatientStatus.Dispositioned) {
+@if (isVet && (patient.status != PatientStatus.Dispositioned ||
+canEditAfterDisposition)) {
 <div class="buttons">
   <button
     (click)="beginUpdate(patient)"

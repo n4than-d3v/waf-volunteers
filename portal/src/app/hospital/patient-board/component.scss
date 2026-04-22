@@ -128,6 +128,48 @@ h1 {
         font-size: 1rem;
       }
     }
+
+    .time-selector {
+      display: flex;
+      gap: 0.125rem;
+      align-items: center;
+      margin-left: 0.125rem;
+      border: solid 2px rgba(140, 140, 140, 0.5);
+      font-size: 0rem;
+
+      span {
+        font-size: 0.9rem;
+      }
+
+      select {
+        padding: 0rem;
+        border: none;
+        background-color: rgba(196, 196, 196, 0.25);
+
+        &:nth-child(1) {
+          border-right: solid 2px rgba(140, 140, 140, 0.5);
+        }
+
+        &:nth-child(3) {
+          border-left: solid 2px rgba(140, 140, 140, 0.5);
+        }
+
+        text-align: center;
+        margin: 0rem;
+        width: 3ch;
+        font-size: 1rem;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border-radius: 0rem;
+        cursor: pointer;
+
+        &:focus {
+          outline: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
   }
 }
 

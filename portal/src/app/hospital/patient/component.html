@@ -4,7 +4,7 @@
 <div class="error">Error occurred</div>
 } @else if (patient.data) { @if (patient.data.status ===
 PatientStatus.PendingInitialExam) {
-<p>
+<p class="top-paragraph">
   This patient has not yet been examined.<br />
   Please perform the intake exam in order to view and modify the full patient
   record.
@@ -27,13 +27,29 @@ PatientStatus.PendingInitialExam) {
   </section>
   }
 </div>
-} @else {
+} @else { @if (patient.data.status == PatientStatus.Dispositioned) {
+<p class="top-paragraph">
+  This patient has been dispositioned. @if (isVet){
+  <br />
+  @if (canEditAfterDisposition) { You are viewing this patient's details in
+  regular mode.<br />
+  If you don't need to update anything,
+  <span class="allow-edits" (click)="canEditAfterDisposition = false"
+    >click here</span
+  >. } @else { You are viewing this patient's details in read only mode.<br />
+  If you need to update anything,
+  <span class="allow-edits" (click)="canEditAfterDisposition = true"
+    >click here</span
+  >. } }
+</p>
+}
 <div class="sections">
   <section>
     <h3>Details</h3>
     <hospital-patient-details
       [patient]="patient.data"
       [isVet]="isVet"
+      [canEditAfterDisposition]="canEditAfterDisposition"
     ></hospital-patient-details>
   </section>
   <section>
@@ -64,6 +80,7 @@ PatientStatus.PendingInitialExam) {
       <hospital-patient-location
         [patient]="patient.data"
         [isVet]="isVet"
+        [canEditAfterDisposition]="canEditAfterDisposition"
       ></hospital-patient-location>
     </section>
     <section>
@@ -89,6 +106,7 @@ PatientStatus.PendingInitialExam) {
   <hospital-patient-notes
     [patient]="patient.data"
     [isVet]="isVet"
+    [canEditAfterDisposition]="canEditAfterDisposition"
   ></hospital-patient-notes>
 </section>
 <section>
@@ -96,6 +114,7 @@ PatientStatus.PendingInitialExam) {
   <hospital-patient-labs
     [patient]="patient.data"
     [isVet]="isVet"
+    [canEditAfterDisposition]="canEditAfterDisposition"
   ></hospital-patient-labs>
 </section>
 <section>

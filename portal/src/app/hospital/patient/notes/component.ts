@@ -41,6 +41,7 @@ import { selectAddNote } from '../../selectors';
 export class HospitalPatientNotesComponent implements OnInit {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
+  @Input({ required: true }) canEditAfterDisposition!: boolean;
 
   task$: Observable<Task>;
 

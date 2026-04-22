@@ -69,6 +69,7 @@ export interface PatientBoardAreaPenVm {
   morning: boolean;
   afternoon: boolean;
   evening: boolean;
+  clean: boolean;
   tasks: number[];
 
   feedings: PatientBoardAreaPenFeedingVm[];
@@ -101,6 +102,7 @@ export interface PatientBoardAreaPenFeedingVm {
 
   shouldShow: boolean;
   hasForceFeeds: boolean;
+  hasNonForceFeeds: boolean;
   isNow: boolean;
   groups: FoodSection[];
 }

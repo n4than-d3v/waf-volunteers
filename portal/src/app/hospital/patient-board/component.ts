@@ -7,13 +7,14 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SpinnerComponent } from '../../shared/spinner/component';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
   combineLatest,
   map,
   Observable,
+  of,
   Subscription,
   timer,
 } from 'rxjs';
@@ -78,7 +79,13 @@ export class SortBoardAreasPipe implements PipeTransform {
     './board-bird.scss',
     './emergency.scss',
   ],
-  imports: [AsyncPipe, SpinnerComponent, SortBoardAreasPipe, FormsModule],
+  imports: [
+    AsyncPipe,
+    DecimalPipe,
+    SpinnerComponent,
+    SortBoardAreasPipe,
+    FormsModule,
+  ],
 })
 export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   boards$: Observable<ReadOnlyWrapper<ListPatientBoard[]>>;
@@ -98,6 +105,11 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   showPensWithoutFeeds$ = new BehaviorSubject(true);
   showPensNeedCleaning$ = new BehaviorSubject(true);
   showTickedOffPens$ = new BehaviorSubject(true);
+  showOnlyDueAt$ = new BehaviorSubject(false);
+  onlyDueAtHour$ = new BehaviorSubject(0);
+  onlyDueAtHours$: Observable<number[]>;
+  onlyDueAtMinute$ = new BehaviorSubject(0);
+  onlyDueAtMinutes$: Observable<number[]> = of([0, 15, 30, 45]);
   shift$ = new BehaviorSubject<Shift>('M');
 
   svgs = svgs;
@@ -126,12 +138,36 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     this.showTickedOffPens$.next(val);
   }
 
+  get showOnlyDueAt(): boolean {
+    return this.showOnlyDueAt$.value;
+  }
+
+  set showOnlyDueAt(val: boolean) {
+    this.showOnlyDueAt$.next(val);
+  }
+
   get shift(): Shift {
     return this.shift$.value;
   }
 
   set shift(val: Shift) {
     this.shift$.next(val);
+  }
+
+  get onlyDueAtHour(): number {
+    return this.onlyDueAtHour$.value;
+  }
+
+  set onlyDueAtHour(val: number) {
+    this.onlyDueAtHour$.next(val);
+  }
+
+  get onlyDueAtMinute(): number {
+    return this.onlyDueAtMinute$.value;
+  }
+
+  set onlyDueAtMinute(val: number) {
+    this.onlyDueAtMinute$.next(val);
   }
 
   subscription: Subscription | null = null;
@@ -145,6 +181,9 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       this.showPensWithoutFeeds$,
       this.showPensNeedCleaning$,
       this.showTickedOffPens$,
+      this.showOnlyDueAt$,
+      this.onlyDueAtHour$,
+      this.onlyDueAtMinute$,
       this.shift$,
     ]).pipe(
       map(
@@ -153,6 +192,9 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
           showPensWithoutFeeds,
           showPensNeedCleaning,
           showTickedOffPens,
+          showOnlyDueAt,
+          onlyDueAtHour,
+          onlyDueAtMinute,
           shift,
         ]) => {
           return transform(
@@ -160,10 +202,21 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
             showPensWithoutFeeds,
             showPensNeedCleaning,
             showTickedOffPens,
+            showOnlyDueAt,
+            onlyDueAtHour,
+            onlyDueAtMinute,
             shift,
           );
         },
       ),
+    );
+    this.onlyDueAtHours$ = this.board$.pipe(
+      map((board) => {
+        if (!board) return [];
+        if (board.isMorning) return [9, 10, 11, 12];
+        else if (board.isAfternoon) return [13, 14, 15, 16, 17];
+        else return [18, 19, 20, 21, 22];
+      }),
     );
   }
 

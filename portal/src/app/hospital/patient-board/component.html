@@ -150,8 +150,8 @@
         />
       </div>
     </div>
-    @if (!board.board.forBirds) {
     <div>
+      @if (!board.board.forBirds) {
       <div class="field">
         <label for="showTickedOffPens"> Completed </label>
         <input
@@ -160,8 +160,29 @@
           [(ngModel)]="showTickedOffPens"
         />
       </div>
+      }
+      <div class="field">
+        <label for="showOnlyDueAt"> Feed at </label>
+        <div class="time-selector">
+          @if (onlyDueAtHours$ | async; as onlyDueAtHours) {
+          <select [(ngModel)]="onlyDueAtHour">
+            @for (hour of onlyDueAtHours; track hour) {
+            <option [value]="hour">{{ hour | number: '2.0' }}</option>
+            }
+          </select>
+          }
+          <span>&colon;</span>
+          @if (onlyDueAtMinutes$ | async; as onlyDueAtMinutes) {
+          <select [(ngModel)]="onlyDueAtMinute">
+            @for (minute of onlyDueAtMinutes; track minute) {
+            <option [value]="minute">{{ minute | number: '2.0' }}</option>
+            }
+          </select>
+          }
+        </div>
+        <input type="checkbox" id="showOnlyDueAt" [(ngModel)]="showOnlyDueAt" />
+      </div>
     </div>
-    }
   </div>
 </div>
 @if (expandFeedingSummary) {
@@ -241,6 +262,23 @@
       }
     </div>
     <div class="tasks">
+      <div
+        class="task"
+        [class.task--current-shift]="!pen.clean"
+        [class.task--relevant]="true"
+      >
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="markComplete(pen, 4)"
+          class="button button--secondary-invert"
+          [disabled]="false"
+        >
+          @if (pen.clean) { ✔️ } @else if (tickingTask === `${pen.reference}_4`)
+          { ... } @else { &nbsp; }
+        </button>
+      </div>
       <div
         class="task"
         [class.task--current-shift]="board.isMorning"
@@ -394,9 +432,10 @@
       <p class="item">{{ forceFeed }}</p>
       }
     </div>
+    @if (!expandedPens[pen.reference]) {
     <div class="feeding-times tasks">
       @for (feeding of pen.feedings; track feeding.time) { @if
-      (feeding.shouldShow && feeding.hasForceFeeds) {
+      (feeding.shouldShow) {
       <div class="task task--current-shift">
         <p class="time" [class.time--now]="feeding.isNow">{{ feeding.time }}</p>
         <button
@@ -408,11 +447,20 @@
             (tickingTask === `${pen.reference}_${feeding.timeId}`) { ... } @else
             { &nbsp; }
           </span>
+          @if (feeding.hasForceFeeds) {
+          <span class="has-ff">FF</span>
+          } @if (feeding.hasNonForceFeeds) {
+          <span class="has-non-ff">Feed</span>
+          }
         </button>
       </div>
-      } }
+      } } @if (pen.isExpandable) {
+      <span class="expand" (click)="expandedPens[pen.reference] = true">
+        [?]
+      </span>
+      }
     </div>
-    } @else if (pen.feedingSummaries.length > 0) {
+    } } @else if (pen.feedingSummaries.length > 0) {
     <div class="feeding-summary">
       @for (feedingSummary of pen.feedingSummaries; track
       feedingSummary.interval) {
@@ -457,44 +505,44 @@
       <span class="expand" (click)="expandedPens[pen.reference] = true">
         [?]
       </span>
-      } } @else {
-      <div class="feeding-expanded">
-        <span class="collapse" (click)="expandedPens[pen.reference] = false"
-          >Hide</span
-        >
-        @for (feeding of pen.feedings; track feeding.time) { @if
-        (feeding.shouldShow) {
-        <div class="feedings">
-          <div class="feeding">
-            <div>
-              <p class="time">{{ feeding.time }}</p>
-              @for (group of feeding.groups; track group.key) { @if
-              (group.title) {
-              <p class="group">{{ group.title }}</p>
-              } @for (detail of group.details; track detail) {
-              <p class="details">
-                @if (detail.quantityTotal) {
-                <span class="quantity"
-                  >{{ detail.quantityTotalFormatted }} {{ detail.quantityUnit
-                  }}</span
-                >
-                }
-                <span class="food"> {{ detail.food }} </span>
-                @if (detail.quantityEach != detail.quantityTotal) {
-                <span class="each">
-                  ({{ detail.quantityEachFormatted }} {{ detail.quantityUnit }}
-                  each)
-                </span>
-                } @if (detail.notes) {
-                <span class="notes"> {{ detail.notes }} </span> }
-              </p>
-              } }
-            </div>
+      } }
+    </div>
+    } @if (expandedPens[pen.reference]) {
+    <div class="feeding-expanded">
+      <span class="collapse" (click)="expandedPens[pen.reference] = false"
+        >Hide</span
+      >
+      @for (feeding of pen.feedings; track feeding.time) { @if
+      (feeding.shouldShow) {
+      <div class="feedings">
+        <div class="feeding">
+          <div>
+            <p class="time">{{ feeding.time }}</p>
+            @for (group of feeding.groups; track group.key) { @if (group.title)
+            {
+            <p class="group">{{ group.title }}</p>
+            } @for (detail of group.details; track detail) {
+            <p class="details">
+              @if (detail.quantityTotal) {
+              <span class="quantity"
+                >{{ detail.quantityTotalFormatted }} {{ detail.quantityUnit
+                }}</span
+              >
+              }
+              <span class="food"> {{ detail.food }} </span>
+              @if (detail.quantityEach != detail.quantityTotal) {
+              <span class="each">
+                ({{ detail.quantityEachFormatted }} {{ detail.quantityUnit }}
+                each)
+              </span>
+              } @if (detail.notes) {
+              <span class="notes"> {{ detail.notes }} </span> }
+            </p>
+            } }
           </div>
         </div>
-        } }
       </div>
-      }
+      } }
     </div>
     } }
   </div>

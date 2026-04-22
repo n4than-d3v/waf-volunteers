@@ -17,3 +17,18 @@ section {
     padding: 0.125rem 0.25rem;
   }
 }
+
+.top-paragraph {
+  margin-bottom: 0.75rem;
+  border-left: solid 5px var(--theme-color-5);
+  background-color: rgba(218, 218, 218, 0.5);
+  max-width: max-content;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  color: var(--theme-color-5);
+
+  .allow-edits {
+    font-weight: bold;
+    cursor: pointer;
+  }
+}

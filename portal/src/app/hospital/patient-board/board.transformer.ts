@@ -25,6 +25,8 @@ import {
   PatientBoardAreaDisplayType,
 } from '../../admin/hospital/state';
 
+const CLEAN_TASK_ID = 4;
+
 function isPenExpandable(pen: PatientBoardAreaPen, shift: Shift): boolean {
   if (!pen.feedings?.length) return false;
   return pen.feedings.some((f) => shouldShowTime(f.time, shift));
@@ -35,6 +37,9 @@ function shouldShowPen(
   showPensNeedCleaning: boolean,
   showPensWithoutFeeds: boolean,
   showTickedOffPens: boolean,
+  showOnlyDueAt: boolean,
+  onlyDueAtHour: number,
+  onlyDueAtMinute: number,
   shift: Shift,
 ): boolean {
   if (pen.needsCleaning) {
@@ -44,13 +49,24 @@ function shouldShowPen(
   let response = true;
 
   if (!showTickedOffPens) {
-    if (shift === 'M') response = !pen.morning;
-    else if (shift === 'A') response = !pen.afternoon;
-    else if (shift === 'E') response = !pen.evening;
+    const clean = pen.tasks.includes(CLEAN_TASK_ID);
+    if (shift === 'M') response = !(clean && pen.morning);
+    else if (shift === 'A') response = !(clean && pen.afternoon);
+    else if (shift === 'E') response = !(clean && pen.evening);
   }
 
   if (!showPensWithoutFeeds) {
     response = response && hasFeeds(pen.feedings || [], shift);
+  }
+
+  if (showOnlyDueAt) {
+    response =
+      response &&
+      pen.feedings.some(
+        (feeding) =>
+          timeToDecimal(feeding.time) ===
+          timeToDecimal(`${onlyDueAtHour}:${onlyDueAtMinute}`),
+      );
   }
 
   return response;
@@ -120,6 +136,10 @@ function hasForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]): boolean {
   return feedings.some((item) => item.forceFeed);
 }
 
+function hasNonForceFeeds(feedings: PatientBoardAreaPenTaskDetails[]): boolean {
+  return feedings.some((item) => !item.forceFeed);
+}
+
 function getForceFeeds(
   feedings: PatientBoardAreaPenFeeding[],
   shift: Shift,
@@ -187,6 +207,9 @@ export function transform(
   showPensWithoutFeeds: boolean,
   showPensNeedCleaning: boolean,
   showTickedOffPens: boolean,
+  showOnlyDueAt: boolean,
+  onlyDueAtHour: number,
+  onlyDueAtMinute: number,
   shift: Shift,
 ): PatientBoardVm | null {
   if (!wrapper.data) return null;
@@ -204,6 +227,9 @@ export function transform(
               showPensNeedCleaning,
               showPensWithoutFeeds,
               showTickedOffPens,
+              showOnlyDueAt,
+              onlyDueAtHour,
+              onlyDueAtMinute,
               shift,
             ),
             nextFeeding: getNextFeeding(pen.feedings || [], shift),
@@ -212,6 +238,7 @@ export function transform(
             isMorningRelevant: isPenExpandable(pen, 'M'),
             isAfternoonRelevant: isPenExpandable(pen, 'A'),
             isEveningRelevant: isPenExpandable(pen, 'E'),
+            clean: pen.tasks.includes(CLEAN_TASK_ID),
             feedings: (pen.feedings || []).map(
               (feeding): PatientBoardAreaPenFeedingVm => {
                 const details = (feeding.details || []).map(
@@ -231,6 +258,7 @@ export function transform(
                   isNow: isNow(feeding.time),
                   shouldShow: shouldShowTime(feeding.time, shift),
                   hasForceFeeds: hasForceFeeds(feeding.details),
+                  hasNonForceFeeds: hasNonForceFeeds(feeding.details),
                   groups: groupFeeding(details),
                 };
               },

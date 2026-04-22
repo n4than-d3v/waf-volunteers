@@ -62,6 +62,7 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
   _id: number | null = null;
 
   isVet = false;
+  canEditAfterDisposition = false;
 
   PatientStatus = PatientStatus;
 

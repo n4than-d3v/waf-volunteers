@@ -34,7 +34,8 @@
           } }
         </td>
         <td>
-          @if (isVet && patient.status != PatientStatus.Dispositioned) {
+          @if (isVet && (patient.status != PatientStatus.Dispositioned ||
+          canEditAfterDisposition)) {
           <button (click)="prepareEdit(note)" class="button button--none">
             ✏️
           </button>
@@ -54,7 +55,7 @@
   }
   <div class="flex">
     @if (!(adding || editing)) { @if (patient.status !=
-    PatientStatus.Dispositioned) {
+    PatientStatus.Dispositioned || canEditAfterDisposition) {
     <button (click)="adding = true" class="button button--secondary-invert">
       📝 Add note
     </button>

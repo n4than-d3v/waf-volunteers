@@ -31,7 +31,8 @@
         } }
       </td>
       <td>
-        @if (isVet && patient.status != PatientStatus.Dispositioned) {
+        @if (isVet && (patient.status != PatientStatus.Dispositioned ||
+        canEditAfterDisposition)) {
         <button
           (click)="prepareEditBloodTest(test)"
           class="button button--none"
@@ -74,7 +75,8 @@
       <td>{{ formatPosNeg(test.direct) }}</td>
       <td>{{ test.comments }}</td>
       <td>
-        @if (isVet && patient.status != PatientStatus.Dispositioned) {
+        @if (isVet && (patient.status != PatientStatus.Dispositioned ||
+        canEditAfterDisposition)) {
         <button
           (click)="prepareEditFaecalTest(test)"
           class="button button--none"
@@ -95,7 +97,8 @@
   <a class="load-more" (click)="maxFaecalIndex += 5"> Load more... </a>
 </p>
 } } @if (!(addingBlood || addingFaecal || updatingBlood || updatingFaecal)) {
-@if (isVet && patient.status != PatientStatus.Dispositioned) {
+@if (isVet && (patient.status != PatientStatus.Dispositioned ||
+canEditAfterDisposition)) {
 <div class="buttons">
   <button (click)="addingBlood = true" class="button button--secondary-invert">
     🩸 Add blood test

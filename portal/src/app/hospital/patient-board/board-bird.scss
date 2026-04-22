@@ -139,10 +139,29 @@
           background-color: white;
           outline: none !important;
           box-shadow: none !important;
+          position: relative;
 
           span {
             display: block;
             margin-top: -0.6rem;
+
+            &.has-ff,
+            &.has-non-ff {
+              color: var(--theme-color-1);
+              position: absolute;
+              width: max-content;
+              font-size: 0.5rem;
+            }
+
+            &.has-ff {
+              bottom: -0.125rem;
+              left: 0.125rem;
+            }
+
+            &.has-non-ff {
+              bottom: -0.125rem;
+              right: 0.125rem;
+            }
           }
         }
       }

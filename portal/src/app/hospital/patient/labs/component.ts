@@ -44,6 +44,7 @@ import { selectAddLabs } from '../../selectors';
 export class HospitalPatientLabsComponent {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
+  @Input({ required: true }) canEditAfterDisposition!: boolean;
 
   task$: Observable<Task>;
 

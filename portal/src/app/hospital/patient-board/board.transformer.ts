@@ -49,7 +49,7 @@ function shouldShowPen(
   let response = true;
 
   if (!showTickedOffPens) {
-    const clean = pen.tasks.includes(CLEAN_TASK_ID);
+    const clean = pen.tasks && pen.tasks.includes(CLEAN_TASK_ID);
     if (shift === 'M') response = !(clean && pen.morning);
     else if (shift === 'A') response = !(clean && pen.afternoon);
     else if (shift === 'E') response = !(clean && pen.evening);
@@ -238,7 +238,7 @@ export function transform(
             isMorningRelevant: isPenExpandable(pen, 'M'),
             isAfternoonRelevant: isPenExpandable(pen, 'A'),
             isEveningRelevant: isPenExpandable(pen, 'E'),
-            clean: pen.tasks.includes(CLEAN_TASK_ID),
+            clean: pen.tasks && pen.tasks.includes(CLEAN_TASK_ID),
             feedings: (pen.feedings || []).map(
               (feeding): PatientBoardAreaPenFeedingVm => {
                 const details = (feeding.details || []).map(

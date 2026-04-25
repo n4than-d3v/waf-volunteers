@@ -89,7 +89,6 @@
     }
 
     .tasks {
-      min-height: var(--min-height);
       display: flex;
       justify-content: flex-end;
       padding: 0rem 1px;
@@ -106,21 +105,17 @@
         }
 
         &:first-child {
-          .time {
-            border-left: solid 1px rgb(136, 136, 136);
-          }
-
-          button {
+          .time,
+          button,
+          .ff-label {
             border-left: solid 1px rgb(136, 136, 136);
           }
         }
 
         &:not(:last-child) {
-          .time {
-            border-right: solid 1px rgb(136, 136, 136);
-          }
-
-          button {
+          .time,
+          button,
+          .ff-label {
             border-right: solid 1px rgb(136, 136, 136);
           }
         }
@@ -144,24 +139,18 @@
           span {
             display: block;
             margin-top: -0.6rem;
+          }
+        }
 
-            &.has-ff,
-            &.has-non-ff {
-              color: var(--theme-color-1);
-              position: absolute;
-              width: max-content;
-              font-size: 0.5rem;
-            }
+        .ff-label {
+          padding: 0rem 0.5rem;
+          font-size: 0.75rem;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
 
-            &.has-ff {
-              bottom: -0.125rem;
-              left: 0.125rem;
-            }
-
-            &.has-non-ff {
-              bottom: -0.125rem;
-              right: 0.125rem;
-            }
+          span {
+            font-weight: bold;
           }
         }
       }
@@ -213,7 +202,7 @@
     }
 
     .feeding-times {
-      align-items: center;
+      align-items: stretch;
       align-self: flex-start;
 
       .time {
@@ -286,8 +275,7 @@
     }
 
     .references {
-      font-size: 1.125rem;
-      font-weight: bold;
+      font-size: 1rem;
       color: var(--theme-color-1);
     }
   }

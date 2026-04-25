@@ -19,14 +19,7 @@
     }
 
     .patients {
-      min-height: 4rem;
-      max-height: 4rem;
-      overflow-y: auto;
-
-      &:hover {
-        overflow-y: visible;
-        max-height: max-content;
-      }
+      flex: 1;
 
       p {
         font-size: 1rem;
@@ -67,8 +60,11 @@
 
     .tags {
       display: flex;
-      flex-direction: column;
       flex-wrap: wrap;
+      max-width: 24rem;
+      column-gap: 0.75rem;
+      padding: 0.25rem;
+      padding-bottom: 0rem;
 
       .custom-diet {
         color: var(--theme-color-1);
@@ -190,6 +186,7 @@
       justify-content: space-between;
       padding: 0rem 0.25rem;
       column-gap: 0.5rem;
+      min-height: 1.75rem;
 
       .time {
         font-size: 1rem;
@@ -263,11 +260,7 @@
     }
 
     .patient-references {
-      display: flex;
-      flex-wrap: wrap;
-      max-width: 9rem;
-      column-gap: 0.5rem;
-      row-gap: 0.125rem;
+      max-width: 24rem;
       padding-top: 0.7rem;
 
       p {

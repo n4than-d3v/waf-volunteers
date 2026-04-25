@@ -246,21 +246,21 @@
       <p>{{ patient }}</p>
       } @if (showPatientReferences) {
       <div class="patient-references">
-        @for (patientReference of pen.patientReferences; track patientReference)
-        {
-        <p>{{ patientReference }}</p>
-        }
-      </div>
-      } @if (pen.tags && pen.tags.length) {
-      <div class="tags">
-        @for (tag of pen.tags; track tag) {
-        <span class="tag">{{ tag }}</span>
-        } @if (pen.hasCustomDiet) {
-        <span class="custom-diet">Special diet</span>
+        @if (pen.patientReferences) {
+        <p>{{pen.patientReferences.join(', ') }}</p>
         }
       </div>
       }
     </div>
+    @if (pen.tags && pen.tags.length) {
+    <div class="tags">
+      @for (tag of pen.tags; track tag) {
+      <span class="tag">{{ tag }}</span>
+      } @if (pen.hasCustomDiet) {
+      <span class="custom-diet">Special diet</span>
+      }
+    </div>
+    }
     <div class="tasks">
       <div
         class="task"
@@ -458,12 +458,14 @@
             (tickingTask === `${pen.reference}_${feeding.timeId}`) { ... } @else
             { &nbsp; }
           </span>
-          @if (feeding.hasForceFeeds) {
-          <span class="has-ff">FF</span>
-          } @if (feeding.hasNonForceFeeds) {
-          <span class="has-non-ff">Feed</span>
-          }
         </button>
+        <p class="ff-label">
+          @if (feeding.hasForceFeeds) {
+          <span>FF</span>
+          } @if (feeding.hasNonForceFeeds) {
+          <span>T-Up</span>
+          }
+        </p>
       </div>
       } } @if (pen.isExpandable) {
       <span class="expand" (click)="expandedPens[pen.reference] = true">
@@ -511,6 +513,9 @@
             { &nbsp; }
           </span>
         </button>
+        <p class="ff-label">
+          <span>T-Up</span>
+        </p>
       </div>
       } } @if (pen.isExpandable) {
       <span class="expand" (click)="expandedPens[pen.reference] = true">

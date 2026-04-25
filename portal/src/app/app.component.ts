@@ -4,6 +4,12 @@ import { TokenProvider } from './shared/token.provider';
 import moment from 'moment';
 import 'moment-easter';
 import { EasterEggsFlakesComponent } from './easter-eggs/flakes/component';
+import { selectCurrentProfile } from './volunteer/profile/selectors';
+import { Profile } from './volunteer/profile/state';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
+import { getCurrentProfile } from './volunteer/profile/actions';
 
 declare module 'moment' {
   export function easter(year: number): moment.Moment;
@@ -11,12 +17,14 @@ declare module 'moment' {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, EasterEggsFlakesComponent],
+  imports: [AsyncPipe, RouterOutlet, RouterLink, EasterEggsFlakesComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   year: number = new Date().getFullYear();
+
+  profile$: Observable<Profile | null>;
 
   easterEggs = {
     christmas: false,
@@ -28,11 +36,16 @@ export class AppComponent implements OnInit {
   };
 
   constructor(
+    private store: Store,
     private tokenProvider: TokenProvider,
     public router: Router,
-  ) {}
+  ) {
+    this.profile$ = this.store.select(selectCurrentProfile);
+  }
 
   ngOnInit() {
+    this.store.dispatch(getCurrentProfile());
+
     const today = moment();
     const year = today.year();
 

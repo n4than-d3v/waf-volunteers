@@ -17,6 +17,36 @@ header {
   }
 }
 
+.signed-in {
+  display: none;
+  flex: 1;
+  margin-right: 2rem;
+
+  p {
+    color: white;
+    margin: 0rem;
+    padding: 0rem;
+  }
+
+  .signed-in__heading {
+    font-size: 0.75rem;
+  }
+
+  .signed-in__name {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: -0.125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .signed-in {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
 footer {
   background-color: var(--theme-primary);
   text-align: center;

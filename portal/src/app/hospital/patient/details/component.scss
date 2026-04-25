@@ -76,3 +76,9 @@ table:not(:has(thead)) tbody {
     }
   }
 }
+
+.error {
+  margin-top: 0.5rem;
+  margin-bottom: 0rem;
+  max-width: max-content;
+}

@@ -68,7 +68,9 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
             }, cancellationToken);
         }
 
-        if (patient.SpeciesVariant != null && patient.SpeciesVariant.Id != request.SpeciesVariantId)
+        if (patient.SpeciesVariant != null
+            && patient.SpeciesVariant.Id != request.SpeciesVariantId
+            && patient.SpeciesVariant.Name != speciesVariant.Name)
         {
             await _mediator.Send(new AddPatientNote
             {

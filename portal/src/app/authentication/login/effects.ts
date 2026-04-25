@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { loginSuccess, loginFailure } from './actions';
 import { Router } from '@angular/router';
 import { TokenProvider } from '../../shared/token.provider';
+import { getCurrentProfile } from '../../volunteer/profile/actions';
 
 @Injectable()
 export class LoginEffects {
@@ -45,37 +46,37 @@ export class LoginEffects {
     ),
   );
 
-  loginSuccess$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(loginSuccess),
-        map((action) => {
-          this.tokenProvider.setToken(action.token);
+  loginSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loginSuccess),
+      switchMap((action) => {
+        this.tokenProvider.setToken(action.token);
 
-          try {
-            const returnUrl =
-              this.router.routerState.snapshot.root.queryParams['returnUrl'];
+        try {
+          const returnUrl =
+            this.router.routerState.snapshot.root.queryParams['returnUrl'];
 
-            if (returnUrl) {
-              this.router.navigateByUrl(returnUrl);
-              return;
-            }
-          } catch {}
-
-          if (this.tokenProvider.isAdmin()) {
-            this.router.navigateByUrl('/admin/dashboard');
-          } else if (this.tokenProvider.isClocking()) {
-            this.router.navigateByUrl('/clocking/dashboard');
-          } else if (this.tokenProvider.isBoards()) {
-            this.router.navigateByUrl('/boards');
-          } else if (this.tokenProvider.isVet()) {
-            this.router.navigateByUrl('/vet/dashboard');
-          } else {
-            this.router.navigateByUrl('/volunteer/dashboard');
+          if (returnUrl) {
+            this.router.navigateByUrl(returnUrl);
+            return of(getCurrentProfile());
           }
-        }),
-      ),
-    { dispatch: false },
+        } catch {}
+
+        if (this.tokenProvider.isAdmin()) {
+          this.router.navigateByUrl('/admin/dashboard');
+        } else if (this.tokenProvider.isClocking()) {
+          this.router.navigateByUrl('/clocking/dashboard');
+        } else if (this.tokenProvider.isBoards()) {
+          this.router.navigateByUrl('/boards');
+        } else if (this.tokenProvider.isVet()) {
+          this.router.navigateByUrl('/vet/dashboard');
+        } else {
+          this.router.navigateByUrl('/volunteer/dashboard');
+        }
+
+        return of(getCurrentProfile());
+      }),
+    ),
   );
 
   checkIfAlreadyLoggedIn$ = createEffect(() =>

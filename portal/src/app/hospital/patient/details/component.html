@@ -126,16 +126,16 @@ canEditAfterDisposition)) {
       <input id="microchip" type="text" formControlName="microchip" />
     </div>
   </div>
-  @if (attemptedSave && !detailsForm.valid) {
-  <div class="error">Please fill in all required fields</div>
-  } @if (!saving) {
+  @if (!saving) {
   <div class="buttons">
     <button (click)="update()" class="button button--primary">Save</button>
     <button (click)="reset()" class="button button--secondary">Back</button>
   </div>
   }
 </form>
-} @if (task$ | async; as task) { @if (task.loading) {
+@if (attemptedSave && !detailsForm.valid) {
+<div class="error">Please fill in all required fields</div>
+} } @if (task$ | async; as task) { @if (task.loading) {
 <spinner></spinner>
 } @else if (task.error) {
 <div class="error">Error occurred</div>

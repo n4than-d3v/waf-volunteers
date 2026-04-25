@@ -71,6 +71,14 @@
         router.url.includes("/boards")
       )
     ) {
+      @if (profile$ | async; as profile) {
+        <div class="signed-in">
+          <p class="signed-in__heading">Welcome back</p>
+          <p class="signed-in__name">
+            {{ profile.firstName }} {{ profile.lastName }}
+          </p>
+        </div>
+      }
       <div class="sign-out">
         <a [routerLink]="'./'" (click)="signOut()">
           <img src="images/sign-out.svg" alt="Sign out" />

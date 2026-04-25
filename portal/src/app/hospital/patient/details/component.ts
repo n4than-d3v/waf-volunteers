@@ -3,6 +3,7 @@ import {
   Input,
   OnInit,
   ChangeDetectionStrategy,
+  OnDestroy,
 } from '@angular/core';
 import {
   Patient,
@@ -13,7 +14,7 @@ import {
 } from '../../state';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectSpecies, selectUpdateBasicDetails } from '../../selectors';
 import { getSpecies, updatePatientBasicDetails } from '../../actions';
@@ -41,7 +42,7 @@ import { HospitalPatientAutocompleteComponent } from '../autocomplete/component'
     HospitalPatientAutocompleteComponent,
   ],
 })
-export class HospitalPatientDetailsComponent implements OnInit {
+export class HospitalPatientDetailsComponent implements OnInit, OnDestroy {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
   @Input({ required: true }) canEditAfterDisposition!: boolean;
@@ -49,6 +50,8 @@ export class HospitalPatientDetailsComponent implements OnInit {
   task$: Observable<Task>;
 
   species$: Observable<ReadOnlyWrapper<Species[]>>;
+
+  subscription: Subscription | null = null;
 
   PatientStatus = PatientStatus;
 
@@ -72,6 +75,25 @@ export class HospitalPatientDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(getSpecies());
+
+    this.subscription =
+      this.detailsForm.controls.speciesId.valueChanges.subscribe(
+        (newSpeciesId) => {
+          if (Number(newSpeciesId) === Number(this.patient.species?.id || 0))
+            return;
+
+          this.detailsForm.patchValue({
+            speciesVariantId: '',
+          });
+
+          this.detailsForm.controls.speciesVariantId.markAsUntouched();
+          this.detailsForm.controls.speciesVariantId.updateValueAndValidity();
+        },
+      );
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 
   convertSpecies(species: Species[]) {

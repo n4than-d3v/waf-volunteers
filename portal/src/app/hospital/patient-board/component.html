@@ -151,7 +151,6 @@
       </div>
     </div>
     <div>
-      @if (!board.board.forBirds) {
       <div class="field">
         <label for="showTickedOffPens"> Completed </label>
         <input
@@ -160,7 +159,6 @@
           [(ngModel)]="showTickedOffPens"
         />
       </div>
-      }
       <div class="field">
         <label for="showOnlyDueAt"> Feed at </label>
         <div class="time-selector">
@@ -222,7 +220,11 @@
   (area.displayType === PatientBoardAreaDisplayType.ShowPatients) { @if
   (area.pens != null && area.pens.length > 0) { @for (pen of area.pens; track
   pen.reference) { @if (pen.shouldShow) {
-  <div class="pen" [class.expanded]="expandedPens[pen.reference]">
+  <div
+    class="pen"
+    [class.expanded]="expandedPens[pen.reference]"
+    [class.completed]="pen.completed"
+  >
     <div class="location">{{ pen.reference }}</div>
     @if (pen.needsCleaning) {
     <div class="patients">
@@ -404,7 +406,11 @@
   (area.displayType === PatientBoardAreaDisplayType.ShowPatients) { @if
   (area.pens != null && area.pens.length > 0) { @for (pen of area.pens; track
   pen.reference) { @if (pen.shouldShow) {
-  <div class="nursery-pen" [class.expanded]="expandedPens[pen.reference]">
+  <div
+    class="nursery-pen"
+    [class.expanded]="expandedPens[pen.reference]"
+    [class.completed]="pen.completed"
+  >
     <div class="location">{{ pen.reference }}</div>
     @if (pen.needsCleaning) {
     <div class="patients">

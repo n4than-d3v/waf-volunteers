@@ -12,9 +12,16 @@
     margin-bottom: -2px;
     max-width: max-content;
 
+    &.completed {
+      .location {
+        background-color: #707070;
+        font-weight: normal;
+      }
+    }
+
     &.pen--total {
       .location {
-        background-color: var(--theme-color-3);
+        background-color: var(--theme-color-1);
       }
     }
 

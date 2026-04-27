@@ -19,6 +19,13 @@
 
     min-width: 50rem;
 
+    &.completed {
+      .location {
+        color: #4e4e4e;
+        font-weight: normal;
+      }
+    }
+
     &:nth-child(1),
     &:nth-child(2) {
       border-top: solid 2px var(--theme-color-5);

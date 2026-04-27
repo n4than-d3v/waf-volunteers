@@ -32,15 +32,40 @@ function isPenExpandable(pen: PatientBoardAreaPen, shift: Shift): boolean {
   return pen.feedings.some((f) => shouldShowTime(f.time, shift));
 }
 
+function isTickedOff(
+  pen: PatientBoardAreaPenVm,
+  shift: Shift,
+  forBirds: boolean,
+) {
+  if (forBirds) {
+    if (pen.feedingSummaries.length) {
+      return pen.nextFeeding === null;
+    } else {
+      return !pen.feedings.some(
+        (feeding) => feeding.shouldShow && !pen.tasks.includes(feeding.timeId),
+      );
+    }
+  } else {
+    if (shift === 'M')
+      return pen.clean && (pen.morning || !pen.isMorningRelevant);
+    else if (shift === 'A')
+      return pen.clean && (pen.afternoon || !pen.isAfternoonRelevant);
+    else if (shift === 'E')
+      return pen.clean && (pen.evening || !pen.isEveningRelevant);
+  }
+  return false;
+}
+
 function shouldShowPen(
-  pen: PatientBoardAreaPen,
+  pen: PatientBoardAreaPenVm,
+  shift: Shift,
+  forBirds: boolean,
   showPensNeedCleaning: boolean,
   showPensWithoutFeeds: boolean,
   showTickedOffPens: boolean,
   showOnlyDueAt: boolean,
   onlyDueAtHour: number,
   onlyDueAtMinute: number,
-  shift: Shift,
 ): boolean {
   if (pen.needsCleaning) {
     return showPensNeedCleaning;
@@ -49,10 +74,7 @@ function shouldShowPen(
   let response = true;
 
   if (!showTickedOffPens) {
-    const clean = pen.tasks && pen.tasks.includes(CLEAN_TASK_ID);
-    if (shift === 'M') response = !(clean && pen.morning);
-    else if (shift === 'A') response = !(clean && pen.afternoon);
-    else if (shift === 'E') response = !(clean && pen.evening);
+    response = !isTickedOff(pen, shift, forBirds);
   }
 
   if (!showPensWithoutFeeds) {
@@ -219,19 +241,11 @@ export function transform(
     areas: (wrapper.data.areas || []).map(
       (area): PatientBoardAreaVm => ({
         ...area,
-        pens: (area.pens || []).map(
-          (pen): PatientBoardAreaPenVm => ({
+        pens: (area.pens || []).map((pen): PatientBoardAreaPenVm => {
+          const mapped = {
             ...pen,
-            shouldShow: shouldShowPen(
-              pen,
-              showPensNeedCleaning,
-              showPensWithoutFeeds,
-              showTickedOffPens,
-              showOnlyDueAt,
-              onlyDueAtHour,
-              onlyDueAtMinute,
-              shift,
-            ),
+            completed: false,
+            shouldShow: false,
             nextFeeding: getNextFeeding(pen.feedings || [], shift),
             forceFeeds: getForceFeeds(pen.feedings || [], shift),
             isExpandable: isPenExpandable(pen, shift),
@@ -271,8 +285,28 @@ export function transform(
                 ),
               }),
             ),
-          }),
-        ),
+          };
+
+          mapped.completed = isTickedOff(
+            mapped,
+            shift,
+            wrapper.data!.board.forBirds,
+          );
+
+          mapped.shouldShow = shouldShowPen(
+            mapped,
+            shift,
+            wrapper.data!.board.forBirds,
+            showPensNeedCleaning,
+            showPensWithoutFeeds,
+            showTickedOffPens,
+            showOnlyDueAt,
+            onlyDueAtHour,
+            onlyDueAtMinute,
+          );
+
+          return mapped;
+        }),
       }),
     ),
     summary: (wrapper.data.summary || []).map(

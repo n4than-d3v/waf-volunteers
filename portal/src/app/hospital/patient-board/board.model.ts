@@ -77,6 +77,7 @@ export interface PatientBoardAreaPenVm {
   afternoon: boolean;
   evening: boolean;
   clean: boolean;
+  completed: boolean;
   tasks: number[];
 
   feedings: PatientBoardAreaPenFeedingVm[];

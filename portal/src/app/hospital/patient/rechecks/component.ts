@@ -36,6 +36,7 @@ import { selectAddRecheck, selectRemoveRecheck } from '../../selectors';
 export class HospitalPatientRechecksComponent {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
+  @Input({ required: true }) exporting!: boolean;
 
   addTask$: Observable<Task>;
   removeTask$: Observable<Task>;

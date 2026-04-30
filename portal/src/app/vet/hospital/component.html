@@ -1,5 +1,5 @@
 <div data-prevent-main-padding="true" class="page">
-  <div class="sidebar" [class.expanded]="expanded">
+  <div class="sidebar no-print" [class.expanded]="expanded">
     <button
       class="button button--none toggle-expand"
       (click)="expanded = !expanded"
@@ -34,7 +34,7 @@
   </div>
   <div class="container">
     @if (tab$ | async; as tab) {
-    <div class="header">
+    <div class="header no-print">
       @if (tabHistory$ | async; as tabHistory) { @if (tabHistory.length > 1) {
       <button (click)="back()" class="button button--none">⬅️</button> } }
       <h2>{{ tab.title }}&nbsp;</h2>

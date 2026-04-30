@@ -32,3 +32,28 @@ section {
     cursor: pointer;
   }
 }
+
+.export {
+  button {
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media print {
+  .sections {
+    gap: 0.125rem;
+    display: block;
+  }
+
+  .print-flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  section {
+    margin-bottom: 0rem;
+    border: none;
+  }
+}

@@ -13,7 +13,7 @@
     </thead>
     <tbody>
       @for (recheck of patient.rechecks; let index = $index; track recheck.id) {
-      @if (index < maxIndex) {
+      @if (index < maxIndex || exporting) {
       <tr>
         <td>{{ recheck.due | date: 'd MMM yyyy' }}</td>
         <td>{{ getRecheckRoles(recheck.roles) }}</td>

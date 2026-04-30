@@ -5,9 +5,10 @@
   <p>Feeding boards will show the following instructions:</p>
   <table>
     <tbody>
-      @for (feeding of getLimitedInstructions(); let lastTime = $last; track
-      feeding.time) { @for (item of feeding.items; let first = $first; let
-      lastFood = $last; track item) {
+      @for (feeding of (exporting ? getInstructions() :
+      getLimitedInstructions()); let lastTime = $last; track feeding.time) {
+      @for (item of feeding.items; let first = $first; let lastFood = $last;
+      track item) {
       <tr [class.last]="lastFood && !lastTime">
         <td>@if (first) { {{ feeding.time }} }</td>
         <td>{{ item }}</td>

@@ -13,7 +13,7 @@
     </thead>
     <tbody>
       @for (note of patient.notes; let index = $index; track note.id) { @if
-      (index < maxIndex) {
+      (index < maxIndex || exporting) {
       <tr>
         <td>{{ note.noted | date: 'd MMM yyyy HH:mm' }}</td>
         <td>{{ note.noter.firstName }} {{ note.noter.lastName }}</td>

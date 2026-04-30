@@ -17,12 +17,28 @@
     align-items: center;
     border-bottom: solid 2px var(--theme-color-5);
 
+    background-color: rgb(227, 231, 244);
+
     min-width: 50rem;
 
     &.completed {
+      background-color: rgb(230, 244, 230);
+
       .location {
-        color: #4e4e4e;
-        font-weight: normal;
+        color: var(--theme-color-4);
+      }
+
+      .task--current-shift {
+        filter: opacity(0.5) !important;
+
+        .time,
+        .ff-label span {
+          font-weight: normal !important;
+        }
+
+        button {
+          background-color: rgb(233, 233, 233) !important;
+        }
       }
     }
 

@@ -1,5 +1,5 @@
 <div class="wrapper">
-  <header>
+  <header class="no-print">
     <a class="logo" [routerLink]="'./'">
       <img src="images/header.svg" alt="Wildlife Aid Foundation" />
       @if (easterEggs.christmas) {
@@ -105,7 +105,7 @@
     }
     <router-outlet />
   </main>
-  <footer>
+  <footer class="no-print">
     <p>
       Wildlife Aid Foundation &copy; {{ year }}, Registered Charity No. 1138944,
       Randalls Farm House, Randalls Rd, Leatherhead KT22 0AL

@@ -341,3 +341,29 @@ input[type="range"]:focus {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
 }
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact; /* Chrome, Edge, Safari */
+    print-color-adjust: exact; /* Modern standard */
+    background-color: white !important;
+    font-size: 10pt !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  button,
+  a,
+  .field,
+  input,
+  canvas {
+    display: none !important;
+  }
+
+  thead * {
+    color: black;
+    border-top: none;
+  }
+}

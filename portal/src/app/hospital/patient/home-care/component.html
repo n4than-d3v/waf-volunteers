@@ -251,7 +251,7 @@
       </thead>
       <tbody>
         @for (message of patient.homeCareMessages; let index = $index; track
-        message.id) { @if (index < maxIndex) {
+        message.id) { @if (index < maxIndex || exporting) {
         <tr>
           <td>{{ message.date | date: 'd MMM yyyy HH:mm' }}</td>
           <td>{{ message.author.firstName }} {{ message.author.lastName }}</td>

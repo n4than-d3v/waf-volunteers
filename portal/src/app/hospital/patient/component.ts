@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  NgZone,
   OnDestroy,
   OnInit,
 } from '@angular/core';
@@ -63,6 +64,7 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
 
   isVet = false;
   canEditAfterDisposition = false;
+  exporting = false;
 
   PatientStatus = PatientStatus;
 
@@ -73,6 +75,7 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store,
     private tokenProvider: TokenProvider,
+    private zone: NgZone,
   ) {
     this.patient$ = this.store.select(selectPatient);
   }
@@ -93,5 +96,15 @@ export class HospitalPatientComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.subscription) this.subscription.unsubscribe();
+  }
+
+  export() {
+    this.exporting = true;
+    setTimeout(() => {
+      window.print();
+      this.zone.run(() => {
+        this.exporting = false;
+      });
+    }, 250);
   }
 }

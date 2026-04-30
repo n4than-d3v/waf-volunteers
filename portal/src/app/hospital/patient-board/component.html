@@ -508,7 +508,7 @@
       @if (!expandedPens[pen.reference]) { @for (feeding of pen.feedings; track
       feeding.time) { @if (feeding.shouldShow) {
       <div class="task task--current-shift">
-        <p class="time">{{ feeding.time }}</p>
+        <p class="time" [class.time--now]="feeding.isNow">{{ feeding.time }}</p>
         <button
           (click)="markComplete(pen, feeding.timeId)"
           class="button button--secondary-invert"

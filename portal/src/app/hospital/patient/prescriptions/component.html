@@ -26,7 +26,7 @@ patient.prescriptionMedications.length === 0) {
   </thead>
   <tbody>
     @for (prescription of getPrescriptions(); track prescription.id; let index =
-    $index) { @if (index < maxIndex) {
+    $index) { @if (index < maxIndex || exporting) {
     <tr>
       <td>{{ prescription.start | date: 'd MMM yyyy' }}</td>
       <td>{{ prescription.end | date: 'd MMM yyyy' }}</td>

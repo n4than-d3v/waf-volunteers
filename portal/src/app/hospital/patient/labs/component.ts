@@ -45,6 +45,7 @@ export class HospitalPatientLabsComponent {
   @Input({ required: true }) patient!: Patient;
   @Input({ required: true }) isVet!: boolean;
   @Input({ required: true }) canEditAfterDisposition!: boolean;
+  @Input({ required: true }) exporting!: boolean;
 
   task$: Observable<Task>;
 

@@ -67,6 +67,9 @@
     @if (
       !(
         router.url.includes("/login") ||
+        router.url.includes("/install") ||
+        router.url.includes("/forgot-password") ||
+        router.url.includes("/reset-password") ||
         router.url.includes("/clocking/dashboard") ||
         router.url.includes("/boards")
       )

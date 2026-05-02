@@ -205,7 +205,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             {
                 Food = g.Key.Food,
                 QuantityUnit = g.Key.QuantityUnit,
-                QuantityValue = g.Sum(f => f.QuantityValue)
+                QuantityValue = Math.Ceiling(g.Sum(f => f.QuantityValue))
             })
             .ToList();
     }

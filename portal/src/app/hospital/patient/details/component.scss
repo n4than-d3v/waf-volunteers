@@ -46,6 +46,7 @@ table:not(:has(thead)) tbody {
 .fields {
   .field {
     margin-bottom: 0.5rem;
+    max-width: 20rem;
   }
 }
 
@@ -81,4 +82,10 @@ table:not(:has(thead)) tbody {
   margin-top: 0.5rem;
   margin-bottom: 0rem;
   max-width: max-content;
+}
+
+.half {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }

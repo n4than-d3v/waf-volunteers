@@ -55,9 +55,26 @@ export class HospitalPatientDetailsComponent implements OnInit, OnDestroy {
 
   PatientStatus = PatientStatus;
 
+  uniqueIdentifiers = [
+    '❌ (None)',
+    '❤️ (Red)',
+    '🧡 (Orange)',
+    '💛 (Yellow)',
+    '💚 (Green)',
+    '💙 (Blue)',
+    '💜 (Purple)',
+    '🩷 (Pink)',
+    '🤎 (Brown)',
+    '🖤 (Black)',
+    '🤍 (White)',
+    '🩶 (Grey)',
+  ];
+  otherUniqueIdentifier = '❓ (Other)';
+
   detailsForm = new FormGroup({
     name: new FormControl(''),
     uniqueIdentifier: new FormControl(''),
+    otherUniqueIdentifier: new FormControl(''),
     microchip: new FormControl(''),
     speciesId: new FormControl('', [Validators.required]),
     speciesVariantId: new FormControl('', [Validators.required]),
@@ -122,7 +139,16 @@ export class HospitalPatientDetailsComponent implements OnInit, OnDestroy {
     this.updating = true;
     this.detailsForm.patchValue({
       name: patient.name,
-      uniqueIdentifier: patient.uniqueIdentifier,
+      uniqueIdentifier: patient.uniqueIdentifier
+        ? this.uniqueIdentifiers.includes(patient.uniqueIdentifier)
+          ? patient.uniqueIdentifier
+          : this.otherUniqueIdentifier
+        : '',
+      otherUniqueIdentifier: patient.uniqueIdentifier
+        ? this.uniqueIdentifiers.includes(patient.uniqueIdentifier)
+          ? ''
+          : patient.uniqueIdentifier
+        : '',
       microchip: patient.microchip,
       speciesId: patient.species?.id.toString(),
       speciesVariantId: patient.speciesVariant?.id.toString(),
@@ -139,7 +165,12 @@ export class HospitalPatientDetailsComponent implements OnInit, OnDestroy {
         update: 'details',
         patientId: this.patient.id,
         name: this.detailsForm.value.name || '',
-        uniqueIdentifier: this.detailsForm.value.uniqueIdentifier || '',
+        uniqueIdentifier: this.detailsForm.value.uniqueIdentifier
+          ? this.detailsForm.value.uniqueIdentifier ===
+            this.otherUniqueIdentifier
+            ? this.detailsForm.value.otherUniqueIdentifier || ''
+            : this.detailsForm.value.uniqueIdentifier || ''
+          : '',
         microchip: this.detailsForm.value.microchip || '',
         speciesId: Number(this.detailsForm.value.speciesId),
         speciesVariantId: Number(this.detailsForm.value.speciesVariantId),

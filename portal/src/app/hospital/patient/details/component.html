@@ -106,20 +106,23 @@ canEditAfterDisposition)) {
     </div>
     <div class="field">
       <label for="uniqueIdentifier"> Ring </label>
-      <select id="uniqueIdentifier" formControlName="uniqueIdentifier">
-        <option>❌ (None)</option>
-        <option>❤️ (Red)</option>
-        <option>🧡 (Orange)</option>
-        <option>💛 (Yellow)</option>
-        <option>💚 (Green)</option>
-        <option>💙 (Blue)</option>
-        <option>💜 (Purple)</option>
-        <option>🩷 (Pink)</option>
-        <option>🤎 (Brown)</option>
-        <option>🖤 (Black)</option>
-        <option>🤍 (White)</option>
-        <option>🩶 (Grey)</option>
-      </select>
+      <div class="half">
+        <select id="uniqueIdentifier" formControlName="uniqueIdentifier">
+          <option [value]="otherUniqueIdentifier">
+            {{ otherUniqueIdentifier }}
+          </option>
+          @for (uniqueIdentifier of uniqueIdentifiers; track uniqueIdentifier){
+          <option [value]="uniqueIdentifier">{{ uniqueIdentifier }}</option>
+          }
+        </select>
+        @if (detailsForm.value.uniqueIdentifier == otherUniqueIdentifier) {
+        <input
+          id="otherUniqueIdentifier"
+          type="text"
+          formControlName="otherUniqueIdentifier"
+        />
+        }
+      </div>
     </div>
     <div class="field">
       <label for="microchip"> Microchip </label>

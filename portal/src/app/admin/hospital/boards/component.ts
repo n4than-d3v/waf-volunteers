@@ -23,7 +23,6 @@ export class AdminHospitalBoardsComponent implements OnInit {
 
   adding = false;
   editing: number | null = null;
-  addingMessage: number | null = null;
 
   name = '';
   forBirds = false;
@@ -32,34 +31,13 @@ export class AdminHospitalBoardsComponent implements OnInit {
 
   filter = '';
 
-  message = '';
-  startDate = '';
-  startTime = '';
-  endDate = '';
-  endTime = '';
-
   shouldShowBoard(board: PatientBoard): boolean {
     return board.name.toLowerCase().includes(this.filter.toLowerCase());
-  }
-
-  private resetDateRange() {
-    const start = moment();
-    const startSplit = start.toISOString().split('T');
-    const startSplitTime = startSplit[1].split(':');
-    this.startDate = startSplit[0];
-    this.startTime = startSplitTime[0] + ':' + startSplitTime[1];
-
-    const end = start.add(30, 'minutes');
-    const endSplit = end.toISOString().split('T');
-    const endSplitTime = endSplit[1].split(':');
-    this.endDate = endSplit[0];
-    this.endTime = endSplitTime[0] + ':' + endSplitTime[1];
   }
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
     this.boards$ = this.store.select(selectBoards);
-    this.resetDateRange();
   }
 
   prepareEdit(board: PatientBoard) {
@@ -72,29 +50,6 @@ export class AdminHospitalBoardsComponent implements OnInit {
     }
     this.editing = board.id;
     window.scroll(0, 0);
-  }
-
-  prepareAddMessageForAllBoards() {
-    this.addingMessage = -1;
-    window.scroll(0, 0);
-  }
-
-  prepareAddMessage(board: PatientBoard) {
-    this.addingMessage = board.id;
-    window.scroll(0, 0);
-  }
-
-  addMessage() {
-    this.store.dispatch(
-      addBoardMessage({
-        id: this.addingMessage!,
-        message: this.message,
-        start: this.startDate + 'T' + this.startTime + 'Z',
-        end: this.endDate + 'T' + this.endTime + 'Z',
-        emergency: false,
-      }),
-    );
-    this.cancel();
   }
 
   saveBoard() {
@@ -116,13 +71,10 @@ export class AdminHospitalBoardsComponent implements OnInit {
   cancel() {
     this.adding = false;
     this.editing = null;
-    this.addingMessage = null;
     this.name = '';
     this.forBirds = false;
     this.sumUp = false;
     this.areaDisplayTypes = {};
-    this.message = '';
-    this.resetDateRange();
   }
 
   ngOnInit() {

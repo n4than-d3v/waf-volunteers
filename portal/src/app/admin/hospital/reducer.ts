@@ -94,6 +94,12 @@ import {
   updateFood,
   updateFoodSuccess,
   updateFoodError,
+  getBoardMessages,
+  getBoardMessagesSuccess,
+  getBoardMessagesError,
+  getBoardCustomPens,
+  getBoardCustomPensSuccess,
+  getBoardCustomPensError,
 } from './actions';
 
 export const adminHospitalManagementReducer =
@@ -728,6 +734,54 @@ export const adminHospitalManagementReducer =
       ...state,
       boards: {
         ...state.boards,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(getBoardMessages, (state) => ({
+      ...state,
+      boardMessages: {
+        ...state.boardMessages,
+        loading: true,
+        error: false,
+      },
+    })),
+    on(getBoardMessagesSuccess, (state, { messages }) => ({
+      ...state,
+      boardMessages: {
+        ...state.boardMessages,
+        data: messages,
+        loading: false,
+      },
+    })),
+    on(getBoardMessagesError, (state) => ({
+      ...state,
+      boardMessages: {
+        ...state.boardMessages,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(getBoardCustomPens, (state) => ({
+      ...state,
+      boardCustomPens: {
+        ...state.boardCustomPens,
+        loading: true,
+        error: false,
+      },
+    })),
+    on(getBoardCustomPensSuccess, (state, { pens }) => ({
+      ...state,
+      boardCustomPens: {
+        ...state.boardCustomPens,
+        data: pens,
+        loading: false,
+      },
+    })),
+    on(getBoardCustomPensError, (state) => ({
+      ...state,
+      boardCustomPens: {
+        ...state.boardCustomPens,
         loading: false,
         error: true,
       },

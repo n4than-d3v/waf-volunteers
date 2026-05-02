@@ -8,6 +8,8 @@ import {
   Food,
   Medication,
   PatientBoard,
+  PatientBoardCustomPen,
+  PatientBoardMessage,
   ReleaseType,
   Species,
   Tag,
@@ -113,6 +115,15 @@ import {
   updateFood,
   updateFoodSuccess,
   updateFoodError,
+  getBoardMessages,
+  getBoardMessagesSuccess,
+  getBoardMessagesError,
+  getBoardCustomPens,
+  getBoardCustomPensSuccess,
+  getBoardCustomPensError,
+  upsertBoardCustomPen,
+  upsertBoardCustomPenSuccess,
+  upsertBoardCustomPenError,
 } from './actions';
 
 @Injectable()
@@ -714,6 +725,32 @@ export class AdminHospitalManagementEffects {
     ),
   );
 
+  getBoardMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getBoardMessages),
+      switchMap((action) =>
+        this.http.get<PatientBoardMessage[]>(`hospital/boards/messages`).pipe(
+          map((messages) => getBoardMessagesSuccess({ messages })),
+          catchError(() => of(getBoardMessagesError())),
+        ),
+      ),
+    ),
+  );
+
+  getBoardCustomPens$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getBoardCustomPens),
+      switchMap(() =>
+        this.http
+          .get<PatientBoardCustomPen[]>('hospital/boards/custom-pens')
+          .pipe(
+            map((pens) => getBoardCustomPensSuccess({ pens })),
+            catchError(() => of(getBoardCustomPensError())),
+          ),
+      ),
+    ),
+  );
+
   upsertBoard$ = createEffect(() =>
     this.actions$.pipe(
       ofType(upsertBoard),
@@ -738,8 +775,24 @@ export class AdminHospitalManagementEffects {
             { ...action, id: null },
           )
           .pipe(
-            switchMap((_) => of(addBoardMessageSuccess(), getBoards())),
+            switchMap((_) => of(addBoardMessageSuccess(), getBoardMessages())),
             catchError(() => of(addBoardMessageError())),
+          ),
+      ),
+    ),
+  );
+
+  upsertBoardCustomPen$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(upsertBoardCustomPen),
+      switchMap((action) =>
+        this.http
+          .put(`hospital/boards/${action.boardId}/custom-pen`, action)
+          .pipe(
+            switchMap((_) =>
+              of(upsertBoardCustomPenSuccess(), getBoardCustomPens()),
+            ),
+            catchError(() => of(upsertBoardCustomPenError())),
           ),
       ),
     ),

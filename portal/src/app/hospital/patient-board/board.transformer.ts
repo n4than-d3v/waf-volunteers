@@ -47,11 +47,17 @@ function isTickedOff(
     }
   } else {
     if (shift === 'M')
-      return pen.clean && (pen.morning || !pen.isMorningRelevant);
+      return (
+        (pen.clean || pen.custom) && (pen.morning || !pen.isMorningRelevant)
+      );
     else if (shift === 'A')
-      return pen.clean && (pen.afternoon || !pen.isAfternoonRelevant);
+      return (
+        (pen.clean || pen.custom) && (pen.afternoon || !pen.isAfternoonRelevant)
+      );
     else if (shift === 'E')
-      return pen.clean && (pen.evening || !pen.isEveningRelevant);
+      return (
+        (pen.clean || pen.custom) && (pen.evening || !pen.isEveningRelevant)
+      );
   }
   return false;
 }
@@ -238,10 +244,12 @@ export function transform(
 
   return {
     board: { ...wrapper.data.board },
-    areas: (wrapper.data.areas || []).map(
-      (area): PatientBoardAreaVm => ({
-        ...area,
-        pens: (area.pens || []).map((pen): PatientBoardAreaPenVm => {
+    pens: (wrapper.data.areas || [])
+      .filter(
+        (area) => area.displayType === PatientBoardAreaDisplayType.ShowPatients,
+      )
+      .flatMap((area) =>
+        (area.pens || []).map((pen) => {
           const mapped = {
             ...pen,
             completed: false,
@@ -307,8 +315,17 @@ export function transform(
 
           return mapped;
         }),
-      }),
-    ),
+      ),
+    areaSummaries: (wrapper.data.areas || [])
+      .filter(
+        (area) =>
+          area.displayType === PatientBoardAreaDisplayType.SummarisePatients,
+      )
+      .map(
+        (area): PatientBoardAreaVm => ({
+          ...area,
+        }),
+      ),
     summary: (wrapper.data.summary || []).map(
       (summary): PatientBoardSummaryVm => ({
         ...summary,

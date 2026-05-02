@@ -953,6 +953,14 @@ public partial class Program
             .RequireAuthorization(vetPolicy);
 
         apiHospitalBoards
+            .MapGet(
+                "/messages",
+                (IMediator mediator) => mediator.Send(new GetBoardMessages())
+            )
+            .AddNote("View all board messages")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalBoards
             .MapPost(
                 "/message",
                 (IMediator mediator, AddBoardMessage request) => mediator.Send(request)
@@ -967,6 +975,22 @@ public partial class Program
                     mediator.Send(request.WithId(id))
             )
             .AddNote("Vet adds a message to appear on a board")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalBoards
+            .MapGet(
+                "/custom-pens",
+                (IMediator mediator) => mediator.Send(new GetBoardCustomPens())
+            )
+            .AddNote("View all board custom pens")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalBoards
+            .MapPut(
+                "/{id:int}/custom-pen",
+                (IMediator mediator, int id, UpsertBoardCustomPen request) => mediator.Send(request.WithId(id))
+            )
+            .AddNote("Vet adds a custom pen to appear on a board")
             .RequireAuthorization(vetPolicy);
 
         apiHospitalBoards

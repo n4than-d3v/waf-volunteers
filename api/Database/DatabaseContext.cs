@@ -96,6 +96,8 @@ public class DatabaseContext : DbContext
     public DbSet<Board> Boards { get; set; }
     public DbSet<BoardArea> BoardAreas { get; set; }
     public DbSet<BoardMessage> BoardMessages { get; set; }
+    public DbSet<BoardCustomPen> BoardCustomPens { get; set; }
+    public DbSet<BoardCustomPenTask> BoardCustomPenTasks { get; set; }
 
     // Stock
     public DbSet<StockItem> StockItems { get; set; }

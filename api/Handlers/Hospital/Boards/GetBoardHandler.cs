@@ -99,21 +99,88 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         var now = DateTime.UtcNow;
 
-        board.Messages = board.Messages
-            .Where(x => x.Start <= now && now <= x.End)
-            .ToList();
+        board.Messages = [.. board.Messages.Where(x => x.Start <= now && now <= x.End)];
+
+        var areas = board.Areas
+                .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
+                .Select(area => CreateBoardArea(patients, area))
+                .Where(area => (area.Summary?.Any() ?? false) || (area.Pens?.Any() ?? false))
+                .ToList();
+
+        var customPensArea = await GetCustomPens(board.Id);
+        if (customPensArea != null)
+        {
+            areas.Add(customPensArea);
+        }
 
         return Results.Ok(new PatientBoard
         {
             Board = board,
             Summary = GetPatientBoardSummary(patients),
             SummedUp = board.SumUp ? await GetSummedUpFoods() : null,
-            Areas = board.Areas
-                .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
-                .Select(area => CreateBoardArea(patients, area))
-                .Where(area => (area.Summary?.Any() ?? false) || (area.Pens?.Any() ?? false))
-                .ToList()
+            Areas = areas
         });
+    }
+
+    private async Task<PatientBoardArea?> GetCustomPens(int boardId)
+    {
+        var now = DateOnly.FromDateTime(DateTime.UtcNow);
+        var pens = await _repository.GetAll<BoardCustomPen>(
+            x => x.Board.Id == boardId && (x.ExpiresOn == null || now <= x.ExpiresOn), tracking: false,
+            x => x.Include(p => p.Board).Include(p => p.Tasks));
+
+        if (!pens.Any()) return null;
+
+        return new PatientBoardArea
+        {
+            Area = new BoardArea
+            {
+                Area = new Area
+                {
+                    Name = "Custom pens",
+                    Code = ""
+                }
+            },
+            DisplayType = BoardAreaDisplayType.ShowPatients,
+            Pens = [.. pens.Select(pen =>
+            {
+                var patient = new Patient
+                {
+                    Feeding = [..pen.Tasks.Select(f => new PatientFeeding
+                        {
+                            Time = f.Time,
+                            QuantityValue = f.QuantityValue,
+                            QuantityUnit = f.QuantityUnit,
+                            Food = new Food
+                            {
+                                Name = f.FoodOrTask,
+                                ForceFeed = false
+                            },
+                            Notes = f.Notes,
+                            Dish = f.Dish,
+                            TopUp = f.TopUp
+                        })]
+                };
+
+                var mapped = new PatientBoardAreaPen
+                {
+                    Id = 0 - pen.Id,
+                    Reference = pen.Title,
+                    Patients = [.. pen.Body],
+                    Tags = [.. pen.Tags],
+                    PatientReferences = [],
+                    Custom = true,
+                    HasCustomDiet = false,
+                    Morning = InMemoryBoardTasks.IsComplete(0 - pen.Id, 1),
+                    Afternoon = InMemoryBoardTasks.IsComplete(0 - pen.Id, 2),
+                    Evening = InMemoryBoardTasks.IsComplete(0 - pen.Id, 3),
+                    Tasks = InMemoryBoardTasks.GetCompletedTasks(0 - pen.Id),
+                    Feedings = GetPatientBoardAreaPenFeedings(0 - pen.Id, new[] { patient }),
+                    FeedingSummaries = GetPatientBoardAreaPenFeedingSummaries(0 - pen.Id, new[] { patient }),
+                };
+                return mapped;
+            })]
+        };
     }
 
     private async Task<List<PatientBoardSummaryFeedingItem>> GetSummedUpFoods()
@@ -446,6 +513,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public List<string> Patients { get; set; }
         public List<string> PatientReferences { get; set; }
         public List<string> Tags { get; set; }
+        public bool Custom { get; set; }
 
         public bool HasCustomDiet { get; set; }
 

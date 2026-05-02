@@ -37,9 +37,30 @@ import {
   viewPatientBoards,
 } from '../actions';
 import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
-import { PatientBoardAreaVm, PatientBoardVm, Shift } from './board.model';
+import {
+  PatientBoardAreaPenVm,
+  PatientBoardAreaVm,
+  PatientBoardVm,
+  Shift,
+} from './board.model';
 import { transform } from './board.transformer';
 import { svgs } from './svgs';
+
+@Pipe({
+  name: 'sortBoardPens',
+  standalone: true,
+})
+export class SortBoardPensPipe implements PipeTransform {
+  transform(pens: PatientBoardAreaPenVm[]): PatientBoardAreaPenVm[] {
+    if (!pens) return [];
+
+    return pens.slice().sort((a, b) => {
+      const aReference = a.reference.toLowerCase();
+      const bReference = b.reference.toLowerCase();
+      return aReference.localeCompare(bReference);
+    });
+  }
+}
 
 @Pipe({
   name: 'sortBoardAreas',
@@ -50,18 +71,6 @@ export class SortBoardAreasPipe implements PipeTransform {
     if (!areas) return [];
 
     return areas.slice().sort((a, b) => {
-      const aEmpty =
-        !a.displayType ||
-        a.displayType !== PatientBoardAreaDisplayType.ShowPatients;
-      const bEmpty =
-        !b.displayType ||
-        b.displayType !== PatientBoardAreaDisplayType.ShowPatients;
-
-      // 1. De-prioritize empty pens
-      if (aEmpty && !bEmpty) return 1;
-      if (!aEmpty && bEmpty) return -1;
-
-      // 2. Sort alphabetically by area name
       const nameA = a.area.area.name.toLowerCase();
       const nameB = b.area.area.name.toLowerCase();
       return nameA.localeCompare(nameB);
@@ -84,6 +93,7 @@ export class SortBoardAreasPipe implements PipeTransform {
     DecimalPipe,
     SpinnerComponent,
     SortBoardAreasPipe,
+    SortBoardPensPipe,
     FormsModule,
   ],
 })

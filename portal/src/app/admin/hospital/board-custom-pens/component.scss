@@ -1,0 +1,121 @@
+h1 {
+  margin-bottom: 1rem;
+}
+
+h2 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+table strong {
+  display: block;
+}
+
+.filter {
+  margin-bottom: 0.75rem;
+}
+
+button {
+  margin: 0.5rem 0rem;
+}
+
+.hint {
+  color: #555555;
+  font-size: 1rem;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: max-content;
+  gap: 1.5rem;
+
+  .item {
+    h2 {
+      margin-bottom: 1rem;
+
+      button {
+        margin-left: 0.25rem;
+      }
+    }
+
+    button {
+      margin-left: 1px;
+      margin-bottom: 1px;
+    }
+  }
+}
+
+.list button {
+  margin: 0rem;
+  padding: 0.25rem 0.5rem;
+}
+
+ul {
+  list-style: none;
+}
+
+table a {
+  color: var(--theme-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+section {
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border-left: solid 5px var(--theme-primary);
+  padding: 1rem;
+
+  h2 {
+    margin-top: 0rem;
+  }
+
+  .field {
+    margin-top: 0.75rem;
+  }
+
+  .buttons {
+    margin-top: 0rem;
+    display: flex;
+    gap: 0.25rem;
+  }
+}
+
+.feeding-guidance-section {
+  margin-top: 1.5rem;
+}
+
+.feeding-guidance {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+
+    input[type="text"] {
+      max-width: 15rem;
+    }
+
+    .field--small input[type="number"],
+    .field--small input[type="text"] {
+      max-width: 6rem;
+    }
+  }
+
+  button {
+    margin-bottom: 0.125rem;
+  }
+}
+
+input[type="checkbox"] {
+  margin-bottom: 0.5rem;
+}
+
+.interval-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

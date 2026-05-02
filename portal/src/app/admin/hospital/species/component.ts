@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import {
+  convertTime,
   Food,
   formatFeeding,
   Species,
   SpeciesType,
   SpeciesVariant,
+  unconvertTime,
   Wrapper,
 } from '../state';
 import { Store } from '@ngrx/store';
@@ -173,9 +175,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
         formGroup.controls.quantityValue.setValue(fg.quantityValue.toString());
         if (fg.time.includes('Every')) {
           formGroup.controls.timeKind.setValue('Every');
-          formGroup.controls.time.setValue(
-            this.unconvertTime(fg.time).toString(),
-          );
+          formGroup.controls.time.setValue(unconvertTime(fg.time).toString());
         } else {
           formGroup.controls.time.setValue(fg.time);
         }
@@ -201,29 +201,6 @@ export class AdminHospitalSpeciesComponent implements OnInit {
       this.speciesVariantForm.reset();
       this.speciesVariantForm.controls.feedingGuidance.clear();
       window.scroll(0, this.previousScroll);
-    }
-  }
-
-  private unconvertTime(time: string) {
-    if (time === 'Every hour') return 1;
-    const number = Number(time.split(' ')[1]);
-    if (time.includes('minutes')) {
-      return number / 60;
-    } else {
-      return number;
-    }
-  }
-
-  private convertTime(time: string) {
-    time = String(time);
-    if (time.includes(':')) {
-      const timeSplit = time.split(':');
-      return `${timeSplit[0]}:${timeSplit[1]}`;
-    } else {
-      const number = Number(time);
-      if (number === 1) return 'Every hour';
-      else if (number < 1) return `Every ${60 * number} minutes`;
-      else return `Every ${number} hours`;
     }
   }
 
@@ -258,7 +235,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           feedingGuidance:
             this.speciesVariantForm.value.feedingGuidance?.map((fg: any) => ({
               foodId: Number(fg.foodId),
-              time: this.convertTime(fg.time),
+              time: convertTime(fg.time),
               quantityValue: Number(fg.quantityValue),
               quantityUnit: fg.quantityUnit,
               notes: fg.notes,
@@ -314,7 +291,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
           feedingGuidance:
             this.speciesVariantForm.value.feedingGuidance?.map((fg: any) => ({
               foodId: Number(fg.foodId),
-              time: this.convertTime(fg.time),
+              time: convertTime(fg.time),
               quantityValue: Number(fg.quantityValue),
               quantityUnit: fg.quantityUnit,
               notes: fg.notes,

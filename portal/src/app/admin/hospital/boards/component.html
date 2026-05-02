@@ -4,16 +4,10 @@
 
 <p>This controls what husbandry volunteers see around the hospital.</p>
 
-@if (!(adding || editing || addingMessage)) {
+@if (!(adding || editing)) {
 <div class="buttons">
   <button (click)="adding = true" class="button button--primary">
     Create patient board
-  </button>
-  <button
-    (click)="prepareAddMessageForAllBoards()"
-    class="button button--secondary"
-  >
-    Add message to all patient boards
   </button>
 </div>
 <div class="filter">
@@ -56,32 +50,6 @@
     <button (click)="cancel()" class="button button--secondary">Cancel</button>
   </div>
 </section>
-} @else if (addingMessage) {
-<section>
-  <h2>Add patient board message</h2>
-  <div class="field">
-    <label for="message">Message</label>
-    <textarea rows="3" id="message" [(ngModel)]="message"></textarea>
-  </div>
-  <div class="field">
-    <label for="startDate">Start</label>
-    <div class="datetime">
-      <input type="date" id="startDate" [(ngModel)]="startDate" />
-      <input type="time" id="startTime" [(ngModel)]="startTime" />
-    </div>
-  </div>
-  <div class="field">
-    <label for="endDate">End</label>
-    <div class="datetime">
-      <input type="date" id="endDate" [(ngModel)]="endDate" />
-      <input type="time" id="endTime" [(ngModel)]="endTime" />
-    </div>
-  </div>
-  <div class="buttons">
-    <button (click)="addMessage()" class="button button--primary">Save</button>
-    <button (click)="cancel()" class="button button--secondary">Cancel</button>
-  </div>
-</section>
 } @if (boards$ | async; as boards) { @if (boards.loading) {
 <spinner></spinner>
 } @else if (boards.error) {
@@ -119,12 +87,6 @@
         <div class="buttons">
           <button (click)="prepareEdit(board)" class="button button--secondary">
             Edit
-          </button>
-          <button
-            (click)="prepareAddMessage(board)"
-            class="button button--secondary"
-          >
-            Add message
           </button>
         </div>
       </td>

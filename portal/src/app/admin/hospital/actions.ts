@@ -22,6 +22,8 @@ import {
   PatientBoardAreaDisplayType,
   Food,
   CreateFoodCommand,
+  PatientBoardCustomPen,
+  PatientBoardMessage,
 } from './state';
 
 // Foods
@@ -351,6 +353,24 @@ export const getBoardsSuccess = createAction(
 );
 export const getBoardsError = createAction('[HMS-A] Get boards: error');
 
+export const getBoardCustomPens = createAction('[HMS-A] Get board custom pens');
+export const getBoardCustomPensSuccess = createAction(
+  '[HMS-A] Get board custom pens: success',
+  props<{ pens: PatientBoardCustomPen[] }>(),
+);
+export const getBoardCustomPensError = createAction(
+  '[HMS-A] Get board custom pens: error',
+);
+
+export const getBoardMessages = createAction('[HMS-A] Get board messages');
+export const getBoardMessagesSuccess = createAction(
+  '[HMS-A] Get board messages: success',
+  props<{ messages: PatientBoardMessage[] }>(),
+);
+export const getBoardMessagesError = createAction(
+  '[HMS-A] Get board messages: error',
+);
+
 export const upsertBoard = createAction(
   '[HMS-A] Upsert board',
   props<{
@@ -379,4 +399,31 @@ export const addBoardMessageSuccess = createAction(
 );
 export const addBoardMessageError = createAction(
   '[HMS-A] Add board message: error',
+);
+
+export const upsertBoardCustomPen = createAction(
+  '[HMS-A] Upsert board custom pen',
+  props<{
+    id: number | null;
+    boardId: number;
+    title: string;
+    body: string[];
+    tags: string[];
+    expiresOn: string | null;
+    tasks: {
+      foodOrTask: string;
+      time: string;
+      quantityValue: number;
+      quantityUnit: string;
+      notes: string;
+      dish: string;
+      topUp: boolean;
+    }[];
+  }>(),
+);
+export const upsertBoardCustomPenSuccess = createAction(
+  '[HMS-A] Upsert board custom pen: success',
+);
+export const upsertBoardCustomPenError = createAction(
+  '[HMS-A] Upsert board custom pen: error',
 );

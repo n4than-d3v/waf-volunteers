@@ -5,18 +5,14 @@
 <p>
   This is the admin version of the hospital management system (HMS-A).
   <br />
-  From here, you can manage the hospital settings and view reports.
+  From here, you can manage the hospital settings.
   <br />
   If you're looking for the vet / aux version (HMS-V), go back to the dashboard.
 </p>
 
-<h2>Management</h2>
+<h2>Rehabilitation</h2>
 
 <div class="modules">
-  <a [routerLink]="'areas'" class="module">
-    <img src="images/hospital/areas.svg" alt="Pens icon" />
-    <p>Pens</p>
-  </a>
   <a [routerLink]="'species'" class="module">
     <img src="images/hospital/species.svg" alt="Species icon" />
     <p>Species</p>
@@ -25,10 +21,15 @@
     <img src="images/hospital/foods.svg" alt="Food items icon" />
     <p>Food items</p>
   </a>
-  <a [routerLink]="'tags'" class="module">
-    <img src="images/hospital/tags.svg" alt="Tags icon" />
-    <p>Tags</p>
+  <a [routerLink]="'areas'" class="module">
+    <img src="images/hospital/areas.svg" alt="Pens icon" />
+    <p>Pens</p>
   </a>
+</div>
+
+<h2>Veterinary</h2>
+
+<div class="modules">
   <a [routerLink]="'medications'" class="module">
     <img src="images/hospital/medications.svg" alt="Medications icon" />
     <p>Medications</p>
@@ -51,8 +52,25 @@
     />
     <p>Transfer locations</p>
   </a>
+</div>
+
+<h2>Patient boards</h2>
+
+<div class="modules">
   <a [routerLink]="'boards'" class="module">
     <img src="images/hospital/boards.svg" alt="Boards icon" />
-    <p>Patient boards</p>
+    <p>Boards</p>
+  </a>
+  <a [routerLink]="'board-messages'" class="module">
+    <img src="images/hospital/board-messages.svg" alt="Boards icon" />
+    <p>Messages</p>
+  </a>
+  <a [routerLink]="'board-custom-pens'" class="module">
+    <img src="images/hospital/board-pens.svg" alt="Boards icon" />
+    <p>Custom pens</p>
+  </a>
+  <a [routerLink]="'tags'" class="module">
+    <img src="images/hospital/tags.svg" alt="Tags icon" />
+    <p>Tags</p>
   </a>
 </div>

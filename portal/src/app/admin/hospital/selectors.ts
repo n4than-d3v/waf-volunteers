@@ -50,3 +50,13 @@ export const selectBoards = createSelector(
   selectAdminHospitalManagementState,
   (state) => state.boards,
 );
+
+export const selectBoardMessages = createSelector(
+  selectAdminHospitalManagementState,
+  (state) => state.boardMessages,
+);
+
+export const selectBoardCustomPens = createSelector(
+  selectAdminHospitalManagementState,
+  (state) => state.boardCustomPens,
+);

@@ -1,0 +1,218 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Board custom pens</h1>
+
+<p>
+  These are custom pens that are displayed on patient boards.
+  <br />
+  These are not pens that can be used to house patients, just pens that are used
+  to display custom information on the patient board.
+  <br />
+  Example usage of this feature includes: feeding resident runner ducks,
+  reminders to change Milton&trade;, check water, etc.
+</p>
+
+@if (!(adding || editing)) {
+<div class="buttons">
+  <button (click)="adding = true" class="button button--primary">
+    Create pen
+  </button>
+</div>
+} @else if (adding || editing) {
+<section>
+  <h2>{{ adding ? 'Add' : 'Edit' }} custom pen</h2>
+  <form [formGroup]="form">
+    @if (adding) {
+    <div class="field">
+      <label for="boardId">Board</label>
+      @if (boards$ | async; as boards) { @if (boards.loading) {
+      <spinner></spinner>
+      } @else if (boards.error) {
+      <div class="error">Error occurred</div>
+      } @else if (boards.data) {
+      <select name="boardId" id="boardId" formControlName="boardId">
+        <option value="">Select a board</option>
+        @for (board of boards.data; track board.id) {
+        <option [value]="board.id">{{ board.name }}</option>
+        }
+      </select>
+      } }
+    </div>
+    }
+    <div class="field">
+      <label for="title">Location</label>
+      <div class="hint">
+        Where the task must be done, e.g. <strong>POND-WAF</strong>
+      </div>
+      <input id="title" type="text" formControlName="title" />
+    </div>
+    <div class="field">
+      <label for="body">Target</label>
+      <div class="hint">
+        The target of the task, e.g. <strong>5x Duck, 1x Swan</strong>
+      </div>
+      <input id="body" type="text" formControlName="body" />
+    </div>
+    <div class="field">
+      <label for="tags">Tags</label>
+      <div class="hint">
+        Important tags to show in red, e.g.
+        <strong>Do not feed, Do not clean</strong>
+      </div>
+      <input id="tags" type="text" formControlName="tags" />
+    </div>
+    <div class="field">
+      <label for="expiresOn">Expires on</label>
+      <div class="hint">Leave blank for long-term tasks</div>
+      <input id="expiresOn" type="date" formControlName="expiresOn" />
+    </div>
+    <div class="feeding-guidance-section">
+      <h3>Food or tasks</h3>
+      <div formArrayName="tasks">
+        <div
+          *ngFor="let fg of form.controls.tasks.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="feeding-guidance">
+            <div class="controls">
+              <div class="field">
+                <label for="timeKind-{{ i }}">Time</label>
+                <select id="timeKind-{{ i }}" formControlName="timeKind">
+                  <option>Specific</option>
+                  <option>Every</option>
+                </select>
+              </div>
+              @if (form.controls.tasks.controls[i].controls.timeKind.value ===
+              'Specific') {
+              <div class="field">
+                <label for="timeId-{{ i }}">&nbsp;</label>
+                <input id="timeId-{{ i }}" type="time" formControlName="time" />
+              </div>
+              } @else {
+              <div class="field">
+                <label for="timeId-{{ i }}">Every</label>
+                <div class="interval-wrapper">
+                  <input
+                    id="timeId-{{ i }}"
+                    type="number"
+                    formControlName="time"
+                  />
+                  <span>hours</span>
+                </div>
+              </div>
+              }
+              <div class="field field--small">
+                <label for="quantityValue-{{ i }}">Quantity</label>
+                <input
+                  id="quantityValue-{{ i }}"
+                  type="number"
+                  formControlName="quantityValue"
+                />
+              </div>
+              <div class="field field--small">
+                <label for="quantityUnit-{{ i }}">Unit</label>
+                <input
+                  id="quantityUnit-{{ i }}"
+                  type="text"
+                  formControlName="quantityUnit"
+                />
+              </div>
+              <div class="field">
+                <label for="foodOrTask-{{ i }}">Food or task</label>
+                <input
+                  id="foodOrTask-{{ i }}"
+                  type="text"
+                  formControlName="foodOrTask"
+                />
+              </div>
+            </div>
+            <button
+              class="button button--warning"
+              (click)="removeFeedingGuidance(i)"
+            >
+              Remove task
+            </button>
+          </div>
+
+          <div class="field">
+            <label for="notes-{{ i }}">Notes</label>
+            <input id="notes-{{ i }}" type="text" formControlName="notes" />
+          </div>
+          <div class="field">
+            <label for="dish-{{ i }}">Dish</label>
+            <input id="dish-{{ i }}" type="text" formControlName="dish" />
+          </div>
+          <div class="field">
+            <label for="topUp-{{ i }}">Top up</label>
+            <input id="topUp-{{ i }}" type="checkbox" formControlName="topUp" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="button button--secondary" (click)="addFeedingGuidance()">
+      Add task
+    </button>
+    <div class="buttons">
+      <button (click)="save()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @if (boardCustomPens$ | async; as boardCustomPens) { @if
+(boardCustomPens.loading) {
+<spinner></spinner>
+} @else if (boardCustomPens.error) {
+<div class="error">Error occurred</div>
+} @else if (boardCustomPens.data) {
+<table>
+  <thead>
+    <tr>
+      <th>Board</th>
+      <th>Location</th>
+      <th>Target</th>
+      <th>Tags</th>
+      <th>Expires on</th>
+      <th>Tasks</th>
+      <th>Active</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (pen of boardCustomPens.data || []; track pen.id) {
+    <tr>
+      <td>{{ pen.exposeBoardName }}</td>
+      <td>{{ pen.title }}</td>
+      <td>
+        @for (item of pen.body; let last = $last; track item) { {{ item }}{{
+        !last ? ', ' : '' }} }
+      </td>
+      <td>
+        @for (item of pen.tags; let last = $last; track item) { {{ item }}{{
+        !last ? ', ' : '' }} }
+      </td>
+      <td>{{ pen.expiresOn | date: 'd MMM yyyy' }}</td>
+      <td>
+        @for (feeding of formatFeeding(pen.tasks); track feeding.time) {
+        <strong>{{ feeding.time }}</strong>
+        @for (item of feeding.items; track item) { {{ item }}<br />
+        } }
+      </td>
+      @if (pen.isActive) {
+      <td><strong>Yes</strong></td>
+      } @else {
+      <td>No</td>
+      }
+      <td>
+        <div class="buttons">
+          <button (click)="beginUpdate(pen)" class="button button--secondary">
+            Edit
+          </button>
+        </div>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

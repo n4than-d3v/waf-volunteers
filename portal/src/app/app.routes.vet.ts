@@ -15,6 +15,8 @@ import { AuxDevPlanLearnersComponent } from './vet/aux-dev-plans/learners/compon
 import { AdminHospitalBoardsComponent } from './admin/hospital/boards/component';
 import { AdminHospitalBoardsEmergencyComponent } from './admin/hospital/boards/emergency/component';
 import { AdminHospitalFoodsComponent } from './admin/hospital/foods/component';
+import { AdminHospitalBoardCustomPensComponent } from './admin/hospital/board-custom-pens/component';
+import { AdminHospitalBoardMessagesComponent } from './admin/hospital/board-messages/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -64,6 +66,14 @@ export const routes: Routes = [
       {
         path: 'boards',
         component: AdminHospitalBoardsComponent,
+      },
+      {
+        path: 'board-custom-pens',
+        component: AdminHospitalBoardCustomPensComponent,
+      },
+      {
+        path: 'board-messages',
+        component: AdminHospitalBoardMessagesComponent,
       },
       {
         path: 'emergency',

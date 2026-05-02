@@ -13,7 +13,10 @@ export interface PatientBoardVm {
       emergency: boolean;
     }[];
   };
-  areas: PatientBoardAreaVm[];
+
+  pens: PatientBoardAreaPenVm[];
+  areaSummaries: PatientBoardAreaVm[];
+
   summary: PatientBoardSummaryVm[];
   summedUp:
     | {
@@ -58,10 +61,8 @@ export interface PatientBoardSummaryFeedingItemVm {
 }
 
 export interface PatientBoardAreaVm {
-  displayType: PatientBoardAreaDisplayType;
   area: { id: number; area: { name: string } };
   summary: string[];
-  pens: PatientBoardAreaPenVm[] | null;
 }
 
 export interface PatientBoardAreaPenVm {
@@ -72,6 +73,7 @@ export interface PatientBoardAreaPenVm {
   tags: string[] | null;
 
   hasCustomDiet: boolean;
+  custom: boolean;
 
   morning: boolean;
   afternoon: boolean;

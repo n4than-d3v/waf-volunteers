@@ -1,0 +1,94 @@
+@if (emergency) {
+<admin-hospital-boards-emergency></admin-hospital-boards-emergency>
+} @else {
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Board messages</h1>
+
+<p>This allows you to display custom messages at the top of a patient board.</p>
+
+@if (!adding) {
+<div class="buttons">
+  <button (click)="adding = true" class="button button--primary">
+    Create message
+  </button>
+  <button (click)="emergency = true" class="button button--warning">
+    Create emergency message
+  </button>
+</div>
+} @else {
+<section>
+  <h2>Add patient board message</h2>
+  @if (emergency) { } @else {
+  <div class="field">
+    <label for="boardId">Board</label>
+    @if (boards$ | async; as boards) { @if (boards.loading) {
+    <spinner></spinner>
+    } @else if (boards.error) {
+    <div class="error">Error occurred</div>
+    } @else if (boards.data) {
+    <select name="boardId" id="boardId" [(ngModel)]="boardId">
+      <option value="">Select a board</option>
+      <option value="-1">All boards</option>
+      @for (board of boards.data; track board.id) {
+      <option [value]="board.id">{{ board.name }}</option>
+      }
+    </select>
+    } }
+  </div>
+  <div class="field">
+    <label for="message">Message</label>
+    <textarea rows="3" id="message" [(ngModel)]="message"></textarea>
+  </div>
+  }
+  <div class="field">
+    <label for="startDate">Start</label>
+    <div class="datetime">
+      <input type="date" id="startDate" [(ngModel)]="startDate" />
+      <input type="time" id="startTime" [(ngModel)]="startTime" />
+    </div>
+  </div>
+  <div class="field">
+    <label for="endDate">End</label>
+    <div class="datetime">
+      <input type="date" id="endDate" [(ngModel)]="endDate" />
+      <input type="time" id="endTime" [(ngModel)]="endTime" />
+    </div>
+  </div>
+  <div class="buttons">
+    <button (click)="addMessage()" class="button button--primary">Save</button>
+    <button (click)="cancel()" class="button button--secondary">Cancel</button>
+  </div>
+</section>
+} @if (boardMessages$ | async; as boardMessages) { @if (boardMessages.loading) {
+<spinner></spinner>
+} @else if (boardMessages.error) {
+<div class="error">Error occurred</div>
+} @else if (boardMessages.data) {
+<table>
+  <thead>
+    <tr>
+      <th>Board</th>
+      <th>Message</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Active</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (message of boardMessages.data||[]; track message.id){
+    <tr>
+      <td>{{ message.exposeBoardName }}</td>
+      <td>{{ message.message }}</td>
+      <td>{{ message.start | date:'d MMM yyyy HH:mm' }}</td>
+      <td>{{ message.end | date:'d MMM yyyy HH:mm' }}</td>
+      @if (message.isActive) {
+      <td><strong>Yes</strong></td>
+      } @else {
+      <td>No</td>
+      }
+    </tr>
+    }
+  </tbody>
+</table>
+} } }

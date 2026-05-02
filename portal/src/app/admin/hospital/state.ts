@@ -11,6 +11,8 @@ export interface AdminHospitalManagementState {
   areas: Wrapper<Area>;
   species: Wrapper<Species>;
   boards: Wrapper<PatientBoard>;
+  boardMessages: Wrapper<PatientBoardMessage>;
+  boardCustomPens: Wrapper<PatientBoardCustomPen>;
 }
 
 export interface Wrapper<T> {
@@ -220,6 +222,40 @@ export interface PatientBoard {
   areas: PatientBoardArea[];
 }
 
+export interface PatientBoardMessage {
+  id: number;
+  exposeBoardId: number;
+  exposeBoardName: string;
+  isActive: boolean;
+  message: string;
+  start: string;
+  end: string;
+  emergency: boolean;
+}
+
+export interface PatientBoardCustomPen {
+  id: number;
+  exposeBoardId: number;
+  exposeBoardName: string;
+  isActive: boolean;
+  title: string;
+  body: string[];
+  tags: string[];
+  expiresOn: string | null;
+  tasks: PatientBoardCustomPenTask[];
+}
+
+export interface PatientBoardCustomPenTask {
+  food: { id: number; name: string }; // Used as part of conversion
+  foodOrTask: string;
+  time: string;
+  quantityValue: number;
+  quantityUnit: string;
+  notes: string;
+  dish: string;
+  topUp: boolean;
+}
+
 export interface PatientBoardArea {
   id: number;
   area: Area;
@@ -232,7 +268,20 @@ export enum PatientBoardAreaDisplayType {
   SummarisePatients = 2,
 }
 
-function unconvertTime(time: string) {
+export function convertTime(time: string) {
+  time = String(time);
+  if (time.includes(':')) {
+    const timeSplit = time.split(':');
+    return `${timeSplit[0]}:${timeSplit[1]}`;
+  } else {
+    const number = Number(time);
+    if (number === 1) return 'Every hour';
+    else if (number < 1) return `Every ${60 * number} minutes`;
+    else return `Every ${number} hours`;
+  }
+}
+
+export function unconvertTime(time: string) {
   if (time === 'Every hour') return 1;
   const number = Number(time.split(' ')[1]);
   if (time.includes('minutes')) {
@@ -242,7 +291,7 @@ function unconvertTime(time: string) {
   }
 }
 
-function numberToTime(num: number) {
+export function numberToTime(num: number) {
   const hours = Math.floor(num);
   const minutes = Math.round((num - hours) * 60);
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
@@ -337,4 +386,6 @@ export const initialAdminHospitalManagementState: AdminHospitalManagementState =
     areas: createWrapper<Area>(),
     species: createWrapper<Species>(),
     boards: createWrapper<PatientBoard>(),
+    boardMessages: createWrapper<PatientBoardMessage>(),
+    boardCustomPens: createWrapper<PatientBoardCustomPen>(),
   };

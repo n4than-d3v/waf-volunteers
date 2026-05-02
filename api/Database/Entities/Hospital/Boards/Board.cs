@@ -9,4 +9,5 @@ public class Board : Entity
 
     public List<BoardArea> Areas { get; set; }
     public List<BoardMessage> Messages { get; set; }
+    public List<BoardCustomPen> CustomPens { get; set; }
 }

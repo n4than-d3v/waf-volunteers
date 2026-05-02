@@ -21,7 +21,11 @@ import { Store } from '@ngrx/store';
 import { selectFoods, selectUpdateDiets } from '../../selectors';
 import { getFoods, updatePatientBasicDetails } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
-import { formatFeeding } from '../../../admin/hospital/state';
+import {
+  convertTime,
+  formatFeeding,
+  unconvertTime,
+} from '../../../admin/hospital/state';
 
 @Component({
   selector: 'hospital-patient-diets',
@@ -78,29 +82,6 @@ export class HospitalPatientDietsComponent implements OnInit {
     this.store.dispatch(getFoods());
   }
 
-  private unconvertTime(time: string) {
-    if (time === 'Every hour') return 1;
-    const number = Number(time.split(' ')[1]);
-    if (time.includes('minutes')) {
-      return number / 60;
-    } else {
-      return number;
-    }
-  }
-
-  private convertTime(time: string) {
-    time = String(time);
-    if (time.includes(':')) {
-      const timeSplit = time.split(':');
-      return `${timeSplit[0]}:${timeSplit[1]}`;
-    } else {
-      const number = Number(time);
-      if (number === 1) return 'Every hour';
-      else if (number < 1) return `Every ${60 * number} minutes`;
-      else return `Every ${number} hours`;
-    }
-  }
-
   getLimitedInstructions() {
     const result: {
       time: string;
@@ -147,7 +128,7 @@ export class HospitalPatientDietsComponent implements OnInit {
       let time = '';
       if (feeding.time.includes('Every')) {
         timeKind = 'Every';
-        time = this.unconvertTime(feeding.time).toString();
+        time = unconvertTime(feeding.time).toString();
       } else {
         time = feeding.time;
       }
@@ -262,7 +243,7 @@ export class HospitalPatientDietsComponent implements OnInit {
         ...update,
         update: 'feeding',
         feeding: this.dietForm.controls.feeding.controls.map((group) => ({
-          time: this.convertTime(group.value.time!),
+          time: convertTime(group.value.time!),
           quantityUnit: group.value.noQuantity
             ? ''
             : group.value.quantityUnit! || ' ',

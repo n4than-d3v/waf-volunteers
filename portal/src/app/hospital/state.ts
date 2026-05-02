@@ -761,6 +761,7 @@ export interface PatientBoardAreaPen {
   tags: string[] | null;
 
   hasCustomDiet: boolean;
+  custom: boolean;
 
   morning: boolean;
   afternoon: boolean;

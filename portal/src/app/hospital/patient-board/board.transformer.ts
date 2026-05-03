@@ -133,6 +133,21 @@ function shouldShowTime(time: string, shift: Shift): boolean {
   return true;
 }
 
+function getPrevFeeding(
+  feedings: PatientBoardAreaPenFeeding[],
+  shift: Shift,
+): { isNow: boolean; time: string } | null {
+  const nowDecimal = nowToDecimal();
+  const prev = feedings
+    .filter((f) => /^\d{2}:\d{2}$/.test(f.time))
+    .filter((f) => shouldShowTime(f.time, shift))
+    .map((f) => ({ ...f, decimalTime: timeToDecimal(f.time) }))
+    .filter((f) => f.decimalTime <= nowDecimal - 0.25)
+    .sort((a, b) => b.decimalTime - a.decimalTime);
+  if (prev.length === 0) return null;
+  return { isNow: false, time: prev[0].time };
+}
+
 function getNextFeeding(
   feedings: PatientBoardAreaPenFeeding[],
   shift: Shift,
@@ -258,6 +273,7 @@ export function transform(
             ...pen,
             completed: false,
             shouldShow: false,
+            prevFeeding: getPrevFeeding(pen.feedings || [], shift),
             nextFeeding: getNextFeeding(pen.feedings || [], shift),
             forceFeeds: getForceFeeds(pen.feedings || [], shift),
             isExpandable: isPenExpandable(pen, shift),

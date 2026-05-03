@@ -211,24 +211,29 @@
 
     .next-feed {
       display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      padding-right: 0.5rem;
-      gap: 0.25rem;
+      flex-direction: column;
 
-      p {
-        font-size: 0.8rem;
+      .part {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 0.5rem;
+        gap: 0.25rem;
 
-        &.time {
-          font-weight: bold;
-          font-size: 1rem;
-        }
+        p {
+          font-size: 0.8rem;
 
-        &.time--now {
-          font-weight: bold;
-          background-color: var(--theme-primary);
-          padding: 0rem 0.25rem;
-          color: white;
+          &.time {
+            font-weight: bold;
+            font-size: 1rem;
+          }
+
+          &.time--now {
+            font-weight: bold;
+            background-color: var(--theme-primary);
+            padding: 0rem 0.25rem;
+            color: white;
+          }
         }
       }
     }

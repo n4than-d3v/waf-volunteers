@@ -89,6 +89,7 @@ export interface PatientBoardAreaPenVm {
 
   shouldShow: boolean;
   isExpandable: boolean;
+  prevFeeding: { isNow: boolean; time: string } | null;
   nextFeeding: { isNow: boolean; time: string } | null;
   forceFeeds: string[];
   isMorningRelevant: boolean;

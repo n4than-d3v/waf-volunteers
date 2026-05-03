@@ -493,18 +493,28 @@
       </p>
       }
     </div>
-    @if (pen.nextFeeding) {
+
     <div class="next-feed">
-      <p>Next feed at</p>
-      <p class="time" [class.time--now]="pen.nextFeeding.isNow">
-        {{ pen.nextFeeding.time }}
-      </p>
+      @if (pen.prevFeeding) {
+      <div class="part">
+        <p>Previous feed at</p>
+        <p class="time">{{ pen.prevFeeding.time }}</p>
+      </div>
+      } @if (pen.nextFeeding) {
+      <div class="part">
+        <p>Next feed at</p>
+        <p class="time" [class.time--now]="pen.nextFeeding.isNow">
+          {{ pen.nextFeeding.time }}
+        </p>
+      </div>
+      } @else {
+      <div class="part">
+        <p>No more feeds for your shift</p>
+      </div>
+      }
     </div>
+
     } @else {
-    <div class="next-feed">
-      <p>No more feeds for your shift</p>
-    </div>
-    } } @else {
     <div class="no-ff-no-summary">&nbsp;</div>
     <div class="feeding-times tasks">
       @if (!expandedPens[pen.reference]) { @for (feeding of pen.feedings; track

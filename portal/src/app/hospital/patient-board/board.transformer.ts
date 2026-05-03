@@ -37,6 +37,10 @@ function isTickedOff(
   shift: Shift,
   forBirds: boolean,
 ) {
+  if (pen.needsCleaning) {
+    return false;
+  }
+
   if (forBirds) {
     if (pen.feedingSummaries.length) {
       return pen.nextFeeding === null;

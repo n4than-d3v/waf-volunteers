@@ -149,6 +149,15 @@
           text-align: center;
           padding: 0rem 0.25rem;
           min-width: max-content;
+
+          &.time--clean {
+            min-width: 2rem;
+          }
+
+          img {
+            max-height: 1rem;
+            margin-bottom: -0.125rem;
+          }
         }
 
         .button {

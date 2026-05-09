@@ -4,6 +4,8 @@ import {
   addRecheck,
   administerPrescriptionInstruction,
   administerPrescriptionMedication,
+  dismissConcern,
+  markCustomTaskDone,
   performRecheck,
   setTab,
   undoAdministerPrescriptionInstruction,
@@ -15,12 +17,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {
   Administration,
+  DailyTaskReportCustomTask,
   DailyTasksReport,
   DailyTasksReportArea,
   DailyTasksReportAreaPen,
   DailyTasksReportAreaPenPatient,
   getRecheckRoles,
   getWeightUnit,
+  HusbandryConcern,
   ListRecheck,
   Medication,
   Prescription,
@@ -31,6 +35,8 @@ import {
 import {
   selectAdministerPrescription,
   selectDailyTasksReport,
+  selectDismissConcern,
+  selectMarkCustomTaskDone,
   selectPerformRecheck,
 } from '../selectors';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -67,12 +73,16 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
     duePrescriptions: true,
     donePrescriptions: false,
     notDuePrescriptions: false,
+    nonPatientTasks: true,
+    husbandryConcerns: true,
   };
 
   isVet = false;
 
   performRecheckTask$: Observable<Task>;
   administerPrescriptionTask$: Observable<Task>;
+  dismissConcernTask$: Observable<Task>;
+  markCustomTaskDoneTask$: Observable<Task>;
 
   performingRecheck: ListRecheck | null = null;
   administeringPrescription: Prescription | null = null;
@@ -94,6 +104,8 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
   ) {
     this.dailyTasksReport$ = this.store.select(selectDailyTasksReport);
     this.performRecheckTask$ = this.store.select(selectPerformRecheck);
+    this.dismissConcernTask$ = this.store.select(selectDismissConcern);
+    this.markCustomTaskDoneTask$ = this.store.select(selectMarkCustomTaskDone);
     this.administerPrescriptionTask$ = this.store.select(
       selectAdministerPrescription,
     );
@@ -133,7 +145,10 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
   }
 
   shouldShowAreas(report: DailyTasksReport) {
-    return report.areas.some((area) => this.shouldShowArea(area));
+    return (
+      (this.showMe.nonPatientTasks && report.customTasks.length > 0) ||
+      report.areas.some((area) => this.shouldShowArea(area))
+    );
   }
 
   shouldShowArea(area: DailyTasksReportArea) {
@@ -141,7 +156,10 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
   }
 
   shouldShowPen(pen: DailyTasksReportAreaPen) {
-    return pen.patients.some((patient) => this.shouldShowPatient(patient));
+    return (
+      (pen.concerns.length > 0 && this.showMe.husbandryConcerns) ||
+      pen.patients.some((patient) => this.shouldShowPatient(patient))
+    );
   }
 
   shouldShowPatient(patient: DailyTasksReportAreaPenPatient) {
@@ -208,6 +226,24 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
           title: `[${reference}] ${species}`,
           id: id,
         },
+      }),
+    );
+  }
+
+  markCustomTaskDone(task: DailyTaskReportCustomTask) {
+    this.store.dispatch(
+      markCustomTaskDone({
+        date: this.date,
+        id: task.id,
+      }),
+    );
+  }
+
+  dismissConcern(concern: HusbandryConcern) {
+    this.store.dispatch(
+      dismissConcern({
+        date: this.date,
+        id: concern.id,
       }),
     );
   }

@@ -3,6 +3,7 @@ using Api.Database.Entities.Hospital.Boards;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
+using Api.Database.Entities.Hospital.Tasks;
 using Api.Handlers.Hospital.Patients;
 using Api.Services;
 using MediatR;
@@ -83,6 +84,9 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     .ThenInclude(y => y.Pens));
         if (board == null) return Results.BadRequest();
 
+        var concerns = await _repository.GetAll<HusbandryConcern>(x => x.Checked == false, tracking: false,
+            action: x => x.Include(c => c.Pen));
+
         var showAreas = board.Areas
             .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
             .Select(x => x.Area.Id)
@@ -103,7 +107,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         var areas = board.Areas
                 .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
-                .Select(area => CreateBoardArea(patients, area))
+                .Select(area => CreateBoardArea(patients, area, concerns))
                 .Where(area => (area.Summary?.Any() ?? false) || (area.Pens?.Any() ?? false))
                 .ToList();
 
@@ -171,6 +175,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     PatientReferences = [],
                     Custom = true,
                     HasCustomDiet = false,
+                    Flagged = false,
                     Morning = InMemoryBoardTasks.IsComplete(0 - pen.Id, 1),
                     Afternoon = InMemoryBoardTasks.IsComplete(0 - pen.Id, 2),
                     Evening = InMemoryBoardTasks.IsComplete(0 - pen.Id, 3),
@@ -210,7 +215,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             .ToList();
     }
 
-    private static PatientBoardArea CreateBoardArea(IReadOnlyList<Patient> patients, BoardArea area)
+    private static PatientBoardArea CreateBoardArea(IReadOnlyList<Patient> patients, BoardArea area, IReadOnlyList<HusbandryConcern> concerns)
     {
         var boardArea = new PatientBoardArea
         {
@@ -224,7 +229,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         boardArea.Summary = GetPatientSummary(areaPatients);
 
         if (area.DisplayType == BoardAreaDisplayType.ShowPatients)
-            boardArea.Pens = CreateBoardAreaPens(areaPatients);
+            boardArea.Pens = CreateBoardAreaPens(areaPatients, concerns);
 
         boardArea.Pens.AddRange(
             GetPensNeedingCleaning(area.Area)
@@ -342,7 +347,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         }).ToList();
     }
 
-    private static List<PatientBoardAreaPen> CreateBoardAreaPens(IReadOnlyList<Patient> areaPatients)
+    private static List<PatientBoardAreaPen> CreateBoardAreaPens(IReadOnlyList<Patient> areaPatients, IReadOnlyList<HusbandryConcern> concerns)
     {
         return areaPatients
             .GroupBy(p => new
@@ -360,6 +365,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Patients = GetPatientSummary(penPatients),
                     PatientReferences = [.. penPatients.Select(x => x.Reference).OrderBy(x => x)],
                     HasCustomDiet = penPatients.Any(patient => patient.Feeding?.Any() ?? false),
+                    Flagged = concerns.Any(c => c.Pen?.Id == penId),
                     Morning = InMemoryBoardTasks.IsComplete(penId, 1),
                     Afternoon = InMemoryBoardTasks.IsComplete(penId, 2),
                     Evening = InMemoryBoardTasks.IsComplete(penId, 3),
@@ -525,6 +531,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public List<PatientBoardAreaPenFeeding> Feedings { get; set; }
         public List<PatientBoardAreaPenFeedingSummary> FeedingSummaries { get; set; }
         public bool NeedsCleaning { get; set; }
+        public bool Flagged { get; set; }
     }
 
     public class PatientBoardAreaPenFeedingSummary

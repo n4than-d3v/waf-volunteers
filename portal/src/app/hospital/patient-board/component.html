@@ -13,7 +13,49 @@
   </button>
   }
 </div>
-} } @if (board$ | async; as board) { @if (board && viewingBoard) {
+} } @if (board$ | async; as board) { @if (reportConcern | async; as
+reportConcern) { @if (reportConcern.loading) {
+<spinner></spinner>
+} @else if (reportConcern.error) {
+<div class="error">Error occurred</div>
+} } @if (reportingConcern) {
+<div class="report-concern">
+  <h2>Report concern for {{ reportingConcern.reference }}</h2>
+
+  <p class="instructions">
+    If you are concerned about any of the patients in this pen, please select
+    your concern from the list of options below.
+  </p>
+
+  <div class="patients">
+    @for (patient of reportingConcern.patients; track patient) {
+    <p>{{ patient }}</p>
+    }
+  </div>
+
+  @if (concernReasons$ | async; as concernReasons) { @if (concernReasons.data) {
+  <select [(ngModel)]="reportingConcernReasonId">
+    <option value=""></option>
+    @for (category of concernReasons.data; track category.id) {
+    <optgroup [label]="category.description">
+      @for (reason of category.reasons; track reason.id) {
+      <option [value]="reason.id">{{ reason.description }}</option>
+      }
+    </optgroup>
+    }
+  </select>
+  } }
+
+  <div class="buttons">
+    <button class="button button--warning" (click)="report()">
+      Report concern
+    </button>
+    <button class="button button--secondary" (click)="reportingConcern = null">
+      Return to board
+    </button>
+  </div>
+</div>
+} @else if (board && viewingBoard) {
 <h1>{{ board.board.name }}</h1>
 
 @if (board.board.messages != null && board.board.messages.length > 0) {
@@ -223,7 +265,28 @@
     [class.expanded]="expandedPens[pen.reference]"
     [class.completed]="pen.completed"
   >
-    <div class="location">{{ pen.reference }}</div>
+    <div class="location">
+      <span>{{ pen.reference }}</span>
+      <svg
+        (click)="reportingConcern = pen"
+        width="800px"
+        height="800px"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          [attr.d]="svgs.flag.pole"
+          fill="#BABABA"
+        />
+        <path
+          [attr.d]="svgs.flag.flag"
+          [attr.fill]="pen.flagged ? '#E44040' : '#CEAFAF'"
+        />
+      </svg>
+    </div>
     @if (pen.needsCleaning) {
     <div class="patients">
       <span class="instruction">Please clean</span>
@@ -411,7 +474,28 @@
     [class.expanded]="expandedPens[pen.reference]"
     [class.completed]="pen.completed"
   >
-    <div class="location">{{ pen.reference }}</div>
+    <div class="location">
+      <span>{{ pen.reference }}</span>
+      <svg
+        (click)="reportingConcern = pen"
+        width="800px"
+        height="800px"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          [attr.d]="svgs.flag.pole"
+          fill="#BABABA"
+        />
+        <path
+          [attr.d]="svgs.flag.flag"
+          [attr.fill]="pen.flagged ? '#E44040' : '#CEAFAF'"
+        />
+      </svg>
+    </div>
     @if (pen.needsCleaning) {
     <div class="patients">
       <span class="instruction">Please clean</span>

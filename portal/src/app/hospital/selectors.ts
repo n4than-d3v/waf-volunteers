@@ -233,3 +233,23 @@ export const selectAttachment = createSelector(
   selectHospitalState,
   (state) => state.attachment,
 );
+
+export const selectConcernReasons = createSelector(
+  selectHospitalState,
+  (state) => state.concernReasons,
+);
+
+export const selectReportConcern = createSelector(
+  selectHospitalState,
+  (state) => state.reportConcern,
+);
+
+export const selectMarkCustomTaskDone = createSelector(
+  selectHospitalState,
+  (state) => state.markCustomTaskDone,
+);
+
+export const selectDismissConcern = createSelector(
+  selectHospitalState,
+  (state) => state.dismissConcern,
+);

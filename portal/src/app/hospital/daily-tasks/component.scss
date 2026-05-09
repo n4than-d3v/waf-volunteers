@@ -118,6 +118,43 @@ a {
         }
       }
 
+      .concern {
+        border-left: solid 5px rgb(183, 124, 37);
+        background-color: rgba(255, 251, 197, 0.5);
+        margin-bottom: 0.25rem;
+        padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+
+        .header {
+          font-weight: bold;
+          color: rgb(61, 34, 6);
+          margin-bottom: 0.25rem;
+        }
+
+        .description {
+          font-size: 1.125rem;
+          color: rgb(61, 34, 6);
+        }
+
+        .references {
+          margin-top: 0.25rem;
+          display: flex;
+          gap: 0.6rem;
+
+          a {
+            font-size: 0.95rem;
+          }
+        }
+
+        .date {
+          font-size: 0.85rem;
+          color: rgb(69, 69, 69);
+          margin-top: 0.125rem;
+        }
+      }
+
       .patients {
         display: flex;
         flex-wrap: wrap;
@@ -146,7 +183,16 @@ a {
               padding: 0.25rem 0.5rem 0.25rem 0.75rem;
               border: none;
               background-color: transparent;
-              vertical-align: top;
+            }
+
+            .custom {
+              .task-info {
+                border-left: solid 5px rgb(51, 17, 87);
+              }
+
+              .last-done {
+                font-size: 0.85rem;
+              }
             }
 
             .prescriptions {

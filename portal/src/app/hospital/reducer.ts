@@ -179,6 +179,18 @@ import {
   homeCarerTransferError,
   showEmbeddedContent,
   hideEmbeddedContent,
+  getConcernReasons,
+  getConcernReasonsSuccess,
+  getConcernReasonsError,
+  reportConcern,
+  reportConcernSuccess,
+  reportConcernError,
+  markCustomTaskDone,
+  markCustomTaskDoneError,
+  markCustomTaskDoneSuccess,
+  dismissConcern,
+  dismissConcernSuccess,
+  dismissConcernError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1371,5 +1383,104 @@ export const hospitalReducer = createReducer<HospitalState>(
   on(hideEmbeddedContent, (state) => ({
     ...state,
     attachment: null,
+  })),
+  on(getConcernReasons, (state) => ({
+    ...state,
+    concernReasons: {
+      ...state.concernReasons,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(getConcernReasonsSuccess, (state, { concernReasons }) => ({
+    ...state,
+    concernReasons: {
+      ...state.concernReasons,
+      data: concernReasons,
+      loading: false,
+    },
+  })),
+  on(getConcernReasonsError, (state) => ({
+    ...state,
+    concernReasons: {
+      ...state.concernReasons,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(reportConcern, (state) => ({
+    ...state,
+    reportConcern: {
+      ...state.reportConcern,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(reportConcernSuccess, (state) => ({
+    ...state,
+    reportConcern: {
+      ...state.reportConcern,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(reportConcernError, (state) => ({
+    ...state,
+    reportConcern: {
+      ...state.reportConcern,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(markCustomTaskDone, (state) => ({
+    ...state,
+    markCustomTaskDone: {
+      ...state.markCustomTaskDone,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(markCustomTaskDoneSuccess, (state) => ({
+    ...state,
+    markCustomTaskDone: {
+      ...state.markCustomTaskDone,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(markCustomTaskDoneError, (state) => ({
+    ...state,
+    markCustomTaskDone: {
+      ...state.markCustomTaskDone,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(dismissConcern, (state) => ({
+    ...state,
+    dismissConcern: {
+      ...state.dismissConcern,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(dismissConcernSuccess, (state) => ({
+    ...state,
+    dismissConcern: {
+      ...state.dismissConcern,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(dismissConcernError, (state) => ({
+    ...state,
+    dismissConcern: {
+      ...state.dismissConcern,
+      loading: false,
+      error: true,
+    },
   })),
 );

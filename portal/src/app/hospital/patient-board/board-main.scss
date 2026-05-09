@@ -63,9 +63,19 @@
       background-color: var(--theme-color-5);
       border-bottom: solid 2px black;
       color: white;
-      padding: 0rem 0.5rem;
+      padding: 0rem 0.25rem 0rem 0.5rem;
       font-weight: bold;
       font-size: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+
+      svg {
+        max-width: 1.5rem;
+        max-height: 1.5rem;
+        margin-top: 1px;
+        cursor: pointer;
+      }
     }
 
     .patients {

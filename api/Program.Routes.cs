@@ -22,6 +22,8 @@ using Api.Handlers.Hospital.Patients.Rechecks;
 using Api.Handlers.Hospital.PatientTypes;
 using Api.Handlers.Hospital.Reports;
 using Api.Handlers.Hospital.Tasks;
+using Api.Handlers.Hospital.Tasks.Concerns;
+using Api.Handlers.Hospital.Tasks.Concerns.Reasons;
 using Api.Handlers.Learning.Auxiliary;
 using Api.Handlers.Learning.Husbandry;
 using Api.Handlers.Notices;
@@ -923,14 +925,48 @@ public partial class Program
             .AddNote("Update or create species variant")
             .RequireAuthorization(vetPolicy);
 
-        apiHospital
+        var apiHospitalDailyTasks = apiHospital.MapGroup("/daily-tasks");
+
+        apiHospitalDailyTasks
             .MapGet(
-                "/daily-tasks",
+                "/",
                 (IMediator mediator, string on) =>
                     mediator.Send(new ViewDailyTasks { Date = DateOnly.Parse(on) })
             )
             .AddNote("View list of rechecks and prescriptions, grouped by area, pen, and patient")
             .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalDailyTasks
+            .MapPost(
+                "/custom-tasks/{id:int}/done",
+                (IMediator mediator, int id) => mediator.Send(new MarkCustomTaskDone { Id = id })
+            )
+            .AddNote("Vet or aux marks a custom task as done")
+            .RequireAuthorization(vetOrAuxPolicy);
+
+        apiHospitalDailyTasks
+            .MapPost(
+                "/concerns/{id:int}/dismiss",
+                (IMediator mediator, int id) => mediator.Send(new DismissConcern { Id = id })
+            )
+            .AddNote("Vet dismisses a husbandry concern")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalDailyTasks
+            .MapPost(
+                "/report-concern",
+                (IMediator mediator, ReportConcern request) => mediator.Send(request)
+            )
+            .AddNote("Husbandry reports a concern to the vets")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalDailyTasks
+            .MapGet(
+                "/concern-reasons",
+                (IMediator mediator) => mediator.Send(new GetConcernReasons())
+            )
+            .AddNote("Husbandry views list of concern reasons")
+            .RequireAuthorization(signedInPolicy);
 
         var apiHospitalBoards = apiHospital.MapGroup("/boards");
 

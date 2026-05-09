@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Api.Handlers.Hospital.Patients;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Handlers.Stock;
+using Api.Database.Entities.Hospital.Tasks;
 
 namespace Api.Handlers.Hospital.Tasks;
 
@@ -30,13 +31,12 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
     {
         var rechecks = await GetRechecks(request.Date);
         var prescriptions = await GetPrescriptions(request.Date);
-
-        var allPatients = rechecks
-            .Select(x => x.Patient)
-            .Concat(prescriptions.Item1.Select(x => x.Patient))
-            .Concat(prescriptions.Item2.Select(x => x.Patient))
-            .DistinctBy(x => x.Id)
-            .ToList();
+        var customTasks = await _repository.GetAll<CustomDailyTask>(x => true, tracking: false);
+        var concerns = await _repository.GetAll<HusbandryConcern>(x => x.Checked == false, tracking: false,
+            action: x => x.Include(y => y.Pen).ThenInclude(y => y.Area).Include(y => y.Reason));
+        var allPatients = await _repository.GetAll<Patient>(x =>
+            x.Status == PatientStatus.Inpatient || x.Status == PatientStatus.PendingHomeCare || x.Status == PatientStatus.ReceivingHomeCare || x.Status == PatientStatus.ReadyForRelease, tracking: false,
+            action: x => x.Include(y => y.Species).Include(y => y.SpeciesVariant).Include(y => y.Pen).ThenInclude(y => y.Area));
 
         var handler = new GetStockHandler(_repository);
         var allStock = (await handler.GetStock()).ToList();
@@ -47,7 +47,7 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
                 .Where(p => p.Pen?.Id == pen.Id)
                 .OrderBy(p => p.Reference);
 
-            return patientsInPen.Select(patient =>
+            return [.. patientsInPen.Select(patient =>
             {
                 var patientRechecks = rechecks
                     .Where(x => x.Patient.Id == patient.Id)
@@ -82,22 +82,35 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
                     patientMedications,
                     warnings
                 );
-            })
-            .ToList();
+            })];
         }
 
         var areas = await _repository.GetAll<Area>(x => true, tracking: false, x => x.Include(y => y.Pens));
 
-        return Results.Ok(new DailyTasksReport
+        var report = new DailyTasksReport
         {
-            Areas = areas.OrderBy(x => x.Name).Select(area => new DailyTasksReportArea(area)
+            CustomTasks = [.. customTasks.GroupBy(x => x.Location).Select(location => new DailyTasksReportCustomTaskLocation
             {
-                Pens = area.Pens.OrderBy(x => x.Code).Select(pen => new DailyTasksReportAreaPen(pen)
+                Location = location.Key,
+                Tasks = [.. location.Select(task => new DailyTaskReportCustomTask
                 {
-                    Patients = GetPatientsInPen(pen)
-                }).Where(x => (x.Rechecks + x.Prescriptions) > 0).ToList()
-            }).Where(x => (x.Rechecks + x.Prescriptions) > 0).ToList()
-        });
+                    Id = task.Id,
+                    Task = task.Message,
+                    LastDone = task.LastDone,
+                    Done = task.LastDone?.Date == DateTime.UtcNow.Date
+                })]
+            })],
+            Areas = [.. areas.OrderBy(x => x.Name).Select(area => new DailyTasksReportArea(area)
+            {
+                Pens = [.. area.Pens.OrderBy(x => x.Code).Select(pen => new DailyTasksReportAreaPen(pen)
+                {
+                    Patients = GetPatientsInPen(pen),
+                    Concerns = [.. concerns.Where(x => x.Pen.Id == pen.Id)]
+                }).Where(x => x.Concerns.Any() || (x.Rechecks + x.Prescriptions) > 0)]
+            }).Where(x => x.Pens.Any())]
+        };
+
+        return Results.Ok(report);
     }
 
     public class DailyTasksReport
@@ -106,6 +119,21 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
         public int Prescriptions => Areas.Sum(x => x.Prescriptions);
 
         public List<DailyTasksReportArea> Areas { get; set; }
+        public List<DailyTasksReportCustomTaskLocation> CustomTasks { get; set; }
+    }
+
+    public class DailyTasksReportCustomTaskLocation
+    {
+        public string Location { get; set; }
+        public List<DailyTaskReportCustomTask> Tasks { get; set; }
+    }
+
+    public class DailyTaskReportCustomTask
+    {
+        public int Id { get; set; }
+        public string Task { get; set; }
+        public DateTime? LastDone { get; set; }
+        public bool Done { get; set; }
     }
 
     public class DailyTasksReportArea(Area area)
@@ -132,6 +160,7 @@ public class ViewDailyTasksHandler : IRequestHandler<ViewDailyTasks, IResult>
         public int Prescriptions => Patients.Sum(x => x.PrescriptionInstructions.Count + x.PrescriptionMedications.Count);
 
         public List<DailyTasksReportAreaPenPatient> Patients { get; set; }
+        public List<HusbandryConcern> Concerns { get; set; }
     }
 
     public record DailyTasksReportAreaPenPatientWarning(string BatchNumber, string Brand, bool Expiry, bool ExpiryInUse);

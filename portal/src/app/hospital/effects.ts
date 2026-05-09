@@ -28,6 +28,7 @@ import {
   Food,
   HomeCarer,
   supportedEmbeddedContentTypes,
+  ConcernCategory,
 } from './state';
 import {
   catchError,
@@ -222,6 +223,18 @@ import {
   homeCarerTransferSuccess,
   homeCarerTransferError,
   showEmbeddedContent,
+  getConcernReasons,
+  getConcernReasonsSuccess,
+  getConcernReasonsError,
+  reportConcern,
+  reportConcernSuccess,
+  reportConcernError,
+  dismissConcern,
+  dismissConcernSuccess,
+  dismissConcernError,
+  markCustomTaskDone,
+  markCustomTaskDoneSuccess,
+  markCustomTaskDoneError,
 } from './actions';
 
 @Injectable()
@@ -1786,6 +1799,83 @@ export class HospitalEffects {
     this.actions$.pipe(
       ofType(markPenCleanSuccess),
       switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
+    ),
+  );
+
+  getConcernReasons$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getConcernReasons),
+      switchMap(() =>
+        this.http
+          .get<ConcernCategory[]>(`hospital/daily-tasks/concern-reasons`)
+          .pipe(
+            map((concernReasons) =>
+              getConcernReasonsSuccess({ concernReasons }),
+            ),
+            catchError(() => of(getConcernReasonsError())),
+          ),
+      ),
+    ),
+  );
+
+  reportConcern$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(reportConcern),
+      switchMap((action) =>
+        this.http.post(`hospital/daily-tasks/report-concern`, action).pipe(
+          map(() => reportConcernSuccess({ boardId: action.boardId })),
+          catchError(() => of(reportConcernError())),
+        ),
+      ),
+    ),
+  );
+
+  reportConcernSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(reportConcernSuccess),
+      switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
+    ),
+  );
+
+  dismissConcern$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(dismissConcern),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/daily-tasks/concerns/${action.id}/dismiss`, {})
+          .pipe(
+            map(() => dismissConcernSuccess({ date: action.date })),
+            catchError(() => of(dismissConcernError())),
+          ),
+      ),
+    ),
+  );
+
+  dismissConcernSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(dismissConcernSuccess),
+      switchMap((action) => of(viewDailyTasks({ date: action.date }))),
+    ),
+  );
+
+  markCustomTaskDone$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markCustomTaskDone),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/daily-tasks/custom-tasks/${action.id}/done`, {})
+          .pipe(
+            map(() => markCustomTaskDoneSuccess({ date: action.date })),
+            catchError(() => of(markCustomTaskDoneError())),
+          ),
+      ),
+    ),
+  );
+
+  markCustomTaskDoneSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(markCustomTaskDoneSuccess),
+      switchMap((action) => of(viewDailyTasks({ date: action.date }))),
     ),
   );
 }

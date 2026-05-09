@@ -19,20 +19,25 @@ import {
   timer,
 } from 'rxjs';
 import {
+  ConcernCategory,
   ListPatientBoard,
   PatientBoardAreaPen,
   ReadOnlyWrapper,
   Task,
 } from '../state';
 import {
+  selectConcernReasons,
   selectMarkBoard,
   selectMarkPenClean,
   selectPatientBoard,
   selectPatientBoards,
+  selectReportConcern,
 } from '../selectors';
 import {
+  getConcernReasons,
   markBoardTaskComplete,
   markPenClean,
+  reportConcern,
   viewPatientBoard,
   viewPatientBoards,
 } from '../actions';
@@ -101,16 +106,22 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   boards$: Observable<ReadOnlyWrapper<ListPatientBoard[]>>;
   board$: Observable<PatientBoardVm | null>;
 
+  concernReasons$: Observable<ReadOnlyWrapper<ConcernCategory[]>>;
+
   viewingBoard: number | null = null;
 
   expandedPens: { [key: string]: boolean } = {};
   tickingTask = '';
+
+  reportingConcern: PatientBoardAreaPenVm | null = null;
+  reportingConcernReasonId: number | null = null;
 
   expandFeedingSummary = false;
   showPatientReferences = false;
 
   markBoard: Observable<Task>;
   markPenClean: Observable<Task>;
+  reportConcern: Observable<Task>;
 
   showPensWithoutFeeds$ = new BehaviorSubject(true);
   showPensNeedCleaning$ = new BehaviorSubject(true);
@@ -186,6 +197,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     this.boards$ = this.store.select(selectPatientBoards);
     this.markBoard = this.store.select(selectMarkBoard);
     this.markPenClean = this.store.select(selectMarkPenClean);
+    this.reportConcern = this.store.select(selectReportConcern);
+    this.concernReasons$ = this.store.select(selectConcernReasons);
     this.board$ = combineLatest([
       this.store.select(selectPatientBoard),
       this.showPensWithoutFeeds$,
@@ -262,8 +275,21 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     );
   }
 
+  report() {
+    this.store.dispatch(
+      reportConcern({
+        boardId: this.viewingBoard!,
+        penId: this.reportingConcern!.id,
+        reasonId: this.reportingConcernReasonId!,
+      }),
+    );
+    this.reportingConcern = null;
+    this.reportingConcernReasonId = null;
+  }
+
   ngOnInit() {
     this.store.dispatch(viewPatientBoards());
+    this.store.dispatch(getConcernReasons());
     this.subscription = new Subscription();
     this.subscription.add(
       timer(0, 10_000).subscribe(() => {

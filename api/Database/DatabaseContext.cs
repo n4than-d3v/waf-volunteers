@@ -10,6 +10,7 @@ using Api.Database.Entities.Hospital.Patients.Labs;
 using Api.Database.Entities.Hospital.Patients.Medications;
 using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
+using Api.Database.Entities.Hospital.Tasks;
 using Api.Database.Entities.Learning.Auxiliary;
 using Api.Database.Entities.Learning.Husbandry;
 using Api.Database.Entities.Notices;
@@ -98,6 +99,12 @@ public class DatabaseContext : DbContext
     public DbSet<BoardMessage> BoardMessages { get; set; }
     public DbSet<BoardCustomPen> BoardCustomPens { get; set; }
     public DbSet<BoardCustomPenTask> BoardCustomPenTasks { get; set; }
+
+    // Daily tasks
+    public DbSet<CustomDailyTask> CustomDailyTasks { get; set; }
+    public DbSet<HusbandryConcernCategory> HusbandryConcernCategories { get; set; }
+    public DbSet<HusbandryConcernReason> HusbandryConcernReasons { get; set; }
+    public DbSet<HusbandryConcern> HusbandryConcerns { get; set; }
 
     // Stock
     public DbSet<StockItem> StockItems { get; set; }

@@ -72,6 +72,8 @@ export interface PatientBoardAreaPenVm {
   patientReferences: string[] | null;
   tags: string[] | null;
 
+  flagged: boolean;
+
   hasCustomDiet: boolean;
   custom: boolean;
 

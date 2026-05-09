@@ -61,10 +61,14 @@ export interface HospitalState {
   dailyTasksReport: ReadOnlyWrapper<DailyTasksReport>;
   performRecheck: Task;
   administerPrescription: Task;
+  markCustomTaskDone: Task;
+  dismissConcern: Task;
 
   // View patient boards
   boards: ReadOnlyWrapper<ListPatientBoard[]>;
   board: ReadOnlyWrapper<PatientBoard>;
+  reportConcern: Task;
+  concernReasons: ReadOnlyWrapper<ConcernCategory[]>;
 }
 
 export type TabCode =
@@ -130,6 +134,19 @@ export interface DailyTasksReport {
   rechecks: number;
   prescriptions: number;
   areas: DailyTasksReportArea[];
+  customTasks: DailyTasksReportCustomTaskLocation[];
+}
+
+export interface DailyTasksReportCustomTaskLocation {
+  location: string;
+  tasks: DailyTaskReportCustomTask[];
+}
+
+export interface DailyTaskReportCustomTask {
+  id: number;
+  task: string;
+  lastDone: string | null;
+  done: boolean;
 }
 
 export interface DailyTasksReportArea {
@@ -146,6 +163,15 @@ export interface DailyTasksReportAreaPen {
   rechecks: number;
   prescriptions: number;
   patients: DailyTasksReportAreaPenPatient[];
+  concerns: HusbandryConcern[];
+}
+
+export interface HusbandryConcern {
+  id: number;
+  pen: Pen;
+  reason: { id: number; description: string };
+  raised: string;
+  checked: boolean;
 }
 
 export interface DailyTasksReportAreaPenPatient {
@@ -760,6 +786,8 @@ export interface PatientBoardAreaPen {
   patientReferences: string[] | null;
   tags: string[] | null;
 
+  flagged: boolean;
+
   hasCustomDiet: boolean;
   custom: boolean;
 
@@ -796,6 +824,17 @@ export interface PatientBoardAreaPenTaskDetails {
   topUp: string;
   notes: string;
   dish: string;
+}
+
+export interface ConcernCategory {
+  id: number;
+  description: string;
+  reasons: ConcernReason[];
+}
+
+export interface ConcernReason {
+  id: number;
+  description: string;
 }
 
 export const createReadOnlyWrapper = <T>(): ReadOnlyWrapper<T> => ({
@@ -860,4 +899,8 @@ export const initialHospitalState: HospitalState = {
   addLabs: createTask(),
   boards: createReadOnlyWrapper<ListPatientBoard[]>(),
   board: createReadOnlyWrapper<PatientBoard>(),
+  reportConcern: createTask(),
+  concernReasons: createReadOnlyWrapper<ConcernCategory[]>(),
+  markCustomTaskDone: createTask(),
+  dismissConcern: createTask(),
 };

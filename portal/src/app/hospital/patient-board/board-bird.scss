@@ -70,10 +70,18 @@
       border-right: solid 2px var(--theme-color-5);
       color: var(--theme-color-5);
       font-weight: bold;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       align-self: stretch;
       text-align: center;
       align-content: center;
+
+      svg {
+        max-width: 1.5rem;
+        max-height: 1.5rem;
+        margin-bottom: -5px;
+        margin-left: 4px;
+        cursor: pointer;
+      }
     }
 
     .patients {

@@ -332,21 +332,98 @@
       />
     </div>
   </div>
+  <div>
+    <p><strong>Other</strong></p>
+    <div class="subfilter">
+      <div>
+        <div class="field">
+          <label for="showMeNonPatientTasks">Other tasks</label>
+          <input
+            type="checkbox"
+            id="showMeNonPatientTasks"
+            [(ngModel)]="showMe.nonPatientTasks"
+          />
+        </div>
+        <div class="field">
+          <label for="showMeHusbandryConcerns">Husbandry concerns</label>
+          <input
+            type="checkbox"
+            id="showMeHusbandryConcerns"
+            [(ngModel)]="showMe.husbandryConcerns"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-@if (dailyTasksReport$ | async; as report) { @if (performRecheckTask$ | async;
-as performRecheckTask) { @if (administerPrescriptionTask$ | async; as
-administerPrescriptionTask) { @if (report.loading || performRecheckTask.loading
-|| administerPrescriptionTask.loading) {
+@if (dailyTasksReport$ | async; as report) { @if (markCustomTaskDoneTask$ |
+async; as markCustomTaskDoneTask) { @if (dismissConcernTask$ | async; as
+dismissConcernTask) { @if (performRecheckTask$ | async; as performRecheckTask) {
+@if (administerPrescriptionTask$ | async; as administerPrescriptionTask) { @if
+(report.loading || performRecheckTask.loading ||
+administerPrescriptionTask.loading || dismissConcernTask.loading ||
+markCustomTaskDoneTask.loading) {
 <spinner></spinner>
 } @else if (report.error || performRecheckTask.error ||
-administerPrescriptionTask.error) {
+administerPrescriptionTask.error || dismissConcernTask.error ||
+markCustomTaskDoneTask.error) {
 <div class="error">Error occurred</div>
-} } } @if (report.data) { @if (!shouldShowAreas(report.data)) {
+} } } } } @if (report.data) { @if (!shouldShowAreas(report.data)) {
 <div class="nothing">
   <h2>Nothing to do</h2>
   <p>
     Looks like there's nothing to do based on the selected filters on this date.
   </p>
+</div>
+} @if (showMe.nonPatientTasks) {
+<div class="area">
+  <h2>
+    <span class="area-name">Other tasks</span>
+  </h2>
+  <div class="pens">
+    @for (customTaskLocation of report.data.customTasks; track
+    customTaskLocation.location) {
+    <div class="pen">
+      <h3>
+        <span class="pen-reference">{{ customTaskLocation.location }}</span>
+      </h3>
+      <div class="patients">
+        <div class="patient">
+          <div class="tasks">
+            <table class="custom">
+              <tbody>
+                @for (customTask of customTaskLocation.tasks; track
+                customTask.id) {
+                <tr>
+                  <td class="task-info">{{ customTask.task }}</td>
+                  <td class="last-done">
+                    @if (customTask.lastDone) { Last done on<br />
+                    <span class="date"
+                      >{{ customTask.lastDone | date: 'd MMM yyyy HH:mm'
+                      }}</span
+                    >
+                    }
+                  </td>
+                  <td class="buttons buttons--check">
+                    @if (!customTask.done) {
+                    <button
+                      (click)="markCustomTaskDone(customTask)"
+                      class="button button--secondary-invert"
+                    >
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </button>
+                    }
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
 </div>
 } @for (area of report.data.areas; track area.code) { @if (shouldShowArea(area))
 {
@@ -367,7 +444,35 @@ administerPrescriptionTask.error) {
         </span>
       </h3>
       <div class="patients">
-        @for (patient of pen.patients; track patient.id) { @if
+        @for (concern of pen.concerns; track concern.id) {
+        <div class="concern">
+          <div>
+            <div class="header">⚠️ Husbandry concern</div>
+            <div class="description">{{ concern.reason.description }}</div>
+            <div class="references">
+              @for (patient of pen.patients; track patient.id) {
+              <a
+                (click)="viewPatient(patient.reference, patient.species.name, patient.id)"
+                >{{ patient.reference }}</a
+              >
+              }
+            </div>
+            <div class="date">
+              Raised {{ concern.raised | date: 'd MMM yyyy HH:mm' }}
+            </div>
+          </div>
+          <div>
+            @if (isVet) {
+            <button
+              class="button button--secondary-invert"
+              (click)="dismissConcern(concern)"
+            >
+              Checked
+            </button>
+            }
+          </div>
+        </div>
+        } @for (patient of pen.patients; track patient.id) { @if
         (shouldShowPatient(patient)) {
         <div class="patient">
           <p>

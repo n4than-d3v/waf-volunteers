@@ -28,6 +28,7 @@ import {
   HomeCarer,
   Attachment,
   EmbeddedContent,
+  ConcernCategory,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -944,4 +945,57 @@ export const showEmbeddedContent = createAction(
 
 export const hideEmbeddedContent = createAction(
   '[HMS-V] Hide embedded content',
+);
+
+export const getConcernReasons = createAction('[HMS-V] Get concern reasons');
+export const getConcernReasonsSuccess = createAction(
+  '[HMS-V] Get concern reasons: success',
+  props<{ concernReasons: ConcernCategory[] }>(),
+);
+export const getConcernReasonsError = createAction(
+  '[HMS-V] Get concern reasons: error',
+);
+
+export const reportConcern = createAction(
+  '[HMS-V] Report concern',
+  props<{
+    boardId: number;
+    penId: number;
+    reasonId: number;
+  }>(),
+);
+export const reportConcernSuccess = createAction(
+  '[HMS-V] Report concern: success',
+  props<{ boardId: number }>(),
+);
+export const reportConcernError = createAction('[HMS-V] Report concern: error');
+
+export const dismissConcern = createAction(
+  '[HMS-V] Dismiss concern',
+  props<{
+    date: string;
+    id: number;
+  }>(),
+);
+export const dismissConcernSuccess = createAction(
+  '[HMS-V] Dismiss concern: success',
+  props<{ date: string }>(),
+);
+export const dismissConcernError = createAction(
+  '[HMS-V] Dismiss concern: error',
+);
+
+export const markCustomTaskDone = createAction(
+  '[HMS-V] Mark custom task done',
+  props<{
+    date: string;
+    id: number;
+  }>(),
+);
+export const markCustomTaskDoneSuccess = createAction(
+  '[HMS-V] Mark custom task done: success',
+  props<{ date: string }>(),
+);
+export const markCustomTaskDoneError = createAction(
+  '[HMS-V] Mark custom task done: error',
 );

@@ -283,6 +283,10 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
         reasonId: this.reportingConcernReasonId!,
       }),
     );
+    this.cancelReport();
+  }
+
+  cancelReport() {
     this.reportingConcern = null;
     this.reportingConcernReasonId = null;
   }

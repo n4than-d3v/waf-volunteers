@@ -34,6 +34,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import moment from 'moment';
 
 @Component({
   selector: 'volunteer-home-care',
@@ -113,14 +114,15 @@ export class VolunteerHomeCareComponent implements OnInit {
     this.attemptedSave = true;
     if (!this.acceptForm.valid) return;
     this.saving = true;
+
+    const pickup = moment(
+      `${this.acceptForm.value.pickupDate} ${this.acceptForm.value.pickupTime}`,
+    ).toISOString();
+
     this.store.dispatch(
       acceptHomeCareRequest({
         homeCareRequestId: Number(this.accepting!),
-        pickup:
-          this.acceptForm.value.pickupDate! +
-          'T' +
-          this.acceptForm.value.pickupTime! +
-          'Z',
+        pickup,
       }),
     );
     this.reset();

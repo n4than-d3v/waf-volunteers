@@ -1432,8 +1432,15 @@ public partial class Program
                 {
                     var form = await httpReq.ReadFormAsync();
                     _ = int.TryParse(form["roles"], out int roles);
-                    _ = DateTime.TryParse(form["sendAt"], out var sendAt);
-                    sendAt = DateTime.SpecifyKind(sendAt, DateTimeKind.Utc);
+                    var sendAtString = form["sendAt"].ToString();
+                    DateTime? sendAt = string.IsNullOrWhiteSpace(sendAtString)
+                        ? null
+                        : DateTime.Parse(
+                            sendAtString,
+                            null,
+                            System.Globalization.DateTimeStyles.AdjustToUniversal |
+                            System.Globalization.DateTimeStyles.AssumeUniversal
+                          );
 
                     var request = new CreateNotice
                     {
@@ -1457,8 +1464,15 @@ public partial class Program
                 {
                     var form = await httpReq.ReadFormAsync();
                     _ = int.TryParse(form["roles"], out int roles);
-                    _ = DateTime.TryParse(form["sendAt"], out var sendAt);
-                    sendAt = DateTime.SpecifyKind(sendAt, DateTimeKind.Utc);
+                    var sendAtString = form["sendAt"].ToString();
+                    DateTime? sendAt = string.IsNullOrWhiteSpace(sendAtString)
+                        ? null
+                        : DateTime.Parse(
+                            sendAtString,
+                            null,
+                            System.Globalization.DateTimeStyles.AdjustToUniversal |
+                            System.Globalization.DateTimeStyles.AssumeUniversal
+                          );
 
                     var request = new UpdateNotice
                     {

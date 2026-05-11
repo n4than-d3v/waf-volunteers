@@ -207,6 +207,12 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
   update() {
     const htmlContent = this.form.controls.content.value || '';
     const jsonDoc = toDoc(htmlContent);
+
+    const sendAt = moment(
+      `${this.form.value.sendAtDate} ${this.form.value.sendAtTime}`,
+      'YYYY-MM-DD HH:mm',
+    );
+
     this.store.dispatch(
       updateNotice({
         id: this.id,
@@ -214,12 +220,7 @@ export class AdminNoticeUpdateComponent implements OnDestroy {
         content: JSON.stringify(jsonDoc),
         files: this.form.controls.files.value ?? [],
         sendAt:
-          this.form.value.schedule === 'later'
-            ? this.form.value.sendAtDate! +
-              'T' +
-              this.form.value.sendAtTime! +
-              'Z'
-            : null,
+          this.form.value.schedule === 'later' ? sendAt.toISOString() : null,
         roles:
           (this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.value
             ? Roles.BEACON_ANIMAL_HUSBANDRY

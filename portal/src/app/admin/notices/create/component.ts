@@ -152,17 +152,18 @@ export class AdminNoticeCreateComponent implements OnDestroy {
   create() {
     const htmlContent = this.form.controls.content.value || '';
     const jsonDoc = toDoc(htmlContent);
+
+    const sendAt = moment(
+      `${this.form.value.sendAtDate} ${this.form.value.sendAtTime}`,
+      'YYYY-MM-DD HH:mm',
+    );
+
     this.store.dispatch(
       createNotice({
         title: this.form.controls.title.value || '',
         content: JSON.stringify(jsonDoc),
         sendAt:
-          this.form.value.schedule === 'later'
-            ? this.form.value.sendAtDate! +
-              'T' +
-              this.form.value.sendAtTime! +
-              'Z'
-            : null,
+          this.form.value.schedule === 'later' ? sendAt.toISOString() : null,
         files: this.form.controls.files.value ?? [],
         roles:
           (this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.value

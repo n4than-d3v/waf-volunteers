@@ -43,16 +43,13 @@ export class AdminHospitalBoardMessagesComponent implements OnInit {
 
   private resetDateRange() {
     const start = moment();
-    const startSplit = start.toISOString().split('T');
-    const startSplitTime = startSplit[1].split(':');
-    this.startDate = startSplit[0];
-    this.startTime = startSplitTime[0] + ':' + startSplitTime[1];
 
-    const end = start.add(30, 'minutes');
-    const endSplit = end.toISOString().split('T');
-    const endSplitTime = endSplit[1].split(':');
-    this.endDate = endSplit[0];
-    this.endTime = endSplitTime[0] + ':' + endSplitTime[1];
+    this.startDate = start.format('YYYY-MM-DD');
+    this.startTime = start.format('HH:mm');
+
+    const end = moment(start).add(30, 'minutes');
+    this.endDate = end.format('YYYY-MM-DD');
+    this.endTime = end.format('HH:mm');
   }
 
   constructor(private store: Store) {
@@ -62,12 +59,18 @@ export class AdminHospitalBoardMessagesComponent implements OnInit {
   }
 
   addMessage() {
+    const start = moment(
+      `${this.startDate} ${this.startTime}`,
+      'YYYY-MM-DD HH:mm',
+    );
+    const end = moment(`${this.endDate} ${this.endTime}`, 'YYYY-MM-DD HH:mm');
+
     this.store.dispatch(
       addBoardMessage({
         id: Number(this.boardId),
         message: this.message,
-        start: this.startDate + 'T' + this.startTime + 'Z',
-        end: this.endDate + 'T' + this.endTime + 'Z',
+        start: start.toISOString(),
+        end: end.toISOString(),
         emergency: false,
       }),
     );

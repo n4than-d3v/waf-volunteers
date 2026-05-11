@@ -33,6 +33,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
         var firstName = _encryptionService.Decrypt(user.FirstName, user.Salt);
         var lastName = _encryptionService.Decrypt(user.LastName, user.Salt);
         var email = _encryptionService.Decrypt(user.Email, user.Salt);
+        // var dateOfBirth = _encryptionService.Decrypt(user.DateOfBirth, user.Salt);
         UpdateBeaconInfo? beaconInfo = null;
         if (!(user.BeaconId == null || string.IsNullOrWhiteSpace(user.BeaconInfo)))
         {
@@ -49,6 +50,7 @@ public class GetAccountInfoHandler : IRequestHandler<GetAccountInfo, IResult>
             firstName,
             lastName,
             email,
+            // dateOfBirth,
             beaconInfo,
             cars,
             roles = user.Roles,

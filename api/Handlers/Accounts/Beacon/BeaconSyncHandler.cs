@@ -99,6 +99,7 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                     _encryptionService.Encrypt(string.Empty, salt),
                     _encryptionService.Encrypt(string.Empty, salt),
                     _encryptionService.Encrypt(string.Empty, salt),
+                    _encryptionService.Encrypt(string.Empty, salt),
                     activeVolunteer.entity.id,
                     _encryptionService.Encrypt(string.Empty, salt),
                     [],
@@ -142,6 +143,15 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                 var beaconInfo = _encryptionService.Encrypt(json, account.Salt);
                 account.UpdateStatus(AccountStatus.Active);
                 account.UpdatePersonalDetails(firstName, lastName, email, beaconInfo, account.Cars);
+
+                if (!string.IsNullOrWhiteSpace(activeVolunteer.entity.date_of_birth))
+                {
+                    if (DateTime.TryParse(activeVolunteer.entity.date_of_birth, out DateTime dob))
+                    {
+                        var dateOfBirth = _encryptionService.Encrypt(dob.ToString("yyyy-MM-dd"), account.Salt);
+                        account.SetDateOfBirth(dateOfBirth);
+                    }
+                }
 
                 AccountRoles roles = 0;
 

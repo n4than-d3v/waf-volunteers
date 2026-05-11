@@ -7,7 +7,7 @@ import { EasterEggsFlakesComponent } from './easter-eggs/flakes/component';
 import { selectCurrentProfile } from './volunteer/profile/selectors';
 import { Profile } from './volunteer/profile/state';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { getCurrentProfile } from './volunteer/profile/actions';
 
@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
   year: number = new Date().getFullYear();
 
   profile$: Observable<Profile | null>;
+  birthday$: Observable<boolean>;
 
   easterEggs = {
     christmas: false,
@@ -41,6 +42,16 @@ export class AppComponent implements OnInit {
     public router: Router,
   ) {
     this.profile$ = this.store.select(selectCurrentProfile);
+    this.birthday$ = this.profile$.pipe(
+      map((profile) => {
+        if (!profile) return false;
+        if (!profile.dateOfBirth) return false;
+        const today = moment();
+        const dateOfBirth = moment(profile.dateOfBirth, 'YYYY-MM-DD');
+        const birthdayThisYear = dateOfBirth.clone().year(today.year());
+        return today.isSame(birthdayThisYear, 'day');
+      }),
+    );
   }
 
   ngOnInit() {

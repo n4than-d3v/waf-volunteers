@@ -103,6 +103,15 @@
     } @else if (easterEggs.pancakeDay) {
       <easter-eggs-flakes [img]="'pancakes'"></easter-eggs-flakes>
     }
+    @if (birthday$ | async) {
+      <img
+        id="ee-birthday"
+        class="birthday"
+        src="images/easter-eggs/happy-birthday.jpg"
+        alt="Happy birthday"
+      />
+      <easter-eggs-flakes [img]="'balloon'"></easter-eggs-flakes>
+    }
     <router-outlet />
   </main>
   <footer class="no-print">

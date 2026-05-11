@@ -55,6 +55,7 @@ public class CreateAccountHandler : IRequestHandler<CreateAccount, IResult>
             _encryptionService.Encrypt(request.LastName ?? string.Empty, salt),
             _encryptionService.Encrypt(request.Email ?? string.Empty, salt),
             _encryptionService.Encrypt(string.Empty, salt),
+            _encryptionService.Encrypt(string.Empty, salt),
             salt
         );
 

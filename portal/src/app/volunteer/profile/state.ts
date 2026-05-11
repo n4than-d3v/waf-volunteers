@@ -11,6 +11,7 @@ export interface Profile {
   firstName: string;
   lastName: string;
   email: string;
+  dateOfBirth: string;
   beaconInfo: BeaconInfo;
   cars: string[];
   subscribed?: boolean;

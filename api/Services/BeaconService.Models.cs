@@ -155,6 +155,7 @@ public partial class BeaconService
             public List<string> volunteer_availability { get; set; }
             public List<string> volunteer_roles { get; set; }
             public DateTime? c_volunteer_end_date { get; set; }
+            public string date_of_birth { get; set; }
         }
 
         public class EntityBase

@@ -30,6 +30,7 @@ public class Account : Entity
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
     public string Email { get; private set; }
+    public string DateOfBirth { get; private set; }
 
     public int? BeaconId { get; private set; }
     public string BeaconInfo { get; private set; }
@@ -46,7 +47,7 @@ public class Account : Entity
 
     public Account() { }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, HomeCarerPermissions homeCarerPermissions, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, HomeCarerPermissions homeCarerPermissions, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, string dateOfBirth, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
@@ -58,6 +59,7 @@ public class Account : Entity
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+        DateOfBirth = dateOfBirth;
         BeaconId = null;
         BeaconInfo = string.Empty;
         Cars = [];
@@ -65,7 +67,7 @@ public class Account : Entity
         Salt = salt;
     }
 
-    public Account(string username, string password, AccountStatus status, AccountRoles roles, HomeCarerPermissions homeCarerPermissions, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
+    public Account(string username, string password, AccountStatus status, AccountRoles roles, HomeCarerPermissions homeCarerPermissions, DateTime? lastLoggedIn, string? userAgent, string firstName, string lastName, string email, string dateOfBirth, int? beaconId, string beaconInfo, string[] cars, string pushSubscription, string salt)
     {
         Username = username;
         Password = password;
@@ -77,6 +79,7 @@ public class Account : Entity
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+        DateOfBirth = dateOfBirth;
         BeaconId = beaconId;
         BeaconInfo = beaconInfo;
         Cars = cars;
@@ -96,6 +99,11 @@ public class Account : Entity
     public void UpdateBeaconId(int beaconId)
     {
         BeaconId = beaconId;
+    }
+
+    public void SetDateOfBirth(string dateOfBirth)
+    {
+        DateOfBirth = dateOfBirth;
     }
 
     public void UpdatePersonalDetails(string firstName, string lastName, string email, string beaconInfo, string[] cars)

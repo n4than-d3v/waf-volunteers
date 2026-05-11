@@ -605,14 +605,32 @@ export class HospitalEffects {
                     patientId: action.exam.patientId,
                   }),
                 );
-              } else if (action.outcome === 'alive' && action.penId) {
-                actions.push(
-                  movePatient({
-                    patientId: action.exam.patientId,
-                    penId: action.penId!,
-                    newAreaId: null,
-                  }),
-                );
+              } else if (action.outcome === 'alive') {
+                if (action.penId) {
+                  actions.push(
+                    movePatient({
+                      patientId: action.exam.patientId,
+                      penId: action.penId!,
+                      newAreaId: null,
+                    }),
+                  );
+                }
+                if (action.feeding) {
+                  actions.push(
+                    updatePatientBasicDetails({
+                      patientId: action.exam.patientId,
+                      name: '',
+                      uniqueIdentifier: '',
+                      microchip: '',
+                      speciesId: action.exam.speciesId,
+                      speciesVariantId: action.exam.speciesVariantId,
+                      sex: action.exam.sex,
+                      tagIds: [],
+                      update: 'feeding-ff-exam',
+                      feeding: action.feeding!,
+                    }),
+                  );
+                }
               } else {
                 actions.push(
                   getPatient({

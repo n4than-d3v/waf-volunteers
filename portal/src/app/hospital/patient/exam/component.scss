@@ -12,7 +12,8 @@
   }
 }
 
-.house-check {
+.house-check,
+.ff-check {
   margin-top: 1.25rem;
 }
 
@@ -123,4 +124,100 @@ textarea {
 
 .button--none {
   margin-top: 0.5rem;
+}
+
+.add,
+.rem {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-top: 1.85rem;
+  font-size: 0.75rem;
+}
+
+.right-align {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.feeding-guidance {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+
+  .controls {
+    .row {
+      display: flex;
+      gap: 0.5rem;
+
+      &:nth-child(1) {
+        margin-bottom: 0.5rem;
+
+        input[type="time"] {
+          padding: 0.15rem 0.5rem;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+          max-width: 6rem;
+          padding: 0.25rem 0.5rem;
+        }
+
+        select {
+          max-width: max-content;
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      &:nth-child(2) {
+        input[type="text"] {
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      .checkboxes {
+        margin-left: 0.75rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0rem;
+      }
+    }
+  }
+}
+
+.interval-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.is-custom {
+  padding: 0.5rem 0.75rem;
+  background-color: #ddeaff;
+}
+
+.no-guidance {
+  padding: 0.5rem 0.75rem;
+  background-color: #fff2d7;
+}
+
+.add {
+  margin-top: 1.625rem;
+  margin-right: 0.125rem;
+}
+
+.input-with-units {
+  display: flex;
+
+  input {
+    max-width: 8ch;
+    text-align: right;
+    border-top-right-radius: 0rem;
+    border-bottom-right-radius: 0rem;
+    border-right: none;
+  }
+
+  select {
+    border-top-left-radius: 0rem;
+    border-bottom-left-radius: 0rem;
+  }
 }

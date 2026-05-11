@@ -4,6 +4,7 @@ using Api.Database.Entities.Hospital.Patients.Exams;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
 using Api.Handlers.Hospital.Patients.Notes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Handlers.Hospital.Patients;
 
@@ -18,6 +19,7 @@ public class UpdatePatientBasicDetails : IRequest<IResult>
     public Sex Sex { get; set; }
     public List<int> TagIds { get; set; }
     public List<PatientDietItem> Feeding { get; set; }
+    public string Update { get; set; }
 
     public class PatientDietItem
     {
@@ -56,7 +58,8 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
         var species = await _repository.Get<Species>(request.SpeciesId);
         if (species == null) return Results.BadRequest();
 
-        var speciesVariant = await _repository.Get<SpeciesVariant>(request.SpeciesVariantId);
+        var speciesVariant = await _repository.Get<SpeciesVariant>(request.SpeciesVariantId,
+            action: x => x.Include(y => y.FeedingGuidance).ThenInclude(y => y.Food));
         if (speciesVariant == null) return Results.BadRequest();
 
         if (patient.Species != null && patient.Species.Id != request.SpeciesId)
@@ -94,6 +97,21 @@ public class UpdatePatientBasicDetailsHandler : IRequestHandler<UpdatePatientBas
 
         patient.Feeding ??= [];
         patient.Feeding.RemoveAll(x => true);
+
+        if (request.Update == "feeding-ff-exam" && (speciesVariant.FeedingGuidance?.Any() ?? false))
+        {
+            patient.Feeding.AddRange(speciesVariant.FeedingGuidance.Select(x => new PatientFeeding
+            {
+                Food = x.Food,
+                Time = x.Time,
+                QuantityValue = x.QuantityValue,
+                QuantityUnit = x.QuantityUnit,
+                TopUp = x.TopUp,
+                Notes = x.Notes,
+                Dish = x.Dish,
+                Patient = patient
+            }));
+        }
 
         foreach (var item in request.Feeding)
         {

@@ -552,6 +552,7 @@ export interface Feeding {
 export interface Food {
   id: number;
   name: string;
+  forceFeed: boolean;
 }
 
 export interface Tag {

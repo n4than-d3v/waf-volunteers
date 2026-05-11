@@ -248,6 +248,14 @@ export const performExam = createAction(
     outcome: Outcome;
     dispositionReasonIds?: number[];
     penId?: number;
+    feeding:
+      | {
+          time: string;
+          quantityValue: number;
+          quantityUnit: string;
+          foodId: number;
+        }[]
+      | null;
   }>(),
 );
 export const performExamSuccess = createAction('[HMS-V] Perform exam: success');
@@ -686,7 +694,11 @@ export const removePrescriptionInstructionError = createAction(
 
 // Update basic details
 
-export type UpdatePatientBasicDetailsType = 'details' | 'feeding' | 'tags';
+export type UpdatePatientBasicDetailsType =
+  | 'details'
+  | 'feeding'
+  | 'feeding-ff-exam'
+  | 'tags';
 
 export const updatePatientBasicDetails = createAction(
   '[HMS-V] Update patient basic details',

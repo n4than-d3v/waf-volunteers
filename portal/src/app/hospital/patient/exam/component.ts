@@ -13,6 +13,7 @@ import {
   BodyCondition,
   Dehydration,
   DispositionReason,
+  Food,
   ListExam,
   MucousMembraneColour,
   MucousMembraneTexture,
@@ -29,6 +30,7 @@ import {
   selectBodyConditions,
   selectDehydrations,
   selectDispositionReasons,
+  selectFoods,
   selectMucousMembraneColours,
   selectMucousMembraneTextures,
   selectPerformExam,
@@ -42,6 +44,7 @@ import {
   getBodyConditions,
   getDehydrations,
   getDispositionReasons,
+  getFoods,
   getMucousMembraneColours,
   getMucousMembraneTextures,
   getSpecies,
@@ -50,6 +53,7 @@ import {
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
+  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
@@ -59,6 +63,7 @@ import {
 } from '@angular/forms';
 import { HospitalPatientMedicationSelectorComponent } from './../medication-selector/component';
 import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
+import { convertTime } from '../../../admin/hospital/state';
 
 @Component({
   selector: 'hospital-patient-exam',
@@ -90,6 +95,7 @@ export class HospitalPatientExamComponent implements OnInit {
   dispositionReasons$: Observable<ReadOnlyWrapper<DispositionReason[]>>;
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
+  foods$: Observable<ReadOnlyWrapper<Food[]>>;
 
   performExamTask$: Observable<Task>;
   setDispositionTask$: Observable<Task>;
@@ -133,6 +139,20 @@ export class HospitalPatientExamComponent implements OnInit {
     settingPen: new FormControl(true),
     areaId: new FormControl(''),
     penId: new FormControl(''),
+    settingFF: new FormControl(false),
+    feeding: new FormArray<
+      FormGroup<{
+        foodId: FormControl<string | null>;
+        timeKind: FormControl<string | null>;
+        time: FormControl<string | null>;
+        quantityValue: FormControl<string | null>;
+        quantityUnit: FormControl<string | null>;
+        notes: FormControl<string | null>;
+        dish: FormControl<string | null>;
+        topUp: FormControl<boolean | null>;
+        noQuantity: FormControl<boolean | null>;
+      }>
+    >([]),
   });
 
   constructor(private store: Store) {
@@ -151,6 +171,7 @@ export class HospitalPatientExamComponent implements OnInit {
       selectAdministrationMethods,
     );
     this.areas$ = this.store.select(selectAreas);
+    this.foods$ = this.store.select(selectFoods);
     this.performExamTask$ = this.store.select(selectPerformExam);
     this.setDispositionTask$ = this.store.select(selectSetDisposition);
   }
@@ -244,6 +265,44 @@ export class HospitalPatientExamComponent implements OnInit {
     }));
   }
 
+  addFeedingGuidance() {
+    const formGroup = new FormGroup(
+      {
+        foodId: new FormControl('', [Validators.required]),
+        timeKind: new FormControl('Specific'),
+        time: new FormControl('', [Validators.required]),
+        quantityValue: new FormControl(''),
+        quantityUnit: new FormControl(''),
+        notes: new FormControl(''),
+        dish: new FormControl(''),
+        topUp: new FormControl(false),
+        noQuantity: new FormControl(false),
+      },
+      { validators: this.quantityValidator },
+    );
+    this.examForm.controls.feeding.push(formGroup);
+    return formGroup;
+  }
+
+  quantityValidator(group: AbstractControl) {
+    const noQuantity = group.get('noQuantity')?.value;
+    const quantityValue = group.get('quantityValue')?.value;
+
+    if (!noQuantity && !quantityValue) {
+      return { quantityRequired: true };
+    }
+
+    return null;
+  }
+
+  removeFeedingGuidance(index: number) {
+    const group = this.examForm.controls.feeding.at(index);
+    group.controls.quantityValue.setValue('-1');
+    if (!group.valid) {
+      this.examForm.controls.feeding.removeAt(index);
+    }
+  }
+
   performExam() {
     this.attemptedSave = true;
     this.examForm.controls.penId.clearValidators();
@@ -261,6 +320,9 @@ export class HospitalPatientExamComponent implements OnInit {
         this.examForm.controls.dispositionReasonIds.clear();
         if (this.examForm.controls.settingPen.value) {
           this.examForm.controls.penId.setValidators([Validators.required]);
+        }
+        if (!this.examForm.controls.settingFF.value) {
+          this.examForm.controls.feeding.clear();
         }
       } else if (this.examForm.controls.outcome.value == 'release') {
         this.examForm.controls.dispositionReasonIds.clear();
@@ -283,6 +345,10 @@ export class HospitalPatientExamComponent implements OnInit {
       this.examForm.controls.penId.clearValidators();
       this.examForm.controls.dispositionReasonIds.clear();
     }
+    this.examForm.controls.feeding.updateValueAndValidity({
+      onlySelf: true,
+      emitEvent: true,
+    });
     this.examForm.controls.penId.updateValueAndValidity({
       onlySelf: true,
       emitEvent: true,
@@ -372,6 +438,21 @@ export class HospitalPatientExamComponent implements OnInit {
         penId: this.examForm.controls.penId.value
           ? Number(this.examForm.controls.penId.value)
           : undefined,
+        feeding: this.examForm.controls.settingFF.value
+          ? this.examForm.controls.feeding.controls.map((group) => ({
+              time: convertTime(group.value.time!),
+              quantityUnit: group.value.noQuantity
+                ? ''
+                : group.value.quantityUnit! || ' ',
+              quantityValue: Number(
+                group.value.noQuantity ? 0 : group.value.quantityValue!,
+              ),
+              notes: group.value.notes,
+              dish: group.value.dish,
+              topUp: group.value.topUp || false,
+              foodId: Number(group.value.foodId!),
+            }))
+          : null,
       }),
     );
   }
@@ -386,8 +467,10 @@ export class HospitalPatientExamComponent implements OnInit {
     this.store.dispatch(getDispositionReasons());
     this.store.dispatch(getAdministrationMethods());
     this.store.dispatch(getAreas());
+    this.store.dispatch(getFoods());
     this.prepareEdit();
     this.addDispositionReason();
+    this.addFeedingGuidance();
   }
 
   private prepareEdit() {

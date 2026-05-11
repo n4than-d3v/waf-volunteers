@@ -336,6 +336,148 @@
         <input type="radio" id="pts" formControlName="outcome" value="pts" />
       </div>
       @if (examForm.controls.outcome.value === 'alive') {
+      <div class="field ff-check">
+        <input type="checkbox" id="settingFF" formControlName="settingFF" />
+        <label for="settingFF"> This patient will require force feeding </label>
+      </div>
+      @if (examForm.controls.settingFF.value) {
+      <div formArrayName="feeding">
+        <div
+          *ngFor="let fg of examForm.controls.feeding.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <div class="feeding-guidance">
+            <div class="controls">
+              <div class="row">
+                <div class="field">
+                  <label for="timeKind-{{ i }}">Time</label>
+                  <select id="timeKind-{{ i }}" formControlName="timeKind">
+                    <option>Specific</option>
+                    <option>Every</option>
+                  </select>
+                </div>
+                @if
+                (examForm.controls.feeding.controls[i].controls.timeKind.value
+                === 'Specific') {
+                <div class="field">
+                  <label for="timeId-{{ i }}">&nbsp;</label>
+                  <input
+                    id="timeId-{{ i }}"
+                    type="time"
+                    formControlName="time"
+                  />
+                </div>
+                } @else {
+                <div class="field">
+                  <label for="timeId-{{ i }}">&nbsp;</label>
+                  <div class="interval-wrapper">
+                    <input
+                      id="timeId-{{ i }}"
+                      type="number"
+                      formControlName="time"
+                    />
+                    <span>hours</span>
+                  </div>
+                </div>
+                } @if
+                (!examForm.controls.feeding.controls[i].controls.noQuantity.value)
+                {
+                <div class="field">
+                  <label for="quantityValue-{{ i }}">
+                    Quantity
+                    <span class="required">*</span>
+                  </label>
+                  <div class="input-with-units">
+                    <input
+                      id="quantityValue-{{ i }}"
+                      type="number"
+                      formControlName="quantityValue"
+                      autocomplete="off"
+                    />
+                    <select
+                      id="quantityUnit-{{ i }}"
+                      formControlName="quantityUnit"
+                    >
+                      <option></option>
+                      <option>g</option>
+                      <option>ml</option>
+                      <option>tbsp</option>
+                      <option>tsp</option>
+                      <option>ml</option>
+                      <option>pinch</option>
+                    </select>
+                  </div>
+                </div>
+                }
+                <div class="field">
+                  <label for="foodId-{{ i }}">
+                    Food
+                    <span class="required">*</span>
+                  </label>
+                  @if (foods$ | async; as foods) {
+                  <select id="foodId-{{ i }}" formControlName="foodId">
+                    @for (food of foods.data; track food.id) { @if
+                    (food.forceFeed) {
+                    <option [value]="food.id">{{ food.name }}</option>
+                    } }
+                  </select>
+                  }
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label for="notes-{{ i }}"> Notes </label>
+                  <input
+                    id="notes-{{ i }}"
+                    type="text"
+                    formControlName="notes"
+                  />
+                </div>
+                <div class="field">
+                  <label for="dish-{{ i }}"> Dish </label>
+                  <input id="dish-{{ i }}" type="text" formControlName="dish" />
+                </div>
+                <div class="checkboxes">
+                  <div class="field">
+                    <label for="topUp-{{ i }}"> Top up </label>
+                    <input
+                      id="topUp-{{ i }}"
+                      type="checkbox"
+                      formControlName="topUp"
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="noQuantity-{{ i }}">
+                      As much as {{ examForm.value.sex == '1' ? 'he wants' :
+                      examForm.value.sex == '2' ? 'she wants' : 'they want' }}
+                    </label>
+                    <input
+                      id="noQuantity-{{ i }}"
+                      type="checkbox"
+                      formControlName="noQuantity"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="button button--secondary-invert rem"
+              (click)="removeFeedingGuidance(i)"
+            >
+              ➖
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="right-align">
+        <button
+          class="button button--secondary-invert add"
+          (click)="addFeedingGuidance()"
+        >
+          ➕
+        </button>
+      </div>
+      }
       <div class="field house-check">
         <input type="checkbox" id="settingPen" formControlName="settingPen" />
         <label for="settingPen">

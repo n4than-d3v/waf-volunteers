@@ -143,6 +143,7 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                 var beaconInfo = _encryptionService.Encrypt(json, account.Salt);
                 account.UpdateStatus(AccountStatus.Active);
                 account.UpdatePersonalDetails(firstName, lastName, email, beaconInfo, account.Cars);
+                account.SetDateOfBirth(_encryptionService.Encrypt(string.Empty, account.Salt));
 
                 if (!string.IsNullOrWhiteSpace(activeVolunteer.entity.date_of_birth))
                 {

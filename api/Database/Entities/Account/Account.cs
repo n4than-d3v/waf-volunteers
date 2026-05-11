@@ -17,6 +17,14 @@ public class Account : Entity
 
     #endregion
 
+    #region Security
+
+    public int FailedLoginAttempts { get; set; }
+    public DateTime? LockoutEnd { get; set; }
+    public DateTime? LastFailedLogin { get; set; }
+
+    #endregion
+
     #region Encrypted properties
 
     public string FirstName { get; private set; }
@@ -131,6 +139,10 @@ public class Account : Entity
     {
         LastLoggedIn = DateTime.UtcNow;
         UserAgent = userAgent;
+
+        FailedLoginAttempts = 0;
+        LockoutEnd = null;
+        LastFailedLogin = null;
     }
 
     #endregion

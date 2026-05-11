@@ -22,6 +22,9 @@ public class Login : IRequest<IResult>
 
 public class LoginHandler : IRequestHandler<Login, IResult>
 {
+    private const int MaxFailedAttempts = 5;
+    private const int LockMinutes = 15;
+
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
@@ -45,21 +48,32 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             var user = await _repository.Get<Account>(x => x.Username == username);
             if (user == null)
             {
-                var reference = await RecordFailure(request, LoginFailureBreakpoint.NoUserWithUsername);
-                return Results.BadRequest(new { reference });
+                return await Failure(request, LoginFailureBreakpoint.NoUserWithUsername, cancellationToken);
+            }
+
+            if (user.Status != AccountStatus.Active)
+            {
+                user.LastFailedLogin = DateTime.UtcNow;
+                return await Failure(request, LoginFailureBreakpoint.StatusIsNotActive, cancellationToken);
+            }
+
+            if (user.LockoutEnd.HasValue && DateTime.UtcNow <= user.LockoutEnd.Value)
+            {
+                user.LastFailedLogin = DateTime.UtcNow;
+                await Failure(request, LoginFailureBreakpoint.AccountLocked, cancellationToken);
+                return Results.StatusCode(StatusCodes.Status429TooManyRequests);
             }
 
             var password = _hashService.Hash(request.Password);
             if (user.Password != password)
             {
-                var reference = await RecordFailure(request, LoginFailureBreakpoint.PasswordDoesNotMatch);
-                return Results.BadRequest(new { reference });
-            }
+                user.FailedLoginAttempts++;
+                user.LastFailedLogin = DateTime.UtcNow;
 
-            if (user.Status != AccountStatus.Active)
-            {
-                var reference = await RecordFailure(request, LoginFailureBreakpoint.StatusIsNotActive);
-                return Results.BadRequest(new { reference });
+                if (user.FailedLoginAttempts >= MaxFailedAttempts)
+                    user.LockoutEnd = DateTime.UtcNow.AddMinutes(LockMinutes);
+
+                return await Failure(request, LoginFailureBreakpoint.PasswordDoesNotMatch, cancellationToken);
             }
 
             var userAgent = GetUserAgent();
@@ -76,7 +90,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
         }
         catch (Exception e)
         {
-            var reference = await RecordFailure(request, LoginFailureBreakpoint.UnhandledError, e);
+            var reference = await Failure(request, LoginFailureBreakpoint.UnhandledError, cancellationToken, e);
             return Results.BadRequest(new { reference });
         }
     }
@@ -145,28 +159,26 @@ public class LoginHandler : IRequestHandler<Login, IResult>
         }
     }
 
-
-    private async Task<string> RecordFailure(Login request, LoginFailureBreakpoint breakpoint, Exception? exception = null)
+    private async Task<IResult> Failure(Login request, LoginFailureBreakpoint breakpoint,
+     CancellationToken cancellationToken, Exception? exception = null)
     {
-        var salt = _encryptionService.GenerateSalt();
         var reference = GenerateLoginFailureReference();
         var username = request.Username.ToLowerInvariant().Trim();
-        var passwordHash = _hashService.Hash(request.Password);
 
         _repository.Create(new LoginFailure
         {
             Reference = reference,
-            Username = _encryptionService.Encrypt(username, salt),
-            Password = _encryptionService.Encrypt(request.Password, salt),
-            PasswordHash = passwordHash,
+            Username = username,
             Breakpoint = breakpoint,
-            Exception = exception != null ? $"{exception.Message} - {exception.StackTrace}" : null,
-            Salt = salt
+            Date = DateTime.UtcNow,
+            IpAddress = _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? "Unknown",
+            Exception = exception?.Message,
         });
 
         await _repository.SaveChangesAsync();
 
-        return reference;
+        await Task.Delay(Random.Shared.Next(1000, 3000), cancellationToken);
+        return Results.BadRequest(new { reference });
     }
 
     private string GenerateLoginFailureReference()

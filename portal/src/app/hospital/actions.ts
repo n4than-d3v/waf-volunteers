@@ -807,6 +807,9 @@ export const searchPatientSuccess = createAction(
 );
 export const searchPatientError = createAction('[HMS-V] Search patient: error');
 
+export const clearSearchPatientError = createAction(
+  '[HMS-V] Clear search patient error',
+);
 // View daily tasks
 
 export const viewDailyTasks = createAction(

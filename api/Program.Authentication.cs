@@ -1,4 +1,5 @@
-﻿using Api.Configuration;
+﻿using System.Threading.RateLimiting;
+using Api.Configuration;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,8 @@ public partial class Program
     private const string orphanFeederPolicy = "OrphanFeeder";
     private const string vetOrOrphanFeederPolicy = "VetOrOrphanFeeder";
     private const string clockingPolicy = "Clocking";
+
+    private const string loginRateLimiterPolicy = "LoginPolicy";
 
     private static void RegisterAuthentication(WebApplicationBuilder builder)
     {
@@ -46,5 +49,22 @@ public partial class Program
             .AddPolicy(orphanFeederPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsOrphanFeeder()))
             .AddPolicy(vetOrOrphanFeederPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsVet() || context.User.IsOrphanFeeder()))
             .AddPolicy(clockingPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsClocking()));
+
+        builder.Services
+            .AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.AddPolicy(loginRateLimiterPolicy, context =>
+                    RateLimitPartition.GetTokenBucketLimiter(
+                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                        factory: _ => new TokenBucketRateLimiterOptions
+                        {
+                            TokenLimit = 5,
+                            TokensPerPeriod = 1,
+                            ReplenishmentPeriod = TimeSpan.FromMinutes(1),
+                            AutoReplenishment = true,
+                            QueueLimit = 0
+                        }));
+            });
     }
 }

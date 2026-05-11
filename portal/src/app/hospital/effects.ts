@@ -35,10 +35,12 @@ import {
   delay,
   ignoreElements,
   map,
+  mapTo,
   mergeMap,
   of,
   switchMap,
   tap,
+  timer,
 } from 'rxjs';
 import {
   getPatient,
@@ -235,6 +237,7 @@ import {
   markCustomTaskDone,
   markCustomTaskDoneSuccess,
   markCustomTaskDoneError,
+  clearSearchPatientError,
 } from './actions';
 
 @Injectable()
@@ -1610,6 +1613,13 @@ export class HospitalEffects {
           }),
         ),
       ),
+    ),
+  );
+
+  clearSearchPatientError$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(searchPatientError),
+      switchMap(() => timer(3000).pipe(map(() => clearSearchPatientError()))),
     ),
   );
 

@@ -37,6 +37,7 @@ import {
   selectRemovePrescription,
 } from '../../selectors';
 import { HospitalPatientPrescriptionsFrequencyComponent } from './frequency/component';
+import { SortByAdministeredPipe } from './date-sort.pipe';
 
 @Component({
   selector: 'hospital-patient-prescriptions',
@@ -51,6 +52,7 @@ import { HospitalPatientPrescriptionsFrequencyComponent } from './frequency/comp
     HospitalPatientPrescriptionsFrequencyComponent,
     FormsModule,
     ReactiveFormsModule,
+    SortByAdministeredPipe,
   ],
 })
 export class HospitalPatientPrescriptionsComponent implements OnInit {
@@ -64,6 +66,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
   removeTask$: Observable<Task>;
 
   maxIndex = 5;
+  maxPrescriptionIndex: Record<number, number> = {};
 
   showAdministrations = false;
 

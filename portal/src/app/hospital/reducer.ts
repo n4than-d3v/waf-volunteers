@@ -191,6 +191,7 @@ import {
   dismissConcern,
   dismissConcernSuccess,
   dismissConcernError,
+  clearSearchPatientError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1139,6 +1140,13 @@ export const hospitalReducer = createReducer<HospitalState>(
       ...state.searchPatient,
       loading: false,
       error: true,
+    },
+  })),
+  on(clearSearchPatientError, (state) => ({
+    ...state,
+    searchPatient: {
+      ...state.searchPatient,
+      error: false,
     },
   })),
   // List rechecks

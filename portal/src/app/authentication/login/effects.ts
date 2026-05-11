@@ -37,6 +37,8 @@ export class LoginEffects {
               console.log(error);
               if (error.status === 400) {
                 return of(loginFailure({ reference: error.error.reference }));
+              } else if (error.status === 429) {
+                return of(loginFailure({ reference: '429' }));
               }
 
               return of(loginFailure({ reference: 'NETCON' }));

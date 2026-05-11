@@ -67,7 +67,7 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
                 await _pushService.Send(push, new PushNotification
                 {
                     Title = "Urgent shifts",
-                    Body = $"We need your help on {string.Join(" and ", notify)}. Please can you spare a few hours to attend an urgent shift?",
+                    Body = $"We need your help on {Format(notify)}. Please can you spare a few hours to attend an urgent shift?",
                     Url = "/volunteer/rota"
                 }, account.Id);
             }
@@ -76,5 +76,32 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
         await _pushService.RemoveInactiveSubscriptions();
 
         return Results.NoContent();
+    }
+
+    private static string NaturalJoin(IList<string> items)
+    {
+        return items.Count switch
+        {
+            0 => "",
+            1 => items[0],
+            2 => $"{items[0]} and {items[1]}",
+            _ => string.Join(", ", items.Take(items.Count - 1))
+                 + $", and {items.Last()}"
+        };
+    }
+
+    private static string Format(List<string> shifts)
+    {
+        var grouped = shifts
+            .GroupBy(x => x.Split(' ')[0])
+            .Select(g =>
+            {
+                var times = g.Select(x => x.Split(' ')[1]).ToList();
+
+                return $"{g.Key} {NaturalJoin(times)}";
+            })
+            .ToList();
+
+        return NaturalJoin(grouped);
     }
 }

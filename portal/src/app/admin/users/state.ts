@@ -15,6 +15,9 @@ export interface ProfileSummary {
   firstName: string;
   lastName: string;
   lastLoggedIn: string | null;
+  failedLoginAttempts: number;
+  lastFailedLogin: string | null;
+  lockoutEnd: string | null;
   userAgent: string | null;
   email: string;
   cars?: string[];

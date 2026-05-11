@@ -8,9 +8,15 @@
     <spinner></spinner>
     } @if (error$ | async) {
     <div class="error">
-      Login failed @if (errorMessage$ | async; as errorMessage) {
+      Login failed @if (errorMessage$ | async; as errorMessage) { @if
+      (errorMessage === '429') {
+      <span class="error-code">
+        Too many login attempts<br />
+        Please try again later
+      </span>
+      } @else {
       <span class="error-code">Error code: {{ errorMessage }}</span>
-      }
+      } }
     </div>
     } @if (!isPwa) {
     <div class="error center">

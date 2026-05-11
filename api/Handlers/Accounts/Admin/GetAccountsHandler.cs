@@ -38,6 +38,9 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
                 LastName = _encryptionService.Decrypt(user.LastName, user.Salt),
                 Email = _encryptionService.Decrypt(user.Email, user.Salt),
                 LastLoggedIn = user.LastLoggedIn,
+                FailedLoginAttempts = user.FailedLoginAttempts,
+                LastFailedLogin = user.LastFailedLogin,
+                LockoutEnd = user.LockoutEnd,
                 UserAgent = string.IsNullOrWhiteSpace(user.UserAgent) ? null : _encryptionService.Decrypt(user.UserAgent, user.Salt),
                 Subscribed = !string.IsNullOrWhiteSpace(_encryptionService.Decrypt(user.PushSubscription, user.Salt)),
                 Roles = (int)user.Roles,
@@ -61,6 +64,9 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
         public string LastName { get; set; }
         public string Email { get; set; }
         public DateTime? LastLoggedIn { get; set; }
+        public int FailedLoginAttempts { get; set; }
+        public DateTime? LockoutEnd { get; set; }
+        public DateTime? LastFailedLogin { get; set; }
         public string? UserAgent { get; set; }
         public bool Subscribed { get; set; }
         public int Roles { get; set; }

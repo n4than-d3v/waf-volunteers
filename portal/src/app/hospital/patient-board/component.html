@@ -267,6 +267,7 @@ reportConcern) { @if (reportConcern.loading) {
   >
     <div class="location">
       <span>{{ pen.reference }}</span>
+      @if (!(pen.needsCleaning || pen.custom)) {
       <svg
         (click)="reportingConcern = pen"
         width="800px"
@@ -286,6 +287,7 @@ reportConcern) { @if (reportConcern.loading) {
           [attr.fill]="pen.flagged ? '#E44040' : '#CEAFAF'"
         />
       </svg>
+      }
     </div>
     @if (pen.needsCleaning) {
     <div class="patients">
@@ -476,6 +478,7 @@ reportConcern) { @if (reportConcern.loading) {
   >
     <div class="location">
       <span>{{ pen.reference }}</span>
+      @if (!(pen.needsCleaning || pen.custom)) {
       <svg
         (click)="reportingConcern = pen"
         width="800px"
@@ -495,6 +498,7 @@ reportConcern) { @if (reportConcern.loading) {
           [attr.fill]="pen.flagged ? '#E44040' : '#CEAFAF'"
         />
       </svg>
+      }
     </div>
     @if (pen.needsCleaning) {
     <div class="patients">

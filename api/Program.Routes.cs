@@ -1049,7 +1049,8 @@ public partial class Program
 
         apiAccount
             .MapPost("/login", (IMediator mediator, Login request) => mediator.Send(request))
-            .AddNote("Unauthenticated user sends their username and password to login");
+            .AddNote("Unauthenticated user sends their username and password to login")
+            .RequireRateLimiting(loginRateLimiterPolicy);
 
         apiAccount
             .MapPost(
@@ -1058,14 +1059,16 @@ public partial class Program
             )
             .AddNote(
                 "Unauthenticated user requests email to be sent to them for resetting their password"
-            );
+            )
+            .RequireRateLimiting(loginRateLimiterPolicy);
 
         apiAccount
             .MapPut(
                 "/password/reset",
                 (IMediator mediator, ResetPassword request) => mediator.Send(request)
             )
-            .AddNote("Unauthenticated user uses emailed token to reset their password");
+            .AddNote("Unauthenticated user uses emailed token to reset their password")
+            .RequireRateLimiting(loginRateLimiterPolicy);
 
         apiAccount
             .MapGet("/users", (IMediator mediator) => mediator.Send(new GetAccounts()))

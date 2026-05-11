@@ -64,6 +64,11 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAngularApp");
 #endif
 
+app.UseRouting();
+app.UseRateLimiter();
+app.UseAuthentication();
+app.UseAuthorization();
+
 var api = app.MapGroup("/api");
 RegisterRoutes(api);
 

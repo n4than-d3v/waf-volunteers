@@ -57,9 +57,37 @@
   <tbody>
     @for (user of users; track user.id) { @if (shouldShow(user)) {
     <tr>
-      <td>{{ user.username }}</td>
+      <td>
+        {{ user.username }} @if (user.failedLoginAttempts > 0) {
+        <div class="failed-logins">
+          <p>Struggling to login</p>
+          @if (user.lockoutEnd) {
+          <p>
+            Locked until
+            <span> {{ user.lockoutEnd | date: 'HH:mm' }} </span>
+          </p>
+          }
+        </div>
+        }
+      </td>
       <td>{{ user.firstName }} {{ user.lastName }}</td>
-      <td>{{ user.lastLoggedIn | date: 'd MMM yyyy HH:mm'}}</td>
+      <td>
+        {{ user.lastLoggedIn | date: 'd MMM yyyy HH:mm'}} @if
+        (user.failedLoginAttempts > 0) {
+        <div class="failed-logins">
+          <p>
+            <span>{{ user.failedLoginAttempts }} </span> failed {{
+            user.failedLoginAttempts === 1 ? 'attempt' : 'attempts' }} to login
+          </p>
+          @if (user.lastFailedLogin) {
+          <p>
+            Most recent attempt on
+            <span> {{ user.lastFailedLogin | date: 'd MMM yyyy HH:mm' }} </span>
+          </p>
+          }
+        </div>
+        }
+      </td>
       <td>{{ user.userAgent }}</td>
       <td>{{ user.subscribed ? 'Enabled' : 'Disabled' }}</td>
       <td>

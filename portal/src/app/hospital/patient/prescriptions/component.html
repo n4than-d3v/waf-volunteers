@@ -93,8 +93,9 @@ patient.prescriptionMedications.length === 0) {
       <td></td>
     </tr>
 
-    @for (administration of prescription.administrations; track
-    administration.id) {
+    @for (administration of prescription.administrations | sortByAdministered;
+    let administrationIndex = $index; track administration.id) { @if
+    (administrationIndex < (maxPrescriptionIndex[prescription.id] || 5)) {
     <tr>
       <td colspan="4"></td>
       <td>{{ administration.administered | date: 'd MMM yyyy HH:mm' }}</td>
@@ -105,6 +106,18 @@ patient.prescriptionMedications.length === 0) {
       <td>{{ administration.success ? 'Success' : 'Fail' }}</td>
       <td>{{ administration.comments }}</td>
       <td></td>
+    </tr>
+    } } @if ((maxPrescriptionIndex[prescription.id] || 5) <
+    prescription.administrations.length) {
+    <tr>
+      <td colspan="4"></td>
+      <td colspan="5">
+        <a
+          class="load-more"
+          (click)="maxPrescriptionIndex[prescription.id] = (maxPrescriptionIndex[prescription.id] || 5) + 5"
+          >Load more...</a
+        >
+      </td>
     </tr>
     } } } }
   </tbody>

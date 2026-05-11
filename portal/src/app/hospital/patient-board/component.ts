@@ -7,14 +7,16 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { SpinnerComponent } from '../../shared/spinner/component';
-import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
   combineLatest,
+  interval,
   map,
   Observable,
   of,
+  startWith,
   Subscription,
   timer,
 } from 'rxjs';
@@ -50,6 +52,7 @@ import {
 } from './board.model';
 import { transform } from './board.transformer';
 import { svgs } from './svgs';
+import { Router } from '@angular/router';
 
 @Pipe({
   name: 'sortBoardPens',
@@ -95,6 +98,7 @@ export class SortBoardAreasPipe implements PipeTransform {
   ],
   imports: [
     AsyncPipe,
+    DatePipe,
     DecimalPipe,
     SpinnerComponent,
     SortBoardAreasPipe,
@@ -106,6 +110,10 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   boards$: Observable<ReadOnlyWrapper<ListPatientBoard[]>>;
   board$: Observable<PatientBoardVm | null>;
 
+  currentTime$ = interval(1000).pipe(
+    startWith(0),
+    map(() => new Date()),
+  );
   concernReasons$: Observable<ReadOnlyWrapper<ConcernCategory[]>>;
 
   viewingBoard: number | null = null;
@@ -193,7 +201,10 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   subscription: Subscription | null = null;
 
-  constructor(private store: Store) {
+  constructor(
+    public router: Router,
+    private store: Store,
+  ) {
     this.boards$ = this.store.select(selectPatientBoards);
     this.markBoard = this.store.select(selectMarkBoard);
     this.markPenClean = this.store.select(selectMarkPenClean);

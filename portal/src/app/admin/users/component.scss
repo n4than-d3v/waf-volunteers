@@ -6,7 +6,10 @@ table {
 th,
 td {
   text-align: left;
-  max-width: max-content;
+
+  &:nth-child(4) {
+    max-width: 20rem;
+  }
 }
 
 .buttons {
@@ -29,7 +32,7 @@ td {
 
 .failed-logins {
   p {
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
     color: var(--theme-color-2);
     font-weight: bold;
     font-size: 1rem;

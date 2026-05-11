@@ -1,8 +1,16 @@
 h1 {
-  color: white;
+  color: rgb(190, 223, 202);
   position: absolute;
-  top: 1rem;
-  right: 6rem;
+  top: 1.125rem;
+  right: 9rem;
+}
+
+h2.current-time {
+  color: rgba(190, 223, 202, 0.75);
+  position: absolute;
+  top: 1.51rem;
+  right: 2rem;
+  font-size: 2rem;
 }
 
 .boards {

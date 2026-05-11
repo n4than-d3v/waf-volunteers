@@ -58,15 +58,12 @@
     @for (user of users; track user.id) { @if (shouldShow(user)) {
     <tr>
       <td>
-        {{ user.username }} @if (user.failedLoginAttempts > 0) {
+        {{ user.username }} @if (user.lockoutEnd) {
         <div class="failed-logins">
-          <p>Struggling to login</p>
-          @if (user.lockoutEnd) {
           <p>
-            Locked until
-            <span> {{ user.lockoutEnd | date: 'HH:mm' }} </span>
+            Locked out until<br />
+            {{ user.lockoutEnd | date: 'd MMM yyyy HH:mm' }}
           </p>
-          }
         </div>
         }
       </td>
@@ -77,11 +74,11 @@
         <div class="failed-logins">
           <p>
             <span>{{ user.failedLoginAttempts }} </span> failed {{
-            user.failedLoginAttempts === 1 ? 'attempt' : 'attempts' }} to login
+            user.failedLoginAttempts === 1 ? 'attempt' : 'attempts' }}
           </p>
           @if (user.lastFailedLogin) {
           <p>
-            Most recent attempt on
+            Most recent on<br />
             <span> {{ user.lastFailedLogin | date: 'd MMM yyyy HH:mm' }} </span>
           </p>
           }

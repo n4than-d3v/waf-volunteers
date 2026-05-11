@@ -55,10 +55,11 @@ reportConcern) { @if (reportConcern.loading) {
     </button>
   </div>
 </div>
-} @else if (board && viewingBoard) {
+} @else if (board && viewingBoard) { @if (router.url.includes("/boards") ) {
 <h1>{{ board.board.name }}</h1>
-
-@if (board.board.messages != null && board.board.messages.length > 0) {
+@if (currentTime$ | async; as currentTime) {
+<h2 class="current-time">{{ currentTime | date: "HH:mm" }}</h2>
+} } @if (board.board.messages != null && board.board.messages.length > 0) {
 <div class="messages">
   @for (message of board.board.messages; track message.id) { @if
   (message.emergency) {

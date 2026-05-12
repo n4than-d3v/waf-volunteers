@@ -45,15 +45,18 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
         if (patient.Pen != null)
         {
             previousPenId = patient.Pen.Id;
-            var movement = new PatientMovement
+            if (previousPenId != pen.Id)
             {
-                Patient = patient,
-                From = patient.Pen,
-                To = pen,
-                Moved = DateTime.UtcNow
-            };
+                var movement = new PatientMovement
+                {
+                    Patient = patient,
+                    From = patient.Pen,
+                    To = pen,
+                    Moved = DateTime.UtcNow
+                };
 
-            _repository.Create(movement);
+                _repository.Create(movement);
+            }
         }
 
         patient.Pen = pen;

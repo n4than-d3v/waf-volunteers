@@ -316,13 +316,13 @@ export class HospitalPatientExamComponent implements OnInit {
         .controls.reason.clearValidators();
     }
     if (this.exam === null) {
+      if (!this.examForm.controls.settingFF.value) {
+        this.examForm.controls.feeding.clear();
+      }
       if (this.examForm.controls.outcome.value === 'alive') {
         this.examForm.controls.dispositionReasonIds.clear();
         if (this.examForm.controls.settingPen.value) {
           this.examForm.controls.penId.setValidators([Validators.required]);
-        }
-        if (!this.examForm.controls.settingFF.value) {
-          this.examForm.controls.feeding.clear();
         }
       } else if (this.examForm.controls.outcome.value == 'release') {
         this.examForm.controls.dispositionReasonIds.clear();
@@ -342,6 +342,7 @@ export class HospitalPatientExamComponent implements OnInit {
         }
       }
     } else {
+      this.examForm.controls.feeding.clear();
       this.examForm.controls.penId.clearValidators();
       this.examForm.controls.dispositionReasonIds.clear();
     }

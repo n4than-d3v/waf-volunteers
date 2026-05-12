@@ -117,6 +117,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   concernReasons$: Observable<ReadOnlyWrapper<ConcernCategory[]>>;
 
   viewingBoard: number | null = null;
+  tutorial = false;
 
   expandedPens: { [key: string]: boolean } = {};
   tickingTask = '';

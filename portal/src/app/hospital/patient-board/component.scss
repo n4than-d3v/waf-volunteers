@@ -13,6 +13,92 @@ h2.current-time {
   font-size: 2rem;
 }
 
+.view-tutorial {
+  padding: 0.25rem 0.5rem;
+}
+
+.boards-list-title {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.tutorial {
+  margin-top: 1rem;
+
+  p {
+    font-size: 0.95rem;
+  }
+
+  section {
+    margin-bottom: 1.5rem;
+  }
+
+  .flex {
+    display: flex;
+    gap: 1rem;
+  }
+
+  img {
+    height: 15rem;
+  }
+
+  p img {
+    height: 1.125em;
+    width: 1.125em;
+    margin-bottom: -0.25rem;
+    margin-right: 0.25rem;
+    border-radius: 50%;
+  }
+
+  .board-selector p {
+    margin-bottom: 0.75rem;
+  }
+
+  .filter {
+    margin-bottom: 0.5rem;
+  }
+
+  .buttons.shifts {
+    border: none !important;
+    margin: 0rem !important;
+    padding: 0rem !important;
+  }
+
+  .summary {
+    margin-top: 0.5rem;
+    margin-bottom: 0rem;
+    padding-bottom: 0rem;
+    border-bottom: none !important;
+  }
+
+  .pens {
+    .push-from-top {
+      margin-top: 1.75rem;
+    }
+
+    .border-top {
+      border-top: solid 2px black;
+    }
+
+    .explanation {
+      padding: 0.25rem 0.5rem;
+      max-width: 15rem;
+    }
+  }
+
+  .other-boards-wrapper {
+    border-top: none !important;
+  }
+
+  .margin-bottom {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
 .boards {
   display: flex;
   flex-wrap: wrap;

@@ -2,7 +2,11 @@
 <spinner></spinner>
 } @else if (boards.error) {
 <div class="error">Error occurred</div>
-} @else if (boards.data && (!viewingBoard)) {
+} @else if (boards.data) { @if (!(viewingBoard || tutorial)) {
+<button class="button button--primary view-tutorial" (click)="tutorial = true">
+  View tutorial
+</button>
+<h2 class="boards-list-title">Patient boards</h2>
 <div class="boards">
   @for (board of boards.data; track board.id) {
   <button
@@ -13,7 +17,1288 @@
   </button>
   }
 </div>
-} } @if (board$ | async; as board) { @if (reportConcern | async; as
+} @else if (tutorial){
+<button class="button button--primary view-tutorial" (click)="tutorial = false">
+  Return to boards
+</button>
+<div class="tutorial">
+  <h2>Tutorial</h2>
+  <section>
+    <h3>Hardware</h3>
+    <div class="flex">
+      <div class="flex">
+        <img src="/images/board/tutorial/remote-new.jpeg" />
+        <img src="/images/board/tutorial/remote-old.jpeg" />
+        <p>
+          At the start of each day, locate the corresponding remote control for
+          each board, then press the
+          <strong>
+            <img src="/images/board/tutorial/power.jpeg" />power button</strong
+          >
+          in the top left corner to turn them on.
+          <br />
+          At the end of the day, use the same button to turn each board off;
+          then leave the remote in a visible place for the morning shift.
+        </p>
+      </div>
+      <div class="flex">
+        <img src="/images/board/tutorial/mouse.jpeg" />
+        <p>
+          Each board has a corresponding mouse. Use the mouse cursor to navigate
+          the board. If moving the mouse doesn't work, try left-clicking once -
+          this will <i>"wake it up"</i>. If this doesn't work, you may need to
+          change the battery.
+          <br />
+          There are buttons on the left of the mouse - please avoid pressing
+          these when holding, as it may cause the screen to refresh.
+        </p>
+      </div>
+      <div class="flex">
+        <img src="/images/board/tutorial/pi-plug.jpeg" />
+        <p>
+          If you're experiencing technical difficulties, or see any errors,
+          locate this plug. Turn it off, wait 10 seconds, then turn it on again.
+          <br />
+          If this doesn't solve the issue, contact the office.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section class="board-selector">
+    <h3>Board selection</h3>
+    <p>
+      After the TV is turned on, you will be presented with a list of "boards"
+      to choose from.<br />
+      Each board shows different areas of the hospital, relevant to the board's
+      intended purpose. E.g. "SU4" will only show the patients in SU4.
+      <br />
+      Simply click on the board you wish to view, and you will be taken to it.
+    </p>
+    <div class="boards">
+      @for (board of boards.data; track board.id) {
+      <button
+        class="button button--secondary-invert board-button disabled"
+        disabled="disabled"
+      >
+        {{ board.name }}
+      </button>
+      }
+    </div>
+  </section>
+  <section class="board-selector">
+    <h3>Switching between boards</h3>
+    <p>
+      If you are viewing a board, and would like to change the board currently
+      being displayed, click the "Change board" button in the top left of the
+      screen.<br />
+      This will take you back to the board selection screen.<br />
+      With this, you have access to information regardless of your current
+      location in the hospital.<br />
+      E.g. if you're in top barn and wish to check if there's any FFs in SU4,
+      you can do so without needing to walk there.
+    </p>
+    <div class="top">
+      <div class="buttons">
+        <button class="button button--primary disabled" disabled="disabled">
+          Change board
+        </button>
+      </div>
+    </div>
+  </section>
+  <section class="board-selector">
+    <h3>Selecting your shift</h3>
+    <p>
+      When you are viewing a board, it's important that you ensure your shift is
+      selected (highlighted in purple).
+      <br />
+      When switching shifts, you will notice the board updates with the relevant
+      feeding times for your shift. If the morning shift is selected, you won't
+      see afternoon or evening feeds, and vice versa.
+      <br />To select your shift, simply click it; you should see it turn purple
+      shortly afterwards.
+    </p>
+    <div class="top">
+      <div class="buttons shifts">
+        <button
+          class="button button--secondary-invert disabled"
+          disabled="disabled"
+          [class.is-current]="true"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            version="1.1"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            fill="#000000"
+          >
+            @for (path of svgs.morning; track path) {
+            <path [attr.d]="path"></path>
+            }
+          </svg>
+          <span class="shift-text">
+            <span class="shift-name">Morning</span>
+            <span class="shift-time">09:00 &dash; 12:59</span>
+          </span>
+        </button>
+        <button
+          class="button button--secondary-invert disabled"
+          disabled="disabled"
+          [class.is-current]="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            version="1.1"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            fill="#000000"
+          >
+            <path [attr.d]="svgs.afternoon"></path>
+          </svg>
+          <span class="shift-text">
+            <span class="shift-name">Afternoon</span>
+            <span class="shift-time">13:00 &dash; 17:59</span>
+          </span>
+        </button>
+        <button
+          class="button button--secondary-invert disabled"
+          disabled="disabled"
+          [class.is-current]="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            version="1.1"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            fill="#000000"
+          >
+            <path [attr.d]="svgs.evening"></path>
+          </svg>
+          <span class="shift-text">
+            <span class="shift-name">Evening</span>
+            <span class="shift-time">18:00 &dash; 22:00</span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </section>
+  <section class="board-selector">
+    <h3>Filtering</h3>
+    <p>
+      If you wish to view the boards in traditional "whiteboard-style", that is
+      perfectly fine, and it's configured to operate that way by default.<br />
+      If, however, you wish for the boards to be more dynamic, you can use the
+      filters available to customise what gets displayed to you.
+    </p>
+    <div class="top">
+      <div class="filter">
+        <div>
+          <div class="field">
+            <label for="expandFeedingSummary"> Summary </label>
+            <input
+              type="checkbox"
+              id="expandFeedingSummary"
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+          <div class="field">
+            <label for="showPatientReferences"> References </label>
+            <input
+              type="checkbox"
+              id="showPatientReferences"
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <label for="showPensWithoutFeeds"> No feeds </label>
+            <input
+              type="checkbox"
+              id="showPensWithoutFeeds"
+              checked
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+          <div class="field">
+            <label for="showPensNeedCleaning"> Cleaning </label>
+            <input
+              type="checkbox"
+              id="showPensNeedCleaning"
+              checked
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <label for="showTickedOffPens"> Completed </label>
+            <input
+              type="checkbox"
+              id="showTickedOffPens"
+              checked
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+          <div class="field">
+            <label for="showOnlyDueAt"> Feed at </label>
+            <div class="time-selector">
+              <select class="disabled" disabled="disabled">
+                @for (hour of [9, 10, 11, 12]; track hour) {
+                <option [value]="hour">{{ hour | number: '2.0' }}</option>
+                }
+              </select>
+              <span>&colon;</span>
+              <select class="disabled" disabled="disabled">
+                @for (minute of [0, 15, 30, 45]; track minute) {
+                <option [value]="minute">{{ minute | number: '2.0' }}</option>
+                }
+              </select>
+            </div>
+            <input
+              type="checkbox"
+              id="showOnlyDueAt"
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex">
+      <div>
+        <h4>Summary</h4>
+        <p>
+          Unselected by default.
+          <br />
+          If selected, it will group the patients on the selected board by their
+          species (and age), showing a summary of the food that needs to be made
+          up, as well as listing all pens where that species is located.
+        </p>
+      </div>
+      <div>
+        <h4>References</h4>
+        <p>
+          Unselected by default.
+          <br />
+          If selected, you will see patient references. These are used to
+          identify individual patients on the vet system and patient cards.
+        </p>
+      </div>
+      <div>
+        <h4>No feeds</h4>
+        <p>
+          Selected by default.
+          <br />
+          If selected, you will see patients that do not require feeding on the
+          selected shift. If unselected, you won't.
+        </p>
+      </div>
+      <div>
+        <h4>Completed</h4>
+        <p>
+          Selected by default.
+          <br />
+          If selected, you will see patients that are considered "completed" on
+          the selected shift. If unselected, you won't.
+        </p>
+      </div>
+      <div>
+        <h4>Feed at</h4>
+        <p>
+          Unselected by default.
+          <br />
+          If selected, you will only see patients that have a feeding at a time
+          you specify using the drop-down boxes. Use this if you only wish to
+          see patients that require feeding at a specific time on your shift.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h3>Using the summary</h3>
+    <p>
+      The summary works best for teams that operate by assigning individuals to
+      particular species, rather than areas.
+      <br />
+      It will tell you how much food to prepare for a species (and age) on any
+      given board, as well as list the pens they are located in.
+      <br />
+      It's important to remember it will only summarise patients on the selected
+      board. Other boards are excluded.
+      <br />
+      If you wish to see a summary of both the "Top Barn" + "Hospital 2" boards,
+      use the "Everything" board.
+    </p>
+    <div class="flex">
+      <div class="summary">
+        <div class="species">
+          <div class="species__name">Red Fox</div>
+          <div class="variants">
+            <div class="variant">
+              <div class="variant__details">
+                <p class="variant__name">5x Small Fox Cub</p>
+                <div class="variant__foods">
+                  <p><strong>09:00</strong></p>
+                  <p class="food">250 g puppy food</p>
+                  <p class="food">250 ml fox valley</p>
+                </div>
+              </div>
+              <div class="variant__locations">SU1-02, SU1-3, FP-17</div>
+            </div>
+            <div class="variant">
+              <div class="variant__details">
+                <p class="variant__name">4x Fox</p>
+                <div class="variant__foods">
+                  <p><strong>09:00</strong></p>
+                  <p class="food">4 chicks</p>
+                </div>
+              </div>
+              <div class="variant__locations">DS-02, FP-25, FP-26</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h3>Pen</h3>
+    <div class="pens">
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>SU1-01</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+        <div class="patients">
+          <p>2x Small Fox Cub</p>
+        </div>
+        <div class="tags">
+          @for (tag of ['They bite']; track tag) {
+          <span class="tag">{{ tag }}</span>
+          }
+        </div>
+        <div class="tasks">
+          <div
+            class="task"
+            [class.task--current-shift]="true"
+            [class.task--relevant]="true"
+          >
+            <p class="time time--clean">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="true"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Mor</p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="false"
+          >
+            <p class="time">Aft</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Eve</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+        </div>
+        <div class="feeding-times">
+          <p class="time" [class.time--now]="true">09:00</p>
+          <p class="time" [class.time--now]="false">12:00</p>
+          <span class="expand"> [?] </span>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          This is a pen. The following explains each component, and how
+          everything is used.
+        </p>
+      </div>
+    </div>
+
+    <div class="pens">
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>SU1-01</span>
+          &nbsp; &nbsp; &nbsp;
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          The pen location is shown at the top. Consult the map in Top Barn if
+          there's any confusion.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          This flag is used to report a concern to the vets. Simply click on it
+          and select the reason you're concerned. The vets will be notified.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="true ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          This flag will show if anyone has reported a concern for this pen.
+          Once the vets have investigated the concern, it will go back to
+          normal.
+        </p>
+      </div>
+    </div>
+
+    <div class="pens">
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>2x Small Fox Cub</p>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>These are the patients that are housed in the pen.</p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="tags push-from-top">
+          @for (tag of ['They bite']; track tag) {
+          <span class="tag">{{ tag }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          Red tags are comments written by the vets, providing important
+          information. Pay close attention to these.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="tags push-from-top">
+          <span class="custom-diet">Special diet</span>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          This indicates that the feeding instructions for these patients are
+          not standard. Expand for more information.
+        </p>
+      </div>
+    </div>
+
+    <div class="pens">
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+        </div>
+        <div class="tasks">
+          <div
+            class="task"
+            [class.task--current-shift]="true"
+            [class.task--relevant]="true"
+          >
+            <p class="time time--clean">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="true"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Mor</p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="false"
+          >
+            <p class="time">Aft</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Eve</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+        </div>
+        <div class="feeding-times"></div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          Checkboxes being visible (not greyed out) indicate feeds required on
+          the selected shift. Click the empty white space to tick off a task.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="true">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+        </div>
+        <div class="tasks">
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="true"
+          >
+            <p class="time time--clean">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              ✔️
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="true"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Mor</p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              ✔️
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="false"
+          >
+            <p class="time">Aft</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Eve</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+        </div>
+        <div class="feeding-times"></div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          When both the cleaning task and the shift task have been ticked off,
+          the pen is considered "complete", and becomes green.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="true">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+        </div>
+        <div class="tasks">
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="true"
+          >
+            <p class="time time--clean">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              ✔️
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="true"
+            [class.task--relevant]="false"
+          >
+            <p class="time">Mor</p>
+            <button class="button button--secondary-invert" [disabled]="false">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="false"
+          >
+            <p class="time">Aft</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+          <div
+            class="task"
+            [class.task--current-shift]="false"
+            [class.task--relevant]="true"
+          >
+            <p class="time">Eve</p>
+            <button class="button button--secondary-invert" [disabled]="true">
+              &nbsp;
+            </button>
+          </div>
+        </div>
+        <div class="feeding-times"></div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          Diagonal lines indicate no feeds required for the shift. Pen is also
+          considered "complete" if no feeds are required (and marked as clean).
+        </p>
+      </div>
+    </div>
+
+    <div class="pens">
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+        </div>
+        <div class="feeding-times border-top">
+          <p class="time" [class.time--now]="true">09:00</p>
+          <p class="time" [class.time--now]="false">12:00</p>
+          <span class="expand"> [?] </span>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          Feedings required for the selected shift are shown. If the current
+          time is within 15 minutes of a feed, it's highlighted in green. Use
+          the <strong>[?]</strong> button to expand feeding instructions.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+        </div>
+
+        <div class="feeding-expanded border-top">
+          <span class="collapse">Hide</span>
+          <div class="feedings">
+            <div class="feeding">
+              <div>
+                <p class="time">09:00</p>
+                <p class="group">Mixed together</p>
+                <p class="details">
+                  <span class="quantity">50 g</span>
+                  <span class="food"> puppy food </span>
+                  <span class="notes"> </span>
+                </p>
+                <p class="details">
+                  <span class="quantity">50 ml</span>
+                  <span class="food"> fox valley </span>
+                </p>
+                <p class="group">Separate</p>
+                <p class="details">
+                  <span class="quantity">1</span>
+                  <span class="food"> chick </span>
+                  <span class="notes"> </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          When preparing the food, ensure to follow these instructions. Items
+          that should be mixed together will be clearly described as such. Use
+          the <strong>Hide</strong> button to collapse feeding instructions.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+        </div>
+        <div class="patients">
+          <p>&nbsp;</p>
+        </div>
+
+        <div class="feeding-expanded border-top">
+          <span class="collapse">Hide</span>
+          <div class="feedings">
+            <div class="feeding">
+              <div>
+                <p class="time">09:00</p>
+                <p class="group">Mixed together</p>
+                <p class="details">
+                  <span class="quantity">250 g</span>
+                  <span class="food"> puppy food </span>
+                  <span class="each"> (50 g each) </span>
+                  <span class="notes"> </span>
+                </p>
+                <p class="details">
+                  <span class="quantity">250 ml</span>
+                  <span class="food"> fox valley </span>
+                  <span class="each"> (50 ml each) </span>
+                </p>
+                <p class="group">Separate</p>
+                <p class="details">
+                  <span class="quantity">5</span>
+                  <span class="food"> chicks </span>
+                  <span class="each"> (1 each) </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          If there are multiple patients in a pen, you will see the total
+          required for the pen. This total is divided by the number of patients
+          to give an "each" value for additional information.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h3>Nursery pens</h3>
+    <p class="margin-bottom">
+      These operate similarly to the regular pens.
+      <br />
+      The location, flagging system, tags, patient info, feeding instructions,
+      and task checkboxes are the same.
+    </p>
+    <p>Pen that requires force feeds.</p>
+    <div class="nursery-pens">
+      <div
+        class="nursery-pen"
+        [class.expanded]="false"
+        [class.completed]="false"
+      >
+        <div class="location">
+          <span>NUR-INC-21</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <div class="patients">
+          <p class="variant">1x Common Wood Pigeon</p>
+        </div>
+
+        <div class="force-feeds">
+          <p class="heading">Force feed</p>
+          <p class="item">25 ml tropican</p>
+        </div>
+
+        <div class="feeding-times tasks">
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">09:00</p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>FF</span>
+            </p>
+          </div>
+          <span class="expand"> [?] </span>
+        </div>
+      </div>
+    </div>
+
+    <p>Pen that requires interval feeding, with the next feed imminent.</p>
+
+    <div class="nursery-pens">
+      <div
+        class="nursery-pen"
+        [class.expanded]="false"
+        [class.completed]="false"
+      >
+        <div class="location">
+          <span>NUR-INC-21</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <div class="patients">
+          <p class="variant">1x Common Wood Pigeon</p>
+        </div>
+
+        <div class="feeding-summary">
+          <p class="interval">Every 2 hours</p>
+          <p class="food">mealworms</p>
+        </div>
+
+        <div class="next-feed">
+          <div class="part">
+            <p>Previous feed at</p>
+            <p class="time">09:00</p>
+          </div>
+          <div class="part">
+            <p>Next feed at</p>
+            <p class="time" [class.time--now]="true">11:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Pen that requires interval feeding, with the next feed some time away.
+    </p>
+    <div class="nursery-pens">
+      <div
+        class="nursery-pen"
+        [class.expanded]="false"
+        [class.completed]="false"
+      >
+        <div class="location">
+          <span>NUR-INC-21</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <div class="patients">
+          <p class="variant">1x Common Wood Pigeon</p>
+        </div>
+
+        <div class="feeding-summary">
+          <p class="interval">Every 3 hours</p>
+          <p class="food">mealworms</p>
+        </div>
+
+        <div class="next-feed">
+          <div class="part">
+            <p>Previous feed at</p>
+            <p class="time">09:00</p>
+          </div>
+          <div class="part">
+            <p>Next feed at</p>
+            <p class="time" [class.time--now]="false">12:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Pen that requires interval feeding, but does not have any more feeds for
+      the selected shift.
+    </p>
+    <div class="nursery-pens">
+      <div
+        class="nursery-pen"
+        [class.expanded]="false"
+        [class.completed]="false"
+      >
+        <div class="location">
+          <span>NUR-INC-21</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <div class="patients">
+          <p class="variant">1x Common Wood Pigeon</p>
+        </div>
+
+        <div class="feeding-summary">
+          <p class="interval">Every 3 hours</p>
+          <p class="food">mealworms</p>
+        </div>
+
+        <div class="next-feed">
+          <div class="part">
+            <p>Previous feed at</p>
+            <p class="time">12:00</p>
+          </div>
+          <div class="part">
+            <p>No more feeds for your shift</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>Pen that requires regular feeds (not FF), one being imminent.</p>
+    <div class="nursery-pens">
+      <div
+        class="nursery-pen"
+        [class.expanded]="false"
+        [class.completed]="false"
+      >
+        <div class="location">
+          <span>NUR-INC-21</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <div class="patients">
+          <p class="variant">1x Common Wood Pigeon</p>
+        </div>
+
+        <div class="no-ff-no-summary">&nbsp;</div>
+        <div class="feeding-times tasks">
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">09:00</p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>T-Up</span>
+            </p>
+          </div>
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="true">11:00</p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>T-Up</span>
+            </p>
+          </div>
+          <span class="expand"> [?] </span>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Pen that requires force feeds, as well as regular feeds, one being
+      imminent.
+    </p>
+    <div class="nursery-pens">
+      <div
+        class="nursery-pen"
+        [class.expanded]="false"
+        [class.completed]="false"
+      >
+        <div class="location">
+          <span>NUR-INC-21</span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <div class="patients">
+          <p class="variant">1x Common Wood Pigeon</p>
+        </div>
+
+        <div class="force-feeds">
+          <p class="heading">Force feed</p>
+          <p class="item">25 ml tropican</p>
+        </div>
+
+        <div class="feeding-times tasks">
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">09:00</p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>FF</span>
+              <span>T-Up</span>
+            </p>
+          </div>
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="true">11:00</p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>FF</span>
+            </p>
+          </div>
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">12:00</p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>T-Up</span>
+            </p>
+          </div>
+          <span class="expand"> [?] </span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section>
+    <h3>Other relevant areas</h3>
+    <p>
+      On some boards, there will be a section at the bottom that summarises
+      other areas. <br />For example, on the "Top Barn" board, there are
+      summaries for patients housed in SU3, SU4, and Quarantine.
+      <br />
+      These summaries don't include any feeding instructions, just patient
+      counts; you can view the appropriate boards for further details.
+    </p>
+    <div class="other-boards-wrapper">
+      <div class="pens">
+        <div class="pen">
+          <div class="location">SU3</div>
+          <div class="patients">
+            <p>12x Mallard (Nestling)</p>
+            <p>5x Mallard (Fledgling)</p>
+            <p>1x Hedgehog (400g-600g)</p>
+            <p>3x Hedgehog (600g+)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+} } } @if (board$ | async; as board) { @if (reportConcern | async; as
 reportConcern) { @if (reportConcern.loading) {
 <spinner></spinner>
 } @else if (reportConcern.error) {

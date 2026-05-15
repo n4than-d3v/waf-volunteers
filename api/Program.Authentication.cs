@@ -1,9 +1,7 @@
-﻿using System.Threading.RateLimiting;
-using Api.Configuration;
+﻿using Api.Configuration;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 public partial class Program

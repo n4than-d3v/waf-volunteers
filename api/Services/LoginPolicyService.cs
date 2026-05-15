@@ -40,13 +40,13 @@ public sealed class LoginPolicyService : ILoginPolicyService
         QueueLimit = 0
     };
 
-    private bool IsTrusted(string? ipAddress)
+    private bool IsTrusted(string? ip)
     {
-        if (string.IsNullOrWhiteSpace(ipAddress))
+        if (string.IsNullOrWhiteSpace(ip))
         {
             return false;
         }
 
-        return _trustedNetworks.Contains(ipAddress);
+        return _trustedNetworks.Contains(ip);
     }
 }

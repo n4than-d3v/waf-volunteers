@@ -1,9 +1,20 @@
 ﻿using Api.Configuration;
+using Microsoft.AspNetCore.HttpOverrides;
 
 public partial class Program
 {
     private static void RegisterConfiguration(WebApplicationBuilder builder)
     {
+        builder.Services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders =
+                ForwardedHeaders.XForwardedFor |
+                ForwardedHeaders.XForwardedProto;
+
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
         builder.Services.Configure<SecuritySettings>(
             builder.Configuration.GetSection("Security")
         );

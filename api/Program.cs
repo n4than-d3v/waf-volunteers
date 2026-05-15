@@ -58,6 +58,7 @@ _ = Task.Run(async () =>
 
 UseSwagger(app);
 
+app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 
 #if DEBUG

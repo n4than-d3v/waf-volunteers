@@ -61,6 +61,21 @@ UseSwagger(app);
 app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 
+app.Use(async (context, next) =>
+{
+    var ip = context.Connection.RemoteIpAddress?.ToString();
+
+    var logger = context.RequestServices
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("RequestIP");
+
+    logger.LogInformation("Request from IP: {IP} {Path}",
+        ip,
+        context.Request.Path);
+
+    await next();
+});
+
 #if DEBUG
 app.UseCors("AllowAngularApp");
 #endif

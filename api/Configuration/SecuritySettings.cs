@@ -4,4 +4,5 @@ public class SecuritySettings
 {
     public string HmacKey { get; set; }
     public string AesKey { get; set; }
+    public string[] TrustedNetworks { get; set; }
 }

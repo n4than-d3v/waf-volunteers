@@ -15,6 +15,7 @@ export interface ProfileSummary {
   firstName: string;
   lastName: string;
   lastLoggedIn: string | null;
+  startDate: string | null;
   failedLoginAttempts: number;
   lastFailedLogin: string | null;
   lockoutEnd: string | null;

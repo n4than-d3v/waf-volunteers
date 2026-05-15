@@ -145,13 +145,15 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
                 account.UpdatePersonalDetails(firstName, lastName, email, beaconInfo, account.Cars);
                 account.SetDateOfBirth(_encryptionService.Encrypt(string.Empty, account.Salt));
 
-                if (!string.IsNullOrWhiteSpace(activeVolunteer.entity.date_of_birth))
+                if (DateTime.TryParse(activeVolunteer.entity.date_of_birth ?? string.Empty, out DateTime dob))
                 {
-                    if (DateTime.TryParse(activeVolunteer.entity.date_of_birth, out DateTime dob))
-                    {
-                        var dateOfBirth = _encryptionService.Encrypt(dob.ToString("yyyy-MM-dd"), account.Salt);
-                        account.SetDateOfBirth(dateOfBirth);
-                    }
+                    var dateOfBirth = _encryptionService.Encrypt(dob.ToString("yyyy-MM-dd"), account.Salt);
+                    account.SetDateOfBirth(dateOfBirth);
+                }
+
+                if (DateTime.TryParse(activeVolunteer.entity.volunteer_start_date ?? string.Empty, out DateTime startDate))
+                {
+                    account.SetStartDate(DateOnly.FromDateTime(startDate));
                 }
 
                 AccountRoles roles = 0;

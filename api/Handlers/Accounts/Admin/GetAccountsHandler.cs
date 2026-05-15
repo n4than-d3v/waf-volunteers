@@ -38,6 +38,7 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
                 LastName = _encryptionService.Decrypt(user.LastName, user.Salt),
                 Email = _encryptionService.Decrypt(user.Email, user.Salt),
                 DateOfBirth = _encryptionService.Decrypt(user.DateOfBirth, user.Salt),
+                StartDate = user.StartDate,
                 LastLoggedIn = user.LastLoggedIn,
                 FailedLoginAttempts = user.FailedLoginAttempts,
                 LastFailedLogin = user.LastFailedLogin,
@@ -65,6 +66,7 @@ public class GetAccountsHandler : IRequestHandler<GetAccounts, IResult>
         public string LastName { get; set; }
         public string Email { get; set; }
         public string DateOfBirth { get; set; }
+        public DateOnly? StartDate { get; set; }
         public DateTime? LastLoggedIn { get; set; }
         public int FailedLoginAttempts { get; set; }
         public DateTime? LockoutEnd { get; set; }

@@ -14,6 +14,7 @@ import { AdminUsersRoleComponent } from './roles.component';
 import { AdminUsersStatusComponent } from './status.component';
 import { SpinnerComponent } from '../../shared/spinner/component';
 import { FormsModule } from '@angular/forms';
+import moment from 'moment';
 
 @Component({
   selector: 'admin-users',
@@ -60,6 +61,29 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
   beaconSync() {
     this.store.dispatch(runBeaconSync());
+  }
+
+  getTenure(profile: ProfileSummary) {
+    if (!profile.startDate) return '';
+
+    const start = moment(profile.startDate);
+    const now = moment();
+
+    const years = now.diff(start, 'years');
+    start.add(years, 'years');
+
+    const months = now.diff(start, 'months');
+    start.add(months, 'months');
+
+    const days = now.diff(start, 'days');
+
+    let response: string[] = [];
+    if (years > 0) response.push(years + ' ' + (years == 1 ? 'yr' : 'yrs'));
+    if (months > 0)
+      response.push(months + ' ' + (months == 1 ? 'month' : 'months'));
+    if (days > 0) response.push(days + ' ' + (days == 1 ? 'day' : 'days'));
+
+    return response.join(' ');
   }
 
   shouldShow(profile: ProfileSummary) {

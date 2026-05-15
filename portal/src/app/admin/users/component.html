@@ -51,6 +51,7 @@
       <th>Notifications</th>
       <th>Status</th>
       <th>Roles</th>
+      <th>Tenure</th>
       <th></th>
     </tr>
   </thead>
@@ -93,6 +94,7 @@
       <td>
         <admin-users-role [roles]="user.roles" />
       </td>
+      <td>{{ getTenure(user) }}</td>
       <td>
         <a [routerLink]="'./' + user.id + '/update-info'">Details</a>
         |

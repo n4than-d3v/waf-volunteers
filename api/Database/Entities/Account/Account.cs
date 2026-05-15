@@ -12,16 +12,18 @@ public class Account : Entity
     public AccountStatus Status { get; private set; }
     public AccountRoles Roles { get; private set; }
     public HomeCarerPermissions HomeCarerPermissions { get; private set; }
-    public DateTime? LastLoggedIn { get; private set; }
-    public string? UserAgent { get; private set; }
+    public DateOnly? StartDate { get; private set; }
 
     #endregion
 
     #region Security
 
-    public int FailedLoginAttempts { get; set; }
-    public DateTime? LockoutEnd { get; set; }
-    public DateTime? LastFailedLogin { get; set; }
+    public DateTime? LastLoggedIn { get; private set; }
+    public string? UserAgent { get; private set; }
+
+    public int FailedLoginAttempts { get; private set; }
+    public DateTime? LockoutEnd { get; private set; }
+    public DateTime? LastFailedLogin { get; private set; }
 
     #endregion
 
@@ -91,10 +93,40 @@ public class Account : Entity
 
     #region Behaviours
 
+    #region Security
+
+    private const int MaxFailedAttempts = 5;
+    private const int LockMinutes = 15;
+
+    public void LoginFailed(bool recordAttempt)
+    {
+        LastFailedLogin = DateTime.UtcNow;
+
+        if (!recordAttempt) return;
+
+        FailedLoginAttempts++;
+
+        if (FailedLoginAttempts < MaxFailedAttempts) return;
+
+        LockoutEnd = DateTime.UtcNow.AddMinutes(LockMinutes);
+    }
+
+    public void Login(string userAgent)
+    {
+        LastLoggedIn = DateTime.UtcNow;
+        UserAgent = userAgent;
+
+        FailedLoginAttempts = 0;
+        LockoutEnd = null;
+        LastFailedLogin = null;
+    }
+
     public void ResetPassword(string password)
     {
         Password = password;
     }
+
+    #endregion
 
     public void UpdateBeaconId(int beaconId)
     {
@@ -104,6 +136,11 @@ public class Account : Entity
     public void SetDateOfBirth(string dateOfBirth)
     {
         DateOfBirth = dateOfBirth;
+    }
+
+    public void SetStartDate(DateOnly startDate)
+    {
+        StartDate = startDate;
     }
 
     public void UpdatePersonalDetails(string firstName, string lastName, string email, string beaconInfo, string[] cars)
@@ -141,16 +178,6 @@ public class Account : Entity
     public void UpdateHomeCarerPermissions(HomeCarerPermissions homeCarerPermissions)
     {
         HomeCarerPermissions = homeCarerPermissions;
-    }
-
-    public void Login(string userAgent)
-    {
-        LastLoggedIn = DateTime.UtcNow;
-        UserAgent = userAgent;
-
-        FailedLoginAttempts = 0;
-        LockoutEnd = null;
-        LastFailedLogin = null;
     }
 
     #endregion

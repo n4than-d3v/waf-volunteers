@@ -149,13 +149,12 @@ public partial class BeaconService
         public class BeaconInfo : EntityBase
         {
             public int id { get; set; }
-            public List<string> type { get; set; }
             public List<Email> emails { get; set; }
             public List<string> volunteer_status { get; set; }
             public List<string> volunteer_availability { get; set; }
             public List<string> volunteer_roles { get; set; }
-            public DateTime? c_volunteer_end_date { get; set; }
-            public string date_of_birth { get; set; }
+            public string? volunteer_start_date { get; set; }
+            public string? date_of_birth { get; set; }
         }
 
         public class EntityBase

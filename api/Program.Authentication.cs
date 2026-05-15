@@ -3,6 +3,7 @@ using Api.Configuration;
 using Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 public partial class Program
@@ -50,21 +51,20 @@ public partial class Program
             .AddPolicy(vetOrOrphanFeederPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsVet() || context.User.IsOrphanFeeder()))
             .AddPolicy(clockingPolicy, policy => policy.RequireAssertion((AuthorizationHandlerContext context) => context.User.IsClocking()));
 
+        builder.Services.AddTransient<ILoginPolicyService, LoginPolicyService>();
+
         builder.Services
             .AddRateLimiter(options =>
             {
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
                 options.AddPolicy(loginRateLimiterPolicy, context =>
-                    RateLimitPartition.GetTokenBucketLimiter(
-                        partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
-                        factory: _ => new TokenBucketRateLimiterOptions
-                        {
-                            TokenLimit = 5,
-                            TokensPerPeriod = 1,
-                            ReplenishmentPeriod = TimeSpan.FromMinutes(1),
-                            AutoReplenishment = true,
-                            QueueLimit = 0
-                        }));
+                {
+                    var loginPolicyService = context.RequestServices
+                        .GetRequiredService<ILoginPolicyService>();
+
+                    return loginPolicyService.GetPolicy(context);
+                });
             });
     }
 }

@@ -22,9 +22,6 @@ public class Login : IRequest<IResult>
 
 public class LoginHandler : IRequestHandler<Login, IResult>
 {
-    private const int MaxFailedAttempts = 5;
-    private const int LockMinutes = 15;
-
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IDatabaseRepository _repository;
     private readonly IEncryptionService _encryptionService;
@@ -53,13 +50,13 @@ public class LoginHandler : IRequestHandler<Login, IResult>
 
             if (user.Status != AccountStatus.Active)
             {
-                user.LastFailedLogin = DateTime.UtcNow;
+                user.LoginFailed(false);
                 return await Failure(request, LoginFailureBreakpoint.StatusIsNotActive, cancellationToken);
             }
 
             if (user.LockoutEnd.HasValue && DateTime.UtcNow <= user.LockoutEnd.Value)
             {
-                user.LastFailedLogin = DateTime.UtcNow;
+                user.LoginFailed(false);
                 await Failure(request, LoginFailureBreakpoint.AccountLocked, cancellationToken);
                 return Results.StatusCode(StatusCodes.Status429TooManyRequests);
             }
@@ -67,12 +64,7 @@ public class LoginHandler : IRequestHandler<Login, IResult>
             var password = _hashService.Hash(request.Password);
             if (user.Password != password)
             {
-                user.FailedLoginAttempts++;
-                user.LastFailedLogin = DateTime.UtcNow;
-
-                if (user.FailedLoginAttempts >= MaxFailedAttempts)
-                    user.LockoutEnd = DateTime.UtcNow.AddMinutes(LockMinutes);
-
+                user.LoginFailed(recordAttempt: true);
                 return await Failure(request, LoginFailureBreakpoint.PasswordDoesNotMatch, cancellationToken);
             }
 

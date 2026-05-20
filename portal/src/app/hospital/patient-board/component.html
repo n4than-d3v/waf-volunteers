@@ -1605,9 +1605,9 @@ reportConcern) { @if (reportConcern.loading) {
       </div>
       }
     </div>
-    @if (pen.tags && pen.tags.length) {
+    @if ((pen.tags && pen.tags.length) || pen.hasCustomDiet) {
     <div class="tags">
-      @for (tag of pen.tags; track tag) {
+      @for (tag of (pen.tags || []); track tag) {
       <span class="tag">{{ tag }}</span>
       } @if (pen.hasCustomDiet) {
       <span class="custom-diet">Special diet</span>

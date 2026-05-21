@@ -278,7 +278,7 @@ export class HospitalPatientExamComponent implements OnInit {
         topUp: new FormControl(false),
         noQuantity: new FormControl(false),
       },
-      { validators: this.quantityValidator },
+      { validators: [this.quantityValidator, this.timeValidator] },
     );
     this.examForm.controls.feeding.push(formGroup);
     return formGroup;
@@ -290,6 +290,24 @@ export class HospitalPatientExamComponent implements OnInit {
 
     if (!noQuantity && !quantityValue) {
       return { quantityRequired: true };
+    }
+
+    return null;
+  }
+
+  timeValidator(group: AbstractControl) {
+    const timeKind = group.get('timeKind')?.value;
+    const time = group.get('time')?.value;
+
+    if (timeKind === 'Every') {
+      try {
+        const timeAsNumber = Number(time);
+        if (timeAsNumber <= 0) {
+          return { timeLessThanZero: true };
+        }
+      } catch {
+        return { timeNaN: true };
+      }
     }
 
     return null;

@@ -232,7 +232,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             boardArea.Pens = CreateBoardAreaPens(areaPatients, concerns);
 
         boardArea.Pens.AddRange(
-            GetPensNeedingCleaning(area.Area)
+            GetPensWithCleanStatus(area.Area)
         );
 
         return boardArea;
@@ -335,13 +335,13 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             }).ToList();
     }
 
-    private static List<PatientBoardAreaPen> GetPensNeedingCleaning(Area area)
+    private static List<PatientBoardAreaPen> GetPensWithCleanStatus(Area area)
     {
-        return area.Pens.Where(pen => pen.NeedsCleaning).Select(pen => new PatientBoardAreaPen
+        return area.Pens.Where(pen => pen.CleanStatus != PenCleanStatus.None).Select(pen => new PatientBoardAreaPen
         {
             Id = pen.Id,
             Reference = pen.Reference,
-            NeedsCleaning = pen.NeedsCleaning,
+            CleanStatus = pen.CleanStatus,
             Patients = [],
             PatientReferences = []
         }).ToList();
@@ -530,7 +530,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         public List<PatientBoardAreaPenFeeding> Feedings { get; set; }
         public List<PatientBoardAreaPenFeedingSummary> FeedingSummaries { get; set; }
-        public bool NeedsCleaning { get; set; }
+        public PenCleanStatus CleanStatus { get; set; }
         public bool Flagged { get; set; }
     }
 

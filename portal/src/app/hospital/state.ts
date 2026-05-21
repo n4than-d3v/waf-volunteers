@@ -39,7 +39,7 @@ export interface HospitalState {
   updateTags: Task;
   addLabs: Task;
   markBoard: Task;
-  markPenClean: Task;
+  setPenCleanStatus: Task;
 
   // Patient details
   foods: ReadOnlyWrapper<Food[]>;
@@ -79,7 +79,8 @@ export type TabCode =
   | 'VIEW_DAILY_TASKS'
   | 'VIEW_STOCK'
   | 'VIEW_BOARDS'
-  | 'VIEW_EMBEDDED_CONTENT';
+  | 'VIEW_EMBEDDED_CONTENT'
+  | 'PEN_MANAGEMENT';
 
 export interface Tab {
   code: TabCode;
@@ -673,7 +674,14 @@ export interface Pen {
 
   // Only available on getAreas()
   empty: boolean;
-  needsCleaning: boolean;
+  cleanStatus: PenCleanStatus;
+}
+
+export enum PenCleanStatus {
+  None = 0,
+  NeedsCleaning = 1,
+  NeedsSettingUp = 2,
+  ReadyToUse = 3,
 }
 
 export interface Area {
@@ -809,7 +817,7 @@ export interface PatientBoardAreaPen {
   feedings: PatientBoardAreaPenFeeding[];
   feedingSummaries: PatientBoardAreaPenFeedingSummary[];
 
-  needsCleaning: boolean;
+  cleanStatus: PenCleanStatus;
 }
 
 export interface PatientBoardAreaPenFeedingSummary {
@@ -863,7 +871,7 @@ export const initialHospitalState: HospitalState = {
   tab: { code: 'DASHBOARD', title: 'Dashboard' },
   tabHistory: [{ code: 'DASHBOARD', title: 'Dashboard' }],
   markBoard: createTask(),
-  markPenClean: createTask(),
+  setPenCleanStatus: createTask(),
   dashboard: createReadOnlyWrapper<Dashboard>(),
   patientCounts: createReadOnlyWrapper<PatientCounts>(),
   patientsByStatus: createReadOnlyWrapper<{

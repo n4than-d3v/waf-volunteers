@@ -30,7 +30,7 @@ public class MarkPenNeedsCleaningHandler : IRequestHandler<MarkPenNeedsCleaning,
 
         if (pen.Empty)
         {
-            pen.NeedsCleaning = true;
+            pen.CleanStatus = PenCleanStatus.NeedsCleaning;
             await _repository.SaveChangesAsync();
         }
 

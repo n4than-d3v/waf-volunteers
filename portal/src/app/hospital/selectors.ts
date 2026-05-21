@@ -224,9 +224,9 @@ export const selectMarkBoard = createSelector(
   (state) => state.markBoard,
 );
 
-export const selectMarkPenClean = createSelector(
+export const selectSetPenCleanStatus = createSelector(
   selectHospitalState,
-  (state) => state.markPenClean,
+  (state) => state.setPenCleanStatus,
 );
 
 export const selectAttachment = createSelector(

@@ -7,6 +7,7 @@ import {
   HomeCarer,
   Patient,
   PatientStatus,
+  PenCleanStatus,
   ReadOnlyWrapper,
   Task,
 } from '../../state';
@@ -186,11 +187,17 @@ export class HospitalPatientHomeCareComponent implements OnInit {
       .filter((x) => !x.deleted)
       .map((pen) => ({
         id: pen.id,
-        display: pen.needsCleaning
-          ? `🟥 ${pen.reference} (dirty)`
-          : pen.empty
-            ? `🟩 ${pen.reference} (empty)`
-            : `🟨 ${pen.reference} (in use)`,
+        display: pen.empty
+          ? pen.cleanStatus === PenCleanStatus.None
+            ? `⬜ ${pen.reference} (available)`
+            : pen.cleanStatus === PenCleanStatus.NeedsCleaning
+              ? `🟥 ${pen.reference} (dirty)`
+              : pen.cleanStatus === PenCleanStatus.NeedsSettingUp
+                ? `🟧 ${pen.reference} (not set up)`
+                : pen.cleanStatus === PenCleanStatus.ReadyToUse
+                  ? `🟩 ${pen.reference} (ready to use)`
+                  : `⬛ ${pen.reference} (unknown)`
+          : `🟨 ${pen.reference} (in use)`,
       }));
   }
 

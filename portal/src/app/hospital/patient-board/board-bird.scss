@@ -97,6 +97,10 @@
         color: var(--theme-color-2);
         font-weight: bold;
         padding: 0rem 0.25rem;
+
+        &.instruction--green {
+          color: var(--theme-color-4);
+        }
       }
 
       .tags {
@@ -188,6 +192,10 @@
           display: flex;
           align-items: center;
           flex-direction: column;
+
+          &.ff-label--ff {
+            background-color: rgb(241, 200, 200);
+          }
 
           span {
             font-weight: bold;

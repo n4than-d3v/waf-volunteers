@@ -165,9 +165,9 @@ import {
   markBoardTaskComplete,
   markBoardTaskCompleteSuccess,
   markBoardTaskCompleteError,
-  markPenClean,
-  markPenCleanError,
-  markPenCleanSuccess,
+  setPenCleanStatus,
+  setPenCleanStatusError,
+  setPenCleanStatusSuccess,
   getFoods,
   getFoodsSuccess,
   getFoodsError,
@@ -1359,27 +1359,27 @@ export const hospitalReducer = createReducer<HospitalState>(
       error: false,
     },
   })),
-  on(markPenClean, (state) => ({
+  on(setPenCleanStatus, (state) => ({
     ...state,
-    markPenClean: {
-      ...state.markPenClean,
+    setPenCleanStatus: {
+      ...state.setPenCleanStatus,
       loading: true,
       success: false,
       error: false,
     },
   })),
-  on(markPenCleanSuccess, (state) => ({
+  on(setPenCleanStatusSuccess, (state) => ({
     ...state,
-    markPenClean: {
-      ...state.markPenClean,
+    setPenCleanStatus: {
+      ...state.setPenCleanStatus,
       loading: false,
       success: true,
     },
   })),
-  on(markPenCleanError, (state) => ({
+  on(setPenCleanStatusError, (state) => ({
     ...state,
-    markPenClean: {
-      ...state.markPenClean,
+    setPenCleanStatus: {
+      ...state.setPenCleanStatus,
       loading: false,
       error: false,
     },

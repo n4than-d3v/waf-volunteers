@@ -1,4 +1,5 @@
 import { PatientBoardAreaDisplayType } from '../../admin/hospital/state';
+import { PenCleanStatus } from '../state';
 import { FoodSection } from './food-section';
 
 export type Shift = 'M' | 'A' | 'E';
@@ -87,7 +88,7 @@ export interface PatientBoardAreaPenVm {
   feedings: PatientBoardAreaPenFeedingVm[];
   feedingSummaries: PatientBoardAreaPenFeedingSummaryVm[];
 
-  needsCleaning: boolean;
+  cleanStatus: PenCleanStatus;
 
   shouldShow: boolean;
   isExpandable: boolean;

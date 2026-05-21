@@ -29,6 +29,7 @@ import {
   Attachment,
   EmbeddedContent,
   ConcernCategory,
+  PenCleanStatus,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -948,15 +949,21 @@ export const markBoardTaskCompleteError = createAction(
   '[HMS-V] Mark board task complete: error',
 );
 
-export const markPenClean = createAction(
-  '[HMS-V] Mark pen clean',
-  props<{ boardId: number; penId: number }>(),
+export const setPenCleanStatus = createAction(
+  '[HMS-V] Set pen clean status',
+  props<{
+    boardId: number;
+    penId: number;
+    cleanStatus: PenCleanStatus;
+  }>(),
 );
-export const markPenCleanSuccess = createAction(
-  '[HMS-V] Mark pen clean: success',
+export const setPenCleanStatusSuccess = createAction(
+  '[HMS-V] Set pen clean status: success',
   props<{ boardId: number }>(),
 );
-export const markPenCleanError = createAction('[HMS-V] Mark pen clean: error');
+export const setPenCleanStatusError = createAction(
+  '[HMS-V] Set pen clean status: error',
+);
 
 export const showEmbeddedContent = createAction(
   '[HMS-V] Show embedded content',

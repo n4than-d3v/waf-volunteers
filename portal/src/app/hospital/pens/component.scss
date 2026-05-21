@@ -1,0 +1,29 @@
+.active-status {
+  font-weight: bold;
+}
+
+button {
+  padding: 0.125rem 0.25rem;
+  margin: 0rem;
+}
+
+td,
+th {
+  font-size: 1.125rem;
+  padding: 0.125rem 0.25rem;
+}
+
+.filter {
+  margin-bottom: 1rem;
+
+  input[type="text"] {
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+}

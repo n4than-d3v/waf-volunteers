@@ -4,6 +4,7 @@ import {
   PatientBoardAreaPen,
   PatientBoardAreaPenFeeding,
   PatientBoardAreaPenTaskDetails,
+  PenCleanStatus,
   ReadOnlyWrapper,
 } from '../state';
 import { FoodSection } from './food-section';
@@ -37,7 +38,10 @@ function isTickedOff(
   shift: Shift,
   forBirds: boolean,
 ) {
-  if (pen.needsCleaning) {
+  if (
+    pen.cleanStatus === PenCleanStatus.NeedsCleaning ||
+    pen.cleanStatus === PenCleanStatus.NeedsSettingUp
+  ) {
     return false;
   }
 
@@ -71,14 +75,20 @@ function shouldShowPen(
   shift: Shift,
   forBirds: boolean,
   showPensNeedCleaning: boolean,
+  showPensNeedSettingUp: boolean,
+  showPensReadyToUse: boolean,
   showPensWithoutFeeds: boolean,
   showTickedOffPens: boolean,
   showOnlyDueAt: boolean,
   onlyDueAtHour: number,
   onlyDueAtMinute: number,
 ): boolean {
-  if (pen.needsCleaning) {
+  if (pen.cleanStatus === PenCleanStatus.NeedsCleaning) {
     return showPensNeedCleaning;
+  } else if (pen.cleanStatus === PenCleanStatus.NeedsSettingUp) {
+    return showPensNeedSettingUp;
+  } else if (pen.cleanStatus === PenCleanStatus.ReadyToUse) {
+    return showPensReadyToUse;
   }
 
   let response = true;
@@ -253,6 +263,8 @@ export function transform(
   wrapper: ReadOnlyWrapper<PatientBoard>,
   showPensWithoutFeeds: boolean,
   showPensNeedCleaning: boolean,
+  showPensNeedSettingUp: boolean,
+  showPensReadyToUse: boolean,
   showTickedOffPens: boolean,
   showOnlyDueAt: boolean,
   onlyDueAtHour: number,
@@ -326,6 +338,8 @@ export function transform(
             shift,
             wrapper.data!.board.forBirds,
             showPensNeedCleaning,
+            showPensNeedSettingUp,
+            showPensReadyToUse,
             showPensWithoutFeeds,
             showTickedOffPens,
             showOnlyDueAt,

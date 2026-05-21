@@ -211,9 +211,9 @@ import {
   markBoardTaskComplete,
   markBoardTaskCompleteSuccess,
   markBoardTaskCompleteError,
-  markPenClean,
-  markPenCleanSuccess,
-  markPenCleanError,
+  setPenCleanStatus,
+  setPenCleanStatusSuccess,
+  setPenCleanStatusError,
   getFoods,
   getFoodsSuccess,
   getFoodsError,
@@ -1812,21 +1812,25 @@ export class HospitalEffects {
     ),
   );
 
-  markPenClean$ = createEffect(() =>
+  setPenCleanStatus$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(markPenClean),
+      ofType(setPenCleanStatus),
       switchMap((action) =>
-        this.http.post(`hospital/locations/pen/${action.penId}/clean`, {}).pipe(
-          map((_) => markPenCleanSuccess({ boardId: action.boardId })),
-          catchError(() => of(markPenCleanError())),
-        ),
+        this.http
+          .post(`hospital/locations/pen/${action.penId}/set-clean-status`, {
+            cleanStatus: action.cleanStatus,
+          })
+          .pipe(
+            map((_) => setPenCleanStatusSuccess({ boardId: action.boardId })),
+            catchError(() => of(setPenCleanStatusError())),
+          ),
       ),
     ),
   );
 
-  markPenCleanSuccess$ = createEffect(() =>
+  setPenCleanStatusSuccess$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(markPenCleanSuccess),
+      ofType(setPenCleanStatusSuccess),
       switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
     ),
   );

@@ -86,6 +86,10 @@
         color: var(--theme-color-2);
         font-weight: bold;
         padding: 0rem 0.25rem;
+
+        &.instruction--green {
+          color: var(--theme-color-4);
+        }
       }
     }
 

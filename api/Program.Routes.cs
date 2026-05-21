@@ -852,8 +852,8 @@ public partial class Program
 
         apiHospitalLocations
             .MapPost(
-                "/pen/{id:int}/clean",
-                (IMediator mediator, int id, CleanPen request) => mediator.Send(request.WithId(id))
+                "/pen/{id:int}/set-clean-status",
+                (IMediator mediator, int id, SetPenCleanStatus request) => mediator.Send(request.WithId(id))
             )
             .AddNote("Husbandry marks a pen as being clean")
             .RequireAuthorization(signedInPolicy);

@@ -15,6 +15,7 @@ import { HospitalDailyTasksComponent } from '../../hospital/daily-tasks/componen
 import { HospitalPatientBoardComponent } from '../../hospital/patient-board/component';
 import { HospitalDashboardComponent } from '../../hospital/dashboard/component';
 import { HospitalPatientViewAttachmentComponent } from '../../hospital/patient/view-attachment/component';
+import { HospitalPenManagementComponent } from '../../hospital/pens/component';
 
 @Component({
   selector: 'vet-hospital',
@@ -32,6 +33,7 @@ import { HospitalPatientViewAttachmentComponent } from '../../hospital/patient/v
     HospitalStockListComponent,
     HospitalPatientBoardComponent,
     HospitalPatientViewAttachmentComponent,
+    HospitalPenManagementComponent,
   ],
 })
 export class VetHospitalComponent implements OnDestroy {
@@ -82,6 +84,17 @@ export class VetHospitalComponent implements OnDestroy {
         tab: {
           code: 'VIEW_STOCK',
           title: 'Stock',
+        },
+      }),
+    );
+  }
+
+  viewPens() {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'PEN_MANAGEMENT',
+          title: 'Pens',
         },
       }),
     );

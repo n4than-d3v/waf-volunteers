@@ -24,13 +24,14 @@ import {
   ConcernCategory,
   ListPatientBoard,
   PatientBoardAreaPen,
+  PenCleanStatus,
   ReadOnlyWrapper,
   Task,
 } from '../state';
 import {
   selectConcernReasons,
   selectMarkBoard,
-  selectMarkPenClean,
+  selectSetPenCleanStatus,
   selectPatientBoard,
   selectPatientBoards,
   selectReportConcern,
@@ -38,7 +39,7 @@ import {
 import {
   getConcernReasons,
   markBoardTaskComplete,
-  markPenClean,
+  setPenCleanStatus,
   reportConcern,
   viewPatientBoard,
   viewPatientBoards,
@@ -129,11 +130,13 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   showPatientReferences = false;
 
   markBoard: Observable<Task>;
-  markPenClean: Observable<Task>;
+  setPenCleanStatus: Observable<Task>;
   reportConcern: Observable<Task>;
 
   showPensWithoutFeeds$ = new BehaviorSubject(true);
   showPensNeedCleaning$ = new BehaviorSubject(true);
+  showPensNeedSettingUp$ = new BehaviorSubject(true);
+  showPensReadyToUse$ = new BehaviorSubject(false);
   showTickedOffPens$ = new BehaviorSubject(true);
   showOnlyDueAt$ = new BehaviorSubject(false);
   onlyDueAtHour$ = new BehaviorSubject(0);
@@ -143,6 +146,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   shift$ = new BehaviorSubject<Shift>('M');
 
   svgs = svgs;
+
+  PenCleanStatus = PenCleanStatus;
 
   get showPensWithoutFeeds(): boolean {
     return this.showPensWithoutFeeds$.value;
@@ -158,6 +163,22 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
 
   set showPensNeedCleaning(val: boolean) {
     this.showPensNeedCleaning$.next(val);
+  }
+
+  get showPensNeedSettingUp(): boolean {
+    return this.showPensNeedSettingUp$.value;
+  }
+
+  set showPensNeedSettingUp(val: boolean) {
+    this.showPensNeedSettingUp$.next(val);
+  }
+
+  get showPensReadyToUse(): boolean {
+    return this.showPensReadyToUse$.value;
+  }
+
+  set showPensReadyToUse(val: boolean) {
+    this.showPensReadyToUse$.next(val);
   }
 
   get showTickedOffPens(): boolean {
@@ -208,13 +229,15 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   ) {
     this.boards$ = this.store.select(selectPatientBoards);
     this.markBoard = this.store.select(selectMarkBoard);
-    this.markPenClean = this.store.select(selectMarkPenClean);
+    this.setPenCleanStatus = this.store.select(selectSetPenCleanStatus);
     this.reportConcern = this.store.select(selectReportConcern);
     this.concernReasons$ = this.store.select(selectConcernReasons);
     this.board$ = combineLatest([
       this.store.select(selectPatientBoard),
       this.showPensWithoutFeeds$,
       this.showPensNeedCleaning$,
+      this.showPensNeedSettingUp$,
+      this.showPensReadyToUse$,
       this.showTickedOffPens$,
       this.showOnlyDueAt$,
       this.onlyDueAtHour$,
@@ -226,6 +249,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
           wrapper,
           showPensWithoutFeeds,
           showPensNeedCleaning,
+          showPensNeedSettingUp,
+          showPensReadyToUse,
           showTickedOffPens,
           showOnlyDueAt,
           onlyDueAtHour,
@@ -236,6 +261,8 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
             wrapper,
             showPensWithoutFeeds,
             showPensNeedCleaning,
+            showPensNeedSettingUp,
+            showPensReadyToUse,
             showTickedOffPens,
             showOnlyDueAt,
             onlyDueAtHour,
@@ -266,12 +293,13 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     );
   }
 
-  markClean(pen: PatientBoardAreaPen) {
+  setCleanStatus(pen: PatientBoardAreaPen, cleanStatus: PenCleanStatus) {
     this.tickingTask = pen.reference;
     this.store.dispatch(
-      markPenClean({
+      setPenCleanStatus({
         boardId: this.viewingBoard!,
         penId: pen.id,
+        cleanStatus,
       }),
     );
   }
@@ -321,7 +349,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       }),
     );
     this.subscription.add(
-      this.markPenClean.subscribe((task) => {
+      this.setPenCleanStatus.subscribe((task) => {
         if (task.success || task.error) {
           this.tickingTask = '';
         }

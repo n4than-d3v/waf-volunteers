@@ -226,11 +226,32 @@
             />
           </div>
           <div class="field">
-            <label for="showPensNeedCleaning"> Cleaning </label>
+            <label for="showPensNeedCleaning"> Needs cleaning </label>
             <input
               type="checkbox"
               id="showPensNeedCleaning"
               checked
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <label for="showPensNeedSettingUp"> Needs setting up </label>
+            <input
+              type="checkbox"
+              id="showPensNeedSettingUp"
+              checked
+              class="disabled"
+              disabled="disabled"
+            />
+          </div>
+          <div class="field">
+            <label for="showPensReadyToUse"> Ready to use </label>
+            <input
+              type="checkbox"
+              id="showPensReadyToUse"
               class="disabled"
               disabled="disabled"
             />
@@ -299,6 +320,33 @@
           <br />
           If selected, you will see patients that do not require feeding on the
           selected shift. If unselected, you won't.
+        </p>
+      </div>
+      <div>
+        <h4>Needs cleaning</h4>
+        <p>
+          Selected by default.
+          <br />
+          If selected, you will see pens that have no patients in and require a
+          thorough cleaning. If unselected, you won't.
+        </p>
+      </div>
+      <div>
+        <h4>Needs setting up</h4>
+        <p>
+          Selected by default.
+          <br />
+          If selected, you will see pens that have no patients in and require
+          setting up. If unselected, you won't.
+        </p>
+      </div>
+      <div>
+        <h4>Ready to use</h4>
+        <p>
+          Unslected by default.
+          <br />
+          If selected, you will see pens that have no patients in and have been
+          set up, so are ready to use. If unselected, you won't.
         </p>
       </div>
       <div>
@@ -973,7 +1021,7 @@
             <button class="button button--secondary-invert">
               <span> &nbsp; </span>
             </button>
-            <p class="ff-label">
+            <p class="ff-label ff-label--ff">
               <span>FF</span>
             </p>
           </div>
@@ -1245,7 +1293,7 @@
             <button class="button button--secondary-invert">
               <span> &nbsp; </span>
             </button>
-            <p class="ff-label">
+            <p class="ff-label ff-label--ff">
               <span>FF</span>
               <span>T-Up</span>
             </p>
@@ -1255,7 +1303,7 @@
             <button class="button button--secondary-invert">
               <span> &nbsp; </span>
             </button>
-            <p class="ff-label">
+            <p class="ff-label ff-label--ff">
               <span>FF</span>
             </p>
           </div>
@@ -1470,11 +1518,29 @@ reportConcern) { @if (reportConcern.loading) {
         />
       </div>
       <div class="field">
-        <label for="showPensNeedCleaning"> Cleaning </label>
+        <label for="showPensNeedCleaning"> Needs cleaning </label>
         <input
           type="checkbox"
           id="showPensNeedCleaning"
           [(ngModel)]="showPensNeedCleaning"
+        />
+      </div>
+    </div>
+    <div>
+      <div class="field">
+        <label for="showPensNeedSettingUp"> Needs setting up </label>
+        <input
+          type="checkbox"
+          id="showPensNeedSettingUp"
+          [(ngModel)]="showPensNeedSettingUp"
+        />
+      </div>
+      <div class="field">
+        <label for="showPensReadyToUse"> Ready to use </label>
+        <input
+          type="checkbox"
+          id="showPensReadyToUse"
+          [(ngModel)]="showPensReadyToUse"
         />
       </div>
     </div>
@@ -1553,7 +1619,7 @@ reportConcern) { @if (reportConcern.loading) {
   >
     <div class="location">
       <span>{{ pen.reference }}</span>
-      @if (!(pen.needsCleaning || pen.custom)) {
+      @if (!(pen.cleanStatus !== PenCleanStatus.None || pen.custom)) {
       <svg
         (click)="reportingConcern = pen"
         width="800px"
@@ -1575,7 +1641,8 @@ reportConcern) { @if (reportConcern.loading) {
       </svg>
       }
     </div>
-    @if (pen.needsCleaning) {
+    @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
+    PenCleanStatus.NeedsCleaning) {
     <div class="patients">
       <span class="instruction">Please clean</span>
     </div>
@@ -1585,13 +1652,35 @@ reportConcern) { @if (reportConcern.loading) {
           <img src="/images/board/clean.svg" alt="Clean" />
         </p>
         <button
-          (click)="markClean(pen)"
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
           class="button button--secondary-invert"
         >
           &nbsp;
         </button>
       </div>
     </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.NeedsSettingUp) {
+    <div class="patients">
+      <span class="instruction">Please set up</span>
+    </div>
+    <div class="tasks">
+      <div class="task task--current-shift task--relevant">
+        <p class="time time--clean">
+          <img src="/images/board/set-up.svg" alt="Set up" />
+        </p>
+        <button
+          (click)="setCleanStatus(pen, PenCleanStatus.ReadyToUse)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+      </div>
+    </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.ReadyToUse) {
+    <div class="patients">
+      <span class="instruction instruction--green">Ready to use</span>
+    </div>
+    }
     <div class="feeding-times"></div>
     } @else {
     <div class="patients">
@@ -1764,7 +1853,7 @@ reportConcern) { @if (reportConcern.loading) {
   >
     <div class="location">
       <span>{{ pen.reference }}</span>
-      @if (!(pen.needsCleaning || pen.custom)) {
+      @if (!(pen.cleanStatus !== PenCleanStatus.None || pen.custom)) {
       <svg
         (click)="reportingConcern = pen"
         width="800px"
@@ -1786,7 +1875,8 @@ reportConcern) { @if (reportConcern.loading) {
       </svg>
       }
     </div>
-    @if (pen.needsCleaning) {
+    @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
+    PenCleanStatus.NeedsCleaning) {
     <div class="patients">
       <span class="instruction">Please clean</span>
     </div>
@@ -1796,13 +1886,36 @@ reportConcern) { @if (reportConcern.loading) {
           <img src="/images/board/clean.svg" alt="Clean" />
         </p>
         <button
-          (click)="markClean(pen)"
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
           class="button button--secondary-invert"
         >
-          @if (tickingTask === `${pen.reference}`) { ... } @else { &nbsp; }
+          &nbsp;
         </button>
       </div>
     </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.NeedsSettingUp) {
+    <div class="patients">
+      <span class="instruction">Please set up</span>
+    </div>
+    <div class="tasks">
+      <div class="task task--current-shift task--relevant">
+        <p class="time time--clean">
+          <img src="/images/board/set-up.svg" alt="Set up" />
+        </p>
+        <button
+          (click)="setCleanStatus(pen, PenCleanStatus.ReadyToUse)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+      </div>
+    </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.ReadyToUse) {
+    <div class="patients">
+      <span class="instruction instruction--green">Ready to use</span>
+    </div>
+    }
+    <div class="feeding-times"></div>
     } @else {
     <div class="patients">
       @for (patient of pen.patients; track patient) {
@@ -1841,7 +1954,7 @@ reportConcern) { @if (reportConcern.loading) {
             { &nbsp; }
           </span>
         </button>
-        <p class="ff-label">
+        <p class="ff-label" [class.ff-label--ff]="feeding.hasForceFeeds">
           @if (feeding.hasForceFeeds) {
           <span>FF</span>
           } @if (feeding.hasNonForceFeeds) {

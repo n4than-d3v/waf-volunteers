@@ -1,0 +1,96 @@
+@if (areas$ | async; as areas) { @if (areas.loading) {
+<spinner />
+} @else if (areas.error) {
+<div class="error">Error occurred</div>
+} @else if (areas.data) {
+<div class="filter">
+  <div class="field">
+    <label for="pen-search">Search</label>
+    <input id="pen-search" type="text" [(ngModel)]="search" />
+  </div>
+  <div class="fields">
+    <div>
+      <div class="field">
+        <label for="pen-empty">Empty pens</label>
+        <input id="pen-empty" type="checkbox" [(ngModel)]="empty" />
+      </div>
+      <div class="field">
+        <label for="pen-inUse">Pens in use</label>
+        <input id="pen-inUse" type="checkbox" [(ngModel)]="inUse" />
+      </div>
+    </div>
+    <div>
+      <div class="field">
+        <label for="pen-needsCleaning">Needs cleaning</label>
+        <input
+          id="pen-needsCleaning"
+          type="checkbox"
+          [(ngModel)]="needsCleaning"
+        />
+      </div>
+      <div class="field">
+        <label for="pen-needsSettingUp">Needs setting up</label>
+        <input
+          id="pen-needsSettingUp"
+          type="checkbox"
+          [(ngModel)]="needsSettingUp"
+        />
+      </div>
+      <div class="field">
+        <label for="pen-readyToUse">Ready to use</label>
+        <input id="pen-readyToUse" type="checkbox" [(ngModel)]="readyToUse" />
+      </div>
+    </div>
+  </div>
+</div>
+<table>
+  <tbody>
+    @for (area of areas.data; track area.id) { @if (shouldShowArea(area)) {
+    <tr>
+      <th colspan="7">{{ area.name }}</th>
+    </tr>
+    @for (pen of area.pens; track pen.id) { @if (shouldShowPen(pen)) {
+    <tr>
+      <td>{{ pen.reference }}</td>
+      <td>@if (pen.empty) { Empty } @else { In use }</td>
+      <td>
+        @if (pen.cleanStatus !== PenCleanStatus.NeedsCleaning) {
+        <button
+          class="button button--secondary-invert"
+          (click)="setCleanStatus(pen, PenCleanStatus.NeedsCleaning)"
+        >
+          🧹 Needs cleaning
+        </button>
+        } @else {
+        <span class="active-status">🧹 Needs cleaning</span>
+        }
+      </td>
+      <td>
+        @if (pen.cleanStatus !== PenCleanStatus.NeedsSettingUp) {
+        <button
+          class="button button--secondary-invert"
+          (click)="setCleanStatus(pen, PenCleanStatus.NeedsSettingUp)"
+        >
+          🏠 Needs setting up
+        </button>
+        } @else {
+        <span class="active-status">🏠 Needs setting up</span>
+        }
+      </td>
+      <td>
+        @if (pen.cleanStatus !== PenCleanStatus.ReadyToUse) {
+        <button
+          class="button button--secondary-invert"
+          (click)="setCleanStatus(pen, PenCleanStatus.ReadyToUse)"
+        >
+          ✅ Ready to use
+        </button>
+        } @else {
+        <span class="active-status">✅ Ready to use</span>
+        }
+      </td>
+    </tr>
+    } } } }
+  </tbody>
+</table>
+} }

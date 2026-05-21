@@ -11,7 +11,8 @@ public class Pen : Entity
 
     public string Code { get; set; }
     public bool Deleted { get; set; }
-    public bool NeedsCleaning { get; set; }
+    public PenCleanStatus CleanStatus { get; set; }
+    public string? CustomBoardMessage { get; set; }
 
     [JsonIgnore]
     public List<Patient> Patients { get; set; }
@@ -23,4 +24,12 @@ public class Pen : Entity
     public bool Empty => !(Patients?.Any(x =>
         x.Status != PatientStatus.Dispositioned &&
         x.Status != PatientStatus.ReceivingHomeCare) ?? false);
+}
+
+public enum PenCleanStatus
+{
+    None = 0,
+    NeedsCleaning = 1,
+    NeedsSettingUp = 2,
+    ReadyToUse = 3
 }

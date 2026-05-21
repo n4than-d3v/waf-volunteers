@@ -29,6 +29,7 @@
         <div (click)="viewPatientBoards()" class="item no-select">
           📋 View patient boards
         </div>
+        <div (click)="viewPens()" class="item no-select">🏠 Pen status</div>
       </div>
     </div>
   </div>
@@ -56,6 +57,8 @@
       <patient-board></patient-board>
       } @else if (tab.code === 'VIEW_EMBEDDED_CONTENT') {
       <hospital-patient-view-attachment></hospital-patient-view-attachment>
+      } @else if (tab.code === 'PEN_MANAGEMENT') {
+      <hospital-pen-management></hospital-pen-management>
       }
     </div>
     }

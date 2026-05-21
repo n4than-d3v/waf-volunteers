@@ -47,6 +47,18 @@ public class Patient : Entity
 
     #endregion
 
+    #region DTO usage
+
+    public record OtherPatient(int Id, string Reference, string Species, string SpeciesVariant, List<PatientFeeding> Feeding);
+
+    /// <summary>
+    /// Only to be used during "Get patient" request - populated dynamically
+    /// </summary>
+    [NotMapped]
+    public List<OtherPatient> OthersInPen { get; set; }
+
+    #endregion
+
     #region Ongoing care
 
     public PatientStatus Status { get; set; }

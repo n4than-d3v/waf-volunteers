@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   Area,
+  OtherPatient,
   Patient,
   PatientStatus,
   ReadOnlyWrapper,
@@ -17,7 +18,7 @@ import {
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectAreas, selectMovePatient } from '../../selectors';
-import { getAreas, movePatient } from '../../actions';
+import { getAreas, movePatient, setTab } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
@@ -50,6 +51,9 @@ export class HospitalPatientLocationComponent implements OnInit {
     areaId: new FormControl('', [Validators.required]),
     penId: new FormControl('', [Validators.required]),
     movingPenToAnotherArea: new FormControl(false, { nonNullable: true }),
+    otherPatientIds: new FormControl<number[]>([], {
+      nonNullable: true,
+    }),
     newAreaId: new FormControl(''),
   });
 
@@ -64,6 +68,44 @@ export class HospitalPatientLocationComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(getAreas());
+  }
+  toggleOtherPatient(patientId: number, checked: boolean) {
+    const current = this.moveForm.controls.otherPatientIds.value;
+
+    this.moveForm.controls.otherPatientIds.setValue(
+      checked
+        ? [...new Set([...current, patientId])]
+        : current.filter((id) => id !== patientId),
+    );
+  }
+
+  isOtherPatientSelected(patientId: number): boolean {
+    return this.moveForm.controls.otherPatientIds.value.includes(patientId);
+  }
+
+  toggleAllOtherPatients(checked: boolean) {
+    this.moveForm.controls.otherPatientIds.setValue(
+      checked ? (this.patient.othersInPen ?? []).map((x) => x.id) : [],
+    );
+  }
+
+  areAllOtherPatientsSelected(): boolean {
+    const selected = this.moveForm.controls.otherPatientIds.value;
+    const others = this.patient.othersInPen ?? [];
+
+    return others.length > 0 && others.every((x) => selected.includes(x.id));
+  }
+
+  view(patient: OtherPatient) {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'VIEW_PATIENT',
+          id: patient.id,
+          title: `[${patient.reference}] ${patient.species}`,
+        },
+      }),
+    );
   }
 
   convertAreas(areas: Area[], showEmpty = true) {
@@ -119,6 +161,7 @@ export class HospitalPatientLocationComponent implements OnInit {
         newAreaId: this.moveForm.value.newAreaId
           ? Number(this.moveForm.value.newAreaId)
           : null,
+        otherPatientIds: this.moveForm.controls.otherPatientIds.value,
       }),
     );
     this.reset();

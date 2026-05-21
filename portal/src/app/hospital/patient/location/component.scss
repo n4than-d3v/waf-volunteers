@@ -30,6 +30,14 @@ table:not(:has(thead)) tbody {
   tr {
     background-color: transparent !important;
   }
+
+  a {
+    color: var(--theme-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 1rem;
+  }
 }
 
 table:has(thead) {
@@ -72,4 +80,16 @@ select {
 form {
   margin-top: 0.5rem;
   margin-left: 0.25rem;
+}
+
+.move-others {
+  margin-bottom: 1rem;
+
+  p {
+    margin-bottom: 0.25rem;
+  }
+
+  .field {
+    margin-bottom: 0.125rem;
+  }
 }

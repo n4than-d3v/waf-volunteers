@@ -13,6 +13,7 @@ public class MovePatient : IRequest<IResult>
     public int PatientId { get; set; }
     public int PenId { get; set; }
     public int? NewAreaId { get; set; }
+    public List<int> OtherPatientIds { get; set; }
 
     public MovePatient WithId(int id)
     {
@@ -34,33 +35,39 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 
     public async Task<IResult> Handle(MovePatient request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId, action: x => x.Include(y => y.Pen));
-        if (patient == null) return Results.BadRequest();
+        var patientIds = request.OtherPatientIds ?? new();
+        patientIds.Add(request.PatientId);
+
+        var patients = await _repository.GetAll<Patient>(x => patientIds.Contains(x.Id), action: x => x.Include(y => y.Pen));
 
         var pen = await _repository.Get<Pen>(request.PenId, action: x => x.Include(y => y.Patients));
         if (pen == null) return Results.BadRequest();
 
-        int? previousPenId = null;
+        var previousPenIds = new List<int>();
 
-        if (patient.Pen != null)
+        foreach (var patient in patients)
         {
-            previousPenId = patient.Pen.Id;
-            if (previousPenId != pen.Id)
+            if (patient.Pen != null)
             {
-                var movement = new PatientMovement
+                previousPenIds.Add(patient.Pen.Id);
+
+                if (patient.Pen.Id != pen.Id)
                 {
-                    Patient = patient,
-                    From = patient.Pen,
-                    To = pen,
-                    Moved = DateTime.UtcNow
-                };
+                    var movement = new PatientMovement
+                    {
+                        Patient = patient,
+                        From = patient.Pen,
+                        To = pen,
+                        Moved = DateTime.UtcNow
+                    };
 
-                _repository.Create(movement);
+                    _repository.Create(movement);
+                }
             }
-        }
 
-        patient.Pen = pen;
-        patient.LastUpdatedDetails = DateTime.UtcNow;
+            patient.Pen = pen;
+            patient.LastUpdatedDetails = DateTime.UtcNow;
+        }
 
         await _repository.SaveChangesAsync();
 
@@ -73,9 +80,9 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
             }, cancellationToken);
         }
 
-        if (previousPenId.HasValue)
+        foreach (var previousPenId in previousPenIds.Distinct())
         {
-            await _mediator.Send(new MarkPenNeedsCleaning { Id = previousPenId.Value }, cancellationToken);
+            await _mediator.Send(new MarkPenNeedsCleaning { Id = previousPenId }, cancellationToken);
         }
 
         return Results.NoContent();

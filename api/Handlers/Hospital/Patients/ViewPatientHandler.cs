@@ -41,6 +41,32 @@ public class ViewPatientHandler : IRequestHandler<ViewPatient, IResult>
 
         patient.DecryptProperties(_encryptionService);
 
+        var othersInPen = new List<Patient.OtherPatient>();
+
+        if (patient.Pen != null)
+        {
+            var others = await _repository.GetAll<Patient>(x =>
+                x.Status != PatientStatus.Dispositioned &&
+                x.Pen != null && x.Pen.Id == patient.Pen.Id &&
+                 x.Id != patient.Id,
+                tracking: false,
+                x => x.AsSplitQuery().IncludeBasicDetails().IncludeHusbandry());
+
+            foreach (var other in others.OrderBy(x => x.Admitted))
+            {
+                othersInPen.Add(new Patient.OtherPatient
+                (
+                    other.Id,
+                    other.Reference,
+                    other.Species?.Name ?? other.SuspectedSpecies?.Description ?? "Unknown",
+                    other.SpeciesVariant?.Name ?? "Unknown",
+                    other.Feeding
+                ));
+            }
+        }
+
+        patient.OthersInPen = othersInPen;
+
         if (patient.Movements?.Any() ?? false)
             patient.Movements = [.. patient.Movements.OrderByDescending(x => x.Moved)];
 

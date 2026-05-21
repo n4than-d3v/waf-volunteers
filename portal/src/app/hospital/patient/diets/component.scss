@@ -149,6 +149,26 @@ table {
   background-color: #ddeaff;
 }
 
+.other-is-custom {
+  padding: 0.5rem 0.75rem;
+  background-color: #ffebd7;
+
+  a {
+    color: var(--theme-primary);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: normal;
+    font-size: 1rem;
+  }
+
+  button {
+    padding: 0.125rem 0.25rem;
+    margin-top: 1rem;
+    display: block;
+    background-color: white;
+  }
+}
+
 .no-guidance {
   padding: 0.5rem 0.75rem;
   background-color: #fff2d7;

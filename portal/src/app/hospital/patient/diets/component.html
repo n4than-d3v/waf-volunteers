@@ -1,6 +1,19 @@
 <div class="wrapper">
-  @if (!customising) { @if (patient.feeding.length > 0) {
+  @let other = otherPatientsHasCustom(); @if (!customising) { @if
+  (patient.feeding.length > 0) {
   <p class="is-custom">🍳 This patient has a custom diet</p>
+  } @else if (other) {
+  <p class="other-is-custom">
+    ⚠️ Another patient housed with this one has a custom diet
+    <br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;See
+    <a (click)="view(other)">
+      [{{ other.reference }}] {{ other.species }} {{ other.speciesVariant }}
+    </a>
+    <button class="button button--secondary-invert" (click)="copyFromOther()">
+      📄 Copy customisations
+    </button>
+  </p>
   } @if (getInstructions().length > 0) {
   <p>Feeding boards will show the following instructions:</p>
   <table>

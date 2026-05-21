@@ -5,6 +5,19 @@
         <td>Pen</td>
         <td>{{ patient.pen?.reference || '(blank)' }}</td>
       </tr>
+      @if (patient.othersInPen && patient.othersInPen.length) { @for (other of
+      patient.othersInPen; let first = $first; track other.id) {
+
+      <tr>
+        <td>@if (first) { Housed with }</td>
+        <td>
+          <a (click)="view(other)">
+            [{{ other.reference }}] {{ other.species }} {{ other.speciesVariant
+            }}
+          </a>
+        </td>
+      </tr>
+      } }
     </tbody>
   </table>
   @if (!moving) { @if (isVet && (patient.status != PatientStatus.Dispositioned
@@ -79,7 +92,7 @@
   </div>
   <div class="field">
     <label for="movingPenToAnotherArea">
-      Moving this pen into another area
+      Move this pen into another area?
     </label>
     <input
       type="checkbox"
@@ -107,6 +120,34 @@
       [items]="convertAreas(areas.data, false)"
     ></hospital-patient-autocomplete>
     } }
+  </div>
+  } @if (patient.othersInPen && patient.othersInPen.length) {
+  <div class="move-others">
+    <p>Move other patients housed with this one?</p>
+
+    <div class="field">
+      <label for="other-select-all"> Select all </label>
+      <input
+        type="checkbox"
+        id="other-select-all"
+        [checked]="areAllOtherPatientsSelected()"
+        (change)="toggleAllOtherPatients($any($event.target).checked)"
+      />
+    </div>
+
+    @for (other of patient.othersInPen; track other.id) {
+    <div class="field">
+      <label for="other-patient-{{ other.id }}">
+        [{{ other.reference }}] {{ other.species }} {{ other.speciesVariant }}
+      </label>
+      <input
+        type="checkbox"
+        id="other-patient-{{ other.id }}"
+        [checked]="isOtherPatientSelected(other.id)"
+        (change)="toggleOtherPatient(other.id, $any($event.target).checked)"
+      />
+    </div>
+    }
   </div>
   } @if (!saving) { @if (attemptedSave && !moveForm.valid) {
   <div class="error">Please fill in all required fields</div>

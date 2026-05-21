@@ -332,7 +332,12 @@ export const markPatientTransferredError = createAction(
 
 export const movePatient = createAction(
   '[HMS-V] Move patient',
-  props<{ patientId: number; penId: number; newAreaId: number | null }>(),
+  props<{
+    patientId: number;
+    penId: number;
+    newAreaId: number | null;
+    otherPatientIds: number[];
+  }>(),
 );
 export const movePatientSuccess = createAction(
   '[HMS-V] Move patient: success',

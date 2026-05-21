@@ -335,6 +335,15 @@ export interface Patient extends ListPatient {
   weightHistory: PatientWeight[];
   initialWeight: PatientWeight | null;
   latestWeight: PatientWeight | null;
+  othersInPen: OtherPatient[];
+}
+
+export interface OtherPatient {
+  id: number;
+  reference: string;
+  species: string;
+  speciesVariant: string;
+  feeding: Feeding[] | null;
 }
 
 export interface PatientWeight {

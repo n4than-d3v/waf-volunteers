@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
   Food,
+  OtherPatient,
   Patient,
   PatientStatus,
   ReadOnlyWrapper,
@@ -19,7 +20,7 @@ import {
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectFoods, selectUpdateDiets } from '../../selectors';
-import { getFoods, updatePatientBasicDetails } from '../../actions';
+import { getFoods, setTab, updatePatientBasicDetails } from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
   convertTime,
@@ -72,6 +73,7 @@ export class HospitalPatientDietsComponent implements OnInit {
   saving = false;
 
   maxIndex = 5;
+  maxOtherIndex = 5;
 
   constructor(private store: Store) {
     this.foods$ = this.store.select(selectFoods);
@@ -213,6 +215,24 @@ export class HospitalPatientDietsComponent implements OnInit {
     return null;
   }
 
+  otherPatientsHasCustom() {
+    return (this.patient.othersInPen || []).find(
+      (x) => x.feeding && x.feeding.length,
+    );
+  }
+
+  view(patient: OtherPatient) {
+    this.store.dispatch(
+      setTab({
+        tab: {
+          code: 'VIEW_PATIENT',
+          id: patient.id,
+          title: `[${patient.reference}] ${patient.species}`,
+        },
+      }),
+    );
+  }
+
   removeFeedingGuidance(index: number) {
     const group = this.dietForm.controls.feeding.at(index);
     group.controls.quantityValue.setValue('-1');
@@ -272,6 +292,26 @@ export class HospitalPatientDietsComponent implements OnInit {
           dish: group.value.dish,
           topUp: group.value.topUp || false,
           foodId: Number(group.value.foodId!),
+        })),
+      }),
+    );
+    this.reset();
+  }
+
+  copyFromOther() {
+    const other = this.otherPatientsHasCustom();
+    if (!other) return;
+    if (!other.feeding) return;
+    this.attemptedSave = true;
+    this.saving = true;
+    const update = this.getUpdateAction();
+    this.store.dispatch(
+      updatePatientBasicDetails({
+        ...update,
+        update: 'feeding',
+        feeding: other.feeding.map((feeding) => ({
+          ...feeding,
+          foodId: Number(feeding.food.id),
         })),
       }),
     );

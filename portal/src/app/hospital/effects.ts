@@ -612,6 +612,7 @@ export class HospitalEffects {
                       patientId: action.exam.patientId,
                       penId: action.penId!,
                       newAreaId: null,
+                      otherPatientIds: [],
                     }),
                   );
                 }

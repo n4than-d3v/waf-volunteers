@@ -67,6 +67,7 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 
             patient.Pen = pen;
             patient.LastUpdatedDetails = DateTime.UtcNow;
+            pen.CleanStatus = PenCleanStatus.None;
         }
 
         await _repository.SaveChangesAsync();

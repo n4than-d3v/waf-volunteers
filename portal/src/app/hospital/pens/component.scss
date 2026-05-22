@@ -27,3 +27,13 @@ th {
     gap: 1.5rem;
   }
 }
+
+.empty {
+  font-weight: bold;
+  color: var(--theme-color-4);
+}
+
+.in-use {
+  font-weight: bold;
+  color: var(--theme-color-2);
+}

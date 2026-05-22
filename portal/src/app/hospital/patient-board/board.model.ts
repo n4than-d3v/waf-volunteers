@@ -74,6 +74,7 @@ export interface PatientBoardAreaPenVm {
   tags: string[] | null;
 
   flagged: boolean;
+  concernReason: string | null;
 
   hasCustomDiet: boolean;
   custom: boolean;

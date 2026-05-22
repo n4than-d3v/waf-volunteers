@@ -21,6 +21,10 @@
     </div>
     <div>
       <div class="field">
+        <label for="pen-available"> Available (no status) </label>
+        <input id="pen-available" type="checkbox" [(ngModel)]="available" />
+      </div>
+      <div class="field">
         <label for="pen-needsCleaning">Needs cleaning</label>
         <input
           id="pen-needsCleaning"
@@ -28,6 +32,8 @@
           [(ngModel)]="needsCleaning"
         />
       </div>
+    </div>
+    <div>
       <div class="field">
         <label for="pen-needsSettingUp">Needs setting up</label>
         <input
@@ -52,7 +58,22 @@
     @for (pen of area.pens; track pen.id) { @if (shouldShowPen(pen)) {
     <tr>
       <td>{{ pen.reference }}</td>
-      <td>@if (pen.empty) { Empty } @else { In use }</td>
+      @if (pen.empty) {
+      <td>
+        <span class="empty">Empty</span>
+      </td>
+      <td>
+        @if (pen.cleanStatus !== PenCleanStatus.None) {
+        <button
+          class="button button--secondary-invert"
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
+        >
+          🔄 Reset status
+        </button>
+        } @else {
+        <span class="active-status">🏚️ No status</span>
+        }
+      </td>
       <td>
         @if (pen.cleanStatus !== PenCleanStatus.NeedsCleaning) {
         <button
@@ -89,6 +110,12 @@
         <span class="active-status">✅ Ready to use</span>
         }
       </td>
+      } @else {
+      <td>
+        <span class="in-use">In use</span>
+      </td>
+      <td colspan="4"></td>
+      }
     </tr>
     } } } }
   </tbody>

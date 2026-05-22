@@ -805,6 +805,7 @@ export interface PatientBoardAreaPen {
   tags: string[] | null;
 
   flagged: boolean;
+  concernReason: string | null;
 
   hasCustomDiet: boolean;
   custom: boolean;

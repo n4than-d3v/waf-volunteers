@@ -75,6 +75,18 @@
       text-align: center;
       align-content: center;
 
+      .concern-reason {
+        background-color: rgb(255, 227, 227);
+        padding: 0.125rem 0.25rem;
+        margin-top: 0.125rem;
+
+        p {
+          color: var(--theme-color-2);
+          font-size: 0.8rem;
+          max-width: 15rem;
+        }
+      }
+
       svg {
         max-width: 1.5rem;
         max-height: 1.5rem;

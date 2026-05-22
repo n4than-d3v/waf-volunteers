@@ -78,6 +78,17 @@
       }
     }
 
+    .concern-reason {
+      background-color: rgb(255, 227, 227);
+      padding: 0.125rem 0.25rem;
+
+      p {
+        color: var(--theme-color-2);
+        font-size: 0.8rem;
+        max-width: 15rem;
+      }
+    }
+
     .patients {
       padding: 0.25rem;
       padding-bottom: 0rem;

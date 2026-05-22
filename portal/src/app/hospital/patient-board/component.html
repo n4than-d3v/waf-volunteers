@@ -1682,7 +1682,11 @@ reportConcern) { @if (reportConcern.loading) {
     </div>
     }
     <div class="feeding-times"></div>
-    } @else {
+    } @else { @if (pen.concernReason) {
+    <div class="concern-reason">
+      <p>{{ pen.concernReason }}</p>
+    </div>
+    }
     <div class="patients">
       @for (patient of pen.patients; track patient) {
       <p>{{ patient }}</p>
@@ -1873,14 +1877,19 @@ reportConcern) { @if (reportConcern.loading) {
           [attr.fill]="pen.flagged ? '#E44040' : '#CEAFAF'"
         />
       </svg>
-      }
+      @if (pen.concernReason) {
+      <div class="concern-reason">
+        <p>{{ pen.concernReason }}</p>
+      </div>
+      } }
     </div>
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
     <div class="patients">
       <span class="instruction">Please clean</span>
     </div>
-    <div class="tasks">
+    <div class="force-feeds"></div>
+    <div class="feeding-times tasks">
       <div class="task task--current-shift task--relevant">
         <p class="time time--clean">
           <img src="/images/board/clean.svg" alt="Clean" />
@@ -1897,7 +1906,8 @@ reportConcern) { @if (reportConcern.loading) {
     <div class="patients">
       <span class="instruction">Please set up</span>
     </div>
-    <div class="tasks">
+    <div class="force-feeds"></div>
+    <div class="feeding-times tasks">
       <div class="task task--current-shift task--relevant">
         <p class="time time--clean">
           <img src="/images/board/set-up.svg" alt="Set up" />

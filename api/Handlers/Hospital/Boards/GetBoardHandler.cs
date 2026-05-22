@@ -85,7 +85,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         if (board == null) return Results.BadRequest();
 
         var concerns = await _repository.GetAll<HusbandryConcern>(x => x.Checked == false, tracking: false,
-            action: x => x.Include(c => c.Pen));
+            action: x => x.Include(c => c.Pen).Include(c => c.Reason));
 
         var showAreas = board.Areas
             .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)
@@ -359,13 +359,15 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             {
                 var penPatients = g.ToList();
                 var penId = g.Key.PenId.Value;
+                var penConcerns = concerns.Where(c => c.Pen?.Id == penId);
                 return new PatientBoardAreaPen
                 {
                     Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
                     PatientReferences = [.. penPatients.Select(x => x.Reference).OrderBy(x => x)],
                     HasCustomDiet = penPatients.Any(patient => patient.Feeding?.Any() ?? false),
-                    Flagged = concerns.Any(c => c.Pen?.Id == penId),
+                    Flagged = penConcerns.Any(),
+                    ConcernReason = string.Join(", ", penConcerns.Select(c => c.Reason.Description)),
                     Morning = InMemoryBoardTasks.IsComplete(penId, 1),
                     Afternoon = InMemoryBoardTasks.IsComplete(penId, 2),
                     Evening = InMemoryBoardTasks.IsComplete(penId, 3),
@@ -532,6 +534,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public List<PatientBoardAreaPenFeedingSummary> FeedingSummaries { get; set; }
         public PenCleanStatus CleanStatus { get; set; }
         public bool Flagged { get; set; }
+        public string? ConcernReason { get; set; }
     }
 
     public class PatientBoardAreaPenFeedingSummary

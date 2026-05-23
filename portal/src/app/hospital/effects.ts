@@ -238,6 +238,9 @@ import {
   markCustomTaskDoneSuccess,
   markCustomTaskDoneError,
   clearSearchPatientError,
+  updatePatientReleasePlan,
+  updatePatientReleasePlanSuccess,
+  updatePatientReleasePlanError,
 } from './actions';
 
 @Injectable()
@@ -723,6 +726,31 @@ export class HospitalEffects {
   markPatientInCentreSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markPatientInCentreSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
+    ),
+  );
+
+  updatePatientReleasePlan$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePatientReleasePlan),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/release-plan`, action)
+          .pipe(
+            map(() =>
+              updatePatientReleasePlanSuccess({ patientId: action.patientId }),
+            ),
+            catchError(() => of(updatePatientReleasePlanError())),
+          ),
+      ),
+    ),
+  );
+
+  updatePatientReleasePlanSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePatientReleasePlanSuccess),
       switchMap((action) =>
         of(getPatient({ id: action.patientId, silent: true })),
       ),

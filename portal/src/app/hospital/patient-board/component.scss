@@ -363,3 +363,31 @@ h2.current-time {
     }
   }
 }
+
+.new,
+.release-plan {
+  font-size: 0.95rem;
+  padding: 0.05rem 0.25rem 0.1rem 0.125rem;
+  border-bottom: dotted 1px black;
+
+  &.new {
+    background-color: rgb(238, 255, 237);
+  }
+
+  &.release-plan {
+    background-color: rgb(227, 250, 255);
+  }
+
+  .new-time,
+  .release-plan-time {
+    font-weight: bold;
+
+    &.new-time {
+      color: rgb(45, 109, 45);
+    }
+
+    &.release-plan-time {
+      color: rgb(37, 37, 114);
+    }
+  }
+}

@@ -360,6 +360,8 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 var penPatients = g.ToList();
                 var penId = g.Key.PenId.Value;
                 var penConcerns = concerns.Where(c => c.Pen?.Id == penId);
+                var newest = penPatients.Max(p => p.Admitted);
+                var plannedRelease = penPatients.Min(p => p.PlannedRelease);
                 return new PatientBoardAreaPen
                 {
                     Id = g.Key.PenId.Value,
@@ -375,7 +377,9 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Feedings = GetPatientBoardAreaPenFeedings(g.Key.PenId.Value, penPatients),
                     FeedingSummaries = GetPatientBoardAreaPenFeedingSummaries(g.Key.PenId.Value, penPatients),
                     Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
-                    Reference = g.Key.PenReference
+                    Reference = g.Key.PenReference,
+                    PlannedRelease = plannedRelease != null && plannedRelease.Value.Date == DateTime.Today ? plannedRelease : null,
+                    Newest = newest.Date == DateTime.Today ? newest : null
                 };
             })
             .OrderBy(x => x.Reference)
@@ -524,6 +528,8 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public bool Custom { get; set; }
 
         public bool HasCustomDiet { get; set; }
+        public DateTime? Newest { get; set; }
+        public DateTime? PlannedRelease { get; set; }
 
         public bool Morning { get; set; }
         public bool Afternoon { get; set; }

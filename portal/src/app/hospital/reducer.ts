@@ -192,6 +192,9 @@ import {
   dismissConcernSuccess,
   dismissConcernError,
   clearSearchPatientError,
+  updatePatientReleasePlan,
+  updatePatientReleasePlanSuccess,
+  updatePatientReleasePlanError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -746,6 +749,32 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     performExam: {
       ...state.performExam,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Update patient release plan
+  on(updatePatientReleasePlan, (state) => ({
+    ...state,
+    updateReleasePlan: {
+      ...state.updateReleasePlan,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(updatePatientReleasePlanSuccess, (state) => ({
+    ...state,
+    updateReleasePlan: {
+      ...state.updateReleasePlan,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(updatePatientReleasePlanError, (state) => ({
+    ...state,
+    updateReleasePlan: {
+      ...state.updateReleasePlan,
       loading: false,
       error: true,
     },

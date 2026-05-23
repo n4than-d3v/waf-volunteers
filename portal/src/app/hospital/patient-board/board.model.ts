@@ -78,6 +78,8 @@ export interface PatientBoardAreaPenVm {
 
   hasCustomDiet: boolean;
   custom: boolean;
+  newest: string | null;
+  plannedRelease: string | null;
 
   morning: boolean;
   afternoon: boolean;

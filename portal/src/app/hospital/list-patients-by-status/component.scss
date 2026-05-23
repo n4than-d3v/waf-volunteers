@@ -82,3 +82,17 @@ th {
     font-size: 1rem;
   }
 }
+
+.release-overdue {
+  color: rgb(83, 83, 29);
+  font-weight: bold;
+
+  & + span {
+    color: rgb(83, 83, 29);
+  }
+}
+
+.no-release-plan {
+  color: var(--theme-color-2);
+  font-weight: bold;
+}

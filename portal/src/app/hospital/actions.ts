@@ -305,6 +305,22 @@ export const markPatientInCentreError = createAction(
   '[HMS-V] Mark patient in centre: error',
 );
 
+export const updatePatientReleasePlan = createAction(
+  '[HMS-V] Update patient release plan',
+  props<{
+    patientId: number;
+    plannedRelease: string | null;
+    plannedReleaseNotes: string | null;
+  }>(),
+);
+export const updatePatientReleasePlanSuccess = createAction(
+  '[HMS-V] Update patient release plan: success',
+  props<{ patientId: number }>(),
+);
+export const updatePatientReleasePlanError = createAction(
+  '[HMS-V] Update patient release plan: error',
+);
+
 export const markPatientReleased = createAction(
   '[HMS-V] Mark patient as released',
   props<{ patientId: number; releaseTypeId: number }>(),

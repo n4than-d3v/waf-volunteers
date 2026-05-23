@@ -327,6 +327,15 @@ public partial class Program
 
         apiHospitalPatient
             .MapPost(
+                "/{id:int}/release-plan",
+                (IMediator mediator, int id, UpdatePatientReleasePlan request) =>
+                    mediator.Send(request.WithId(id))
+            )
+            .AddNote("Vet updates patient release plan")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient
+            .MapPost(
                 "/{id:int}/release",
                 (IMediator mediator, int id, MarkPatientReleased request) =>
                     mediator.Send(request.WithId(id))

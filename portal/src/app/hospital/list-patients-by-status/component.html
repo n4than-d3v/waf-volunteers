@@ -158,6 +158,7 @@
       <th>Stay</th>
       <th>Ready to release</th>
       <th>Waiting for</th>
+      <th>Planned release</th>
     </tr>
   </thead>
   <tbody>
@@ -187,6 +188,18 @@
       </td>
       <td>{{ patient.lastUpdatedStatus | date: 'd MMM yyyy HH:mm' }}</td>
       <td>{{ duration(patient.lastUpdatedStatus) }}</td>
+      <td>
+        @if (patient.isReleasePlanned) { @if (patient.isReleaseOverdue) {
+        <span class="release-overdue"
+          >⚠️ Overdue ({{ patient.plannedRelease | date: 'd MMM yyyy HH:mm'
+          }})</span
+        >
+        } @else {
+        <span>{{ patient.plannedRelease | date: 'd MMM yyyy HH:mm' }}</span>
+        } } @else {
+        <span class="no-release-plan">Not organised</span>
+        }
+      </td>
     </tr>
     }
   </tbody>

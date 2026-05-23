@@ -40,6 +40,7 @@ export interface HospitalState {
   addLabs: Task;
   markBoard: Task;
   setPenCleanStatus: Task;
+  updateReleasePlan: Task;
 
   // Patient details
   foods: ReadOnlyWrapper<Food[]>;
@@ -248,6 +249,9 @@ export interface ListPatient {
   dispositioner: {} | null;
   homeCareRequests: HomeCareRequest[];
   lastMessageSentByOrphanFeeder: boolean | null;
+  plannedRelease: string | null;
+  isReleasePlanned: boolean;
+  isReleaseOverdue: boolean;
   id: number;
 }
 
@@ -337,6 +341,8 @@ export interface Patient extends ListPatient {
   initialWeight: PatientWeight | null;
   latestWeight: PatientWeight | null;
   othersInPen: OtherPatient[];
+  plannedReleaseNotes: string | null;
+  plannedReleaseLastUpdated: string | null;
 }
 
 export interface OtherPatient {
@@ -809,6 +815,8 @@ export interface PatientBoardAreaPen {
 
   hasCustomDiet: boolean;
   custom: boolean;
+  newest: string | null;
+  plannedRelease: string | null;
 
   morning: boolean;
   afternoon: boolean;
@@ -922,4 +930,5 @@ export const initialHospitalState: HospitalState = {
   concernReasons: createReadOnlyWrapper<ConcernCategory[]>(),
   markCustomTaskDone: createTask(),
   dismissConcern: createTask(),
+  updateReleasePlan: createTask(),
 };

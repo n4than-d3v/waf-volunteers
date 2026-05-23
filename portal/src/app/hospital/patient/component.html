@@ -20,6 +20,13 @@
     ></hospital-patient-status>
   </section>
   <section>
+    <h3>Release plan</h3>
+    <hospital-patient-release-plan
+      [patient]="patient.data"
+      [isVet]="isVet"
+    ></hospital-patient-release-plan>
+  </section>
+  <section>
     <h3>Location</h3>
     <hospital-patient-location
       [patient]="patient.data"
@@ -158,6 +165,19 @@
     ></hospital-patient-status>
   </section>
 </div>
+@if (patient.data.status === PatientStatus.ReadyForRelease ||
+(patient.data.status === PatientStatus.Dispositioned &&
+patient.data.plannedRelease)) {
+<div class="sections">
+  <section>
+    <h3>Release plan</h3>
+    <hospital-patient-release-plan
+      [patient]="patient.data"
+      [isVet]="isVet"
+    ></hospital-patient-release-plan>
+  </section>
+</div>
+}
 <div class="sections">
   <section>
     <h3>Weight history</h3>

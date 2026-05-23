@@ -28,6 +28,7 @@ import { HospitalPatientHomeCareComponent } from './home-care/component';
 import { TokenProvider } from '../../shared/token.provider';
 import { HospitalPatientLabsComponent } from './labs/component';
 import { HospitalPatientWeightHistoryComponent } from './weight-history/component';
+import { HospitalPatientReleasePlanComponent } from './release-plan/component';
 
 @Component({
   selector: 'hospital-patient',
@@ -52,6 +53,7 @@ import { HospitalPatientWeightHistoryComponent } from './weight-history/componen
     HospitalPatientLabsComponent,
     HospitalPatientRechecksComponent,
     HospitalPatientPrescriptionsComponent,
+    HospitalPatientReleasePlanComponent,
   ],
 })
 export class HospitalPatientComponent implements OnInit, OnDestroy {

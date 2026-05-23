@@ -100,6 +100,16 @@ public class Patient : Entity
     public TransferLocation? TransferLocation { get; set; }
     public Dispositioner? Dispositioner { get; set; }
 
+    public DateTime? PlannedRelease { get; set; }
+    public string? PlannedReleaseNotes { get; set; }
+    public DateTime? PlannedReleaseLastUpdated { get; set; }
+
+    [NotMapped]
+    public bool IsReleasePlanned => PlannedRelease != null;
+
+    [NotMapped]
+    public bool IsReleaseOverdue => PlannedRelease != null && PlannedRelease <= DateTime.UtcNow;
+
     #endregion
 
     public string Salt { get; set; }

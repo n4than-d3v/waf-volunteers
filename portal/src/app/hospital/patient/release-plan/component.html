@@ -1,0 +1,81 @@
+<form [formGroup]="releasePlanForm">
+  @if (!updating) { @if (patient.isReleasePlanned) { @if (patient.status !=
+  PatientStatus.Dispositioned) { @if (patient.isReleaseOverdue) {
+  <p class="no-release-plan">⚠️ Release is overdue</p>
+  } @else {
+  <p class="release-plan">📅 Release has been planned</p>
+  } }
+  <table>
+    <tbody>
+      <tr>
+        <td>Date</td>
+        <td>{{ patient.plannedRelease | date: 'd MMM yyyy HH:mm' }}</td>
+      </tr>
+      <tr>
+        <td>Notes</td>
+        <td>{{ patient.plannedReleaseNotes || '(blank)' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  } @else {
+  <p class="no-release-plan">⚠️ No release plan in place yet</p>
+  } @if (isVet && patient.status != PatientStatus.Dispositioned) {
+  <div class="buttons">
+    <button (click)="prepareEdit()" class="button button--secondary-invert">
+      @if (patient.plannedRelease) { 🕊️ Change plan } @else { 🕊️ Organise
+      release }
+    </button>
+    @if (patient.plannedRelease) {
+    <button (click)="reset()" class="button button--secondary-invert">
+      🗑️ Cancel plan
+    </button>
+    }
+  </div>
+  } @if (patient.plannedReleaseLastUpdated) {
+  <p class="last-updated">
+    Last updated on
+    <span>
+      {{ patient.plannedReleaseLastUpdated | date: 'd MMM yyyy HH:mm' }}
+    </span>
+  </p>
+  } } @else {
+  <div class="inline">
+    <div class="field">
+      <label for="releaseDate">
+        Date
+        <span class="required">*</span>
+      </label>
+      <input id="releaseDate" type="date" formControlName="date" />
+    </div>
+    <div class="field">
+      <label for="releaseTime"
+        >Time
+        <span class="required">*</span>
+      </label>
+      <input id="releaseTime" type="time" formControlName="time" />
+    </div>
+  </div>
+  <div class="field">
+    <label for="releaseNotes"> Notes </label>
+    <textarea
+      id="releaseNotes"
+      type="text"
+      formControlName="notes"
+      autocomplete="off"
+      rows="3"
+    ></textarea>
+  </div>
+  @if (!saving) { @if (attemptedSave && !releasePlanForm.valid) {
+  <div class="error">Please fill in all required fields</div>
+  }
+  <div class="buttons">
+    <button (click)="save()" class="button button--primary">Save</button>
+    <button (click)="cancel()" class="button button--secondary">Back</button>
+  </div>
+  } }
+</form>
+@if (updateTask$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} }

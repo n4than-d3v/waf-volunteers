@@ -1,0 +1,70 @@
+.release-plan,
+.no-release-plan {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+
+  &.no-release-plan {
+    background-color: #fff2d7;
+    margin-bottom: 1rem;
+  }
+
+  &.release-plan {
+    background-color: #ddeaff;
+  }
+}
+
+.last-updated {
+  font-size: 0.85rem;
+  color: #6a6a6a;
+  margin-top: 0.5rem;
+}
+
+table:not(:has(thead)) {
+  margin-bottom: 0.75rem;
+
+  tbody {
+    td {
+      font-size: 1.125rem;
+      padding: 0.125rem 0.25rem;
+      border: none;
+    }
+
+    td:nth-child(2) {
+      font-weight: bold;
+      padding-left: 1rem;
+    }
+
+    tr {
+      background-color: transparent !important;
+    }
+  }
+}
+
+.inline {
+  display: flex;
+  gap: 1rem;
+}
+
+input {
+  padding: 0.25rem 0.5rem;
+  max-width: max-content;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+textarea {
+  min-width: 40rem;
+  font-size: 1rem;
+}
+
+button {
+  padding: 0.25rem 0.5rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}

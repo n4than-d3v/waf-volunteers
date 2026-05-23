@@ -1686,6 +1686,18 @@ reportConcern) { @if (reportConcern.loading) {
     <div class="concern-reason">
       <p>{{ pen.concernReason }}</p>
     </div>
+    } @if (pen.newest) {
+    <p class="new">
+      🌱 Arrived today at
+      <span class="new-time">{{ pen.newest | date: 'HH:mm' }}</span>
+    </p>
+    } @if (pen.plannedRelease) {
+    <p class="release-plan">
+      🎉 Releasing today at
+      <span class="release-plan-time"
+        >{{ pen.plannedRelease | date: 'HH:mm' }}</span
+      >
+    </p>
     }
     <div class="patients">
       @for (patient of pen.patients; track patient) {

@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients.Outcome;
+using Api.Database.Entities.Hospital.Tasks;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,6 +32,14 @@ public class MarkPenNeedsCleaningHandler : IRequestHandler<MarkPenNeedsCleaning,
         if (pen.Empty)
         {
             pen.CleanStatus = PenCleanStatus.NeedsCleaning;
+
+            var concerns = await _repository.GetAll<HusbandryConcern>(
+                x => x.Pen.Id == pen.Id && x.Checked == false,
+                action: x => x.Include(c => c.Pen));
+
+            foreach (var concern in concerns)
+                concern.Checked = true;
+
             await _repository.SaveChangesAsync();
         }
 

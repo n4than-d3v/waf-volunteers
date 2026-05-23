@@ -253,3 +253,8 @@ export const selectDismissConcern = createSelector(
   selectHospitalState,
   (state) => state.dismissConcern,
 );
+
+export const selectUpdateReleasePlan = createSelector(
+  selectHospitalState,
+  (state) => state.updateReleasePlan,
+);

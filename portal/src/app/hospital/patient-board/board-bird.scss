@@ -75,6 +75,15 @@
       text-align: center;
       align-content: center;
 
+      &.location--space {
+        align-content: flex-end;
+
+        > div,
+        > p {
+          margin-top: 0.25rem;
+        }
+      }
+
       .concern-reason {
         background-color: rgb(255, 227, 227);
         padding: 0.125rem 0.25rem;
@@ -344,4 +353,9 @@
       color: var(--theme-color-1);
     }
   }
+}
+
+.new,
+.release-plan {
+  border-bottom: none;
 }

@@ -1867,7 +1867,10 @@ reportConcern) { @if (reportConcern.loading) {
     [class.expanded]="expandedPens[pen.reference]"
     [class.completed]="pen.completed"
   >
-    <div class="location">
+    <div
+      class="location"
+      [class.location--space]="pen.concernReason || pen.newest || pen.plannedRelease"
+    >
       <span>{{ pen.reference }}</span>
       @if (!(pen.cleanStatus !== PenCleanStatus.None || pen.custom)) {
       <svg
@@ -1893,6 +1896,18 @@ reportConcern) { @if (reportConcern.loading) {
       <div class="concern-reason">
         <p>{{ pen.concernReason }}</p>
       </div>
+      } @if (pen.newest) {
+      <p class="new">
+        🌱 Arrived today at
+        <span class="new-time">{{ pen.newest | date: 'HH:mm' }}</span>
+      </p>
+      } @if (pen.plannedRelease) {
+      <p class="release-plan">
+        🎉 Releasing today at
+        <span class="release-plan-time"
+          >{{ pen.plannedRelease | date: 'HH:mm' }}</span
+        >
+      </p>
       } }
     </div>
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===

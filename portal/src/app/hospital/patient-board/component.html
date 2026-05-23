@@ -588,6 +588,9 @@
             />
           </svg>
         </div>
+        <div class="concern-reason">
+          <p>Lethargic</p>
+        </div>
         <div class="patients">
           <p>&nbsp;</p>
           <p>&nbsp;</p>
@@ -599,6 +602,94 @@
           This flag will show if anyone has reported a concern for this pen.
           Once the vets have investigated the concern, it will go back to
           normal.
+        </p>
+      </div>
+    </div>
+
+    <div class="pens">
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <p class="new">
+          🌱 Arrived today at
+          <span class="new-time">10:25</span>
+        </p>
+
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          If a patient was admitted today, you will be shown the time it was
+          admitted.
+        </p>
+      </div>
+
+      <div class="pen" [class.expanded]="false" [class.completed]="false">
+        <div class="location">
+          <span>
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </span>
+          <svg
+            width="800px"
+            height="800px"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              [attr.d]="svgs.flag.pole"
+              fill="#BABABA"
+            />
+            <path
+              [attr.d]="svgs.flag.flag"
+              [attr.fill]="false ? '#E44040' : '#CEAFAF'"
+            />
+          </svg>
+        </div>
+
+        <p class="release-plan">
+          🎉 Releasing today at
+          <span class="release-plan-time">20:00</span>
+        </p>
+
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+      </div>
+
+      <div class="explanation">
+        <p>
+          If a patient is scheduled to be released today, you will be shown the
+          scheduled time.
         </p>
       </div>
     </div>

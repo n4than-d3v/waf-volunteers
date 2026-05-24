@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import {
@@ -11,7 +11,6 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
   selectProfile,
-  selectProfiles,
   selectProfilesError,
   selectProfilesLoading,
   selectProfileUpdateSuccess,
@@ -23,7 +22,7 @@ import {
   Roles,
   Status,
 } from '../../../shared/token.provider';
-import { getUser, getUsers, updateUser } from '../actions';
+import { getUser, updateUser } from '../actions';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Profile } from '../state';
 import {
@@ -97,6 +96,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
       Rodents: new FormControl(false),
       Hedgehogs: new FormControl(false),
       Rabbits: new FormControl(false),
+      Swifts: new FormControl(false),
     }),
   });
 
@@ -181,6 +181,9 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
             ),
             Rabbits: !!(
               profile.homeCarerPermissions & HomeCarerPermissions.Rabbits
+            ),
+            Swifts: !!(
+              profile.homeCarerPermissions & HomeCarerPermissions.Swifts
             ),
           },
         });
@@ -280,6 +283,9 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
               : 0) |
             (this.form.controls.homeCarerPermissions.controls.Rabbits.value
               ? HomeCarerPermissions.Rabbits
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Swifts.value
+              ? HomeCarerPermissions.Swifts
               : 0),
         },
       }),

@@ -34,6 +34,7 @@ export enum HomeCarerPermissions {
   Pigeons = 4,
   Doves = 8,
   GardenBirds = 16,
+  Swifts = 256,
   Rodents = 32,
   Hedgehogs = 64,
   Rabbits = 128,
@@ -60,7 +61,12 @@ export const homeCarerPermissionList = Object.keys(HomeCarerPermissions)
   .filter((key) => isNaN(Number(key)))
   .map((key) => ({
     name: key,
-    display: key === 'GardenBirds' ? 'Garden birds' : key,
+    display:
+      key === 'GardenBirds'
+        ? 'Garden birds'
+        : key === 'Swifts'
+          ? 'Swifts / swallows / martins'
+          : key,
     value: HomeCarerPermissions[key as keyof typeof HomeCarerPermissions],
   }));
 

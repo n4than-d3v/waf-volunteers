@@ -225,5 +225,6 @@ public enum HomeCarerPermissions
     GardenBirds = 16,
     Rodents = 32,
     Hedgehogs = 64,
-    Rabbits = 128
+    Rabbits = 128,
+    Swifts = 256
 }

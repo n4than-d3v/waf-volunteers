@@ -75,6 +75,7 @@ export class AdminUsersCreateComponent {
       Rodents: new FormControl(false),
       Hedgehogs: new FormControl(false),
       Rabbits: new FormControl(false),
+      Swifts: new FormControl(false),
     }),
   });
 
@@ -167,6 +168,9 @@ export class AdminUsersCreateComponent {
               : 0) |
             (this.form.controls.homeCarerPermissions.controls.Rabbits.value
               ? HomeCarerPermissions.Rabbits
+              : 0) |
+            (this.form.controls.homeCarerPermissions.controls.Swifts.value
+              ? HomeCarerPermissions.Swifts
               : 0),
         },
       }),

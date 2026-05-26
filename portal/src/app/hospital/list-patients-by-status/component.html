@@ -36,6 +36,7 @@
       <option [value]="1">Date admitted</option>
       @if (_status === PatientStatus.ReadyForRelease) {
       <option [value]="5">Wait time</option>
+      <option [value]="7">Planned release</option>
       } @if (_status === PatientStatus.Dispositioned) {
       <option [value]="6">Date dispositioned</option>
       }

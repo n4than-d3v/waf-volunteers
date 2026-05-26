@@ -23,6 +23,7 @@ public enum SortPatientsBy
     HomeCarer = 4,
     LastUpdatedStatus = 5,
     Dispositioned = 6,
+    PlannedRelease = 7
 }
 
 public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
@@ -141,6 +142,10 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
 
             SortPatientsBy.Dispositioned => query
                 .OrderByDescending(y => y.Dispositioned)
+                .ThenByDescending(y => y.Admitted),
+
+            SortPatientsBy.PlannedRelease => query
+                .OrderBy(y => y.PlannedRelease)
                 .ThenByDescending(y => y.Admitted),
 
             _ => query.OrderByDescending(x => x.Admitted),

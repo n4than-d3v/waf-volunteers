@@ -8,6 +8,11 @@
   align-items: stretch;
   align-content: center;
 
+  .new,
+  .release-plan {
+    border-bottom: none;
+  }
+
   .nursery-pen {
     display: flex;
     flex: 0 0 calc(50% - 0.5rem);
@@ -353,9 +358,4 @@
       color: var(--theme-color-1);
     }
   }
-}
-
-.new,
-.release-plan {
-  border-bottom: none;
 }

@@ -633,7 +633,8 @@
         </div>
 
         <p class="new">
-          🌱 Arrived today at
+          <img src="images/board/new.png" />
+          <span>Arrived today at</span>
           <span class="new-time">10:25</span>
         </p>
 
@@ -676,7 +677,8 @@
         </div>
 
         <p class="release-plan">
-          🎉 Releasing today at
+          <img src="images/board/releasing.png" />
+          <span>Releasing today at</span>
           <span class="release-plan-time">20:00</span>
         </p>
 
@@ -1779,12 +1781,14 @@ reportConcern) { @if (reportConcern.loading) {
     </div>
     } @if (pen.newest) {
     <p class="new">
-      🌱 Arrived today at
+      <img src="images/board/new.png" />
+      <span>Arrived today at</span>
       <span class="new-time">{{ pen.newest | date: 'HH:mm' }}</span>
     </p>
     } @if (pen.plannedRelease) {
     <p class="release-plan">
-      🎉 Releasing today at
+      <img src="images/board/releasing.png" />
+      <span>Releasing today at</span>
       <span class="release-plan-time"
         >{{ pen.plannedRelease | date: 'HH:mm' }}</span
       >
@@ -1989,12 +1993,14 @@ reportConcern) { @if (reportConcern.loading) {
       </div>
       } @if (pen.newest) {
       <p class="new">
-        🌱 Arrived today at
+        <img src="images/board/new.png" />
+        <span>Arrived today at</span>
         <span class="new-time">{{ pen.newest | date: 'HH:mm' }}</span>
       </p>
       } @if (pen.plannedRelease) {
       <p class="release-plan">
-        🎉 Releasing today at
+        <img src="images/board/releasing.png" />
+        <span>Releasing today at</span>
         <span class="release-plan-time"
           >{{ pen.plannedRelease | date: 'HH:mm' }}</span
         >

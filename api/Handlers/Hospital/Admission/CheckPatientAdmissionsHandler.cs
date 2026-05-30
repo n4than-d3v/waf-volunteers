@@ -164,7 +164,29 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
             patientAdmissionReasons.Add(admissionReason);
         }
 
-        var foundAt = admission.entity.c_animal_found_at_different_address.Any(x => x == "Yes") ? (admission.entity.c_alternative_address ?? "Unknown") : "Address";
+        string foundAt = string.Empty;
+
+        bool foundAtDifferentAddress = admission.entity.c_animal_found_at_different_address?.Any(x => x == "Yes") ?? false;
+        bool notFoundAtDifferentAddress = admission.entity.c_animal_found_at_different_address?.Any(x => x == "No") ?? false;
+        string alternativeAddress = (admission.entity.c_alternative_address ?? string.Empty).Trim();
+        bool alternativeAddressIsBlank = string.IsNullOrWhiteSpace(alternativeAddress);
+
+        if (foundAtDifferentAddress)
+        {
+            if (alternativeAddressIsBlank) foundAt = "(Incomplete - Address)";
+            else foundAt = alternativeAddress;
+        }
+        else if (notFoundAtDifferentAddress)
+        {
+            if (alternativeAddressIsBlank) foundAt = "Address";
+            else foundAt = "(Invalid) " + alternativeAddress;
+        }
+        else
+        {
+            if (alternativeAddressIsBlank) foundAt = "(Incomplete - Yes or no)";
+            else foundAt = "(Incomplete - Yes or no) " + alternativeAddress;
+        }
+
         var encryptedFoundAt = _encryptionService.Encrypt(foundAt, patient.Salt);
 
         patient.Admitter = admitter;

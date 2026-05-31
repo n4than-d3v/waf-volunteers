@@ -35,7 +35,8 @@
     <p><img src="images/rota/tick.svg" /> Coming</p>
     <p><img src="images/rota/cross.svg" /> Not coming</p>
     <p><img src="images/rota/question.svg" /> Unconfirmed</p>
-    <p><img src="images/rota/required.svg" /> Required</p>
+    <p><img src="images/rota/minimum.svg" /> Bare minimum</p>
+    <p><img src="images/rota/required.svg" /> Ideal</p>
   </div>
 </div>
 
@@ -189,15 +190,15 @@ addingWorkExperience)) {
           @for (job of shift.jobs; track job.job.id) { @if (job.showOnRota) {
           <div
             class="job"
-            [class.job__enough]="job.enough"
-            [class.job__not-enough]="!job.enough"
+            [class.job__enough]="!(job.understaffed || job.critical)"
+            [class.job__understaffed]="job.understaffed"
+            [class.job__critical]="job.critical"
           >
             <h5>{{ job.job.name }}</h5>
-            @if (!job.enough) {
-            <p class="error">
-              There are not enough volunteers to satisfy the requirements of
-              this shift
-            </p>
+            @if (job.critical) {
+            <p class="error critical">Critically understaffed</p>
+            } @else if (job.understaffed) {
+            <p class="error understaffed">Understaffed</p>
             }
             <div class="volunteers">
               <div
@@ -209,7 +210,14 @@ addingWorkExperience)) {
                 <p>
                   {{ job.unconfirmed}} <img src="images/rota/question.svg" />
                 </p>
-                <p>{{ job.required }} <img src="images/rota/required.svg" /></p>
+                <p>
+                  {{ job.bareMinimum }}
+                  <img src="images/rota/minimum.svg" />
+                </p>
+                <p>
+                  {{ job.ideal }}
+                  <img src="images/rota/required.svg" />
+                </p>
                 <button (click)="toggle(day, shift, job)" class="button">
                   {{ isExpanded(day,shift,job) ? 'Hide' : 'Show' }}
                 </button>

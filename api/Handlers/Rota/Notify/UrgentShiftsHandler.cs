@@ -53,8 +53,13 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
             var rota = await _rotaService.GetVolunteerRotaAsync(now, account.Id);
 
             var maxDate = now.AddDays(_rotaSettings.NotifyUnconfirmedUrgentShiftsDaysInAdvance);
-            var notify = rota.UrgentShifts
-                .Where(x => x.Date <= maxDate && x.Confirmed != true)
+            var notify = rota.UrgentShifts.Where(x => x.Date <= maxDate && x.Confirmed != true);
+
+            var critical = notify.Where(x => x.Critical)
+                .Select(x => $"{x.Date.DayOfWeek} {x.Time.Name.ToLower()}")
+                .ToList();
+
+            var understaffed = notify.Where(x => x.Understaffed && !x.Critical)
                 .Select(x => $"{x.Date.DayOfWeek} {x.Time.Name.ToLower()}")
                 .ToList();
 
@@ -64,12 +69,26 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
             if (!string.IsNullOrWhiteSpace(subscription))
             {
                 var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
-                await _pushService.Send(push, new PushNotification
+
+                if (critical.Any())
                 {
-                    Title = "Urgent shifts",
-                    Body = $"We need your help on {Format(notify)}. Please can you spare a few hours to attend an urgent shift?",
-                    Url = "/volunteer/rota"
-                }, account.Id);
+                    await _pushService.Send(push, new PushNotification
+                    {
+                        Title = "Critically understaffed shifts",
+                        Body = $"{Format(critical)} urgently needs more volunteers. Please can you help?",
+                        Url = "/volunteer/rota"
+                    }, account.Id);
+                }
+
+                if (understaffed.Any())
+                {
+                    await _pushService.Send(push, new PushNotification
+                    {
+                        Title = "Understaffed shifts",
+                        Body = $"{Format(understaffed)} needs more volunteers. Please can you help?",
+                        Url = "/volunteer/rota"
+                    }, account.Id);
+                }
             }
         }
 

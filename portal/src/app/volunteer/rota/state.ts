@@ -48,7 +48,10 @@ export interface UrgentShift {
   job: Job;
   confirmed: boolean | null;
   coming: number;
-  required: number;
+  bareMinimum: number;
+  ideal: number;
+  critical: boolean;
+  understaffed: boolean;
   others: { name: string; area?: AssignableArea }[];
   newbies: { name: string }[];
   workExperiences: { name: string; notes: string }[];

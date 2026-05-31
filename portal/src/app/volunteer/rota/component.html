@@ -26,15 +26,16 @@
   <p>You have not yet confirmed when your next shift will be</p>
   }
 </div>
-@if (rota.urgentShifts.length > 0) {
+@let critical = getCriticalUrgentShifts(rota); @if (critical.length > 0) {
 <div class="urgent-shifts">
-  <h2>Shifts in need</h2>
-  @for (shift of rota.urgentShifts; track shift.date) {
-  <div
-    class="shift"
-    [class.shift--confirmed]="shift.confirmed"
-    [class.shift--rejected]="shift.confirmed !== true"
-  >
+  <h2>Critically understaffed shifts</h2>
+  <p>
+    These shifts currently have fewer volunteers than the absolute bare minimum
+    required for the hospital to operate safely and effectively. Without urgent
+    additional cover, patient care is likely to be significantly impacted.
+  </p>
+  @for (shift of critical; track shift.date) {
+  <div class="shift shift--critical" [class.shift--confirmed]="shift.confirmed">
     <div class="shift-label">
       {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
     </div>
@@ -48,9 +49,11 @@
       @let confirmed = shift.confirmed || hasAlreadyConfirmedAsRegular(rota,
       shift); @if (!confirmed) {
       <p>
-        Please help if you can!<br />
-        There's {{ shift.coming }} coming and we need {{ shift.required -
-        shift.coming }} more.
+        This shift is
+        <span class="critical">critically understaffed</span>.<br />
+        Minimum required is {{ shift.bareMinimum }} volunteers.<br />
+        Currently only {{ shift.coming }} coming, so we urgently need {{
+        shift.bareMinimum - shift.coming }} more.
       </p>
       <div class="buttons">
         <button
@@ -128,6 +131,123 @@
   </div>
   }
 </div>
+} @let understaffed = getUnderstaffedUrgentShifts(rota); @if
+(understaffed.length > 0) {
+<div class="urgent-shifts">
+  <h2>Understaffed shifts</h2>
+  <p>
+    These shifts currently have fewer volunteers than the recommended level
+    required for the hospital to operate effectively. While the shift remains
+    manageable, additional cover would be beneficial.
+  </p>
+  @if (!hideUnderstaffed) {
+  <button class="button toggle-understaffed" (click)="hideUnderstaffed = true">
+    Hide understaffed shifts
+  </button>
+  @for (shift of understaffed; track shift.date) {
+  <div
+    class="shift shift--understaffed"
+    [class.shift--confirmed]="shift.confirmed"
+  >
+    <div class="shift-label">
+      {{ shift.date | day }} {{ shift.date | date: 'MMMM y' }}
+    </div>
+    <div class="shift-content">
+      <p class="shift-date">
+        {{ shift.date | date: 'EEEE' }} {{ shift.time.name }}
+      </p>
+      <p class="shift-type">{{ shift.job.name }}</p>
+    </div>
+    <div class="shift-footer">
+      @let confirmed = shift.confirmed || hasAlreadyConfirmedAsRegular(rota,
+      shift); @if (!confirmed) {
+      <p>
+        This shift is
+        <span class="understaffed">understaffed</span>.<br />
+        Recommendation is {{ shift.ideal }} volunteers.<br />
+        Currently only {{ shift.coming }} coming, so we ideally need {{
+        shift.ideal - shift.coming }} more.
+      </p>
+      <div class="buttons">
+        <button
+          class="button button--primary"
+          (click)="confirm(shift, ShiftType.Urgent)"
+        >
+          I can help
+        </button>
+      </div>
+      } @else if (needToChange === shift) {
+      <p>
+        The animals <strong>really</strong> need your help. Is there
+        <em>absolutely</em> no way you can still come in? 😢
+      </p>
+      <div class="buttons">
+        <button
+          class="button button--warning"
+          (click)="askingWhyDenying = shift"
+        >
+          Sorry, I can't help
+        </button>
+      </div>
+      } @else if (shift.confirmed) {
+      <div class="decision-container">
+        <div class="decision confirmed">
+          <img src="images/rota/tick.svg" alt="Confirmed" class="icon" />
+          <p>Coming in</p>
+        </div>
+        <button class="button button--secondary" (click)="needToChange = shift">
+          Change
+        </button>
+      </div>
+      } @if (askingWhyDenying === shift) {
+      <div class="why-denying">
+        <label for="missingReason">Reason</label>
+        <select id="missingReason" [(ngModel)]="missingReasonId">
+          @for (missingReason of rota.missingReasons; track missingReason.id){
+          <option [value]="missingReason.id">{{ missingReason.name }}</option>
+          }
+        </select>
+        <label for="customMissingReason">Other info</label>
+        <input
+          id="customMissingReason"
+          type="text"
+          [(ngModel)]="customMissingReason"
+        />
+        <button class="button button--warning" (click)="deny(ShiftType.Urgent)">
+          Confirm
+        </button>
+      </div>
+      } @else if (confirmed || shift.others.length || shift.newbies.length ||
+      shift.workExperiences.length) {
+      <div class="people-coming">
+        @if (confirmed || shift.others.length) {
+        <strong>Who's coming?</strong>
+        <p>
+          {{ confirmed ? 'You' : '' }}{{ confirmed && shift.others.length ? ','
+          : '' }} {{ formatOthers(shift) }}
+        </p>
+        } @if (shift.newbies.length > 0) {
+        <strong>Newbies</strong>
+        <p class="newbies">{{ formatNewbies(shift) }}</p>
+        } @if (shift.workExperiences.length > 0) {
+        <strong>Work experience</strong>
+        <p class="work-experiences">{{ formatWorkExperiences(shift) }}</p>
+        }
+      </div>
+      } @if (shift.area) {
+      <div class="shift-assign">
+        <strong>Where am I assigned?</strong>
+        <p>{{ shift.area.name }}</p>
+      </div>
+      }
+    </div>
+  </div>
+  } } @else {
+  <button class="button toggle-understaffed" (click)="hideUnderstaffed = false">
+    Show understaffed shifts
+  </button>
+  }
+</div>
 }
 <div class="extra-shifts">
   <h2>Extra shifts</h2>
@@ -169,12 +289,25 @@
         Back
       </button>
     </div>
+    } @else { @if (critical.length > 0) {
+    <p>
+      There are currently <strong>critically understaffed</strong> shfits. If
+      you wish to sign up to an <strong>extra</strong> shift, please consider
+      one of those as a priority. Otherwise, please use the button below to
+      continue.
+    </p>
+    } @else if (understaffed.length > 0) {
+    <p>
+      There are currently <strong>understaffed</strong> shfits. If you wish to
+      sign up to an <strong>extra</strong> shift, please consider one of those
+      as a priority. Otherwise, please use the button below to continue.
+    </p>
     } @else {
     <p>
-      If you would like to sign up for an <strong>extra</strong> shift, we
-      encourage you to first consider a shift <strong>in need</strong>, if any
-      are available. Otherwise, please use the button below to continue.
+      If you would like to sign up for an <strong>extra</strong> shift, please
+      use the button below to continue.
     </p>
+    }
     <div class="buttons">
       <button class="button button--primary" (click)="signingUpExtra = true">
         Continue

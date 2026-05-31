@@ -14,7 +14,8 @@ public class UpdateRequirements : IRequest<IResult>
         public DayOfWeek Day { get; set; }
         public int TimeId { get; set; }
         public int JobId { get; set; }
-        public int Minimum { get; set; }
+        public int BareMinimum { get; set; }
+        public int Ideal { get; set; }
     }
 }
 
@@ -43,7 +44,8 @@ public class UpdateRequirementsHandler : IRequestHandler<UpdateRequirements, IRe
                 requirement.Job = jobs.FirstOrDefault(x => x.Id == updatedRequirement.JobId)!;
                 requirement.Time = times.FirstOrDefault(x => x.Id == updatedRequirement.TimeId)!;
                 requirement.Day = updatedRequirement.Day;
-                requirement.Minimum = updatedRequirement.Minimum;
+                requirement.BareMinimum = updatedRequirement.BareMinimum;
+                requirement.Ideal = updatedRequirement.Ideal;
             }
             else
             {
@@ -60,7 +62,8 @@ public class UpdateRequirementsHandler : IRequestHandler<UpdateRequirements, IRe
                 Job = jobs.FirstOrDefault(x => x.Id == requirement.JobId)!,
                 Time = times.FirstOrDefault(x => x.Id == requirement.TimeId)!,
                 Day = requirement.Day,
-                Minimum = requirement.Minimum,
+                BareMinimum = requirement.BareMinimum,
+                Ideal = requirement.Ideal
             });
         }
 

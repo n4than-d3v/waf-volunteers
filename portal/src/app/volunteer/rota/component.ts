@@ -44,6 +44,8 @@ export class VolunteerRotaComponent implements OnInit {
 
   ShiftType = ShiftType;
 
+  hideUnderstaffed = false;
+
   signingUpExtra = false;
   minDate = moment().toISOString().split('T')[0];
   maxDate = moment().add(35, 'days').toISOString().split('T')[0];
@@ -78,6 +80,16 @@ export class VolunteerRotaComponent implements OnInit {
 
     this.denying$ = this.store.select(selectDenyingShift);
     this.denied$ = this.store.select(selectDeniedShift);
+  }
+
+  getCriticalUrgentShifts(rota: Rota) {
+    return rota.urgentShifts.filter((x) => x.critical);
+  }
+
+  getUnderstaffedUrgentShifts(rota: Rota) {
+    return rota.urgentShifts.filter(
+      (x) => (x.confirmed || x.understaffed) && !x.critical,
+    );
   }
 
   hasAlreadyConfirmedAsRegular(rota: Rota, shift: UrgentShift) {

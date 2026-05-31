@@ -59,7 +59,8 @@ export interface Requirement {
   day: DayOfWeek;
   time: Time;
   job: Job;
-  minimum: number;
+  bareMinimum: number;
+  ideal: number;
 
   // Used for commands
   timeId?: number;
@@ -146,11 +147,13 @@ export interface AdminRotaShiftJob {
   job: Job;
   volunteers: AdminRotaShiftJobVolunteer[];
   newbies: AdminRotaShiftJobNewbie[];
-  required: number;
+  bareMinimum: number;
+  ideal: number;
   coming: number;
   notComing: number;
   unconfirmed: number;
-  enough: boolean;
+  critical: boolean;
+  understaffed: boolean;
   isAssignable: boolean;
   showOnRota: boolean;
 }

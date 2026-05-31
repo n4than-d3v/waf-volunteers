@@ -251,7 +251,8 @@ public class RotaService : IRotaService
                 Job = job,
                 Volunteers = volunteers,
                 Newbies = shiftNewbies.Select(GetDayShiftJobNewbie).ToList(),
-                Required = requirement?.Minimum ?? 0,
+                BareMinimum = requirement?.BareMinimum ?? 0,
+                Ideal = requirement?.Ideal ?? 0,
                 IsAssignable = isAssignable,
             };
         }
@@ -343,6 +344,7 @@ public class RotaService : IRotaService
         );
         var assignableAreas = await _repository.GetAll<AssignableArea>(x => true, tracking: false);
         var jobs = await _repository.GetAll<Job>(x => true, tracking: false);
+        var user = await _repository.Get<Account>(userId, tracking: false);
 
         bool IsOtherComing(Day.DayShift.DayShiftJob.DayShiftJobVolunteer volunteer) =>
             (volunteer.Confirmed == true) && (IsVolunteer(volunteer) == false);
@@ -406,7 +408,8 @@ public class RotaService : IRotaService
                 Date = day.Date,
                 Time = shift.Time,
                 Job = job.Job,
-                Required = job.Required,
+                BareMinimum = job.BareMinimum,
+                Ideal = job.Ideal,
                 Coming = job.Volunteers.Count(v => v.Confirmed == true),
                 Confirmed = volunteer?.Confirmed,
                 Type = volunteer?.Type ?? AttendanceType.Urgent,
@@ -450,6 +453,7 @@ public class RotaService : IRotaService
             tracking: false,
             action: x => x.Include(y => y.Account).Include(y => y.Time).Include(y => y.Job)
         );
+
         var allowedJobIds = userRegularShifts
             .SelectMany(x =>
             {
@@ -459,6 +463,13 @@ public class RotaService : IRotaService
             })
             .Distinct()
             .ToList();
+
+        foreach (var job in jobs)
+        {
+            if (allowedJobIds.Contains(job.Id)) continue;
+            if (!user.Roles.HasFlag(job.BeaconAssociatedRole)) continue;
+            allowedJobIds.Add(job.Id);
+        }
 
         var maxDateForRegularShifts = now.AddDays(_settings.RegularShiftsDaysInAdvance);
         var regularShifts = days.OrderBy(d => d.Date)
@@ -493,7 +504,7 @@ public class RotaService : IRotaService
                     s.Jobs.Where(j =>
                             allowedJobIds.Contains(j.Job.Id)
                             && (
-                                (j.Enough == false)
+                                j.Understaffed
                                 || j.Volunteers.Any(v =>
                                     IsVolunteerComing(v) && v.Type == AttendanceType.Urgent
                                 )
@@ -582,13 +593,15 @@ public class Day
             public Job Job { get; set; }
             public IReadOnlyList<DayShiftJobVolunteer> Volunteers { get; set; }
             public IReadOnlyList<DayShiftJobNewbie> Newbies { get; set; }
-            public int Required { get; set; }
+            public int BareMinimum { get; set; }
+            public int Ideal { get; set; }
             public int Unconfirmed => Volunteers.Count(x => x.Confirmed == null);
             public int NotComing => Volunteers.Count(x => x.Confirmed == false);
             public int Coming => Volunteers.Count(x => x.Confirmed == true);
-            public bool Enough => Required <= Coming;
+            public bool Critical => Coming < BareMinimum;
+            public bool Understaffed => Coming < Ideal;
             public bool IsAssignable { get; set; }
-            public bool ShowOnRota => (Coming + NotComing + Unconfirmed + Required) != 0;
+            public bool ShowOnRota => (Coming + NotComing + Unconfirmed + BareMinimum + Ideal) != 0;
 
             public class DayShiftJobVolunteer
             {
@@ -669,7 +682,10 @@ public class UserRota
     public class UrgentShift : ShiftBase
     {
         public int Coming { get; set; }
-        public int Required { get; set; }
+        public int BareMinimum { get; set; }
+        public int Ideal { get; set; }
+        public bool Critical => Coming < BareMinimum;
+        public bool Understaffed => Coming < Ideal;
     }
 
     public class Shift : ShiftBase

@@ -97,9 +97,11 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                 action: x => x.Include(y => y.Account).Include(y => y.Job));
             var regularShiftsPerUser = regularShifts.GroupBy(y => y.Account.Id).ToDictionary(x => x.Key, x => x.ToList());
 
-            var urgentShift = volunteerRota.UrgentShifts.FirstOrDefault(x => x.Date == request.Date && x.Time.Id == request.TimeId && x.Job.Id == request.JobId);
+            // Only send these notifications for critically understaffed shifts
+            var urgentShift = volunteerRota.UrgentShifts.FirstOrDefault(x => x.Date == request.Date && x.Time.Id == request.TimeId && x.Job.Id == request.JobId && x.Critical);
             if (urgentShift != null)
             {
+                var jobs = await _repository.GetAll<Job>(x => true, tracking: false);
                 var recipients = await _repository.GetAll<Account>(x => x.Status == AccountStatus.Active && x.Id != userId, tracking: false);
                 foreach (var recipient in recipients)
                 {
@@ -115,6 +117,13 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                         }).Distinct());
                     }
 
+                    foreach (var otherJob in jobs)
+                    {
+                        if (allowedJobIds.Contains(otherJob.Id)) continue;
+                        if (!recipient.Roles.HasFlag(otherJob.BeaconAssociatedRole)) continue;
+                        allowedJobIds.Add(otherJob.Id);
+                    }
+
                     if (!allowedJobIds.Contains(job.Id)) continue;
 
                     var recipientSubscription = _encryptionService.Decrypt(recipient.PushSubscription, recipient.Salt);
@@ -126,7 +135,7 @@ public class DenyShiftHandler : IRequestHandler<DenyShift, IResult>
                         if (urgentShift.Coming == 0) message += $"No-one is scheduled to come in! ";
                         else if (urgentShift.Coming == 1) message += "There is only 1 person coming in! ";
                         else message += $"There are only {urgentShift.Coming} people coming in! ";
-                        int required = urgentShift.Required - urgentShift.Coming;
+                        int required = urgentShift.BareMinimum - urgentShift.Coming;
                         message += "Please help, ";
                         if (required == 1) message += "we just need one more person to come in!";
                         else message += $"we just need {required} more people to come in!";

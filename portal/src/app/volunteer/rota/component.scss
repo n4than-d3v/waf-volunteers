@@ -93,8 +93,29 @@ img {
   --bg: var(--theme-color-4);
 }
 
-.shift--rejected {
+.shift--understaffed {
+  --bg: var(--theme-color-3);
+}
+
+.shift--rejected,
+.shift--critical {
   --bg: var(--theme-color-2);
+}
+
+.shift--critical {
+  background-color: rgb(250 194 199);
+
+  .shift-footer {
+    border-top: none;
+  }
+}
+
+.shift--understaffed {
+  background-color: rgb(244 234 155);
+
+  .shift-footer {
+    border-top: none;
+  }
 }
 
 .shift-label {
@@ -153,4 +174,20 @@ img {
     color: rgb(69, 69, 130);
     max-width: max-content;
   }
+}
+
+.critical {
+  color: var(--theme-color-2);
+  font-weight: bold;
+}
+
+.understaffed {
+  color: var(--theme-color-3);
+  font-weight: bold;
+}
+
+.toggle-understaffed {
+  margin-top: 0.5rem;
+  background-color: #53511e;
+  color: white;
 }

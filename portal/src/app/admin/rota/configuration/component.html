@@ -315,7 +315,8 @@
           <th>Day</th>
           <th>Shift</th>
           <th>Job</th>
-          <th>Minimum</th>
+          <th>Bare minimum</th>
+          <th>Ideal</th>
           <th></th>
         </tr>
       </thead>
@@ -344,7 +345,14 @@
             </select>
           </td>
           <td>
-            <input type="number" min="0" [(ngModel)]="requirement.minimum" />
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="requirement.bareMinimum"
+            />
+          </td>
+          <td>
+            <input type="number" min="0" [(ngModel)]="requirement.ideal" />
           </td>
           <td>
             <button
@@ -379,7 +387,14 @@
             </select>
           </td>
           <td>
-            <input type="number" min="0" [(ngModel)]="newRequirementMinimum" />
+            <input
+              type="number"
+              min="0"
+              [(ngModel)]="newRequirementBareMinimum"
+            />
+          </td>
+          <td>
+            <input type="number" min="0" [(ngModel)]="newRequirementIdeal" />
           </td>
           <td></td>
         </tr>

@@ -68,7 +68,8 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
   newRequirementDay = -1;
   newRequirementTimeId = -1;
   newRequirementJobId = -1;
-  newRequirementMinimum = 0;
+  newRequirementBareMinimum = 0;
+  newRequirementIdeal = 0;
 
   assignableShifts: AssignableShift[] = [];
   newAssignableShiftDay = -1;
@@ -255,7 +256,8 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
           day: this.newRequirementDay,
           timeId: this.newRequirementTimeId,
           jobId: this.newRequirementJobId,
-          minimum: this.newRequirementMinimum,
+          bareMinimum: this.newRequirementBareMinimum,
+          ideal: this.newRequirementIdeal,
           time: this.times.find((t) => t.id === this.newRequirementTimeId)!,
           job: this.jobs.find((j) => j.id === this.newRequirementJobId)!,
         });
@@ -263,7 +265,8 @@ export class AdminRotaConfigurationComponent implements OnInit, OnDestroy {
       this.newRequirementDay = -1;
       this.newRequirementTimeId = -1;
       this.newRequirementJobId = -1;
-      this.newRequirementMinimum = 0;
+      this.newRequirementBareMinimum = 0;
+      this.newRequirementIdeal = 0;
       this.requirements.forEach((r) => {
         r.timeId = Number(r.timeId);
         r.jobId = Number(r.jobId);

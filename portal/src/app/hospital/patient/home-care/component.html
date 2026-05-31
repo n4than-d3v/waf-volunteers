@@ -88,6 +88,7 @@
         </table>
       </div>
     </div>
+    @if (patient.status != PatientStatus.Dispositioned) {
     <div class="row">
       @if (!(droppingOff || transferring)) { @if (isVet && !request.dropoff) {
       <div class="buttons main-buttons">
@@ -203,6 +204,7 @@
       </form>
       }
     </div>
+    }
   </div>
   <form class="message-form" [formGroup]="messageForm">
     @if (isVet && patient.status != PatientStatus.Dispositioned &&

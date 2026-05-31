@@ -28,11 +28,11 @@
 </div>
 @let critical = getCriticalUrgentShifts(rota); @if (critical.length > 0) {
 <div class="urgent-shifts">
-  <h2>Critically understaffed shifts</h2>
+  <h2>Critically understaffed</h2>
   <p>
-    These shifts currently have fewer volunteers than the absolute bare minimum
-    required for the hospital to operate safely and effectively. Without urgent
-    additional cover, patient care is likely to be significantly impacted.
+    These shifts have fewer volunteers than the minimum required to operate
+    safely and effectively. Without additional volunteers, patient care is
+    likely to be significantly impacted.
   </p>
   @for (shift of critical; track shift.date) {
   <div class="shift shift--critical" [class.shift--confirmed]="shift.confirmed">
@@ -134,11 +134,11 @@
 } @let understaffed = getUnderstaffedUrgentShifts(rota); @if
 (understaffed.length > 0) {
 <div class="urgent-shifts">
-  <h2>Understaffed shifts</h2>
+  <h2>Understaffed</h2>
   <p>
-    These shifts currently have fewer volunteers than the recommended level
-    required for the hospital to operate effectively. While the shift remains
-    manageable, additional cover would be beneficial.
+    These shifts have fewer volunteers than recommended for the hospital to
+    operate effectively. Whilst these shift are manageable, additional
+    volunteers would be beneficial.
   </p>
   @if (!hideUnderstaffed) {
   <button class="button toggle-understaffed" (click)="hideUnderstaffed = true">
@@ -291,14 +291,14 @@
     </div>
     } @else { @if (critical.length > 0) {
     <p>
-      There are currently <strong>critically understaffed</strong> shfits. If
+      There are currently <strong>critically understaffed</strong> shifts. If
       you wish to sign up to an <strong>extra</strong> shift, please consider
       one of those as a priority. Otherwise, please use the button below to
       continue.
     </p>
     } @else if (understaffed.length > 0) {
     <p>
-      There are currently <strong>understaffed</strong> shfits. If you wish to
+      There are currently <strong>understaffed</strong> shifts. If you wish to
       sign up to an <strong>extra</strong> shift, please consider one of those
       as a priority. Otherwise, please use the button below to continue.
     </p>

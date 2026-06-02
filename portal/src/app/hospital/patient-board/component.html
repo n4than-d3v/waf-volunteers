@@ -668,16 +668,16 @@
           </svg>
         </div>
 
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+
         <p class="new">
           <img src="images/board/new.png" />
           <span>Arrived today at</span>
           <span class="new-time">10:25</span>
         </p>
-
-        <div class="patients">
-          <p>&nbsp;</p>
-          <p>&nbsp;</p>
-        </div>
       </div>
 
       <div class="explanation">
@@ -712,16 +712,16 @@
           </svg>
         </div>
 
+        <div class="patients">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+        </div>
+
         <p class="release-plan">
           <img src="images/board/releasing.png" />
           <span>Releasing today at</span>
           <span class="release-plan-time">20:00</span>
         </p>
-
-        <div class="patients">
-          <p>&nbsp;</p>
-          <p>&nbsp;</p>
-        </div>
       </div>
 
       <div class="explanation">
@@ -1833,7 +1833,19 @@ reportConcern) { @if (reportConcern.loading) {
     <div class="concern-reason">
       <p>{{ pen.concernReason }}</p>
     </div>
-    } @if (pen.newest) {
+    }
+    <div class="patients">
+      @for (patient of pen.patients; track patient) {
+      <p>{{ patient }}</p>
+      } @if (showPatientReferences) {
+      <div class="patient-references">
+        @if (pen.patientReferences) {
+        <p>{{pen.patientReferences.join(', ') }}</p>
+        }
+      </div>
+      }
+    </div>
+    @if (pen.newest) {
     <p class="new">
       <img src="images/board/new.png" />
       <span>Arrived today at</span>
@@ -1847,19 +1859,7 @@ reportConcern) { @if (reportConcern.loading) {
         >{{ pen.plannedRelease | date: 'HH:mm' }}</span
       >
     </p>
-    }
-    <div class="patients">
-      @for (patient of pen.patients; track patient) {
-      <p>{{ patient }}</p>
-      } @if (showPatientReferences) {
-      <div class="patient-references">
-        @if (pen.patientReferences) {
-        <p>{{pen.patientReferences.join(', ') }}</p>
-        }
-      </div>
-      }
-    </div>
-    @if ((pen.tags && pen.tags.length) || pen.hasCustomDiet) {
+    } @if ((pen.tags && pen.tags.length) || pen.hasCustomDiet) {
     <div class="tags">
       @for (tag of (pen.tags || []); track tag) {
       <span class="tag">{{ tag }}</span>

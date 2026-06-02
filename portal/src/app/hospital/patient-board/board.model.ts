@@ -37,13 +37,22 @@ export interface PatientBoardSummaryVm {
   species: string;
   quantity: number;
   variants: PatientBoardSummaryVariantVm[];
+  shouldShow: boolean;
 }
 
 export interface PatientBoardSummaryVariantVm {
   name: string;
   quantity: number;
-  locations: string[];
+  locations: PatientBoardSummaryLocationVm[];
   feeding: PatientBoardSummaryFeedingVm[];
+  shouldShow: boolean;
+}
+
+export interface PatientBoardSummaryLocationVm {
+  reference: string;
+  patients: number;
+  completed: boolean;
+  shouldShow: boolean;
 }
 
 export interface PatientBoardSummaryFeedingVm {

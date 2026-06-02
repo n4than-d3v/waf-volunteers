@@ -16,6 +16,7 @@ import {
   PatientBoardAreaVm,
   PatientBoardSummaryFeedingItemVm,
   PatientBoardSummaryFeedingVm,
+  PatientBoardSummaryLocationVm,
   PatientBoardSummaryVariantVm,
   PatientBoardSummaryVm,
   PatientBoardVm,
@@ -273,6 +274,9 @@ export function transform(
 ): PatientBoardVm | null {
   if (!wrapper.data) return null;
 
+  const completedPens: string[] = [];
+  const showPens: string[] = [];
+
   return {
     board: { ...wrapper.data.board },
     pens: (wrapper.data.areas || [])
@@ -333,6 +337,10 @@ export function transform(
             wrapper.data!.board.forBirds,
           );
 
+          if (mapped.completed) {
+            completedPens.push(mapped.reference);
+          }
+
           mapped.shouldShow = shouldShowPen(
             mapped,
             shift,
@@ -346,6 +354,10 @@ export function transform(
             onlyDueAtHour,
             onlyDueAtMinute,
           );
+
+          if (mapped.shouldShow) {
+            showPens.push(mapped.reference);
+          }
 
           return mapped;
         }),
@@ -363,9 +375,24 @@ export function transform(
     summary: (wrapper.data.summary || []).map(
       (summary): PatientBoardSummaryVm => ({
         ...summary,
+        shouldShow: summary.variants.some((variant) =>
+          variant.locations.some((location) =>
+            showPens.includes(location.reference),
+          ),
+        ),
         variants: (summary.variants || []).map(
           (variant): PatientBoardSummaryVariantVm => ({
             ...variant,
+            shouldShow: variant.locations.some((location) =>
+              showPens.includes(location.reference),
+            ),
+            locations: (variant.locations || []).map(
+              (location): PatientBoardSummaryLocationVm => ({
+                ...location,
+                completed: completedPens.includes(location.reference),
+                shouldShow: showPens.includes(location.reference),
+              }),
+            ),
             feeding: (variant.feeding || []).map(
               (feeding): PatientBoardSummaryFeedingVm => ({
                 ...feeding,

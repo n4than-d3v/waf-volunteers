@@ -781,8 +781,17 @@ export interface PatientBoardSummary {
 export interface PatientBoardSummaryVariant {
   name: string;
   quantity: number;
-  locations: string[];
+  locations: PatientBoardSummaryLocation[];
   feeding: PatientBoardSummaryFeeding[];
+}
+
+export interface PatientBoardSummaryLocation {
+  reference: string;
+  patients: number;
+  morning: boolean;
+  afternoon: boolean;
+  evening: boolean;
+  tasks: number[];
 }
 
 export interface PatientBoardSummaryFeeding {

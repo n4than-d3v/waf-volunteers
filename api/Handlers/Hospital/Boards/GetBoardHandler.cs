@@ -304,10 +304,18 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                         Name = variantGroup.Key,
                         Quantity = variantGroup.Count(),
                         Locations = variantGroup
-                            .Select(p => p.Pen?.Reference)
-                            .Where(r => !string.IsNullOrEmpty(r))
-                            .Distinct()
-                            .OrderBy(p => p)
+                            .Where(p => p.Pen != null)
+                            .GroupBy(p => new { p.Pen!.Id, p.Pen!.Reference })
+                            .Select(p => new PatientBoardSummaryLocation
+                            {
+                                Reference = p.Key.Reference,
+                                Patients = p.Count(),
+                                Morning = InMemoryBoardTasks.IsComplete(p.Key.Id, 1),
+                                Afternoon = InMemoryBoardTasks.IsComplete(p.Key.Id, 2),
+                                Evening = InMemoryBoardTasks.IsComplete(p.Key.Id, 3),
+                                Tasks = InMemoryBoardTasks.GetCompletedTasks(p.Key.Id)
+                            })
+                            .OrderBy(p => p.Reference)
                             .ToList(),
                         Feeding = variantGroup
                             .SelectMany(p => p.Feeding.Any()
@@ -492,8 +500,20 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     {
         public string Name { get; set; }
         public int Quantity { get; set; }
-        public List<string> Locations { get; set; } = new();
+        public List<PatientBoardSummaryLocation> Locations { get; set; } = new();
         public List<PatientBoardSummaryFeeding> Feeding { get; set; } = new();
+    }
+
+    public class PatientBoardSummaryLocation
+    {
+        public string Reference { get; set; }
+
+        public int Patients { get; set; }
+
+        public bool Morning { get; set; }
+        public bool Afternoon { get; set; }
+        public bool Evening { get; set; }
+        public IReadOnlyList<int> Tasks { get; set; }
     }
 
     public class PatientBoardSummaryFeeding

@@ -1672,11 +1672,13 @@ reportConcern) { @if (reportConcern.loading) {
 </div>
 @if (expandFeedingSummary) {
 <div class="summary">
-  @for (summary of board.summary; track summary.species) {
+  @for (summary of board.summary; track summary.species) { @if
+  (summary.shouldShow) {
   <div class="species">
     <div class="species__name">{{ summary.species }}</div>
     <div class="variants">
-      @for (variant of summary.variants; track variant.name) {
+      @for (variant of summary.variants; track variant.name) { @if
+      (variant.shouldShow) {
       <div class="variant">
         <div class="variant__details">
           <p class="variant__name">
@@ -1694,12 +1696,28 @@ reportConcern) { @if (reportConcern.loading) {
             } } }
           </div>
         </div>
-        <div class="variant__locations">{{ variant.locations.join(', ') }}</div>
+        <div class="variant__locations">
+          @for (location of variant.locations; track location.reference) { @if
+          (location.shouldShow) {
+          <p
+            class="variant__location"
+            [class.variant__location--completed]="location.completed"
+          >
+            <span>{{ location.reference }}</span>
+            @if (variant.quantity !== variant.locations.length &&
+            variant.quantity !== location.patients) {
+            <span>({{ location.patients}})</span> } @if (location.completed) {
+            <img src="/images/board/tick.svg" alt="Tick" />
+            } @else {
+            <img src="/images/board/cross.svg" alt="Cross" /> }
+          </p>
+          } }
+        </div>
       </div>
-      }
+      } }
     </div>
   </div>
-  }
+  } }
 </div>
 } @if (!board.board.forBirds) {
 <div class="pens">

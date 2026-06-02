@@ -379,6 +379,13 @@
       It will tell you how much food to prepare for a species (and age) on any
       given board, as well as list the pens they are located in.
       <br />
+      When listing the pens, it will show you how many patients are located in
+      each pen (if there is an uneven split), as well as whether the pen has
+      been marked as completed or not.
+      <br />
+      The summary is dynamic, so if you apply filters, the summary will update
+      to reflect the filters you've applied, in the same way as the pens.
+      <br />
       It's important to remember it will only summarise patients on the selected
       board. Other boards are excluded.
       <br />
@@ -399,17 +406,46 @@
                   <p class="food">250 ml fox valley</p>
                 </div>
               </div>
-              <div class="variant__locations">SU1-02, SU1-3, FP-17</div>
+              <div class="variant__locations">
+                <p class="variant__location variant__location--completed">
+                  <span>FP-17</span>
+                  <span>(1)</span>
+                  <img src="/images/board/tick.svg" alt="Tick" />
+                </p>
+                <p class="variant__location">
+                  <span>SU1-02</span>
+                  <span>(2)</span>
+                  <img src="/images/board/cross.svg" alt="Cross" />
+                </p>
+                <p class="variant__location">
+                  <span>SU1-03</span>
+                  <span>(2)</span>
+                  <img src="/images/board/cross.svg" alt="Cross" />
+                </p>
+              </div>
             </div>
             <div class="variant">
               <div class="variant__details">
-                <p class="variant__name">4x Fox</p>
+                <p class="variant__name">3x Fox</p>
                 <div class="variant__foods">
                   <p><strong>09:00</strong></p>
-                  <p class="food">4 chicks</p>
+                  <p class="food">3 chicks</p>
                 </div>
               </div>
-              <div class="variant__locations">DS-02, FP-25, FP-26</div>
+              <div class="variant__locations">
+                <p class="variant__location">
+                  <span>DS-02</span>
+                  <img src="/images/board/cross.svg" alt="Cross" />
+                </p>
+                <p class="variant__location variant__location--completed">
+                  <span>FP-25</span>
+                  <img src="/images/board/tick.svg" alt="Tick" />
+                </p>
+                <p class="variant__location variant__location--completed">
+                  <span>FP-26</span>
+                  <img src="/images/board/tick.svg" alt="Tick" />
+                </p>
+              </div>
             </div>
           </div>
         </div>

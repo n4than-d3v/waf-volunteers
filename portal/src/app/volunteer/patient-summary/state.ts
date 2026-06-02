@@ -1,4 +1,8 @@
-import { createReadOnlyWrapper, ReadOnlyWrapper } from '../../hospital/state';
+import {
+  createReadOnlyWrapper,
+  ReadOnlyWrapper,
+  SpeciesType,
+} from '../../hospital/state';
 
 export interface PatientSummaryState {
   summary: ReadOnlyWrapper<PatientSummary>;
@@ -25,6 +29,7 @@ export interface PatientSummary {
 export interface PatientSummarySpecies {
   total: number;
   name: string;
+  speciesType: SpeciesType;
   variants: PatientSummarySpeciesVariant[];
 }
 

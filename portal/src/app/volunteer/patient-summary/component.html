@@ -1,59 +1,86 @@
-<a class="back-link" [routerLink]="'../../'">Back</a>
-
-<h1>Patients</h1>
-
 @if (summary$ | async; as summary) { @if (summary.loading) {
 <spinner></spinner>
 } @else if (summary.error) {
 <div class="error">Error occurred</div>
-} @else if (summary.data) {
+} @else if (summary.data) { @if (selectedSpeciesType) {
+<a class="back-link" (click)="selectedSpeciesType = null">Back</a>
+<h1 class="species-type-header">{{ selectedSpeciesType.title }}</h1>
+@for (species of summary.data.species; track species.name) { @if
+(species.speciesType === selectedSpeciesType.speciesType) {
+<div class="species">
+  <h3 class="species-header">{{ species.name }}</h3>
+  <div class="variants">
+    @for (variant of species.variants; track variant.name) {
+    <div class="variant">
+      <div class="name">{{ variant.name }}</div>
+      <div class="number">{{ variant.total }}</div>
+    </div>
+    }
+  </div>
+</div>
+} } } @else {
+<a class="back-link" [routerLink]="'../../'">Back</a>
+<h1>Patients</h1>
 <div class="summary">
   We are treating <strong>{{ summary.data.total }}</strong> patients, across
   <strong>{{ summary.data.uniqueSpecies }}</strong> different species.
 </div>
-
 <div class="species-types">
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Mammal, 'Mammals')"
+  >
     <div class="name">Mammals</div>
     <div class="number">{{ summary.data.mammals }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Pigeon, 'Pigeons & Doves')"
+  >
     <div class="name">Pigeons &amp; Doves</div>
     <div class="number">{{ summary.data.pigeons }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Waterfowl, 'Waterfowl')"
+  >
     <div class="name">Waterfowl</div>
     <div class="number">{{ summary.data.waterfowl }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Raptor, 'Raptors')"
+  >
     <div class="name">Raptors</div>
     <div class="number">{{ summary.data.raptors }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Bird, 'Other birds')"
+  >
     <div class="name">Other birds</div>
     <div class="number">{{ summary.data.otherBirds }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Amphibian, 'Amphibians')"
+  >
     <div class="name">Amphibians</div>
     <div class="number">{{ summary.data.amphibians }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Reptile, 'Reptiles')"
+  >
     <div class="name">Reptiles</div>
     <div class="number">{{ summary.data.reptiles }}</div>
   </div>
-  <div class="species-type">
+  <div
+    class="species-type"
+    (click)="selectSpeciesType(SpeciesType.Rodent, 'Rodents')"
+  >
     <div class="name">Rodents</div>
     <div class="number">{{ summary.data.rodents }}</div>
   </div>
-</div>
-
-@for (species of summary.data.species; track species.name) {
-<div class="species">
-  <h3 class="name">{{ species.name }}</h3>
-  <ul>
-    @for (variant of species.variants; track variant.name) {
-    <li>{{ variant.total }}x {{ variant.name }}</li>
-    }
-  </ul>
 </div>
 } } }

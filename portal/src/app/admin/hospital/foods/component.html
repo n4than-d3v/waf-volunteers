@@ -48,6 +48,18 @@
       <label for="sumUp">Show total on board</label>
       <input id="sumUp" type="checkbox" formControlName="sumUp" />
     </div>
+    @if (form.controls.sumUp.value) {
+    <div class="field">
+      <label for="sumUpMultiplier">
+        Total multiplier (e.g. <strong>1.2</strong> to add 20%)
+      </label>
+      <input
+        id="sumUpMultiplier"
+        type="number"
+        formControlName="sumUpMultiplier"
+      />
+    </div>
+    }
     <div class="buttons">
       <button (click)="create()" class="button button--primary">Save</button>
       <button (click)="cancel()" class="button button--secondary">
@@ -80,6 +92,18 @@
       <label for="sumUp">Show total on board</label>
       <input id="sumUp" type="checkbox" formControlName="sumUp" />
     </div>
+    @if (form.controls.sumUp.value) {
+    <div class="field">
+      <label for="sumUpMultiplier">
+        Total multiplier (e.g. <b>1.2</b> to add 20%)
+      </label>
+      <input
+        id="sumUpMultiplier"
+        type="number"
+        formControlName="sumUpMultiplier"
+      />
+    </div>
+    }
     <div class="buttons">
       <button (click)="update()" class="button button--primary">Save</button>
       <button (click)="cancel()" class="button button--secondary">
@@ -97,6 +121,7 @@
       <th>Substitute</th>
       <th>Force feed</th>
       <th>Show total</th>
+      <th>Total multiplier</th>
       <th></th>
     </tr>
   </thead>
@@ -108,6 +133,7 @@
       <td>{{ food.substitute }}</td>
       <td>{{ food.forceFeed ? 'Yes' : '' }}</td>
       <td>{{ food.sumUp ? 'Yes' : '' }}</td>
+      <td>{{ food.sumUp ? food.sumUpMultiplier * 100 + '%' : '' }}</td>
       <td>
         <button (click)="beginUpdate(food)" class="button button--secondary">
           Edit

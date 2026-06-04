@@ -12,6 +12,7 @@ public class UpsertFood : IRequest<IResult>
     public string? Substitute { get; set; }
     public bool ForceFeed { get; set; }
     public bool SumUp { get; set; }
+    public decimal SumUpMultiplier { get; set; }
 }
 
 public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
@@ -36,6 +37,7 @@ public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
             food.Substitute = request.Substitute;
             food.ForceFeed = request.ForceFeed;
             food.SumUp = request.SumUp;
+            food.SumUpMultiplier = request.SumUpMultiplier;
         }
         else
         {
@@ -45,7 +47,8 @@ public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
                 Notes = request.Notes,
                 Substitute = request.Substitute,
                 ForceFeed = request.ForceFeed,
-                SumUp = request.SumUp
+                SumUp = request.SumUp,
+                SumUpMultiplier = request.SumUpMultiplier
             };
             _repository.Create(food);
         }

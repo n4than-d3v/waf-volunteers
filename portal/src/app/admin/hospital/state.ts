@@ -29,6 +29,7 @@ export interface CreateFoodCommand {
   substitute: string;
   forceFeed: boolean;
   sumUp: boolean;
+  sumUpMultiplier: number;
 }
 
 export interface Food extends CreateFoodCommand {

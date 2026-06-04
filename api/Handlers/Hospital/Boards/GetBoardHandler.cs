@@ -205,12 +205,12 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             .SelectMany(v => v.Feeding
             .SelectMany(f => f.Items
             .Where(i => i.SumUp))))
-            .GroupBy(f => new { f.Food, QuantityUnit = f.QuantityUnit.Trim() })
+            .GroupBy(f => new { f.Food, QuantityUnit = f.QuantityUnit.Trim(), f.SumUpMultiplier })
             .Select(g => new PatientBoardSummaryFeedingItem
             {
                 Food = g.Key.Food,
                 QuantityUnit = g.Key.QuantityUnit,
-                QuantityValue = Math.Ceiling(g.Sum(f => f.QuantityValue))
+                QuantityValue = Math.Ceiling(g.Sum(f => f.QuantityValue) * g.Key.SumUpMultiplier),
             })
             .ToList();
     }
@@ -330,11 +330,12 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                             {
                                 Time = fg.Key.ToString(@"hh\:mm"),
                                 Items = fg
-                                    .GroupBy(fgg => new { fgg.Feeding.QuantityUnit, fgg.Feeding.Food.Name, fgg.Feeding.Food.SumUp })
+                                    .GroupBy(fgg => new { fgg.Feeding.QuantityUnit, fgg.Feeding.Food.Name, fgg.Feeding.Food.SumUp, fgg.Feeding.Food.SumUpMultiplier })
                                     .Select(fgg => new PatientBoardSummaryFeedingItem
                                     {
                                         Food = fgg.Key.Name,
                                         SumUp = fgg.Key.SumUp,
+                                        SumUpMultiplier = fgg.Key.SumUpMultiplier,
                                         QuantityValue = fgg.Sum(f => f.Feeding.QuantityValue),
                                         QuantityUnit = fgg.Key.QuantityUnit
                                     }).ToList()
@@ -528,6 +529,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public string QuantityUnit { get; set; }
         public string Food { get; set; }
         internal bool SumUp { get; set; }
+        internal decimal SumUpMultiplier { get; set; }
     }
 
     public class PatientBoardArea

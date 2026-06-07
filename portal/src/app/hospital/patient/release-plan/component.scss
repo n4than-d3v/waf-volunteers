@@ -68,3 +68,15 @@ button {
   display: flex;
   gap: 0.5rem;
 }
+
+.move-others {
+  margin-bottom: 1rem;
+
+  p {
+    margin-bottom: 0.25rem;
+  }
+
+  .field {
+    margin-bottom: 0.125rem;
+  }
+}

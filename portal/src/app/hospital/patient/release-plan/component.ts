@@ -49,7 +49,39 @@ export class HospitalPatientReleasePlanComponent {
     date: new FormControl('', [Validators.required]),
     time: new FormControl('', [Validators.required]),
     notes: new FormControl(''),
+    otherPatientIds: new FormControl<number[]>([], {
+      nonNullable: true,
+    }),
   });
+
+  toggleOtherPatient(patientId: number, checked: boolean) {
+    const current = this.releasePlanForm.controls.otherPatientIds.value;
+
+    this.releasePlanForm.controls.otherPatientIds.setValue(
+      checked
+        ? [...new Set([...current, patientId])]
+        : current.filter((id) => id !== patientId),
+    );
+  }
+
+  isOtherPatientSelected(patientId: number): boolean {
+    return this.releasePlanForm.controls.otherPatientIds.value.includes(
+      patientId,
+    );
+  }
+
+  toggleAllOtherPatients(checked: boolean) {
+    this.releasePlanForm.controls.otherPatientIds.setValue(
+      checked ? (this.patient.othersInPen ?? []).map((x) => x.id) : [],
+    );
+  }
+
+  areAllOtherPatientsSelected(): boolean {
+    const selected = this.releasePlanForm.controls.otherPatientIds.value;
+    const others = this.patient.othersInPen ?? [];
+
+    return others.length > 0 && others.every((x) => selected.includes(x.id));
+  }
 
   prepareEdit() {
     this.updating = true;
@@ -79,6 +111,7 @@ export class HospitalPatientReleasePlanComponent {
         patientId: this.patient.id,
         plannedRelease,
         plannedReleaseNotes: this.releasePlanForm.value.notes || '',
+        otherPatientIds: this.releasePlanForm.controls.otherPatientIds.value,
       }),
     );
     this.cancel();
@@ -90,6 +123,7 @@ export class HospitalPatientReleasePlanComponent {
         patientId: this.patient.id,
         plannedRelease: null,
         plannedReleaseNotes: null,
+        otherPatientIds: this.releasePlanForm.controls.otherPatientIds.value,
       }),
     );
     this.cancel();

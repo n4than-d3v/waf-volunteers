@@ -65,7 +65,35 @@
       rows="3"
     ></textarea>
   </div>
-  @if (!saving) { @if (attemptedSave && !releasePlanForm.valid) {
+  @if (patient.othersInPen && patient.othersInPen.length) {
+  <div class="move-others">
+    <p>Same applies for other patients housed with this one?</p>
+
+    <div class="field">
+      <label for="other-select-all"> Select all </label>
+      <input
+        type="checkbox"
+        id="other-select-all"
+        [checked]="areAllOtherPatientsSelected()"
+        (change)="toggleAllOtherPatients($any($event.target).checked)"
+      />
+    </div>
+
+    @for (other of patient.othersInPen; track other.id) {
+    <div class="field">
+      <label for="other-patient-{{ other.id }}">
+        [{{ other.reference }}] {{ other.species }} {{ other.speciesVariant }}
+      </label>
+      <input
+        type="checkbox"
+        id="other-patient-{{ other.id }}"
+        [checked]="isOtherPatientSelected(other.id)"
+        (change)="toggleOtherPatient(other.id, $any($event.target).checked)"
+      />
+    </div>
+    }
+  </div>
+  } @if (!saving) { @if (attemptedSave && !releasePlanForm.valid) {
   <div class="error">Please fill in all required fields</div>
   }
   <div class="buttons">

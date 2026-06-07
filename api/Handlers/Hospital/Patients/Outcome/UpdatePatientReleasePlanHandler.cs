@@ -14,6 +14,7 @@ public class UpdatePatientReleasePlan : IRequest<IResult>
 
     public DateTime? PlannedRelease { get; set; }
     public string? PlannedReleaseNotes { get; set; }
+    public List<int> OtherPatientIds { get; set; }
 
     public UpdatePatientReleasePlan WithId(int id)
     {
@@ -33,13 +34,18 @@ public class UpdatePatientReleasePlanHandler : IRequestHandler<UpdatePatientRele
 
     public async Task<IResult> Handle(UpdatePatientReleasePlan request, CancellationToken cancellationToken)
     {
-        var patient = await _repository.Get<Patient>(request.PatientId);
-        if (patient == null) return Results.BadRequest();
+        var patientIds = request.OtherPatientIds ?? new();
+        patientIds.Add(request.PatientId);
 
-        patient.LastUpdatedDetails = DateTime.UtcNow;
-        patient.PlannedReleaseLastUpdated = DateTime.UtcNow;
-        patient.PlannedRelease = request.PlannedRelease;
-        patient.PlannedReleaseNotes = request.PlannedReleaseNotes;
+        var patients = await _repository.GetAll<Patient>(x => patientIds.Contains(x.Id));
+
+        foreach (var patient in patients)
+        {
+            patient.LastUpdatedDetails = DateTime.UtcNow;
+            patient.PlannedReleaseLastUpdated = DateTime.UtcNow;
+            patient.PlannedRelease = request.PlannedRelease;
+            patient.PlannedReleaseNotes = request.PlannedReleaseNotes;
+        }
 
         await _repository.SaveChangesAsync();
 

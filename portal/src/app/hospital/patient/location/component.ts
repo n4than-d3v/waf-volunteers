@@ -70,6 +70,7 @@ export class HospitalPatientLocationComponent implements OnInit {
   ngOnInit() {
     this.store.dispatch(getAreas());
   }
+
   toggleOtherPatient(patientId: number, checked: boolean) {
     const current = this.moveForm.controls.otherPatientIds.value;
 

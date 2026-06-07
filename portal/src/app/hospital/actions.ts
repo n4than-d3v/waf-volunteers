@@ -311,6 +311,7 @@ export const updatePatientReleasePlan = createAction(
     patientId: number;
     plannedRelease: string | null;
     plannedReleaseNotes: string | null;
+    otherPatientIds: number[];
   }>(),
 );
 export const updatePatientReleasePlanSuccess = createAction(

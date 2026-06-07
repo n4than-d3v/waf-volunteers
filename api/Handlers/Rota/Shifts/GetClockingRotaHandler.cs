@@ -77,12 +77,56 @@ public class GetClockingRotaHandler : IRequestHandler<GetClockingRota, IResult>
             return rotaItem;
         }).ToList();
 
-        if (visitorClockings.Any())
+        var regulars = accounts
+            .Where(x => x.Roles.HasFlag(AccountRoles.CLOCKING_REGULAR))
+            .Select(account =>
+            {
+                string firstName = _encryptionService.Decrypt(account.FirstName, account.Salt);
+                string lastName = _encryptionService.Decrypt(account.LastName, account.Salt);
+                string[] cars = account.Cars.Select(car => _encryptionService.Decrypt(car, account.Salt)).ToArray();
+                return new RotaItemRegular
+                {
+                    FullName = $"{firstName} {lastName}",
+                    Cars = cars
+                };
+            })
+            .OrderBy(x => x.FullName)
+            .ToList();
+
+        if (regulars.Any())
         {
             items.Insert(0, new RotaItem
             {
-                Time = new TimeRange { Id = -1, Name = "Extra" },
-                Volunteers = visitorClockings.Select(visitor => new RotaItemVolunteer
+                Time = new TimeRange { Id = -1, Name = "Regular" },
+                Volunteers = regulars.Select(regular =>
+                {
+                    var visitor = visitorClockings.FirstOrDefault(x => x.Name == regular.FullName);
+                    return new RotaItemVolunteer
+                    {
+                        FullName = regular.FullName,
+                        Name = regular.FullName.Split(" ")[0],
+                        Confirmed = true,
+                        AttendanceId = null,
+                        VisitorId = visitor?.Id,
+                        Cars = regular.Cars,
+                        Car = visitor?.Car,
+                        In = visitor?.In.ToShortTimeString(),
+                        Out = visitor?.Out?.ToShortTimeString()
+                    };
+                }
+                ).ToList()
+            });
+        }
+
+        var nonRegularVisitors = visitorClockings
+            .Where(visitor => !regulars.Any(regular => regular.FullName == visitor.Name)).ToList();
+
+        if (nonRegularVisitors.Any())
+        {
+            items.Insert(0, new RotaItem
+            {
+                Time = new TimeRange { Id = -2, Name = "Extra" },
+                Volunteers = nonRegularVisitors.Select(visitor => new RotaItemVolunteer
                 {
                     FullName = visitor.Name,
                     Name = visitor.Name.Split(" ")[0],
@@ -119,5 +163,10 @@ public class GetClockingRotaHandler : IRequestHandler<GetClockingRota, IResult>
         public string? In { get; set; }
         public string? Out { get; set; }
     }
-}
 
+    internal class RotaItemRegular
+    {
+        internal string FullName { get; set; }
+        internal string[] Cars { get; set; }
+    }
+}

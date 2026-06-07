@@ -86,6 +86,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
       APP_ADMIN: new FormControl(false),
       APP_CLOCKING: new FormControl(false),
       APP_BOARDS: new FormControl(false),
+      CLOCKING_REGULAR: new FormControl(false),
     }),
     homeCarerPermissions: new FormGroup({
       Foxes: new FormControl(false),
@@ -156,6 +157,7 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
             APP_ADMIN: !!(profile.roles & Roles.APP_ADMIN),
             APP_CLOCKING: !!(profile.roles & Roles.APP_CLOCKING),
             APP_BOARDS: !!(profile.roles & Roles.APP_BOARDS),
+            CLOCKING_REGULAR: !!(profile.roles & Roles.CLOCKING_REGULAR),
           },
           homeCarerPermissions: {
             Foxes: !!(
@@ -258,6 +260,9 @@ export class AdminUsersUpdateInfoComponent implements OnDestroy {
               : 0) |
             (this.form.controls.roles.controls.APP_BOARDS.value
               ? Roles.APP_BOARDS
+              : 0) |
+            (this.form.controls.roles.controls.CLOCKING_REGULAR.value
+              ? Roles.CLOCKING_REGULAR
               : 0),
           homeCarerPermissions:
             (this.form.controls.homeCarerPermissions.controls.Foxes.value

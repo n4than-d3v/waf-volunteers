@@ -142,12 +142,21 @@ export class ClockingComponent implements OnInit {
   }
 
   clockIn(volunteer: Volunteer, car: string | null) {
-    this.store.dispatch(
-      clockIn({
-        attendanceId: volunteer.attendanceId!,
-        car: car || '',
-      }),
-    );
+    if (volunteer.attendanceId) {
+      this.store.dispatch(
+        clockIn({
+          attendanceId: volunteer.attendanceId!,
+          car: car || '',
+        }),
+      );
+    } else {
+      this.store.dispatch(
+        visitorClockIn({
+          name: volunteer.fullName,
+          car: car || '',
+        }),
+      );
+    }
     this.reset();
   }
 

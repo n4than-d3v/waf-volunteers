@@ -19,6 +19,8 @@ export enum Roles {
   APP_ADMIN = 2048,
   APP_CLOCKING = 4096,
   APP_BOARDS = 8192,
+
+  CLOCKING_REGULAR = 32768,
 }
 
 export enum Status {

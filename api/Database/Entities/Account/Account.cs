@@ -210,7 +210,9 @@ public enum AccountRoles
 
     APP_ADMIN = 2048,
     APP_CLOCKING = 4096,
-    APP_BOARDS = 8192
+    APP_BOARDS = 8192,
+
+    CLOCKING_REGULAR = 32768
 }
 
 [Flags]

@@ -165,6 +165,11 @@ public class BeaconSyncHandler : IRequestHandler<BeaconSync, IResult>
 
                 var job = jobs.OrderByDescending(x => x.Id).FirstOrDefault(x => roles.HasFlag(x.BeaconAssociatedRole));
 
+                if (account.Roles != null && account.Roles.HasFlag(AccountRoles.CLOCKING_REGULAR))
+                {
+                    roles |= AccountRoles.CLOCKING_REGULAR;
+                }
+
                 account.UpdateRoles(roles);
 
                 if (job == null) continue;

@@ -195,6 +195,9 @@ import {
   updatePatientReleasePlan,
   updatePatientReleasePlanSuccess,
   updatePatientReleasePlanError,
+  viewTodayAdmissions,
+  viewTodayAdmissionsSuccess,
+  viewTodayAdmissionsError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1359,6 +1362,30 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     board: {
       ...state.board,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(viewTodayAdmissions, (state) => ({
+    ...state,
+    todayAdmissions: {
+      ...state.todayAdmissions,
+      loading: true,
+      error: false,
+    },
+  })),
+  on(viewTodayAdmissionsSuccess, (state, { patients }) => ({
+    ...state,
+    todayAdmissions: {
+      ...state.todayAdmissions,
+      data: patients,
+      loading: false,
+    },
+  })),
+  on(viewTodayAdmissionsError, (state) => ({
+    ...state,
+    todayAdmissions: {
+      ...state.todayAdmissions,
       loading: false,
       error: true,
     },

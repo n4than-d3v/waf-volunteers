@@ -219,6 +219,11 @@ export const selectPatientBoard = createSelector(
   (state) => state.board,
 );
 
+export const selectTodayAdmissions = createSelector(
+  selectHospitalState,
+  (state) => state.todayAdmissions,
+);
+
 export const selectMarkBoard = createSelector(
   selectHospitalState,
   (state) => state.markBoard,

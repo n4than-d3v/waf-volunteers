@@ -22,8 +22,15 @@ public class GetConcernReasonsHandler : IRequestHandler<GetConcernReasons, IResu
 
     public async Task<IResult> Handle(GetConcernReasons request, CancellationToken cancellationToken)
     {
-        var reasons = await _repository.GetAll<HusbandryConcernCategory>(x => true, tracking: false,
+        var categories = await _repository.GetAll<HusbandryConcernCategory>(x => true, tracking: false,
             action: x => x.Include(y => y.Reasons));
-        return Results.Ok(reasons);
+
+        foreach (var category in categories)
+        {
+            if (category.Reasons == null) continue;
+            category.Reasons = [.. category.Reasons.OrderBy(x => x.Description)];
+        }
+
+        return Results.Ok(categories);
     }
 }

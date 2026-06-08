@@ -146,7 +146,7 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
 
             SortPatientsBy.PlannedRelease => query
                 .OrderBy(y => y.PlannedRelease ?? DateTime.MinValue)
-                .ThenByDescending(y => y.Admitted),
+                .ThenByDescending(y => y.LastUpdatedStatus),
 
             _ => query.OrderByDescending(x => x.Admitted),
         };

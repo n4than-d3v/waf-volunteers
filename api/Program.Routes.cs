@@ -993,6 +993,14 @@ public partial class Program
             .RequireAuthorization(signedInPolicy);
 
         apiHospitalBoards
+            .MapGet(
+                "/today-admissions",
+                (IMediator mediator) => mediator.Send(new GetTodayAdmissions())
+            )
+            .AddNote("View today's admissions")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalBoards
             .MapPost("/", (IMediator mediator, UpsertBoard request) => mediator.Send(request))
             .AddNote("Vet or admin manages a board")
             .RequireAuthorization(vetPolicy);

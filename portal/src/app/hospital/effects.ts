@@ -241,6 +241,9 @@ import {
   updatePatientReleasePlan,
   updatePatientReleasePlanSuccess,
   updatePatientReleasePlanError,
+  viewTodayAdmissions,
+  viewTodayAdmissionsSuccess,
+  viewTodayAdmissionsError,
 } from './actions';
 
 @Injectable()
@@ -1816,6 +1819,18 @@ export class HospitalEffects {
         this.http.get<PatientBoard>(`hospital/boards/${action.id}`).pipe(
           map((board) => viewPatientBoardSuccess({ board })),
           catchError(() => of(viewPatientBoardError())),
+        ),
+      ),
+    ),
+  );
+
+  viewTodayAdmissions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(viewTodayAdmissions),
+      switchMap(() =>
+        this.http.get<ListPatient[]>(`hospital/boards/today-admissions`).pipe(
+          map((patients) => viewTodayAdmissionsSuccess({ patients })),
+          catchError(() => of(viewTodayAdmissionsError())),
         ),
       ),
     ),

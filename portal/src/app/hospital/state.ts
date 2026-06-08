@@ -68,6 +68,7 @@ export interface HospitalState {
   // View patient boards
   boards: ReadOnlyWrapper<ListPatientBoard[]>;
   board: ReadOnlyWrapper<PatientBoard>;
+  todayAdmissions: ReadOnlyWrapper<ListPatient[]>;
   reportConcern: Task;
   concernReasons: ReadOnlyWrapper<ConcernCategory[]>;
 }
@@ -248,6 +249,7 @@ export interface ListPatient {
   transferLocation: TransferLocation | null;
   dispositioner: {} | null;
   homeCareRequests: HomeCareRequest[];
+  currentHomeCarer: string | null;
   lastMessageSentByOrphanFeeder: boolean | null;
   plannedRelease: string | null;
   isReleasePlanned: boolean;
@@ -935,6 +937,7 @@ export const initialHospitalState: HospitalState = {
   addLabs: createTask(),
   boards: createReadOnlyWrapper<ListPatientBoard[]>(),
   board: createReadOnlyWrapper<PatientBoard>(),
+  todayAdmissions: createReadOnlyWrapper<ListPatient[]>(),
   reportConcern: createTask(),
   concernReasons: createReadOnlyWrapper<ConcernCategory[]>(),
   markCustomTaskDone: createTask(),

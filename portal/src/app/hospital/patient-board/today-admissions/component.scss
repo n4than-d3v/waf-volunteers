@@ -1,0 +1,91 @@
+h1 {
+  margin-bottom: 0.5rem;
+}
+
+.temporary {
+  border-left: solid 5px var(--theme-color-1);
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(0, 0, 0, 0.125);
+  max-width: max-content;
+  margin-bottom: 0.5rem;
+}
+
+.patients {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.5rem;
+  justify-content: space-between;
+
+  .patient {
+    border-bottom: solid 2px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    width: 42rem;
+
+    &.patient--pending {
+      background-color: rgb(255, 210, 210);
+    }
+
+    .reference {
+      min-width: 5.75rem;
+      text-align: center;
+      font-weight: bold;
+      color: var(--theme-color-5);
+      padding: 0.125rem 0.25rem;
+    }
+
+    .species {
+      flex: 1;
+    }
+
+    div {
+      text-align: right;
+      padding-right: 0.25rem;
+      display: flex;
+      flex-direction: row-reverse;
+      gap: 0.5rem;
+    }
+
+    .status {
+      font-weight: bold;
+      color: white;
+      display: block;
+
+      &.died {
+        color: var(--theme-color-3);
+      }
+
+      &.pts {
+        color: var(--theme-color-2);
+      }
+
+      &.admitted {
+        color: var(--theme-color-5);
+      }
+
+      &.home-care {
+        color: var(--theme-color-6);
+      }
+
+      &.transferred {
+        color: var(--theme-color-4);
+      }
+
+      &.released {
+        color: var(--theme-color-4);
+      }
+
+      &.unexamined {
+        color: var(--theme-color-2);
+      }
+    }
+
+    .homeless {
+      background-color: var(--theme-color-2);
+      font-weight: bold;
+      color: white;
+      padding: 0.125rem 0.25rem;
+    }
+  }
+}

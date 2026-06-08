@@ -1,0 +1,72 @@
+<h1>Today's admissions</h1>
+<div class="temporary">
+  This feature is currently not in use.
+  <br />
+  This board will soon replace the whiteboards outside the vet office showing
+  today's admissions.
+</div>
+@if (patients$ | async; as patients) { @if (patients.length === 0) {
+<p>No admissions today</p>
+} @else {
+<div class="patients">
+  @for (patient of patients; track patient.id) {
+  <div
+    class="patient"
+    [class.patient--pending]="patient.status === PatientStatus.PendingInitialExam"
+  >
+    <p class="reference">{{ patient.reference }}</p>
+    <p class="species">
+      {{ patient.speciesVariant?.friendlyName ||
+      patient.suspectedSpecies.description || 'Unknown' }}
+    </p>
+    @if (patient.status === PatientStatus.Dispositioned) { @if
+    (patient.disposition === Disposition.DeadOnArrival) {
+    <span class="status died">Dead on arrival</span>
+    } @else if (patient.disposition === Disposition.DiedBefore24Hrs ||
+    patient.disposition === Disposition.DiedAfter24Hrs) {
+    <div>
+      <span class="status died">Died</span>
+    </div>
+    } @else if (patient.disposition === Disposition.PtsBefore24Hrs ||
+    patient.disposition === Disposition.PtsAfter24Hrs) {
+    <div>
+      <span class="status pts">Euthanised</span>
+    </div>
+    } @else if (patient.disposition === Disposition.Released) {
+    <span class="status released">Released</span>
+    } @else if (patient.disposition === Disposition.Transferred) {
+    <div>
+      <span class="status transferred">Transferred</span>
+      {{ patient.transferLocation?.description }}
+    </div>
+    } } @else if (patient.status === PatientStatus.Inpatient) {
+    <div>
+      <span class="status admitted">Admitted</span>
+      @if (patient.pen) { {{ patient.pen.reference }} } @else {
+      <span class="homeless">Homeless</span>
+      }
+    </div>
+    } @else if (patient.status === PatientStatus.PendingInitialExam) {
+    <div>
+      <span class="status unexamined">Not examined</span>
+      <p class="admitted">Arrived at {{ patient.admitted | date: 'HH:mm' }}</p>
+    </div>
+    } @else if (patient.status === PatientStatus.PendingHomeCare) {
+    <div>
+      <span class="status home-care">Home care</span>
+      (Pending)
+    </div>
+    } @else if (patient.status === PatientStatus.ReceivingHomeCare) {
+    <div>
+      <span class="status home-care">Home care</span>
+      {{ patient.currentHomeCarer }}
+    </div>
+    } @else if (patient.status === PatientStatus.ReadyForRelease) {
+    <div>
+      <span class="status released">Ready for release</span>
+    </div>
+    }
+  </div>
+  }
+</div>
+} }

@@ -954,6 +954,17 @@ export const viewPatientBoardError = createAction(
   '[HMS-V] View patient board: error',
 );
 
+export const viewTodayAdmissions = createAction(
+  '[HMS-V] View today admissions',
+);
+export const viewTodayAdmissionsSuccess = createAction(
+  '[HMS-V] View today admissions: success',
+  props<{ patients: ListPatient[] }>(),
+);
+export const viewTodayAdmissionsError = createAction(
+  '[HMS-V] View today admissions: error',
+);
+
 export const markBoardTaskComplete = createAction(
   '[HMS-V] Mark board task complete',
   props<{ boardId: number; penId: number; taskId: number }>(),

@@ -31,5 +31,6 @@ public enum PenCleanStatus
     None = 0,
     NeedsCleaning = 1,
     NeedsSettingUp = 2,
-    ReadyToUse = 3
+    ReadyToUse = 3,
+    Custom = 4
 }

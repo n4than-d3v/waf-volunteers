@@ -101,6 +101,7 @@ export interface PatientBoardAreaPenVm {
   feedingSummaries: PatientBoardAreaPenFeedingSummaryVm[];
 
   cleanStatus: PenCleanStatus;
+  customBoardMessage: string | null;
 
   shouldShow: boolean;
   isExpandable: boolean;

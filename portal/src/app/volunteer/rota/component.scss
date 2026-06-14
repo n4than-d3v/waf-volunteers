@@ -2,19 +2,12 @@
   border-left: solid 5px var(--theme-color-1);
   background-color: rgb(232, 232, 232);
   padding: 1rem 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 0.8rem;
 }
 
 .extra-shifts {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-
   .extra-shift-sign-up {
-    border-left: solid 5px var(--theme-color-1);
-    background-color: rgb(232, 232, 232);
-    margin-top: 0.5rem;
-    margin-bottom: 1.5rem;
-    padding: 1rem 1.5rem;
+    margin-top: 1rem;
 
     p {
       font-size: 1rem;
@@ -32,7 +25,6 @@
 
 .regular-shifts {
   margin-top: 1.5rem;
-  border-left: solid 5px var(--theme-color-3);
   background-color: rgb(232, 232, 232);
   padding: 1rem 1.5rem;
 
@@ -142,13 +134,84 @@ img {
 .why-denying {
   padding-top: 0.5rem;
 
+  .deny-msg {
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
   button {
     margin-top: 0.75rem;
   }
 }
 
-.urgent-shifts {
-  margin-bottom: 1.75rem;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  border: none;
+  color: white;
+  width: 100%;
+  padding: 0.5rem 0.8rem 0.5rem 0.75rem;
+  cursor: pointer;
+
+  h2 {
+    font-size: 1.75rem;
+    text-align: left;
+  }
+
+  .count {
+    font-size: 0.8rem;
+    background-color: white;
+    color: black;
+    padding: 0.125rem 0.5rem;
+    border-radius: 50%;
+  }
+
+  .icon {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: -3rem;
+    margin-top: -1rem;
+  }
+
+  &--critical {
+    background-color: var(--theme-color-2);
+  }
+
+  &--understaffed {
+    background-color: var(--theme-color-3);
+  }
+
+  &--extra {
+    background-color: var(--theme-color-1);
+  }
+
+  &--regular {
+    background-color: var(--theme-color-5);
+  }
+}
+
+.accordion-container {
+  border-left: solid 5px black;
+  border-bottom: solid 5px black;
+  border-right: solid 5px black;
+  padding: 0.5rem;
+
+  &--critical {
+    border-color: var(--theme-color-2);
+  }
+
+  &--understaffed {
+    border-color: var(--theme-color-3);
+  }
+
+  &--extra {
+    border-color: var(--theme-color-1);
+  }
+
+  &--regular {
+    border-color: var(--theme-color-5);
+  }
 }
 
 .people-coming,

@@ -983,6 +983,7 @@ export const setPenCleanStatus = createAction(
     boardId: number;
     penId: number;
     cleanStatus: PenCleanStatus;
+    customBoardMessage?: string;
   }>(),
 );
 export const setPenCleanStatusSuccess = createAction(

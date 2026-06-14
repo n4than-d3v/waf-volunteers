@@ -683,6 +683,7 @@ export interface Pen {
   // Only available on getAreas()
   empty: boolean;
   cleanStatus: PenCleanStatus;
+  customBoardMessage: string | null;
 }
 
 export enum PenCleanStatus {
@@ -690,6 +691,7 @@ export enum PenCleanStatus {
   NeedsCleaning = 1,
   NeedsSettingUp = 2,
   ReadyToUse = 3,
+  Custom = 4,
 }
 
 export interface Area {
@@ -838,6 +840,7 @@ export interface PatientBoardAreaPen {
   feedingSummaries: PatientBoardAreaPenFeedingSummary[];
 
   cleanStatus: PenCleanStatus;
+  customBoardMessage: string | null;
 }
 
 export interface PatientBoardAreaPenFeedingSummary {

@@ -1839,6 +1839,23 @@ reportConcern) { @if (reportConcern.loading) {
     <div class="patients">
       <span class="instruction instruction--green">Ready to use</span>
     </div>
+    } @if (pen.cleanStatus === PenCleanStatus.Custom) {
+    <div class="patients">
+      <span class="instruction">{{ pen.customBoardMessage || '(Ask)' }}</span>
+    </div>
+    <div class="tasks">
+      <div class="task task--current-shift task--relevant">
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+      </div>
+    </div>
     }
     <div class="feeding-times"></div>
     } @else { @if (pen.concernReason) {
@@ -1857,7 +1874,15 @@ reportConcern) { @if (reportConcern.loading) {
       </div>
       }
     </div>
-    @if (pen.newest) {
+    @if ((pen.tags && pen.tags.length) || pen.hasCustomDiet) {
+    <div class="tags">
+      @for (tag of (pen.tags || []); track tag) {
+      <span class="tag">{{ tag }}</span>
+      } @if (pen.hasCustomDiet) {
+      <span class="custom-diet">Special diet</span>
+      }
+    </div>
+    } @if (pen.newest) {
     <p class="new">
       <img src="images/board/new.png" />
       <span>Arrived today at</span>
@@ -1871,14 +1896,6 @@ reportConcern) { @if (reportConcern.loading) {
         >{{ pen.plannedRelease | date: 'HH:mm' }}</span
       >
     </p>
-    } @if ((pen.tags && pen.tags.length) || pen.hasCustomDiet) {
-    <div class="tags">
-      @for (tag of (pen.tags || []); track tag) {
-      <span class="tag">{{ tag }}</span>
-      } @if (pen.hasCustomDiet) {
-      <span class="custom-diet">Special diet</span>
-      }
-    </div>
     }
     <div class="tasks">
       @if (!pen.custom) {

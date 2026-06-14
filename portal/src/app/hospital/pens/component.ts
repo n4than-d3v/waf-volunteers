@@ -29,6 +29,10 @@ export class HospitalPenManagementComponent implements OnInit, OnDestroy {
   needsCleaning: boolean = true;
   needsSettingUp: boolean = true;
   readyToUse: boolean = true;
+  custom: boolean = true;
+
+  settingCustom: number | null = null;
+  customBoardMessage = '';
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
@@ -69,15 +73,26 @@ export class HospitalPenManagementComponent implements OnInit, OnDestroy {
       return false;
     if (pen.cleanStatus === PenCleanStatus.ReadyToUse && !this.readyToUse)
       return false;
+    if (pen.cleanStatus === PenCleanStatus.Custom && !this.custom) return false;
     return true;
   }
 
-  setCleanStatus(pen: Pen, cleanStatus: PenCleanStatus) {
+  clearSettingCustom() {
+    this.settingCustom = null;
+    this.customBoardMessage = '';
+  }
+
+  setCleanStatus(
+    pen: Pen,
+    cleanStatus: PenCleanStatus,
+    customBoardMessage?: string,
+  ) {
     this.store.dispatch(
       setPenCleanStatus({
         boardId: 0,
         penId: pen.id,
         cleanStatus,
+        customBoardMessage,
       }),
     );
   }

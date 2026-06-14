@@ -8,6 +8,7 @@ public class SetPenCleanStatus : IRequest<IResult>
 {
     public int Id { get; set; }
     public PenCleanStatus CleanStatus { get; set; }
+    public string? CustomBoardMessage { get; set; }
 
     public SetPenCleanStatus WithId(int id)
     {
@@ -31,6 +32,7 @@ public class SetPenCleanStatusHandler : IRequestHandler<SetPenCleanStatus, IResu
         if (pen == null) return Results.BadRequest();
 
         pen.CleanStatus = request.CleanStatus;
+        pen.CustomBoardMessage = request.CustomBoardMessage;
 
         await _repository.SaveChangesAsync();
         return Results.NoContent();

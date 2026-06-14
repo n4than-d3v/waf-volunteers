@@ -42,9 +42,15 @@
           [(ngModel)]="needsSettingUp"
         />
       </div>
+    </div>
+    <div>
       <div class="field">
         <label for="pen-readyToUse">Ready to use</label>
         <input id="pen-readyToUse" type="checkbox" [(ngModel)]="readyToUse" />
+      </div>
+      <div class="field">
+        <label for="pen-custom">Custom</label>
+        <input id="pen-custom" type="checkbox" [(ngModel)]="custom" />
       </div>
     </div>
   </div>
@@ -53,7 +59,7 @@
   <tbody>
     @for (area of areas.data; track area.id) { @if (shouldShowArea(area)) {
     <tr>
-      <th colspan="7">{{ area.name }}</th>
+      <th colspan="8">{{ area.name }}</th>
     </tr>
     @for (pen of area.pens; track pen.id) { @if (shouldShowPen(pen)) {
     <tr>
@@ -110,11 +116,45 @@
         <span class="active-status">✅ Ready to use</span>
         }
       </td>
+      <td>
+        @if (pen.cleanStatus !== PenCleanStatus.Custom) { @if (settingCustom ===
+        pen.id) {
+        <div class="custom">
+          <div class="field">
+            <label for="customBoardMessage">Custom message</label>
+            <input id="customBoardMessage" [(ngModel)]="customBoardMessage" />
+          </div>
+          <div class="buttons">
+            <button
+              class="button button--secondary"
+              (click)="clearSettingCustom()"
+            >
+              Cancel
+            </button>
+            <button
+              class="button button--primary"
+              (click)="setCleanStatus(pen, PenCleanStatus.Custom, customBoardMessage)"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+        } @else {
+        <button
+          class="button button--secondary-invert"
+          (click)="settingCustom = pen.id"
+        >
+          📋 Custom
+        </button>
+        } } @else {
+        <span class="active-status"> 📋 {{ pen.customBoardMessage }} </span>
+        }
+      </td>
       } @else {
       <td>
         <span class="in-use">In use</span>
       </td>
-      <td colspan="4"></td>
+      <td colspan="5"></td>
       }
     </tr>
     } } } }

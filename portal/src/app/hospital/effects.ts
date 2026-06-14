@@ -1862,6 +1862,7 @@ export class HospitalEffects {
         this.http
           .post(`hospital/locations/pen/${action.penId}/set-clean-status`, {
             cleanStatus: action.cleanStatus,
+            customBoardMessage: action.customBoardMessage,
           })
           .pipe(
             map((_) => setPenCleanStatusSuccess({ boardId: action.boardId })),

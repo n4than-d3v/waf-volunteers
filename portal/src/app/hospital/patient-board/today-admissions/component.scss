@@ -10,82 +10,107 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
-.patients {
-  display: flex;
-  flex-wrap: wrap;
-  column-gap: 0.5rem;
-  justify-content: space-between;
+.status-container {
+  background-color: rgb(239, 239, 239);
+  border: solid 1px black;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.75rem 0.75rem;
 
-  .patient {
-    border-bottom: solid 2px rgba(0, 0, 0, 0.5);
+  h2 {
+    color: rgb(68, 68, 68);
+    font-size: 1.5rem;
+    margin-bottom: 0.125rem;
+  }
+
+  .patients {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 0.25rem;
-    width: 42rem;
 
-    &.patient--pending {
-      background-color: rgb(255, 210, 210);
-    }
+    .patient {
+      border: solid 1px black;
+      padding: 0.25rem 0.5rem;
+      background-color: rgb(220, 220, 220);
 
-    .reference {
-      min-width: 5.75rem;
-      text-align: center;
-      font-weight: bold;
-      color: var(--theme-color-5);
-      padding: 0.125rem 0.25rem;
-    }
-
-    .species {
-      flex: 1;
-    }
-
-    div {
-      text-align: right;
-      padding-right: 0.25rem;
       display: flex;
-      flex-direction: row-reverse;
-      gap: 0.5rem;
-    }
+      flex-direction: column;
 
-    .status {
-      font-weight: bold;
-      color: white;
-      display: block;
-
-      &.died {
-        color: var(--theme-color-3);
-      }
-
-      &.pts {
-        color: var(--theme-color-2);
-      }
-
-      &.admitted {
+      .reference {
         color: var(--theme-color-5);
+        font-weight: bold;
+        font-size: 1rem;
       }
 
-      &.home-care {
-        color: var(--theme-color-6);
+      .species {
+        font-size: 1rem;
       }
 
-      &.transferred {
-        color: var(--theme-color-4);
-      }
+      .ref-pen {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
 
-      &.released {
-        color: var(--theme-color-4);
-      }
+        .pen {
+          font-weight: bold;
+          color: var(--theme-color-6);
+          font-size: 1rem;
+        }
 
-      &.unexamined {
-        color: var(--theme-color-2);
-      }
-    }
+        .arrival {
+          font-weight: bold;
+          color: var(--theme-color-3);
+          font-size: 1rem;
+        }
 
-    .homeless {
-      background-color: var(--theme-color-2);
-      font-weight: bold;
-      color: white;
-      padding: 0.125rem 0.25rem;
+        .home-carer {
+          font-size: 1rem;
+          font-weight: bold;
+          color: var(--theme-color-6);
+        }
+      }
     }
   }
+}
+
+.status {
+  font-weight: bold;
+  color: white;
+  display: block;
+  font-size: 1rem;
+
+  &.died {
+    color: var(--theme-color-2);
+  }
+
+  &.pts {
+    color: var(--theme-color-2);
+  }
+
+  &.admitted {
+    color: var(--theme-color-5);
+  }
+
+  &.home-care {
+    color: var(--theme-color-6);
+  }
+
+  &.transferred {
+    color: var(--theme-color-4);
+  }
+
+  &.released {
+    color: var(--theme-color-4);
+  }
+
+  &.unexamined {
+    color: var(--theme-color-2);
+  }
+}
+
+.homeless {
+  background-color: var(--theme-color-2);
+  font-weight: bold;
+  color: white;
+  padding: 0.125rem 0.25rem;
 }

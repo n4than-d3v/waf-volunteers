@@ -37,3 +37,19 @@ th {
   font-weight: bold;
   color: var(--theme-color-2);
 }
+
+.custom {
+  .field {
+    margin-bottom: 0.5rem;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+
+    .button {
+      padding: 0.25rem 0.5rem;
+    }
+  }
+}

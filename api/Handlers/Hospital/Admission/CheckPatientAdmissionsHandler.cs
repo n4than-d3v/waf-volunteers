@@ -130,7 +130,7 @@ public class CheckPatientAdmissionsHandler : IRequestHandler<CheckPatientAdmissi
                 var address = person.entity.address.FirstOrDefault(x => x.is_primary);
                 if (address != null)
                 {
-                    var addressArray = new string[] { address.address_line_one, address.address_line_two, address.address_line_three, address.city, address.region };
+                    var addressArray = new string[] { address.address_line_one, address.address_line_two, address.address_line_three, address.city, address.region, address.postal_code };
                     var addressString = string.Join(", ", addressArray.Where(x => !string.IsNullOrWhiteSpace(x)));
                     admitter.Address = _encryptionService.Encrypt(addressString, admitterSalt);
                 }

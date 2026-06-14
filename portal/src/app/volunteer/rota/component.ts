@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Rota, Shift, ShiftType, UrgentShift } from './state';
 import {
   selectConfirmedShift,
@@ -40,11 +40,17 @@ import moment from 'moment';
 })
 export class VolunteerRotaComponent implements OnInit {
   rota$: Observable<Rota>;
+  critical$: Observable<UrgentShift[]>;
+  understaffed$: Observable<UrgentShift[]>;
+
   times$: Observable<Wrapper<Time>>;
 
   ShiftType = ShiftType;
 
-  hideUnderstaffed = false;
+  showCritical = false;
+  showUnderstaffed = false;
+  showExtra = false;
+  showRegular = false;
 
   signingUpExtra = false;
   minDate = moment().toISOString().split('T')[0];
@@ -70,6 +76,19 @@ export class VolunteerRotaComponent implements OnInit {
 
   constructor(private store: Store) {
     this.rota$ = this.store.select(selectRota);
+
+    this.critical$ = this.rota$.pipe(
+      map((rota) => rota.urgentShifts.filter((x) => x.critical)),
+    );
+
+    this.understaffed$ = this.rota$.pipe(
+      map((rota) =>
+        rota.urgentShifts.filter(
+          (x) => (x.confirmed || x.understaffed) && !x.critical,
+        ),
+      ),
+    );
+
     this.times$ = this.store.select(selectTimes);
 
     this.loading$ = this.store.select(selectRotaLoading);
@@ -80,16 +99,6 @@ export class VolunteerRotaComponent implements OnInit {
 
     this.denying$ = this.store.select(selectDenyingShift);
     this.denied$ = this.store.select(selectDeniedShift);
-  }
-
-  getCriticalUrgentShifts(rota: Rota) {
-    return rota.urgentShifts.filter((x) => x.critical);
-  }
-
-  getUnderstaffedUrgentShifts(rota: Rota) {
-    return rota.urgentShifts.filter(
-      (x) => (x.confirmed || x.understaffed) && !x.critical,
-    );
   }
 
   hasAlreadyConfirmedAsRegular(rota: Rota, shift: UrgentShift) {

@@ -351,6 +351,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             Id = pen.Id,
             Reference = pen.Reference,
             CleanStatus = pen.CleanStatus,
+            CustomBoardMessage = pen.CustomBoardMessage,
             Patients = [],
             PatientReferences = []
         }).ToList();
@@ -561,6 +562,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public List<PatientBoardAreaPenFeeding> Feedings { get; set; }
         public List<PatientBoardAreaPenFeedingSummary> FeedingSummaries { get; set; }
         public PenCleanStatus CleanStatus { get; set; }
+        public string? CustomBoardMessage { get; set; }
         public bool Flagged { get; set; }
         public string? ConcernReason { get; set; }
     }

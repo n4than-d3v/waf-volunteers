@@ -21,7 +21,11 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 export class HospitalPatientBoardTodayAdmissionsComponent
   implements OnInit, OnDestroy
 {
-  patients$: Observable<ListPatient[]>;
+  pendingInitialExam$: Observable<ListPatient[]>;
+  admitted$: Observable<ListPatient[]>;
+  release$: Observable<ListPatient[]>;
+  homeCare$: Observable<ListPatient[]>;
+  died$: Observable<ListPatient[]>;
 
   subscription: Subscription | null = null;
 
@@ -29,14 +33,58 @@ export class HospitalPatientBoardTodayAdmissionsComponent
   Disposition = Disposition;
 
   constructor(private store: Store) {
-    this.patients$ = this.store
+    const patients$ = this.store
       .select(selectTodayAdmissions)
       .pipe(map((patients) => patients.data || []));
-  }
 
-  formatDispositionReasons(patient: ListPatient) {
-    if (!patient.dispositionReasons) return '';
-    return patient.dispositionReasons.map((x) => x.description).join(', ');
+    this.pendingInitialExam$ = patients$.pipe(
+      map((patients) =>
+        patients.filter(
+          (patient) => patient.status === PatientStatus.PendingInitialExam,
+        ),
+      ),
+    );
+
+    this.admitted$ = patients$.pipe(
+      map((patients) =>
+        patients.filter(
+          (patient) => patient.status === PatientStatus.Inpatient,
+        ),
+      ),
+    );
+
+    this.release$ = patients$.pipe(
+      map((patients) =>
+        patients.filter(
+          (patient) =>
+            patient.status === PatientStatus.ReadyForRelease ||
+            (patient.status === PatientStatus.Dispositioned &&
+              (patient.disposition === Disposition.Released ||
+                patient.disposition === Disposition.Transferred)),
+        ),
+      ),
+    );
+
+    this.homeCare$ = patients$.pipe(
+      map((patients) =>
+        patients.filter(
+          (patient) =>
+            patient.status === PatientStatus.PendingHomeCare ||
+            patient.status === PatientStatus.ReceivingHomeCare,
+        ),
+      ),
+    );
+
+    this.died$ = patients$.pipe(
+      map((patients) =>
+        patients.filter(
+          (patient) =>
+            patient.status === PatientStatus.Dispositioned &&
+            patient.disposition !== Disposition.Released &&
+            patient.disposition !== Disposition.Transferred,
+        ),
+      ),
+    );
   }
 
   ngOnInit() {

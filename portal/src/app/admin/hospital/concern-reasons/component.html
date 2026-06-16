@@ -1,0 +1,154 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Concern reasons</h1>
+
+<p>
+  Concern reasons are selected by husbandry when using the patient boards.<br />
+  They are used to provide information to the vet team of concerns volunteers
+  have for patients.
+</p>
+
+@if (concerns$ | async; as concerns) { @if (concerns.loading) {
+<spinner></spinner>
+} @else if (concerns.error) {
+<div class="error">Error occurred</div>
+} @else if (concerns.data) { @if (!(creatingCategory || creatingReason ||
+updatingCategory || updatingReason)) {
+<button (click)="beginCreateCategory()" class="button button--primary">
+  Create new category
+</button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
+} @else if (creatingCategory) {
+<section>
+  <h2>Create new category</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="buttons">
+      <button (click)="createCategory()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updatingCategory) {
+<section>
+  <h2>Edit category</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="buttons">
+      <button (click)="updateCategory()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (creatingReason) {
+<section>
+  <h2>Create new reason</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="field">
+      <label for="categoryId">Category</label>
+      <select id="categoryId" formControlName="categoryId">
+        @for (concern of concerns.data; track concern.id) {
+        <option [value]="concern.id">{{ concern.description }}</option>
+        }
+      </select>
+    </div>
+    <div class="buttons">
+      <button (click)="createReason()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updatingReason) {
+<section>
+  <h2>Edit reason</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="description">Description</label>
+      <input id="description" type="text" formControlName="description" />
+    </div>
+    <div class="field">
+      <label for="categoryId">Category</label>
+      <select id="categoryId" formControlName="categoryId">
+        @for (concern of concerns.data; track concern.id) {
+        <option [value]="concern.id">{{ concern.description }}</option>
+        }
+      </select>
+    </div>
+    <div class="buttons">
+      <button (click)="updateReason()" class="button button--primary">
+        Save
+      </button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @for (category of concerns.data; track category.id) {
+<div class="category-header">
+  <h2>{{ category.description }}</h2>
+  <div class="buttons">
+    <button
+      (click)="beginUpdateCategory(category)"
+      class="button button--secondary"
+    >
+      Edit category
+    </button>
+    <button
+      (click)="beginCreateReason(category)"
+      class="button button--primary"
+    >
+      Create new reason
+    </button>
+  </div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (reason of category.reasons; track reason.id) {
+    <tr>
+      <td>{{ reason.description }}</td>
+      <td>
+        <button
+          (click)="beginUpdateReason(category, reason)"
+          class="button button--secondary"
+        >
+          Edit reason
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} } }

@@ -4,6 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
 import {
   Area,
+  ConcernCategoryReadOnly,
   DispositionReason,
   Food,
   Medication,
@@ -124,6 +125,21 @@ import {
   upsertBoardCustomPen,
   upsertBoardCustomPenSuccess,
   upsertBoardCustomPenError,
+  createConcernCategory,
+  createConcernCategorySuccess,
+  createConcernCategoryError,
+  updateConcernCategory,
+  updateConcernCategorySuccess,
+  updateConcernCategoryError,
+  getConcernReasons,
+  getConcernReasonsSuccess,
+  getConcernReasonsError,
+  createConcernReason,
+  createConcernReasonSuccess,
+  createConcernReasonError,
+  updateConcernReason,
+  updateConcernReasonSuccess,
+  updateConcernReasonError,
 } from './actions';
 
 @Injectable()
@@ -358,6 +374,112 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(updateReleaseTypeSuccess),
       switchMap((_) => of(getReleaseTypes())),
+    ),
+  );
+
+  // Concern categories
+
+  createConcernCategory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createConcernCategory),
+      switchMap((action) =>
+        this.http
+          .put('hospital/daily-tasks/concern-category', action.concernCategory)
+          .pipe(
+            map((_) => createConcernCategorySuccess()),
+            catchError(() => of(createConcernCategoryError())),
+          ),
+      ),
+    ),
+  );
+
+  createConcernCategorySuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createConcernCategorySuccess),
+      switchMap((_) => of(getConcernReasons())),
+    ),
+  );
+
+  updateConcernCategory$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateConcernCategory),
+      switchMap((action) =>
+        this.http
+          .put('hospital/daily-tasks/concern-category', action.concernCategory)
+          .pipe(
+            map((_) => updateConcernCategorySuccess()),
+            catchError(() => of(updateConcernCategoryError())),
+          ),
+      ),
+    ),
+  );
+
+  updateConcernCategorySuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateConcernCategorySuccess),
+      switchMap((_) => of(getConcernReasons())),
+    ),
+  );
+
+  // Concern reasons
+
+  getConcernReasons$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getConcernReasons),
+      switchMap(() =>
+        this.http
+          .get<
+            ConcernCategoryReadOnly[]
+          >('hospital/daily-tasks/concern-reasons')
+          .pipe(
+            map((concernReasons) =>
+              getConcernReasonsSuccess({ concernReasons }),
+            ),
+            catchError(() => of(getConcernReasonsError())),
+          ),
+      ),
+    ),
+  );
+
+  createConcernReason$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createConcernReason),
+      switchMap((action) =>
+        this.http
+          .put('hospital/daily-tasks/concern-reason', action.concernReason)
+          .pipe(
+            map((_) => createConcernReasonSuccess()),
+            catchError(() => of(createConcernReasonError())),
+          ),
+      ),
+    ),
+  );
+
+  createConcernReasonSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createConcernReasonSuccess),
+      switchMap((_) => of(getConcernReasons())),
+    ),
+  );
+
+  updateConcernReason$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateConcernReason),
+      switchMap((action) =>
+        this.http
+          .put('hospital/daily-tasks/concern-reason', action.concernReason)
+          .pipe(
+            map((_) => updateConcernReasonSuccess()),
+            catchError(() => of(updateConcernReasonError())),
+          ),
+      ),
+    ),
+  );
+
+  updateConcernReasonSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateConcernReasonSuccess),
+      switchMap((_) => of(getConcernReasons())),
     ),
   );
 

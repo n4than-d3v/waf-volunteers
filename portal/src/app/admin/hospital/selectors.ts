@@ -60,3 +60,8 @@ export const selectBoardCustomPens = createSelector(
   selectAdminHospitalManagementState,
   (state) => state.boardCustomPens,
 );
+
+export const selectConcernReasons = createSelector(
+  selectAdminHospitalManagementState,
+  (state) => state.concernReasons,
+);

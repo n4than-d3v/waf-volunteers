@@ -100,6 +100,21 @@ import {
   getBoardCustomPens,
   getBoardCustomPensSuccess,
   getBoardCustomPensError,
+  getConcernReasons,
+  createConcernCategory,
+  createConcernCategorySuccess,
+  createConcernCategoryError,
+  updateConcernCategory,
+  updateConcernCategorySuccess,
+  updateConcernCategoryError,
+  getConcernReasonsSuccess,
+  getConcernReasonsError,
+  createConcernReason,
+  createConcernReasonSuccess,
+  createConcernReasonError,
+  updateConcernReason,
+  updateConcernReasonSuccess,
+  updateConcernReasonError,
 } from './actions';
 
 export const adminHospitalManagementReducer =
@@ -417,6 +432,138 @@ export const adminHospitalManagementReducer =
       ...state,
       releaseTypes: {
         ...state.releaseTypes,
+        loading: false,
+        error: true,
+      },
+    })),
+    // Concern categories
+    on(createConcernCategory, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(createConcernCategorySuccess, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        created: true,
+      },
+    })),
+    on(createConcernCategoryError, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(updateConcernCategory, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(updateConcernCategorySuccess, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        updated: true,
+      },
+    })),
+    on(updateConcernCategoryError, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        error: true,
+      },
+    })),
+    // Concern reasons
+    on(getConcernReasons, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(getConcernReasonsSuccess, (state, { concernReasons }) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        data: concernReasons,
+        loading: false,
+      },
+    })),
+    on(getConcernReasonsError, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(createConcernReason, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(createConcernReasonSuccess, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        created: true,
+      },
+    })),
+    on(createConcernReasonError, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(updateConcernReason, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(updateConcernReasonSuccess, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
+        loading: false,
+        updated: true,
+      },
+    })),
+    on(updateConcernReasonError, (state) => ({
+      ...state,
+      concernReasons: {
+        ...state.concernReasons,
         loading: false,
         error: true,
       },

@@ -977,6 +977,22 @@ public partial class Program
             .AddNote("Husbandry views list of concern reasons")
             .RequireAuthorization(signedInPolicy);
 
+        apiHospitalDailyTasks
+            .MapPut(
+                "/concern-category",
+                (IMediator mediator, UpsertConcernCategory request) => mediator.Send(request)
+            )
+            .AddNote("Vet updates husbandry concern category")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalDailyTasks
+            .MapPut(
+                "/concern-reason",
+                (IMediator mediator, UpsertConcernReason request) => mediator.Send(request)
+            )
+            .AddNote("Vet updates husbandry concern reason")
+            .RequireAuthorization(vetPolicy);
+
         var apiHospitalBoards = apiHospital.MapGroup("/boards");
 
         apiHospitalBoards

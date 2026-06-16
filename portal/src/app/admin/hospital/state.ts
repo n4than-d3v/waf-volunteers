@@ -13,6 +13,7 @@ export interface AdminHospitalManagementState {
   boards: Wrapper<PatientBoard>;
   boardMessages: Wrapper<PatientBoardMessage>;
   boardCustomPens: Wrapper<PatientBoardCustomPen>;
+  concernReasons: Wrapper<ConcernCategoryReadOnly>;
 }
 
 export interface Wrapper<T> {
@@ -59,6 +60,27 @@ export interface CreateReleaseTypeCommand {
 }
 
 export interface ReleaseType extends CreateReleaseTypeCommand {
+  id: number;
+}
+
+export interface CreateConcernCategoryCommand {
+  description: string;
+}
+
+export interface ConcernCategory extends CreateConcernCategoryCommand {
+  id: number;
+}
+
+export interface ConcernCategoryReadOnly extends ConcernCategory {
+  reasons: ConcernReason[];
+}
+
+export interface CreateConcernReasonCommand {
+  description: string;
+  categoryId: number;
+}
+
+export interface ConcernReason extends CreateConcernReasonCommand {
   id: number;
 }
 
@@ -389,4 +411,5 @@ export const initialAdminHospitalManagementState: AdminHospitalManagementState =
     boards: createWrapper<PatientBoard>(),
     boardMessages: createWrapper<PatientBoardMessage>(),
     boardCustomPens: createWrapper<PatientBoardCustomPen>(),
+    concernReasons: createWrapper<ConcernCategoryReadOnly>(),
   };

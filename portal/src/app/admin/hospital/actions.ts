@@ -24,6 +24,11 @@ import {
   CreateFoodCommand,
   PatientBoardCustomPen,
   PatientBoardMessage,
+  ConcernCategoryReadOnly,
+  ConcernCategory,
+  CreateConcernCategoryCommand,
+  CreateConcernReasonCommand,
+  ConcernReason,
 } from './state';
 
 // Foods
@@ -426,4 +431,61 @@ export const upsertBoardCustomPenSuccess = createAction(
 );
 export const upsertBoardCustomPenError = createAction(
   '[HMS-A] Upsert board custom pen: error',
+);
+
+// Concern categories
+
+export const createConcernCategory = createAction(
+  '[HMS-A] Create concern category',
+  props<{ concernCategory: CreateConcernCategoryCommand }>(),
+);
+export const createConcernCategorySuccess = createAction(
+  '[HMS-A] Create concern category: success',
+);
+export const createConcernCategoryError = createAction(
+  '[HMS-A] Create concern category: error',
+);
+
+export const updateConcernCategory = createAction(
+  '[HMS-A] Update concern category',
+  props<{ concernCategory: ConcernCategory }>(),
+);
+export const updateConcernCategorySuccess = createAction(
+  '[HMS-A] Update concern category: success',
+);
+export const updateConcernCategoryError = createAction(
+  '[HMS-A] Update concern category: error',
+);
+
+// Concern reasons
+
+export const getConcernReasons = createAction('[HMS-A] Get concern reasons');
+export const getConcernReasonsSuccess = createAction(
+  '[HMS-A] Get concern reasons: success',
+  props<{ concernReasons: ConcernCategoryReadOnly[] }>(),
+);
+export const getConcernReasonsError = createAction(
+  '[HMS-A] Get concern reasons: error',
+);
+
+export const createConcernReason = createAction(
+  '[HMS-A] Create concern reason',
+  props<{ concernReason: CreateConcernReasonCommand }>(),
+);
+export const createConcernReasonSuccess = createAction(
+  '[HMS-A] Create concern reason: success',
+);
+export const createConcernReasonError = createAction(
+  '[HMS-A] Create concern reason: error',
+);
+
+export const updateConcernReason = createAction(
+  '[HMS-A] Update concern reason',
+  props<{ concernReason: ConcernReason }>(),
+);
+export const updateConcernReasonSuccess = createAction(
+  '[HMS-A] Update concern reason: success',
+);
+export const updateConcernReasonError = createAction(
+  '[HMS-A] Update concern reason: error',
 );

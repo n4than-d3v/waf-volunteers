@@ -30,7 +30,7 @@ export class BeaconInfoComponent implements OnInit {
       new FormGroup({
         number: new FormControl<string | null>(''),
         is_primary: new FormControl<boolean | null>(false),
-      })
+      }),
     );
   }
 
@@ -50,7 +50,7 @@ export class BeaconInfoComponent implements OnInit {
         address_line_one: new FormControl<string | null>(''),
         address_line_two: new FormControl<string | null>(''),
         address_line_three: new FormControl<string | null>(''),
-      })
+      }),
     );
   }
 
@@ -63,7 +63,7 @@ export class BeaconInfoComponent implements OnInit {
       new FormGroup({
         number: new FormControl<string | null>(''),
         is_primary: new FormControl<boolean | null>(false),
-      })
+      }),
     );
   }
 
@@ -81,9 +81,7 @@ export class BeaconInfoComponent implements OnInit {
       this.addPhoneNumber();
     }
 
-    for (const _ of this.profile.gender) {
-      this.form.controls.gender.push(new FormControl(''));
-    }
+    this.form.controls.gender.push(new FormControl(''));
 
     for (const _ of this.profile.address) {
       this.addAddress();

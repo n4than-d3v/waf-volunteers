@@ -52,6 +52,8 @@ public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientRead
             await _mediator.Send(new MarkPenNeedsCleaning { Id = patient.Pen.Id }, cancellationToken);
         }
 
+        /*
+
         if (patient.Admitter == null) return Results.NoContent();
         var admitter = patient.Admitter;
         if (string.IsNullOrWhiteSpace(admitter.Email)) return Results.NoContent();
@@ -60,6 +62,8 @@ public class MarkPatientReadyForReleaseHandler : IRequestHandler<MarkPatientRead
         var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
         var email = Email.External_PatientUpdate_ReadyForCollection(admitterFullName, admitterEmail, patient.Species?.Name ?? "Unknown", patient.Admitted);
         await _emailService.SendEmailAsync(email);
+        
+        */
 
         return Results.NoContent();
     }

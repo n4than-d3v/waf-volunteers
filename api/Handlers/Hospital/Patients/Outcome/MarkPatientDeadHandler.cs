@@ -101,20 +101,24 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
                 ? BeaconService.BeaconDisposition.PTS : BeaconService.BeaconDisposition.Died);
         }
 
-        if (patient.Admitter == null) return Results.NoContent();
-        var admitter = patient.Admitter;
-        if (string.IsNullOrWhiteSpace(admitter.Email)) return Results.NoContent();
+        /*
 
-        var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
-        var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
+            if (patient.Admitter == null) return Results.NoContent();
+            var admitter = patient.Admitter;
+            if (string.IsNullOrWhiteSpace(admitter.Email)) return Results.NoContent();
 
-        var communication = dispositionReasons.First().Communication
-            .Replace("%NAME%", admitterFullName)
-            .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown")
-            .Replace("%ADMITTED%", $"{patient.Admitted:dddd d MMMM}");
+            var admitterFullName = _encryptionService.Decrypt(admitter.FullName, admitter.Salt);
+            var admitterEmail = _encryptionService.Decrypt(admitter.Email, admitter.Salt);
 
-        var email = Email.External_PatientUpdate_Death(admitterFullName, admitterEmail, communication);
-        await _emailService.SendEmailAsync(email);
+            var communication = dispositionReasons.First().Communication
+                .Replace("%NAME%", admitterFullName)
+                .Replace("%SPECIES%", patient.Species?.Name ?? "Unknown")
+                .Replace("%ADMITTED%", $"{patient.Admitted:dddd d MMMM}");
+
+            var email = Email.External_PatientUpdate_Death(admitterFullName, admitterEmail, communication);
+            await _emailService.SendEmailAsync(email);
+
+        */
 
         return Results.NoContent();
     }

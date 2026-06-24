@@ -24,6 +24,7 @@ import {
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import {
+  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
@@ -92,18 +93,39 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   addFeedingGuidance() {
-    const formGroup = new FormGroup({
-      foodId: new FormControl('', [Validators.required]),
-      timeKind: new FormControl('Specific'),
-      time: new FormControl('', [Validators.required]),
-      quantityValue: new FormControl('', [Validators.required]),
-      quantityUnit: new FormControl('', [Validators.required]),
-      notes: new FormControl(''),
-      dish: new FormControl(''),
-      topUp: new FormControl(false),
-    });
+    const formGroup = new FormGroup(
+      {
+        foodId: new FormControl('', [Validators.required]),
+        timeKind: new FormControl('Specific'),
+        time: new FormControl('', [Validators.required]),
+        quantityValue: new FormControl(''),
+        quantityUnit: new FormControl(''),
+        notes: new FormControl(''),
+        dish: new FormControl(''),
+        topUp: new FormControl(false),
+      },
+      { validators: [this.timeValidator] },
+    );
     this.speciesVariantForm.controls.feedingGuidance.push(formGroup);
     return formGroup;
+  }
+
+  timeValidator(group: AbstractControl) {
+    const timeKind = group.get('timeKind')?.value;
+    const time = group.get('time')?.value;
+
+    if (timeKind === 'Every') {
+      try {
+        const timeAsNumber = Number(time);
+        if (timeAsNumber <= 0) {
+          return { timeLessThanZero: true };
+        }
+      } catch {
+        return { timeNaN: true };
+      }
+    }
+
+    return null;
   }
 
   removeFeedingGuidance(index: number) {
@@ -205,6 +227,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   createSpecies() {
+    if (!this.speciesForm.valid) return;
     this.store.dispatch(
       createSpecies({
         species: {
@@ -221,6 +244,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   createSpeciesVariant() {
+    if (!this.speciesVariantForm.valid) return;
     this.store.dispatch(
       createSpeciesVariant({
         variant: {
@@ -254,6 +278,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   updateSpecies() {
+    if (!this.speciesForm.valid) return;
     this.store.dispatch(
       updateSpecies({
         species: {
@@ -276,6 +301,7 @@ export class AdminHospitalSpeciesComponent implements OnInit {
   }
 
   updateSpeciesVariant() {
+    if (!this.speciesVariantForm.valid) return;
     this.store.dispatch(
       updateSpeciesVariant({
         variant: {

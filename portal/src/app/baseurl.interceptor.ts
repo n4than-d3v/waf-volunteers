@@ -3,8 +3,15 @@ import { HttpInterceptorFn } from '@angular/common/http';
 const BASE_URL = '';
 
 export const baseUrlInterceptor: HttpInterceptorFn = (req, next) => {
-  const apiReq = req.clone({
-    url: `${BASE_URL}/api/${req.url}`,
-  });
-  return next(apiReq);
+  if (/^https?:\/\//i.test(req.url)) {
+    return next(req);
+  }
+
+  const url = req.url.startsWith('/') ? req.url.slice(1) : req.url;
+
+  return next(
+    req.clone({
+      url: `${BASE_URL}/api/${url}`,
+    }),
+  );
 };

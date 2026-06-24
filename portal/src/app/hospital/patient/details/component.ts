@@ -26,6 +26,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
+import { HospitalPatientDetailsPokemonImageComponent } from './pokemon/component';
 
 @Component({
   selector: 'hospital-patient-details',
@@ -40,6 +41,7 @@ import { HospitalPatientAutocompleteComponent } from '../autocomplete/component'
     FormsModule,
     ReactiveFormsModule,
     HospitalPatientAutocompleteComponent,
+    HospitalPatientDetailsPokemonImageComponent,
   ],
 })
 export class HospitalPatientDetailsComponent implements OnInit, OnDestroy {

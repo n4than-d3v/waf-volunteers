@@ -12,6 +12,8 @@ import { AsyncPipe } from '@angular/common';
   styleUrls: ['./component.scss'],
 })
 export class HospitalPatientDetailsPokemonImageComponent {
+  @Input() size: 's' | 'm' | 'l' = 'm';
+
   @Input()
   set name(value: string | null) {
     const pokemonName = value?.trim().toLowerCase();

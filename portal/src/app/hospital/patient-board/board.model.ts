@@ -80,6 +80,7 @@ export interface PatientBoardAreaPenVm {
   reference: string;
   patients: string[] | null;
   patientReferences: string[] | null;
+  patientNames: string[] | null;
   tags: string[] | null;
 
   flagged: boolean;

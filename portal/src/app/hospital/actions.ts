@@ -269,6 +269,7 @@ export const markPatientDead = createAction(
   props<{
     patientId: number;
     dispositionReasonIds: number[];
+    date: string | null;
     onArrival: boolean;
     putToSleep: boolean;
   }>(),

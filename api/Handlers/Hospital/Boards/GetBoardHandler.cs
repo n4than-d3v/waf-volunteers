@@ -173,6 +173,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Patients = [.. pen.Body],
                     Tags = [.. pen.Tags],
                     PatientReferences = [],
+                    PatientNames = [],
                     Custom = true,
                     HasCustomDiet = false,
                     Flagged = false,
@@ -353,7 +354,8 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             CleanStatus = pen.CleanStatus,
             CustomBoardMessage = pen.CustomBoardMessage,
             Patients = [],
-            PatientReferences = []
+            PatientReferences = [],
+            PatientNames = []
         }).ToList();
     }
 
@@ -377,6 +379,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Id = g.Key.PenId.Value,
                     Patients = GetPatientSummary(penPatients),
                     PatientReferences = [.. penPatients.Select(x => x.Reference).OrderBy(x => x)],
+                    PatientNames = [.. penPatients.Where(x => !string.IsNullOrWhiteSpace(x.Name)).Select(x => x.Name).OrderBy(x => x)],
                     HasCustomDiet = penPatients.Any(patient => patient.Feeding?.Any() ?? false),
                     Flagged = penConcerns.Any(),
                     ConcernReason = string.Join(", ", penConcerns.Select(c => c.Reason.Description)),
@@ -547,6 +550,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public string Reference { get; set; }
         public List<string> Patients { get; set; }
         public List<string> PatientReferences { get; set; }
+        public List<string> PatientNames { get; set; }
         public List<string> Tags { get; set; }
         public bool Custom { get; set; }
 

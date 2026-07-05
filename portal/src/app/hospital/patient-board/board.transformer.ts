@@ -48,10 +48,14 @@ function isTickedOff(
 
   if (forBirds) {
     if (pen.feedingSummaries.length) {
-      return pen.nextFeeding === null;
+      return (pen.clean || pen.custom) && pen.nextFeeding === null;
     } else {
-      return !pen.feedings.some(
-        (feeding) => feeding.shouldShow && !pen.tasks.includes(feeding.timeId),
+      return (
+        (pen.clean || pen.custom) &&
+        !pen.feedings.some(
+          (feeding) =>
+            feeding.shouldShow && !pen.tasks.includes(feeding.timeId),
+        )
       );
     }
   } else {

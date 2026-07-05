@@ -55,6 +55,7 @@ import { transform } from './board.transformer';
 import { svgs } from './svgs';
 import { Router } from '@angular/router';
 import { HospitalPatientBoardTodayAdmissionsComponent } from './today-admissions/component';
+import { HospitalPatientDetailsPokemonImageComponent } from '../patient/details/pokemon/component';
 
 @Pipe({
   name: 'sortBoardPens',
@@ -107,6 +108,7 @@ export class SortBoardAreasPipe implements PipeTransform {
     SortBoardPensPipe,
     FormsModule,
     HospitalPatientBoardTodayAdmissionsComponent,
+    HospitalPatientDetailsPokemonImageComponent,
   ],
 })
 export class HospitalPatientBoardComponent implements OnInit, OnDestroy {

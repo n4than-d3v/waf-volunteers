@@ -46,6 +46,9 @@ public class MarkPatientInCentreHandler : IRequestHandler<MarkPatientInCentre, I
         patient.Dispositioner = null;
         patient.Dispositioned = null;
         patient.DispositionReasons?.Clear();
+        patient.PlannedRelease = null;
+        patient.PlannedReleaseLastUpdated = null;
+        patient.PlannedReleaseNotes = null;
 
         patient.HomeCareRequests.RemoveAll(x => x.Pickup == null);
 

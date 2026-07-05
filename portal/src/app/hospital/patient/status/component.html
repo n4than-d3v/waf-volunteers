@@ -154,7 +154,28 @@
           } }
         </div>
       </div>
-      @if (attemptedSave && !dieForm.valid) {
+      <div class="fields">
+        <div class="field">
+          <label for="provideDate">Override date</label>
+          <input
+            id="provideDate"
+            type="checkbox"
+            formControlName="provideDate"
+          />
+        </div>
+      </div>
+      @if (dieForm.controls.provideDate.value) {
+      <div class="fields datetime">
+        <div class="field">
+          <label for="date"> Date </label>
+          <input id="date" type="date" formControlName="date" />
+        </div>
+        <div class="field">
+          <label for="time"> Time </label>
+          <input id="time" type="time" formControlName="time" />
+        </div>
+      </div>
+      } @if (attemptedSave && !dieForm.valid) {
       <div class="error">Please fill in all required fields</div>
       } @if (!saving) {
       <div class="buttons">
@@ -214,7 +235,28 @@
           } }
         </div>
       </div>
-      @if (attemptedSave && !ptsForm.valid) {
+      <div class="fields">
+        <div class="field">
+          <label for="provideDate">Override date</label>
+          <input
+            id="provideDate"
+            type="checkbox"
+            formControlName="provideDate"
+          />
+        </div>
+      </div>
+      @if (ptsForm.controls.provideDate.value) {
+      <div class="fields datetime">
+        <div class="field">
+          <label for="date"> Date </label>
+          <input id="date" type="date" formControlName="date" />
+        </div>
+        <div class="field">
+          <label for="time"> Time </label>
+          <input id="time" type="time" formControlName="time" />
+        </div>
+      </div>
+      } @if (attemptedSave && !ptsForm.valid) {
       <div class="error">Please fill in all required fields</div>
       } @if (!saving) {
       <div class="buttons">

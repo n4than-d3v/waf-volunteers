@@ -10,7 +10,12 @@
     border: solid 2px black;
     margin-left: -2px;
     margin-bottom: -2px;
-    max-width: max-content;
+    /*
+    min-width: 14rem;
+    max-width: 14rem;
+    */
+    min-width: 15rem;
+    max-width: 15rem;
     background-color: rgb(227, 231, 244);
 
     &.completed {
@@ -63,9 +68,9 @@
       background-color: var(--theme-color-5);
       border-bottom: solid 2px black;
       color: white;
-      padding: 0rem 0.25rem 0rem 0.5rem;
+      padding: 0rem 0.25rem 0rem 0.35rem;
       font-weight: bold;
-      font-size: 1.25rem;
+      font-size: 1.12rem;
       display: flex;
       justify-content: space-between;
       gap: 0.5rem;
@@ -92,6 +97,15 @@
     .patients {
       padding: 0.25rem;
       padding-bottom: 0rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.25rem;
+
+      .patient-names {
+        display: flex;
+        flex-direction: column;
+        margin-right: 0.125rem;
+      }
 
       .instruction {
         color: var(--theme-color-2);
@@ -109,7 +123,7 @@
     .tags {
       display: flex;
       flex-wrap: wrap;
-      max-width: 24rem;
+      max-width: 15rem;
       column-gap: 0.75rem;
       padding: 0.25rem;
       padding-bottom: 0rem;

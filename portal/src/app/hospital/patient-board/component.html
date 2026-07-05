@@ -1158,6 +1158,17 @@
 
         <div class="feeding-times tasks">
           <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>&nbsp;</span>
+            </p>
+          </div>
+          <div class="task task--current-shift">
             <p class="time" [class.time--now]="false">09:00</p>
             <button class="button button--secondary-invert">
               <span> &nbsp; </span>
@@ -1211,13 +1222,28 @@
         </div>
 
         <div class="next-feed">
-          <div class="part">
-            <p>Previous feed at</p>
-            <p class="time">09:00</p>
+          <div class="parts">
+            <div class="part">
+              <p>Previous feed at</p>
+              <p class="time">09:00</p>
+            </div>
+            <div class="part">
+              <p>Next feed at</p>
+              <p class="time" [class.time--now]="true">11:00</p>
+            </div>
           </div>
-          <div class="part">
-            <p>Next feed at</p>
-            <p class="time" [class.time--now]="true">11:00</p>
+          <div class="feeding-times tasks">
+            <div class="task task--current-shift">
+              <p class="time" [class.time--now]="false">
+                <img src="/images/board/clean.svg" alt="Clean" />
+              </p>
+              <button class="button button--secondary-invert">
+                <span> &nbsp; </span>
+              </button>
+              <p class="ff-label">
+                <span>&nbsp;</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -1264,13 +1290,28 @@
         </div>
 
         <div class="next-feed">
-          <div class="part">
-            <p>Previous feed at</p>
-            <p class="time">09:00</p>
+          <div class="parts">
+            <div class="part">
+              <p>Previous feed at</p>
+              <p class="time">09:00</p>
+            </div>
+            <div class="part">
+              <p>Next feed at</p>
+              <p class="time" [class.time--now]="false">12:00</p>
+            </div>
           </div>
-          <div class="part">
-            <p>Next feed at</p>
-            <p class="time" [class.time--now]="false">12:00</p>
+          <div class="feeding-times tasks">
+            <div class="task task--current-shift">
+              <p class="time" [class.time--now]="false">
+                <img src="/images/board/clean.svg" alt="Clean" />
+              </p>
+              <button class="button button--secondary-invert">
+                <span> &nbsp; </span>
+              </button>
+              <p class="ff-label">
+                <span>&nbsp;</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -1318,12 +1359,27 @@
         </div>
 
         <div class="next-feed">
-          <div class="part">
-            <p>Previous feed at</p>
-            <p class="time">12:00</p>
+          <div class="parts">
+            <div class="part">
+              <p>Previous feed at</p>
+              <p class="time">12:00</p>
+            </div>
+            <div class="part">
+              <p>No more feeds in shift</p>
+            </div>
           </div>
-          <div class="part">
-            <p>No more feeds for your shift</p>
+          <div class="feeding-times tasks">
+            <div class="task task--current-shift">
+              <p class="time" [class.time--now]="false">
+                <img src="/images/board/clean.svg" alt="Clean" />
+              </p>
+              <button class="button button--secondary-invert" [disabled]="true">
+                <span> &nbsp; </span>
+              </button>
+              <p class="ff-label">
+                <span>&nbsp;</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -1364,6 +1420,17 @@
 
         <div class="no-ff-no-summary">&nbsp;</div>
         <div class="feeding-times tasks">
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>&nbsp;</span>
+            </p>
+          </div>
           <div class="task task--current-shift">
             <p class="time" [class.time--now]="false">09:00</p>
             <button class="button button--secondary-invert">
@@ -1429,6 +1496,17 @@
         </div>
 
         <div class="feeding-times tasks">
+          <div class="task task--current-shift">
+            <p class="time" [class.time--now]="false">
+              <img src="/images/board/clean.svg" alt="Clean" />
+            </p>
+            <button class="button button--secondary-invert">
+              <span> &nbsp; </span>
+            </button>
+            <p class="ff-label">
+              <span>&nbsp;</span>
+            </p>
+          </div>
           <div class="task task--current-shift">
             <p class="time" [class.time--now]="false">09:00</p>
             <button class="button button--secondary-invert">
@@ -1803,7 +1881,7 @@ reportConcern) { @if (reportConcern.loading) {
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
     <div class="patients">
-      <span class="instruction">Please clean</span>
+      <span class="instruction">Please <u>deep</u> clean</span>
     </div>
     <div class="tasks">
       <div class="task task--current-shift task--relevant">
@@ -1864,12 +1942,24 @@ reportConcern) { @if (reportConcern.loading) {
     </div>
     }
     <div class="patients">
-      @for (patient of pen.patients; track patient) {
-      <p>{{ patient }}</p>
-      } @if (showPatientReferences) {
-      <div class="patient-references">
-        @if (pen.patientReferences) {
-        <p>{{pen.patientReferences.join(', ') }}</p>
+      <div class="primary">
+        @for (patient of pen.patients; track patient) {
+        <p>{{ patient }}</p>
+        } @if (showPatientReferences) {
+        <div class="patient-references">
+          @if (pen.patientReferences) {
+          <p>{{pen.patientReferences.join(', ') }}</p>
+          }
+        </div>
+        }
+      </div>
+      @if (pen.patientNames && pen.patientNames.length > 0) {
+      <div class="patient-names">
+        @for (name of pen.patientNames; track name) {
+        <hospital-patient-details-pokemon
+          [name]="name"
+          [size]="'s'"
+        ></hospital-patient-details-pokemon>
         }
       </div>
       }
@@ -2093,7 +2183,7 @@ reportConcern) { @if (reportConcern.loading) {
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
     <div class="patients">
-      <span class="instruction">Please clean</span>
+      <span class="instruction">Please <u>deep</u> clean</span>
     </div>
     <div class="force-feeds"></div>
     <div class="feeding-times tasks">
@@ -2157,7 +2247,28 @@ reportConcern) { @if (reportConcern.loading) {
     </div>
     @if (!expandedPens[pen.reference]) {
     <div class="feeding-times tasks">
-      @for (feeding of pen.feedings; track feeding.time) { @if
+      @if (!pen.custom) {
+      <div
+        class="task"
+        [class.task--current-shift]="!pen.clean"
+        [class.task--relevant]="true"
+      >
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="markComplete(pen, 4)"
+          class="button button--secondary-invert"
+          [disabled]="false"
+        >
+          <span>
+            @if (pen.clean) { ✔️ } @else if (tickingTask ===
+            `${pen.reference}_4`) { ... } @else { &nbsp; }
+          </span>
+        </button>
+        <p class="ff-label">&nbsp;</p>
+      </div>
+      } @for (feeding of pen.feedings; track feeding.time) { @if
       (feeding.shouldShow) {
       <div class="task task--current-shift">
         <p class="time" [class.time--now]="feeding.isNow">{{ feeding.time }}</p>
@@ -2199,21 +2310,46 @@ reportConcern) { @if (reportConcern.loading) {
     </div>
 
     <div class="next-feed">
-      @if (pen.prevFeeding) {
-      <div class="part">
-        <p>Previous feed at</p>
-        <p class="time">{{ pen.prevFeeding.time }}</p>
+      <div class="parts">
+        @if (pen.prevFeeding) {
+        <div class="part">
+          <p>Previous feed at</p>
+          <p class="time">{{ pen.prevFeeding.time }}</p>
+        </div>
+        } @if (pen.nextFeeding) {
+        <div class="part">
+          <p>Next feed at</p>
+          <p class="time" [class.time--now]="pen.nextFeeding.isNow">
+            {{ pen.nextFeeding.time }}
+          </p>
+        </div>
+        } @else {
+        <div class="part">
+          <p>No more feeds in shift</p>
+        </div>
+        }
       </div>
-      } @if (pen.nextFeeding) {
-      <div class="part">
-        <p>Next feed at</p>
-        <p class="time" [class.time--now]="pen.nextFeeding.isNow">
-          {{ pen.nextFeeding.time }}
-        </p>
-      </div>
-      } @else {
-      <div class="part">
-        <p>No more feeds for your shift</p>
+      @if (!pen.custom) {
+      <div class="feeding-times tasks">
+        <div
+          class="task"
+          [class.task--current-shift]="!pen.clean"
+          [class.task--relevant]="true"
+        >
+          <p class="time time--clean">
+            <img src="/images/board/clean.svg" alt="Clean" />
+          </p>
+          <button
+            (click)="markComplete(pen, 4)"
+            class="button button--secondary-invert"
+            [disabled]="false"
+          >
+            <span>
+              @if (pen.clean) { ✔️ } @else if (tickingTask ===
+              `${pen.reference}_4`) { ... } @else { &nbsp; }
+            </span>
+          </button>
+        </div>
       </div>
       }
     </div>
@@ -2221,8 +2357,29 @@ reportConcern) { @if (reportConcern.loading) {
     } @else {
     <div class="no-ff-no-summary">&nbsp;</div>
     <div class="feeding-times tasks">
-      @if (!expandedPens[pen.reference]) { @for (feeding of pen.feedings; track
-      feeding.time) { @if (feeding.shouldShow) {
+      @if (!pen.custom) {
+      <div
+        class="task"
+        [class.task--current-shift]="!pen.clean"
+        [class.task--relevant]="true"
+      >
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="markComplete(pen, 4)"
+          class="button button--secondary-invert"
+          [disabled]="false"
+        >
+          <span>
+            @if (pen.clean) { ✔️ } @else if (tickingTask ===
+            `${pen.reference}_4`) { ... } @else { &nbsp; }
+          </span>
+        </button>
+        <p class="ff-label">&nbsp;</p>
+      </div>
+      } @if (!expandedPens[pen.reference]) { @for (feeding of pen.feedings;
+      track feeding.time) { @if (feeding.shouldShow) {
       <div class="task task--current-shift">
         <p class="time" [class.time--now]="feeding.isNow">{{ feeding.time }}</p>
         <button

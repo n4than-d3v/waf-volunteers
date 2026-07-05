@@ -95,6 +95,9 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
             await _repository.SaveChangesAsync();
         }
 
+        var authorFirstName = _encryptionService.Decrypt(author.FirstName, author.Salt);
+        var authorLastName = _encryptionService.Decrypt(author.LastName, author.Salt);
+
         if (homeCareRequest.Responder != null && homeCareRequest.Responder.Id != author.Id)
         {
             string notificationTitle = "Home care message";
@@ -137,8 +140,8 @@ public class HomeCareMessageHandler : IRequestHandler<AddHomeCareMessage, IResul
                     var push = JsonConvert.DeserializeObject<PushSubscription>(subscription);
                     await _pushService.Send(push, new PushNotification
                     {
-                        Title = "Home care message",
-                        Body = $"You have received a new message regarding patient {homeCareRequest.Reference}",
+                        Title = $"{authorFirstName} {authorLastName} sent a message",
+                        Body = $"[{homeCareRequest.Reference}]: {homeCareMessage.Message}",
                         Url = "/vet/hospital"
                     }, account.Id);
                 }

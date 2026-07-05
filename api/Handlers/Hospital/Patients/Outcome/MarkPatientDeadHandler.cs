@@ -12,6 +12,8 @@ public class MarkPatientDead : IRequest<IResult>
     public int PatientId { get; set; }
     public int[] DispositionReasonIds { get; set; }
 
+    public DateTime? Date { get; set; }
+
     public bool PutToSleep { get; set; }
     public bool OnArrival { get; set; }
 
@@ -67,7 +69,14 @@ public class MarkPatientDeadHandler : IRequestHandler<MarkPatientDead, IResult>
         }
 
         patient.LastUpdatedStatus = DateTime.UtcNow;
-        patient.Dispositioned = DateTime.UtcNow;
+
+        if (request.Date == null)
+            patient.Dispositioned = DateTime.UtcNow;
+        else if (request.Date <= patient.Admitted)
+            patient.Dispositioned = patient.Admitted.AddMinutes(1);
+        else
+            patient.Dispositioned = request.Date;
+
         patient.Dispositioner = dispositioner;
         patient.DispositionReasons = dispositionReasons;
         patient.Status = PatientStatus.Dispositioned;

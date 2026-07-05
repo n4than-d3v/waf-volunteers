@@ -36,6 +36,7 @@ import {
   requestHomeCare,
 } from '../../actions';
 import {
+  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
@@ -44,6 +45,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
+import moment from 'moment';
 
 @Component({
   selector: 'hospital-patient-status',
@@ -75,17 +77,29 @@ export class HospitalPatientStatusComponent implements OnInit {
   PatientStatus = PatientStatus;
   getDisposition = getDisposition;
 
-  dieForm = new FormGroup({
-    dispositionReasonIds: new FormArray<
-      FormGroup<{ reason: FormControl<string | null> }>
-    >([]),
-  });
+  dieForm = new FormGroup(
+    {
+      provideDate: new FormControl<boolean>(false),
+      date: new FormControl<string | null>(null),
+      time: new FormControl<string | null>(null),
+      dispositionReasonIds: new FormArray<
+        FormGroup<{ reason: FormControl<string | null> }>
+      >([]),
+    },
+    { validators: this.dateValidator },
+  );
 
-  ptsForm = new FormGroup({
-    dispositionReasonIds: new FormArray<
-      FormGroup<{ reason: FormControl<string | null> }>
-    >([]),
-  });
+  ptsForm = new FormGroup(
+    {
+      provideDate: new FormControl<boolean>(false),
+      date: new FormControl<string | null>(null),
+      time: new FormControl<string | null>(null),
+      dispositionReasonIds: new FormArray<
+        FormGroup<{ reason: FormControl<string | null> }>
+      >([]),
+    },
+    { validators: this.dateValidator },
+  );
 
   releaseForm = new FormGroup({
     releaseTypeId: new FormControl('', [Validators.required]),
@@ -127,6 +141,18 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.store.dispatch(getHomeCarers());
     this.addDieDispositionReason();
     this.addPtsDispositionReason();
+  }
+
+  dateValidator(group: AbstractControl) {
+    const provideDate = group.get('provideDate')?.value;
+    const dateValue = group.get('date')?.value;
+    const timeValue = group.get('time')?.value;
+
+    if (provideDate && !dateValue && !timeValue) {
+      return { dateTimeRequired: true };
+    }
+
+    return null;
   }
 
   addDieDispositionReason() {
@@ -245,12 +271,19 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.attemptedSave = true;
     if (!this.dieForm.valid) return;
     this.saving = true;
+    const date = this.dieForm.value.provideDate
+      ? moment(
+          `${this.dieForm.value.date} ${this.dieForm.value.time}`,
+          'YYYY-MM-DD HH:mm',
+        )
+      : null;
     this.store.dispatch(
       markPatientDead({
         patientId: this.patient.id,
         dispositionReasonIds: this.dieForm.value.dispositionReasonIds!.map(
           (x) => Number(x.reason!),
         ),
+        date: date ? date?.toISOString() : null,
         onArrival: false,
         putToSleep: false,
       }),
@@ -262,12 +295,19 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.attemptedSave = true;
     if (!this.ptsForm.valid) return;
     this.saving = true;
+    const date = this.ptsForm.value.provideDate
+      ? moment(
+          `${this.ptsForm.value.date} ${this.ptsForm.value.time}`,
+          'YYYY-MM-DD HH:mm',
+        )
+      : null;
     this.store.dispatch(
       markPatientDead({
         patientId: this.patient.id,
         dispositionReasonIds: this.ptsForm.value.dispositionReasonIds!.map(
           (x) => Number(x.reason!),
         ),
+        date: date ? date?.toISOString() : null,
         onArrival: false,
         putToSleep: true,
       }),

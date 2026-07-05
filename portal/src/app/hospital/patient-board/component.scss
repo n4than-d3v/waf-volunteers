@@ -132,9 +132,14 @@ h2.current-time {
   .pens {
     padding-top: 0.5rem;
 
-    .pen .location {
-      background-color: var(--theme-primary);
-      color: white;
+    .pen {
+      max-width: 30rem;
+      min-width: 30rem;
+
+      .location {
+        background-color: var(--theme-primary);
+        color: white;
+      }
     }
   }
 }

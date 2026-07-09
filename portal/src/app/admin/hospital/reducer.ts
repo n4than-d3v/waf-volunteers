@@ -115,6 +115,15 @@ import {
   updateConcernReason,
   updateConcernReasonSuccess,
   updateConcernReasonError,
+  getCustomDailyTasks,
+  getCustomDailyTasksSuccess,
+  getCustomDailyTasksError,
+  createCustomDailyTask,
+  createCustomDailyTaskSuccess,
+  createCustomDailyTaskError,
+  updateCustomDailyTask,
+  updateCustomDailyTaskSuccess,
+  updateCustomDailyTaskError,
 } from './actions';
 
 export const adminHospitalManagementReducer =
@@ -274,6 +283,85 @@ export const adminHospitalManagementReducer =
       ...state,
       tags: {
         ...state.tags,
+        loading: false,
+        error: true,
+      },
+    })),
+    // CustomDailyTasks
+    on(getCustomDailyTasks, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(getCustomDailyTasksSuccess, (state, { customDailyTasks }) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        data: customDailyTasks,
+        loading: false,
+      },
+    })),
+    on(getCustomDailyTasksError, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(createCustomDailyTask, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(createCustomDailyTaskSuccess, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: false,
+        created: true,
+      },
+    })),
+    on(createCustomDailyTaskError, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(updateCustomDailyTask, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(updateCustomDailyTaskSuccess, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
+        loading: false,
+        updated: true,
+      },
+    })),
+    on(updateCustomDailyTaskError, (state) => ({
+      ...state,
+      customDailyTasks: {
+        ...state.customDailyTasks,
         loading: false,
         error: true,
       },

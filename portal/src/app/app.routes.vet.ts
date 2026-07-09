@@ -18,6 +18,7 @@ import { AdminHospitalFoodsComponent } from './admin/hospital/foods/component';
 import { AdminHospitalBoardCustomPensComponent } from './admin/hospital/board-custom-pens/component';
 import { AdminHospitalBoardMessagesComponent } from './admin/hospital/board-messages/component';
 import { AdminHospitalConcernReasonsComponent } from './admin/hospital/concern-reasons/component';
+import { AdminHospitalCustomTasksComponent } from './admin/hospital/custom-tasks/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -83,6 +84,10 @@ export const routes: Routes = [
       {
         path: 'concern-reasons',
         component: AdminHospitalConcernReasonsComponent,
+      },
+      {
+        path: 'custom-tasks',
+        component: AdminHospitalCustomTasksComponent,
       },
     ],
   },

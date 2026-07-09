@@ -993,6 +993,30 @@ public partial class Program
             .AddNote("Vet updates husbandry concern reason")
             .RequireAuthorization(vetPolicy);
 
+        apiHospitalDailyTasks
+            .MapGet(
+                "/custom-tasks",
+                (IMediator mediator) => mediator.Send(new GetCustomDailyTasks())
+            )
+            .AddNote("Vet views list of custom tasks")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalDailyTasks
+            .MapPost(
+                "/custom-task",
+                (IMediator mediator, UpsertCustomDailyTask request) => mediator.Send(request)
+            )
+            .AddNote("Vet creates a custom task")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalDailyTasks
+            .MapPut(
+                "/custom-task/{id:int}",
+                (IMediator mediator, int id, UpsertCustomDailyTask request) => mediator.Send(request.WithId(id))
+            )
+            .AddNote("Vet updates a custom task")
+            .RequireAuthorization(vetPolicy);
+
         var apiHospitalBoards = apiHospital.MapGroup("/boards");
 
         apiHospitalBoards

@@ -29,6 +29,8 @@ import {
   CreateConcernCategoryCommand,
   CreateConcernReasonCommand,
   ConcernReason,
+  CustomDailyTask,
+  CreateCustomDailyTaskCommand,
 } from './state';
 
 // Foods
@@ -76,6 +78,41 @@ export const updateTag = createAction(
 );
 export const updateTagSuccess = createAction('[HMS-A] Update tag: success');
 export const updateTagError = createAction('[HMS-A] Update tag: error');
+
+// Custom daily tasks
+
+export const getCustomDailyTasks = createAction(
+  '[HMS-A] Get custom daily tasks',
+);
+export const getCustomDailyTasksSuccess = createAction(
+  '[HMS-A] Get custom daily tasks: success',
+  props<{ customDailyTasks: CustomDailyTask[] }>(),
+);
+export const getCustomDailyTasksError = createAction(
+  '[HMS-A] Get custom daily tasks: error',
+);
+
+export const createCustomDailyTask = createAction(
+  '[HMS-A] Create custom daily task',
+  props<{ customDailyTask: CreateCustomDailyTaskCommand }>(),
+);
+export const createCustomDailyTaskSuccess = createAction(
+  '[HMS-A] Create custom daily task: success',
+);
+export const createCustomDailyTaskError = createAction(
+  '[HMS-A] Create custom daily task: error',
+);
+
+export const updateCustomDailyTask = createAction(
+  '[HMS-A] Update custom daily task',
+  props<{ customDailyTask: CustomDailyTask }>(),
+);
+export const updateCustomDailyTaskSuccess = createAction(
+  '[HMS-A] Update custom daily task: success',
+);
+export const updateCustomDailyTaskError = createAction(
+  '[HMS-A] Update custom daily task: error',
+);
 
 // Disposition reasons
 

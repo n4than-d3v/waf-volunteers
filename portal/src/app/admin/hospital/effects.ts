@@ -5,6 +5,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import {
   Area,
   ConcernCategoryReadOnly,
+  CustomDailyTask,
   DispositionReason,
   Food,
   Medication,
@@ -140,6 +141,15 @@ import {
   updateConcernReason,
   updateConcernReasonSuccess,
   updateConcernReasonError,
+  getCustomDailyTasks,
+  getCustomDailyTasksSuccess,
+  getCustomDailyTasksError,
+  createCustomDailyTask,
+  createCustomDailyTaskSuccess,
+  createCustomDailyTaskError,
+  updateCustomDailyTask,
+  updateCustomDailyTaskSuccess,
+  updateCustomDailyTaskError,
 } from './actions';
 
 @Injectable()
@@ -248,6 +258,69 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(updateTagSuccess),
       switchMap((_) => of(getTags())),
+    ),
+  );
+
+  // Custom daily tasks
+
+  getCustomDailyTasks$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getCustomDailyTasks),
+      switchMap(() =>
+        this.http
+          .get<CustomDailyTask[]>('hospital/daily-tasks/custom-tasks')
+          .pipe(
+            map((customDailyTasks) =>
+              getCustomDailyTasksSuccess({ customDailyTasks }),
+            ),
+            catchError(() => of(getCustomDailyTasksError())),
+          ),
+      ),
+    ),
+  );
+
+  createCustomDailyTask$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createCustomDailyTask),
+      switchMap((action) =>
+        this.http
+          .post('hospital/daily-tasks/custom-task', action.customDailyTask)
+          .pipe(
+            map((_) => createCustomDailyTaskSuccess()),
+            catchError(() => of(createCustomDailyTaskError())),
+          ),
+      ),
+    ),
+  );
+
+  createCustomDailyTaskSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createCustomDailyTaskSuccess),
+      switchMap((_) => of(getCustomDailyTasks())),
+    ),
+  );
+
+  updateCustomDailyTask$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateCustomDailyTask),
+      switchMap((action) =>
+        this.http
+          .put(
+            `hospital/daily-tasks/custom-task/${action.customDailyTask.id}`,
+            action.customDailyTask,
+          )
+          .pipe(
+            map((_) => updateCustomDailyTaskSuccess()),
+            catchError(() => of(updateCustomDailyTaskError())),
+          ),
+      ),
+    ),
+  );
+
+  updateCustomDailyTaskSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateCustomDailyTaskSuccess),
+      switchMap((_) => of(getCustomDailyTasks())),
     ),
   );
 

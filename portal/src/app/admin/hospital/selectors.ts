@@ -16,6 +16,11 @@ export const selectTags = createSelector(
   (state) => state.tags,
 );
 
+export const selectCustomDailyTasks = createSelector(
+  selectAdminHospitalManagementState,
+  (state) => state.customDailyTasks,
+);
+
 export const selectDispositionReasons = createSelector(
   selectAdminHospitalManagementState,
   (state) => state.dispositionReasons,

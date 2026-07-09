@@ -4,6 +4,7 @@ import { HomeCarerPermissions } from '../../shared/token.provider';
 export interface AdminHospitalManagementState {
   foods: Wrapper<Food>;
   tags: Wrapper<Tag>;
+  customDailyTasks: Wrapper<CustomDailyTask>;
   dispositionReasons: Wrapper<DispositionReason>;
   releaseTypes: Wrapper<ReleaseType>;
   transferLocations: Wrapper<TransferLocation>;
@@ -43,6 +44,15 @@ export interface CreateTagCommand {
 }
 
 export interface Tag extends CreateTagCommand {
+  id: number;
+}
+
+export interface CreateCustomDailyTaskCommand {
+  location: string;
+  message: string;
+}
+
+export interface CustomDailyTask extends CreateCustomDailyTaskCommand {
   id: number;
 }
 
@@ -402,6 +412,7 @@ export const initialAdminHospitalManagementState: AdminHospitalManagementState =
   {
     foods: createWrapper<Food>(),
     tags: createWrapper<Tag>(),
+    customDailyTasks: createWrapper<CustomDailyTask>(),
     dispositionReasons: createWrapper<DispositionReason>(),
     releaseTypes: createWrapper<ReleaseType>(),
     transferLocations: createWrapper<TransferLocation>(),

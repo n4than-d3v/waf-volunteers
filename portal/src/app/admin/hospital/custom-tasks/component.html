@@ -1,0 +1,81 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Custom tasks</h1>
+
+<p>These are custom tasks that appear in the daily tasks list.</p>
+
+@if (customTasks$ | async; as customTasks) { @if (customTasks.loading) {
+<spinner></spinner>
+} @else if (customTasks.error) {
+<div class="error">Error occurred</div>
+} @else if (customTasks.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new custom task
+</button>
+} @else if (creating) {
+<section>
+  <h2>Create new custom task</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" type="text" formControlName="location" />
+    </div>
+    <div class="field">
+      <label for="message">Message</label>
+      <input id="message" type="text" formControlName="message" />
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating) {
+<section>
+  <h2>Edit custom task</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" type="text" formControlName="location" />
+    </div>
+    <div class="field">
+      <label for="message">Message</label>
+      <input id="message" type="text" formControlName="message" />
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Location</th>
+      <th>Message</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (customTask of customTasks.data; track customTask.id) {
+    <tr>
+      <td>{{ customTask.location }}</td>
+      <td>{{ customTask.message }}</td>
+      <td>
+        <button
+          (click)="beginUpdate(customTask)"
+          class="button button--secondary"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+} }

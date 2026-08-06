@@ -1,17 +1,5 @@
-.sections {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 1rem;
-
-  &.sections--full {
-    section {
-      min-width: 100%;
-    }
-  }
-}
-
-.data-portal {
-  color: var(--theme-color-4);
-  font-weight: bold;
+#dashboard {
+  width: 100%;
+  height: 125rem;
+  z-index: 50;
 }

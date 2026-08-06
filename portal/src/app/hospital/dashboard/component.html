@@ -1,71 +1,7 @@
-@if (dashboard$ | async; as dashboard) { @if (dashboard.loading) {
-<spinner></spinner>
-} @else if (dashboard.error) {
-<div class="error">Error occurred</div>
-} @else if (dashboard.data) {
-
-<div>
-  <p>
-    Interested in the data? Take a look at our new
-    <a
-      class="data-portal"
-      target="_blank"
-      href="https://volunteers.wildlifeaid.org.uk:3000"
-    >
-      data portal</a
-    >.
-  </p>
+<div class="container">
+  <iframe
+    id="dashboard"
+    src="https://volunteers.wildlifeaid.org.uk:3000/d/adtzz8r/hospital?orgId=1&from=now%2Fy&to=now&timezone=browser&refresh=1m&kiosk"
+    frameborder="0"
+  ></iframe>
 </div>
-
-<div class="sections sections--full">
-  <section>
-    <h3>Admissions</h3>
-    <hospital-dashboard-daily-admissions
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-daily-admissions>
-  </section>
-  <section>
-    <h3>Patients in care</h3>
-    <hospital-dashboard-daily-in-care
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-daily-in-care>
-  </section>
-</div>
-
-<div class="sections">
-  <section>
-    <h3>Dispositions</h3>
-    <hospital-dashboard-admissions-by-disposition
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-admissions-by-disposition>
-  </section>
-
-  <section>
-    <h3>Admission reasons</h3>
-    <hospital-dashboard-admissions-by-reason
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-admissions-by-reason>
-  </section>
-
-  <section>
-    <h3>Rescues</h3>
-    <hospital-dashboard-admissions-by-species-rescues
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-admissions-by-species-rescues>
-  </section>
-
-  <section>
-    <h3>Species survival</h3>
-    <hospital-dashboard-admissions-by-species-survival
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-admissions-by-species-survival>
-  </section>
-
-  <section>
-    <h3>Early vs late mortality</h3>
-    <hospital-dashboard-admissions-by-species-early-late-mortality
-      [dashboard]="dashboard.data"
-    ></hospital-dashboard-admissions-by-species-early-late-mortality>
-  </section>
-</div>
-} }

@@ -29,7 +29,7 @@
 </div>
 } @else if (todayAdmissions) {
 <patient-board-today-admissions></patient-board-today-admissions>
-} @else if (tutorial){
+} @else if (tutorial) {
 <button class="button button--primary view-tutorial" (click)="tutorial = false">
   Return to boards
 </button>
@@ -1603,10 +1603,8 @@
     </div>
   </section>
 </div>
-} } } @if (board$ | async; as board) { @if (reportConcern | async; as
-reportConcern) { @if (reportConcern.loading) {
-<spinner></spinner>
-} @else if (reportConcern.error) {
+} } } @if (board$ | async; as board) { @if (reportConcern$ | async; as
+reportConcern) { @if (reportConcern.error) {
 <div class="error">Error occurred</div>
 } } @if (reportingConcern) {
 <div class="report-concern">
@@ -1675,7 +1673,34 @@ reportConcern) { @if (reportConcern.loading) {
   } }
 </div>
 }
-
+<div class="board-status">
+  <p class="last-updated">
+    Last updated at {{ board.lastUpdated | date: 'HH:mm' }}
+  </p>
+  @if (rawBoard$ | async; as rawBoard) { @if (rawBoard.loading) {
+  <p class="active-task">
+    <img src="/images/board/spinner.svg" />
+    Refreshing board...
+  </p>
+  } } @if (reportConcern$ | async; as reportConcern) { @if
+  (reportConcern.loading) {
+  <p class="active-task">
+    <img src="/images/board/spinner.svg" />
+    Reporting concern...
+  </p>
+  } } @if (setPenCleanStatus$ | async; as setPenCleanStatus) { @if
+  (setPenCleanStatus.loading) {
+  <p class="active-task">
+    <img src="/images/board/spinner.svg" />
+    Marking pen clean...
+  </p>
+  } } @if (markBoard$ | async; as markBoard) { @if (markBoard.loading) {
+  <p class="active-task">
+    <img src="/images/board/spinner.svg" />
+    Ticking pen...
+  </p>
+  } }
+</div>
 <div class="top">
   <div class="buttons">
     <button class="button button--primary" (click)="viewingBoard = null">

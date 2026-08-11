@@ -23,6 +23,7 @@ import {
 import {
   ConcernCategory,
   ListPatientBoard,
+  PatientBoard,
   PatientBoardAreaPen,
   PenCleanStatus,
   ReadOnlyWrapper,
@@ -134,9 +135,10 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   expandFeedingSummary = false;
   showPatientReferences = false;
 
-  markBoard: Observable<Task>;
-  setPenCleanStatus: Observable<Task>;
-  reportConcern: Observable<Task>;
+  markBoard$: Observable<Task>;
+  setPenCleanStatus$: Observable<Task>;
+  reportConcern$: Observable<Task>;
+  rawBoard$: Observable<ReadOnlyWrapper<PatientBoard>>;
 
   showPensWithoutFeeds$ = new BehaviorSubject(true);
   showPensNeedCleaning$ = new BehaviorSubject(true);
@@ -233,12 +235,13 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
     private store: Store,
   ) {
     this.boards$ = this.store.select(selectPatientBoards);
-    this.markBoard = this.store.select(selectMarkBoard);
-    this.setPenCleanStatus = this.store.select(selectSetPenCleanStatus);
-    this.reportConcern = this.store.select(selectReportConcern);
+    this.markBoard$ = this.store.select(selectMarkBoard);
+    this.setPenCleanStatus$ = this.store.select(selectSetPenCleanStatus);
+    this.reportConcern$ = this.store.select(selectReportConcern);
     this.concernReasons$ = this.store.select(selectConcernReasons);
+    this.rawBoard$ = this.store.select(selectPatientBoard);
     this.board$ = combineLatest([
-      this.store.select(selectPatientBoard),
+      this.rawBoard$,
       this.showPensWithoutFeeds$,
       this.showPensNeedCleaning$,
       this.showPensNeedSettingUp$,
@@ -347,14 +350,14 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
       }),
     );
     this.subscription.add(
-      this.markBoard.subscribe((task) => {
+      this.markBoard$.subscribe((task) => {
         if (task.success || task.error) {
           this.tickingTask = '';
         }
       }),
     );
     this.subscription.add(
-      this.setPenCleanStatus.subscribe((task) => {
+      this.setPenCleanStatus$.subscribe((task) => {
         if (task.success || task.error) {
           this.tickingTask = '';
         }

@@ -774,6 +774,7 @@ export interface PatientBoard {
   areas: PatientBoardArea[];
   summary: PatientBoardSummary[];
   summedUp: PatientBoardSummaryFeedingItem[] | null;
+  lastUpdated: string;
 }
 
 export interface PatientBoardSummary {

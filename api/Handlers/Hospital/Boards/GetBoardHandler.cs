@@ -122,6 +122,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             Board = board,
             Summary = GetPatientBoardSummary(patients),
             SummedUp = board.SumUp ? await GetSummedUpFoods() : null,
+            LastUpdated = DateTime.UtcNow,
             Areas = areas
         });
     }
@@ -492,6 +493,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         public List<PatientBoardArea> Areas { get; set; }
         public List<PatientBoardSummary> Summary { get; set; }
         public List<PatientBoardSummaryFeedingItem>? SummedUp { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 
     public class PatientBoardSummary

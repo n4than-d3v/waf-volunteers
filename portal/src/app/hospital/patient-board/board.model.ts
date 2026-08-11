@@ -31,6 +31,8 @@ export interface PatientBoardVm {
   isMorning: boolean;
   isAfternoon: boolean;
   isEvening: boolean;
+
+  lastUpdated: string;
 }
 
 export interface PatientBoardSummaryVm {

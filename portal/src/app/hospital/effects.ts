@@ -18,9 +18,6 @@ import {
   Medication,
   Area,
   Species,
-  ListRecheck,
-  PrescriptionInstruction,
-  PrescriptionMedication,
   DailyTasksReport,
   PatientBoard,
   ListPatientBoard,
@@ -33,9 +30,9 @@ import {
 import {
   catchError,
   delay,
+  exhaustMap,
   ignoreElements,
   map,
-  mapTo,
   mergeMap,
   of,
   switchMap,
@@ -1816,7 +1813,7 @@ export class HospitalEffects {
   viewPatientBoard$ = createEffect(() =>
     this.actions$.pipe(
       ofType(viewPatientBoard),
-      switchMap((action) =>
+      exhaustMap((action) =>
         this.http.get<PatientBoard>(`hospital/boards/${action.id}`).pipe(
           map((board) => viewPatientBoardSuccess({ board })),
           catchError(() => of(viewPatientBoardError())),

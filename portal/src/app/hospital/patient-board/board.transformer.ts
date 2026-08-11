@@ -420,5 +420,6 @@ export function transform(
     isMorning: shift === 'M',
     isAfternoon: shift === 'A',
     isEvening: shift === 'E',
+    lastUpdated: wrapper.data.lastUpdated,
   };
 }

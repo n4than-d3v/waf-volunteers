@@ -13,6 +13,43 @@ h2.current-time {
   font-size: 2rem;
 }
 
+.board-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+
+  .last-updated {
+    color: rgb(70, 70, 70);
+  }
+
+  .active-task {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.125rem 0.25rem;
+    font-size: 1rem;
+
+    img {
+      max-width: 1.125rem;
+      max-height: 1.125rem;
+
+      transform-origin: center center;
+      animation: board-status-spin 2s linear infinite;
+    }
+  }
+}
+
+@keyframes board-status-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .view-tutorial {
   padding: 0.25rem 0.5rem;
 }

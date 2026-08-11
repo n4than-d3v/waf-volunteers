@@ -1849,7 +1849,12 @@ export class HospitalEffects {
   markBoardTaskCompleteSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(markBoardTaskCompleteSuccess),
-      switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
+      switchMap((action) =>
+        this.http.get<PatientBoard>(`hospital/boards/${action.boardId}`).pipe(
+          map((board) => viewPatientBoardSuccess({ board })),
+          catchError(() => of(viewPatientBoardError())),
+        ),
+      ),
     ),
   );
 
@@ -1873,7 +1878,12 @@ export class HospitalEffects {
   setPenCleanStatusSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(setPenCleanStatusSuccess),
-      switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
+      switchMap((action) =>
+        this.http.get<PatientBoard>(`hospital/boards/${action.boardId}`).pipe(
+          map((board) => viewPatientBoardSuccess({ board })),
+          catchError(() => of(viewPatientBoardError())),
+        ),
+      ),
     ),
   );
 
@@ -1908,7 +1918,12 @@ export class HospitalEffects {
   reportConcernSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(reportConcernSuccess),
-      switchMap((action) => of(viewPatientBoard({ id: action.boardId }))),
+      switchMap((action) =>
+        this.http.get<PatientBoard>(`hospital/boards/${action.boardId}`).pipe(
+          map((board) => viewPatientBoardSuccess({ board })),
+          catchError(() => of(viewPatientBoardError())),
+        ),
+      ),
     ),
   );
 

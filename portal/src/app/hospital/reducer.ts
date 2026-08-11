@@ -1401,6 +1401,10 @@ export const hospitalReducer = createReducer<HospitalState>(
   })),
   on(markBoardTaskCompleteSuccess, (state) => ({
     ...state,
+    board: {
+      ...state.board,
+      loading: true,
+    },
     markBoard: {
       ...state.markBoard,
       loading: false,
@@ -1426,6 +1430,10 @@ export const hospitalReducer = createReducer<HospitalState>(
   })),
   on(setPenCleanStatusSuccess, (state) => ({
     ...state,
+    board: {
+      ...state.board,
+      loading: true,
+    },
     setPenCleanStatus: {
       ...state.setPenCleanStatus,
       loading: false,
@@ -1483,6 +1491,10 @@ export const hospitalReducer = createReducer<HospitalState>(
   })),
   on(reportConcernSuccess, (state) => ({
     ...state,
+    board: {
+      ...state.board,
+      loading: true,
+    },
     reportConcern: {
       ...state.reportConcern,
       loading: false,

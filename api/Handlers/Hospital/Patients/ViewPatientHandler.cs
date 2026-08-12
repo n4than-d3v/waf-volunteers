@@ -229,7 +229,8 @@ public static class ViewPatientExtensions
     {
         return x
             .Include(y => y.Feeding).ThenInclude(y => y.Food)
-            .Include(y => y.Tags);
+            .Include(y => y.Tags)
+            .Include(y => y.QuarantineReason);
     }
 
     public static IQueryable<Patient> IncludeExams(this IQueryable<Patient> x)

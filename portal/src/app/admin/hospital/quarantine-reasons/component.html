@@ -1,0 +1,95 @@
+<a class="back-link" [routerLink]="'../'">Back</a>
+
+<h1>Quarantine reasons</h1>
+
+<p>
+  Quarantine reasons are reasons why a patient has been put into quarantine.<br />
+  This is required to be provided whenever a patient is moved into
+  quarantine.<br />
+  Order relates to priority in being fed (to prevent contamination). The lower
+  the number, the sooner they are fed.
+</p>
+
+@if (quarantineReasons$ | async; as quarantineReasons) { @if
+(quarantineReasons.loading) {
+<spinner></spinner>
+} @else if (quarantineReasons.error) {
+<div class="error">Error occurred</div>
+} @else if (quarantineReasons.data) { @if (!creating && !updating) {
+<button (click)="beginCreate()" class="button button--primary">
+  Create new quarantine reason
+</button>
+<div class="filter">
+  <div class="field">
+    <label for="filter">Search</label>
+    <input id="filter" type="text" [(ngModel)]="filter" />
+  </div>
+</div>
+} @else if (creating) {
+<section>
+  <h2>Create new quarantine reason</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="order">Order</label>
+      <input id="order" type="number" formControlName="order" />
+    </div>
+    <div class="buttons">
+      <button (click)="create()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+} @else if (updating) {
+<section>
+  <h2>Edit quarantine reason</h2>
+  <form [formGroup]="form">
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" formControlName="name" />
+    </div>
+    <div class="field">
+      <label for="order">Order</label>
+      <input id="order" type="number" formControlName="order" />
+    </div>
+    <div class="buttons">
+      <button (click)="update()" class="button button--primary">Save</button>
+      <button (click)="cancel()" class="button button--secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
+}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Order</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (quarantineReason of quarantineReasons.data; track quarantineReason.id)
+    { @if (shouldShowQuarantineReason(quarantineReason)) {
+    <tr>
+      <td>{{ quarantineReason.name }}</td>
+      <td>{{ quarantineReason.order }}</td>
+      <td>
+        <button
+          (click)="beginUpdate(quarantineReason)"
+          class="button button--secondary"
+        >
+          Edit
+        </button>
+      </td>
+    </tr>
+    } }
+  </tbody>
+</table>
+} }

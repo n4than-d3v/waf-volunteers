@@ -1,6 +1,7 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Husbandry;
 using Api.Handlers.Hospital.Locations;
 using Api.Handlers.Hospital.Patients.Outcome;
 using MediatR;
@@ -13,6 +14,7 @@ public class MovePatient : IRequest<IResult>
     public int PatientId { get; set; }
     public int PenId { get; set; }
     public int? NewAreaId { get; set; }
+    public int? QuarantineReasonId { get; set; }
     public List<int> OtherPatientIds { get; set; }
 
     public MovePatient WithId(int id)
@@ -38,10 +40,18 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
         var patientIds = request.OtherPatientIds ?? new();
         patientIds.Add(request.PatientId);
 
-        var patients = await _repository.GetAll<Patient>(x => patientIds.Contains(x.Id), action: x => x.Include(y => y.Pen));
+        var patients = await _repository.GetAll<Patient>(x => patientIds.Contains(x.Id), action: x => x.Include(y => y.Pen).Include(y => y.QuarantineReason));
 
         var pen = await _repository.Get<Pen>(request.PenId, action: x => x.Include(y => y.Patients));
         if (pen == null) return Results.BadRequest();
+
+        QuarantineReason? quarantineReason = null;
+
+        if (request.QuarantineReasonId.HasValue)
+        {
+            quarantineReason = await _repository.Get<QuarantineReason>(request.QuarantineReasonId.Value);
+            if (quarantineReason == null) return Results.BadRequest();
+        }
 
         var previousPenIds = new List<int>();
 
@@ -66,9 +76,11 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
             }
 
             patient.Pen = pen;
+            patient.QuarantineReason = quarantineReason;
             patient.LastUpdatedDetails = DateTime.UtcNow;
             pen.CleanStatus = PenCleanStatus.None;
         }
+
 
         await _repository.SaveChangesAsync();
 

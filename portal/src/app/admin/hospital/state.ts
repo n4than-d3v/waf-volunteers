@@ -4,6 +4,7 @@ import { HomeCarerPermissions } from '../../shared/token.provider';
 export interface AdminHospitalManagementState {
   foods: Wrapper<Food>;
   tags: Wrapper<Tag>;
+  quarantineReasons: Wrapper<QuarantineReason>;
   customDailyTasks: Wrapper<CustomDailyTask>;
   dispositionReasons: Wrapper<DispositionReason>;
   releaseTypes: Wrapper<ReleaseType>;
@@ -44,6 +45,15 @@ export interface CreateTagCommand {
 }
 
 export interface Tag extends CreateTagCommand {
+  id: number;
+}
+
+export interface CreateQuarantineReasonCommand {
+  name: string;
+  order: number;
+}
+
+export interface QuarantineReason extends CreateQuarantineReasonCommand {
   id: number;
 }
 
@@ -153,6 +163,7 @@ export enum SpeciesType {
 export interface CreateAreaCommand {
   name: string;
   code: string;
+  isQuarantine: boolean;
 }
 
 export interface CreatePenCommand {
@@ -412,6 +423,7 @@ export const initialAdminHospitalManagementState: AdminHospitalManagementState =
   {
     foods: createWrapper<Food>(),
     tags: createWrapper<Tag>(),
+    quarantineReasons: createWrapper<QuarantineReason>(),
     customDailyTasks: createWrapper<CustomDailyTask>(),
     dispositionReasons: createWrapper<DispositionReason>(),
     releaseTypes: createWrapper<ReleaseType>(),

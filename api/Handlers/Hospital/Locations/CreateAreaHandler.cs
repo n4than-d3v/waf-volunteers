@@ -8,6 +8,7 @@ public class CreateArea : IRequest<IResult>
 {
     public string Name { get; set; }
     public string Code { get; set; }
+    public bool IsQuarantine { get; set; }
 }
 
 public class CreateAreaHandler : IRequestHandler<CreateArea, IResult>
@@ -24,11 +25,14 @@ public class CreateAreaHandler : IRequestHandler<CreateArea, IResult>
         var area = new Area
         {
             Name = request.Name,
-            Code = request.Code
+            Code = request.Code,
+            IsQuarantine = request.IsQuarantine
         };
 
         _repository.Create(area);
+
         await _repository.SaveChangesAsync();
+
         return Results.Created();
     }
 }

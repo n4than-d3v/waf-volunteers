@@ -485,17 +485,19 @@
         </label>
       </div>
       @if (examForm.controls.settingPen.value) {
-      <div class="fields fields--inline">
+
+      <div class="fields">
+        @if (areas$ | async; as areas) { @if (quarantineReasons$ | async; as
+        quarantineReasons) { @if (areas.loading || quarantineReasons.loading) {
+        <spinner />
+        } @else if (areas.error || quarantineReasons.error) {
+        <div class="error">Error occurred</div>
+        } @else if (areas.data && quarantineReasons.data) {
         <div class="field">
-          <label for="areaId">
+          <label for="area">
             Area
             <span class="required">*</span>
           </label>
-          @if (areas$ | async; as areas) { @if (areas.loading) {
-          <spinner />
-          } @else if (areas.error) {
-          <div class="error">Error occurred</div>
-          } @else if (areas.data) {
           <hospital-patient-autocomplete
             [id]="'areaId'"
             [inline]="true"
@@ -504,6 +506,19 @@
             [formGroup]="examForm"
             [items]="convertAreas(areas.data)"
           ></hospital-patient-autocomplete>
+        </div>
+        <div class="field">
+          @for (area of areas.data; track area.id) { @if (area.id.toString() ==
+          examForm.value.areaId && area.isQuarantine) {
+          <label for="quarantineReason"> Reason </label>
+          <hospital-patient-autocomplete
+            [id]="'quarantineReasonId'"
+            [inline]="true"
+            [label]="''"
+            [control]="'quarantineReasonId'"
+            [formGroup]="examForm"
+            [items]="convertQuarantineReasons(quarantineReasons.data)"
+          ></hospital-patient-autocomplete>
           } }
         </div>
         <div class="field">
@@ -511,11 +526,6 @@
             Pen
             <span class="required">*</span>
           </label>
-          @if (areas$ | async; as areas) { @if (areas.loading) {
-          <spinner />
-          } @else if (areas.error) {
-          <div class="error">Error occurred</div>
-          } @else if (areas.data) {
           <hospital-patient-autocomplete
             [id]="'penId'"
             [inline]="true"
@@ -524,9 +534,10 @@
             [formGroup]="examForm"
             [items]="convertPens(areas.data)"
           ></hospital-patient-autocomplete>
-          } }
         </div>
+        } } }
       </div>
+
       } } @else if (examForm.controls.outcome.value === 'diedOnTable' ||
       examForm.controls.outcome.value === 'deadOnArrival' ||
       examForm.controls.outcome.value === 'pts') {

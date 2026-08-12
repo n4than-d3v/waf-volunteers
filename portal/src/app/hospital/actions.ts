@@ -30,6 +30,7 @@ import {
   EmbeddedContent,
   ConcernCategory,
   PenCleanStatus,
+  QuarantineReason,
 } from './state';
 
 export const setTab = createAction('[HMS-V] Switch tab', props<{ tab: Tab }>());
@@ -231,6 +232,19 @@ export const getAreasSuccess = createAction(
 );
 export const getAreasError = createAction('[HMS-V] Get areas: error');
 
+// Quarantine reasons
+
+export const getQuarantineReasons = createAction(
+  '[HMS-V] Get quarantine reasons',
+);
+export const getQuarantineReasonsSuccess = createAction(
+  '[HMS-V] Get quarantine reasons: success',
+  props<{ quarantineReasons: QuarantineReason[] }>(),
+);
+export const getQuarantineReasonsError = createAction(
+  '[HMS-V] Get quarantine reasons: error',
+);
+
 // Species
 
 export const getSpecies = createAction('[HMS-V] Get species');
@@ -249,6 +263,7 @@ export const performExam = createAction(
     outcome: Outcome;
     dispositionReasonIds?: number[];
     penId?: number;
+    quarantineReasonId?: number;
     feeding:
       | {
           time: string;
@@ -356,6 +371,7 @@ export const movePatient = createAction(
     penId: number;
     newAreaId: number | null;
     otherPatientIds: number[];
+    quarantineReasonId: number | null;
   }>(),
 );
 export const movePatientSuccess = createAction(

@@ -7,6 +7,7 @@ public class Area : Entity
     public string Name { get; set; }
     public string Code { get; set; }
     public bool Deleted { get; set; }
+    public bool IsQuarantine { get; set; }
 
     public List<Pen> Pens { get; set; }
 

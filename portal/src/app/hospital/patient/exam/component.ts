@@ -19,6 +19,7 @@ import {
   MucousMembraneTexture,
   Outcome,
   PenCleanStatus,
+  QuarantineReason,
   ReadOnlyWrapper,
   Species,
   Task,
@@ -35,6 +36,7 @@ import {
   selectMucousMembraneColours,
   selectMucousMembraneTextures,
   selectPerformExam,
+  selectQuarantineReasons,
   selectSetDisposition,
   selectSpecies,
 } from '../../../hospital/selectors';
@@ -48,6 +50,7 @@ import {
   getFoods,
   getMucousMembraneColours,
   getMucousMembraneTextures,
+  getQuarantineReasons,
   getSpecies,
   performExam,
 } from '../../actions';
@@ -97,6 +100,7 @@ export class HospitalPatientExamComponent implements OnInit {
   administrationMethods$: Observable<ReadOnlyWrapper<AdministrationMethod[]>>;
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
   foods$: Observable<ReadOnlyWrapper<Food[]>>;
+  quarantineReasons$: Observable<ReadOnlyWrapper<QuarantineReason[]>>;
 
   performExamTask$: Observable<Task>;
   setDispositionTask$: Observable<Task>;
@@ -140,6 +144,7 @@ export class HospitalPatientExamComponent implements OnInit {
     settingPen: new FormControl(true),
     areaId: new FormControl(''),
     penId: new FormControl(''),
+    quarantineReasonId: new FormControl(''),
     settingFF: new FormControl(false),
     feeding: new FormArray<
       FormGroup<{
@@ -173,6 +178,7 @@ export class HospitalPatientExamComponent implements OnInit {
     );
     this.areas$ = this.store.select(selectAreas);
     this.foods$ = this.store.select(selectFoods);
+    this.quarantineReasons$ = this.store.select(selectQuarantineReasons);
     this.performExamTask$ = this.store.select(selectPerformExam);
     this.setDispositionTask$ = this.store.select(selectSetDisposition);
   }
@@ -190,6 +196,21 @@ export class HospitalPatientExamComponent implements OnInit {
           ? `🟩 [${area.code}] ${area.name} (empty pens)`
           : `🟨 [${area.code}] ${area.name} (all pens in use)`,
       }));
+  }
+
+  convertQuarantineReasons(quarantineReasons: QuarantineReason[]) {
+    return quarantineReasons.map((quarantineReason) => ({
+      id: quarantineReason.id,
+      display: `${quarantineReason.name} (${this.convertOrder(quarantineReason.order)})`,
+    }));
+  }
+
+  private convertOrder(value: number): string {
+    const str = value.toString();
+    if (str.endsWith('1')) return str + 'st';
+    if (str.endsWith('2')) return str + 'nd';
+    if (str.endsWith('3')) return str + 'rd';
+    return str + 'th';
   }
 
   convertPens(areas: Area[]) {
@@ -464,6 +485,9 @@ export class HospitalPatientExamComponent implements OnInit {
         penId: this.examForm.controls.penId.value
           ? Number(this.examForm.controls.penId.value)
           : undefined,
+        quarantineReasonId: this.examForm.controls.quarantineReasonId.value
+          ? Number(this.examForm.controls.quarantineReasonId.value)
+          : undefined,
         feeding: this.examForm.controls.settingFF.value
           ? this.examForm.controls.feeding.controls.map((group) => ({
               time: convertTime(group.value.time!),
@@ -494,6 +518,7 @@ export class HospitalPatientExamComponent implements OnInit {
     this.store.dispatch(getAdministrationMethods());
     this.store.dispatch(getAreas());
     this.store.dispatch(getFoods());
+    this.store.dispatch(getQuarantineReasons());
     this.prepareEdit();
     this.addDispositionReason();
     this.addFeedingGuidance();

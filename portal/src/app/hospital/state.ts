@@ -47,6 +47,7 @@ export interface HospitalState {
   tags: ReadOnlyWrapper<Tag[]>;
   areas: ReadOnlyWrapper<Area[]>;
   species: ReadOnlyWrapper<Species[]>;
+  quarantineReasons: ReadOnlyWrapper<QuarantineReason[]>;
 
   // Disposition
   releaseTypes: ReadOnlyWrapper<ReleaseType[]>;
@@ -345,6 +346,13 @@ export interface Patient extends ListPatient {
   othersInPen: OtherPatient[];
   plannedReleaseNotes: string | null;
   plannedReleaseLastUpdated: string | null;
+  quarantineReason: QuarantineReason | null;
+}
+
+export interface QuarantineReason {
+  id: number;
+  name: string;
+  order: number;
 }
 
 export interface OtherPatient {
@@ -716,6 +724,7 @@ export interface Area {
   name: string;
   code: string;
   deleted: boolean;
+  isQuarantine: boolean;
   pens: Pen[];
 
   // Only available on getAreas()
@@ -937,6 +946,7 @@ export const initialHospitalState: HospitalState = {
   administrationMethods: createReadOnlyWrapper<AdministrationMethod[]>(),
   medications: createReadOnlyWrapper<Medication[]>(),
   areas: createReadOnlyWrapper<Area[]>(),
+  quarantineReasons: createReadOnlyWrapper<QuarantineReason[]>(),
   species: createReadOnlyWrapper<Species[]>(),
   performExam: createTask(),
   setDisposition: createTask(),

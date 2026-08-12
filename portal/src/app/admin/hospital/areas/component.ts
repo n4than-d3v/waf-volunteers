@@ -47,6 +47,7 @@ export class AdminHospitalAreasComponent implements OnInit {
   areaForm = new FormGroup({
     code: new FormControl(''),
     name: new FormControl(''),
+    isQuarantine: new FormControl(false),
   });
 
   penForm = new FormGroup({
@@ -104,6 +105,7 @@ export class AdminHospitalAreasComponent implements OnInit {
         area: {
           code: this.areaForm.controls.code.value || '',
           name: this.areaForm.controls.name.value || '',
+          isQuarantine: this.areaForm.controls.isQuarantine.value || false,
         },
       }),
     );

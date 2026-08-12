@@ -1,3 +1,9 @@
+@if (patient.quarantineReason) {
+<div class="quarantined">
+  ☢️ This patient is currently quarantined for
+  <strong>{{ patient.quarantineReason.name }}</strong>
+</div>
+}
 <div class="row">
   <table>
     <tbody>
@@ -50,16 +56,17 @@
 </table>
 } @if (moving) {
 <form [formGroup]="moveForm">
+  @if (areas$ | async; as areas) { @if (quarantineReasons$ | async; as
+  quarantineReasons) { @if (areas.loading || quarantineReasons.loading) {
+  <spinner />
+  } @else if (areas.error || quarantineReasons.error) {
+  <div class="error">Error occurred</div>
+  } @else if (areas.data && quarantineReasons.data) {
   <div class="field">
     <label for="area">
       Area
       <span class="required">*</span>
     </label>
-    @if (areas$ | async; as areas) { @if (areas.loading) {
-    <spinner />
-    } @else if (areas.error) {
-    <div class="error">Error occurred</div>
-    } @else if (areas.data) {
     <hospital-patient-autocomplete
       [id]="'areaId'"
       [inline]="true"
@@ -68,8 +75,22 @@
       [formGroup]="moveForm"
       [items]="convertAreas(areas.data)"
     ></hospital-patient-autocomplete>
+  </div>
+  <div class="field">
+    @for (area of areas.data; track area.id) { @if (area.id.toString() ==
+    moveForm.value.areaId && area.isQuarantine) {
+    <label for="quarantineReason"> Reason </label>
+    <hospital-patient-autocomplete
+      [id]="'quarantineReasonId'"
+      [inline]="true"
+      [label]="''"
+      [control]="'quarantineReasonId'"
+      [formGroup]="moveForm"
+      [items]="convertQuarantineReasons(quarantineReasons.data)"
+    ></hospital-patient-autocomplete>
     } }
   </div>
+  } } }
   <div class="field">
     <label for="pen">
       Pen

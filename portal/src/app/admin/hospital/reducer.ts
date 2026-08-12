@@ -124,6 +124,15 @@ import {
   updateCustomDailyTask,
   updateCustomDailyTaskSuccess,
   updateCustomDailyTaskError,
+  getQuarantineReasons,
+  getQuarantineReasonsSuccess,
+  getQuarantineReasonsError,
+  createQuarantineReason,
+  createQuarantineReasonSuccess,
+  createQuarantineReasonError,
+  updateQuarantineReason,
+  updateQuarantineReasonSuccess,
+  updateQuarantineReasonError,
 } from './actions';
 
 export const adminHospitalManagementReducer =
@@ -283,6 +292,85 @@ export const adminHospitalManagementReducer =
       ...state,
       tags: {
         ...state.tags,
+        loading: false,
+        error: true,
+      },
+    })),
+    // Quarantine reasons
+    on(getQuarantineReasons, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(getQuarantineReasonsSuccess, (state, { quarantineReasons }) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        data: quarantineReasons,
+        loading: false,
+      },
+    })),
+    on(getQuarantineReasonsError, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(createQuarantineReason, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(createQuarantineReasonSuccess, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: false,
+        created: true,
+      },
+    })),
+    on(createQuarantineReasonError, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: false,
+        error: true,
+      },
+    })),
+    on(updateQuarantineReason, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: true,
+        error: false,
+        created: false,
+        updated: false,
+      },
+    })),
+    on(updateQuarantineReasonSuccess, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
+        loading: false,
+        updated: true,
+      },
+    })),
+    on(updateQuarantineReasonError, (state) => ({
+      ...state,
+      quarantineReasons: {
+        ...state.quarantineReasons,
         loading: false,
         error: true,
       },

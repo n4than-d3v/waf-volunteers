@@ -19,6 +19,7 @@ import { AdminHospitalBoardCustomPensComponent } from './admin/hospital/board-cu
 import { AdminHospitalBoardMessagesComponent } from './admin/hospital/board-messages/component';
 import { AdminHospitalConcernReasonsComponent } from './admin/hospital/concern-reasons/component';
 import { AdminHospitalCustomTasksComponent } from './admin/hospital/custom-tasks/component';
+import { AdminHospitalQuarantineReasonsComponent } from './admin/hospital/quarantine-reasons/component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
@@ -40,6 +41,10 @@ export const routes: Routes = [
       {
         path: 'tags',
         component: AdminHospitalTagsComponent,
+      },
+      {
+        path: 'quarantine-reasons',
+        component: AdminHospitalQuarantineReasonsComponent,
       },
       {
         path: 'disposition-reasons',

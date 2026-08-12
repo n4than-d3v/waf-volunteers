@@ -104,6 +104,11 @@ export const selectAreas = createSelector(
   (state) => state.areas,
 );
 
+export const selectQuarantineReasons = createSelector(
+  selectHospitalState,
+  (state) => state.quarantineReasons,
+);
+
 export const selectSpecies = createSelector(
   selectHospitalState,
   (state) => state.species,

@@ -39,6 +39,10 @@
       <label for="name">Name</label>
       <input id="name" type="text" formControlName="name" />
     </div>
+    <div class="field">
+      <label for="isQuarantine">Quarantined area</label>
+      <input id="isQuarantine" type="checkbox" formControlName="isQuarantine" />
+    </div>
     <div class="buttons">
       <button (click)="createArea()" class="button button--primary">
         Save

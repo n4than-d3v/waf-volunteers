@@ -815,6 +815,11 @@ public partial class Program
             .RequireAuthorization(signedInPolicy);
 
         apiHospitalHusbandry
+            .MapGet("/quarantine-reasons", (IMediator mediator) => mediator.Send(new GetQuarantineReasons()))
+            .AddNote("View quarantine reasons")
+            .RequireAuthorization(signedInPolicy);
+
+        apiHospitalHusbandry
             .MapPut("/food", (IMediator mediator, UpsertFood request) => mediator.Send(request))
             .AddNote("Update or create food")
             .RequireAuthorization(vetPolicy);
@@ -822,6 +827,11 @@ public partial class Program
         apiHospitalHusbandry
             .MapPut("/tag", (IMediator mediator, UpsertTag request) => mediator.Send(request))
             .AddNote("Update or create tag")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalHusbandry
+            .MapPut("/quarantine-reason", (IMediator mediator, UpsertQuarantineReason request) => mediator.Send(request))
+            .AddNote("Update or create quarantine reason")
             .RequireAuthorization(vetPolicy);
 
         var apiHospitalLocations = apiHospital.MapGroup("/locations");

@@ -388,11 +388,17 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     .Select(m => m.AdministrationLocation)
                     .DefaultIfEmpty(AdministrationLocation.Blank)
                     .Max();
+                var quarantineReason = penPatients
+                    .Where(p => p.QuarantineReason != null)
+                    .Select(p => p.QuarantineReason)
+                    .OrderBy(p => p.Order)
+                    .FirstOrDefault();
                 var medsInChickAm = administrationLocation.HasFlag(AdministrationLocation.InChickAM);
                 var medsInChickPm = administrationLocation.HasFlag(AdministrationLocation.InChickPM);
                 if (medsInChickAm && medsInChickPm) tags.Add("Meds in chick AM + PM");
                 else if (medsInChickAm) tags.Add("Meds in chick AM");
                 else if (medsInChickPm) tags.Add("Meds in chick PM");
+                if (quarantineReason != null) tags.Add($"{quarantineReason.Name} ({ConvertOrder(quarantineReason.Order)})");
                 return new PatientBoardAreaPen
                 {
                     Id = g.Key.PenId.Value,
@@ -416,6 +422,15 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             })
             .OrderBy(x => x.Reference)
             .ToList();
+    }
+
+    private static string ConvertOrder(int order)
+    {
+        string str = order.ToString();
+        if (str.EndsWith('1')) return str + "st";
+        if (str.EndsWith('2')) return str + "nd";
+        if (str.EndsWith('3')) return str + "rd";
+        return str + "th";
     }
 
     private static List<PatientBoardAreaPenFeedingSummary> GetPatientBoardAreaPenFeedingSummaries(int penId, IReadOnlyList<Patient> patients)

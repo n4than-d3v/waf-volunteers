@@ -5,6 +5,7 @@ import {
   Patient,
   PatientStatus,
   PenCleanStatus,
+  QuarantineReason,
   ReadOnlyWrapper,
   Task,
 } from '../../state';
@@ -18,8 +19,17 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectAreas, selectMovePatient } from '../../selectors';
-import { getAreas, movePatient, setTab } from '../../actions';
+import {
+  selectAreas,
+  selectMovePatient,
+  selectQuarantineReasons,
+} from '../../selectors';
+import {
+  getAreas,
+  getQuarantineReasons,
+  movePatient,
+  setTab,
+} from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { HospitalPatientAutocompleteComponent } from '../autocomplete/component';
 
@@ -43,6 +53,7 @@ export class HospitalPatientLocationComponent implements OnInit {
   @Input({ required: true }) canEditAfterDisposition!: boolean;
 
   areas$: Observable<ReadOnlyWrapper<Area[]>>;
+  quarantineReasons$: Observable<ReadOnlyWrapper<QuarantineReason[]>>;
 
   task$: Observable<Task>;
 
@@ -56,6 +67,7 @@ export class HospitalPatientLocationComponent implements OnInit {
       nonNullable: true,
     }),
     newAreaId: new FormControl(''),
+    quarantineReasonId: new FormControl(''),
   });
 
   moving = false;
@@ -64,11 +76,13 @@ export class HospitalPatientLocationComponent implements OnInit {
 
   constructor(private store: Store) {
     this.areas$ = this.store.select(selectAreas);
+    this.quarantineReasons$ = this.store.select(selectQuarantineReasons);
     this.task$ = this.store.select(selectMovePatient);
   }
 
   ngOnInit() {
     this.store.dispatch(getAreas());
+    this.store.dispatch(getQuarantineReasons());
   }
 
   toggleOtherPatient(patientId: number, checked: boolean) {
@@ -123,6 +137,21 @@ export class HospitalPatientLocationComponent implements OnInit {
       }));
   }
 
+  convertQuarantineReasons(quarantineReasons: QuarantineReason[]) {
+    return quarantineReasons.map((quarantineReason) => ({
+      id: quarantineReason.id,
+      display: `${quarantineReason.name} (${this.convertOrder(quarantineReason.order)})`,
+    }));
+  }
+
+  private convertOrder(value: number): string {
+    const str = value.toString();
+    if (str.endsWith('1')) return str + 'st';
+    if (str.endsWith('2')) return str + 'nd';
+    if (str.endsWith('3')) return str + 'rd';
+    return str + 'th';
+  }
+
   convertPens(areas: Area[]) {
     const area = areas
       .filter((x) => !x.deleted)
@@ -170,6 +199,9 @@ export class HospitalPatientLocationComponent implements OnInit {
           ? Number(this.moveForm.value.newAreaId)
           : null,
         otherPatientIds: this.moveForm.controls.otherPatientIds.value,
+        quarantineReasonId: this.moveForm.value.quarantineReasonId
+          ? Number(this.moveForm.value.quarantineReasonId)
+          : null,
       }),
     );
     this.reset();

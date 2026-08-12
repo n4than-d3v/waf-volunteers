@@ -88,6 +88,7 @@ public class Patient : Entity
             : null;
     public List<PatientFaecalTest> FaecalTests { get; set; }
     public List<PatientBloodTest> BloodTests { get; set; }
+    public QuarantineReason? QuarantineReason { get; set; }
 
     #endregion
 

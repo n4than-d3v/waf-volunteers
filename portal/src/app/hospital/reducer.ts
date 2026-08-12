@@ -198,6 +198,9 @@ import {
   viewTodayAdmissions,
   viewTodayAdmissionsSuccess,
   viewTodayAdmissionsError,
+  getQuarantineReasons,
+  getQuarantineReasonsSuccess,
+  getQuarantineReasonsError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -699,6 +702,33 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     areas: {
       ...state.areas,
+      loading: false,
+      error: true,
+    },
+  })),
+  // Quarantine reasons
+  on(getQuarantineReasons, (state) => ({
+    ...state,
+    quarantineReasons: {
+      ...state.quarantineReasons,
+      loading: true,
+      error: false,
+      created: false,
+      updated: false,
+    },
+  })),
+  on(getQuarantineReasonsSuccess, (state, { quarantineReasons }) => ({
+    ...state,
+    quarantineReasons: {
+      ...state.quarantineReasons,
+      data: quarantineReasons,
+      loading: false,
+    },
+  })),
+  on(getQuarantineReasonsError, (state) => ({
+    ...state,
+    quarantineReasons: {
+      ...state.quarantineReasons,
       loading: false,
       error: true,
     },

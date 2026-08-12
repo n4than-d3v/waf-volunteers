@@ -26,6 +26,7 @@ import {
   HomeCarer,
   supportedEmbeddedContentTypes,
   ConcernCategory,
+  QuarantineReason,
 } from './state';
 import {
   catchError,
@@ -241,6 +242,9 @@ import {
   viewTodayAdmissions,
   viewTodayAdmissionsSuccess,
   viewTodayAdmissionsError,
+  getQuarantineReasons,
+  getQuarantineReasonsSuccess,
+  getQuarantineReasonsError,
 } from './actions';
 
 @Injectable()
@@ -542,6 +546,7 @@ export class HospitalEffects {
       ),
     ),
   );
+
   // Areas
 
   getAreas$ = createEffect(() =>
@@ -552,6 +557,24 @@ export class HospitalEffects {
           map((areas) => getAreasSuccess({ areas })),
           catchError(() => of(getAreasError())),
         ),
+      ),
+    ),
+  );
+
+  // Quarantine reasons
+
+  getQuarantineReasons$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getQuarantineReasons),
+      switchMap(() =>
+        this.http
+          .get<QuarantineReason[]>('hospital/husbandry/quarantine-reasons')
+          .pipe(
+            map((quarantineReasons) =>
+              getQuarantineReasonsSuccess({ quarantineReasons }),
+            ),
+            catchError(() => of(getQuarantineReasonsError())),
+          ),
       ),
     ),
   );
@@ -617,6 +640,7 @@ export class HospitalEffects {
                       penId: action.penId!,
                       newAreaId: null,
                       otherPatientIds: [],
+                      quarantineReasonId: action.quarantineReasonId || null,
                     }),
                   );
                 }

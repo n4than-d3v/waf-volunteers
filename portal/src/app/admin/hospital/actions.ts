@@ -31,6 +31,8 @@ import {
   ConcernReason,
   CustomDailyTask,
   CreateCustomDailyTaskCommand,
+  QuarantineReason,
+  CreateQuarantineReasonCommand,
 } from './state';
 
 // Foods
@@ -78,6 +80,41 @@ export const updateTag = createAction(
 );
 export const updateTagSuccess = createAction('[HMS-A] Update tag: success');
 export const updateTagError = createAction('[HMS-A] Update tag: error');
+
+// Quarantine reasons
+
+export const getQuarantineReasons = createAction(
+  '[HMS-A] Get quarantine reasons',
+);
+export const getQuarantineReasonsSuccess = createAction(
+  '[HMS-A] Get quarantine reasons: success',
+  props<{ quarantineReasons: QuarantineReason[] }>(),
+);
+export const getQuarantineReasonsError = createAction(
+  '[HMS-A] Get quarantine reasons: error',
+);
+
+export const createQuarantineReason = createAction(
+  '[HMS-A] Create quarantine reason',
+  props<{ quarantineReason: CreateQuarantineReasonCommand }>(),
+);
+export const createQuarantineReasonSuccess = createAction(
+  '[HMS-A] Create quarantine reason: success',
+);
+export const createQuarantineReasonError = createAction(
+  '[HMS-A] Create quarantine reason: error',
+);
+
+export const updateQuarantineReason = createAction(
+  '[HMS-A] Update quarantine reason',
+  props<{ quarantineReason: QuarantineReason }>(),
+);
+export const updateQuarantineReasonSuccess = createAction(
+  '[HMS-A] Update quarantine reason: success',
+);
+export const updateQuarantineReasonError = createAction(
+  '[HMS-A] Update quarantine reason: error',
+);
 
 // Custom daily tasks
 

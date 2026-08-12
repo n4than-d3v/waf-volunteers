@@ -12,6 +12,7 @@ import {
   PatientBoard,
   PatientBoardCustomPen,
   PatientBoardMessage,
+  QuarantineReason,
   ReleaseType,
   Species,
   Tag,
@@ -153,6 +154,15 @@ import {
   expireBoardMessage,
   expireBoardMessageSuccess,
   expireBoardMessageError,
+  getQuarantineReasons,
+  getQuarantineReasonsSuccess,
+  getQuarantineReasonsError,
+  createQuarantineReason,
+  createQuarantineReasonSuccess,
+  createQuarantineReasonError,
+  updateQuarantineReason,
+  updateQuarantineReasonSuccess,
+  updateQuarantineReasonError,
 } from './actions';
 
 @Injectable()
@@ -261,6 +271,66 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(updateTagSuccess),
       switchMap((_) => of(getTags())),
+    ),
+  );
+
+  // Quarantine reasons
+
+  getQuarantineReasons$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getQuarantineReasons),
+      switchMap(() =>
+        this.http
+          .get<QuarantineReason[]>('hospital/husbandry/quarantine-reasons')
+          .pipe(
+            map((quarantineReasons) =>
+              getQuarantineReasonsSuccess({ quarantineReasons }),
+            ),
+            catchError(() => of(getQuarantineReasonsError())),
+          ),
+      ),
+    ),
+  );
+
+  createQuarantineReason$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createQuarantineReason),
+      switchMap((action) =>
+        this.http
+          .put('hospital/husbandry/quarantine-reason', action.quarantineReason)
+          .pipe(
+            map((_) => createQuarantineReasonSuccess()),
+            catchError(() => of(createQuarantineReasonError())),
+          ),
+      ),
+    ),
+  );
+
+  createQuarantineReasonSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createQuarantineReasonSuccess),
+      switchMap((_) => of(getQuarantineReasons())),
+    ),
+  );
+
+  updateQuarantineReason$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateQuarantineReason),
+      switchMap((action) =>
+        this.http
+          .put('hospital/husbandry/quarantine-reason', action.quarantineReason)
+          .pipe(
+            map((_) => updateQuarantineReasonSuccess()),
+            catchError(() => of(updateQuarantineReasonError())),
+          ),
+      ),
+    ),
+  );
+
+  updateQuarantineReasonSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateQuarantineReasonSuccess),
+      switchMap((_) => of(getQuarantineReasons())),
     ),
   );
 

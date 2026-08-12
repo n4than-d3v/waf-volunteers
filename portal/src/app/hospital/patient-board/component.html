@@ -1980,7 +1980,7 @@ reportConcern) { @if (reportConcern.error) {
     <div class="patients">
       <span class="instruction instruction--green">Ready to use</span>
     </div>
-    } @if (pen.cleanStatus === PenCleanStatus.Custom) {
+    } @else if (pen.cleanStatus === PenCleanStatus.Custom) {
     <div class="patients">
       <span class="instruction">{{ pen.customBoardMessage || '(Ask)' }}</span>
     </div>
@@ -2285,6 +2285,24 @@ reportConcern) { @if (reportConcern.error) {
     } @else if (pen.cleanStatus === PenCleanStatus.ReadyToUse) {
     <div class="patients">
       <span class="instruction instruction--green">Ready to use</span>
+    </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.Custom) {
+    <div class="patients">
+      <span class="instruction">{{ pen.customBoardMessage || '(Ask)' }}</span>
+    </div>
+    <div class="force-feeds"></div>
+    <div class="feeding-times tasks">
+      <div class="task task--current-shift task--relevant">
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+      </div>
     </div>
     }
     <div class="feeding-times"></div>

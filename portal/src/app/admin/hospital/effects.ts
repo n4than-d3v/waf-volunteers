@@ -150,6 +150,9 @@ import {
   updateCustomDailyTask,
   updateCustomDailyTaskSuccess,
   updateCustomDailyTaskError,
+  expireBoardMessage,
+  expireBoardMessageSuccess,
+  expireBoardMessageError,
 } from './actions';
 
 @Injectable()
@@ -973,6 +976,18 @@ export class AdminHospitalManagementEffects {
             switchMap((_) => of(addBoardMessageSuccess(), getBoardMessages())),
             catchError(() => of(addBoardMessageError())),
           ),
+      ),
+    ),
+  );
+
+  expireBoardMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(expireBoardMessage),
+      switchMap((action) =>
+        this.http.delete(`hospital/boards/message/${action.id}`, {}).pipe(
+          switchMap((_) => of(expireBoardMessageSuccess(), getBoardMessages())),
+          catchError(() => of(expireBoardMessageError())),
+        ),
       ),
     ),
   );

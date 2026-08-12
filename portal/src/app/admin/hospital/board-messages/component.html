@@ -72,7 +72,7 @@
       <th>Message</th>
       <th>Start</th>
       <th>End</th>
-      <th>Active</th>
+      <th colspan="2">Active</th>
     </tr>
   </thead>
   <tbody>
@@ -84,8 +84,13 @@
       <td>{{ message.end | date:'d MMM yyyy HH:mm' }}</td>
       @if (message.isActive) {
       <td><strong>Yes</strong></td>
+      <td>
+        <button (click)="expire(message.id)" class="button button--warning">
+          End now
+        </button>
+      </td>
       } @else {
-      <td>No</td>
+      <td colspan="2">No</td>
       }
     </tr>
     }

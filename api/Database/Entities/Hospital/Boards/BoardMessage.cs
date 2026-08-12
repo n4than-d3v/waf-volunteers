@@ -6,7 +6,7 @@ namespace Api.Database.Entities.Hospital.Boards;
 public class BoardMessage : Entity
 {
     [JsonIgnore]
-    public Board Board { get; set; }
+    public Board? Board { get; set; }
 
     public string Message { get; set; }
     public DateTime Start { get; set; }
@@ -15,9 +15,9 @@ public class BoardMessage : Entity
     public bool Emergency { get; set; }
 
     [NotMapped]
-    public int ExposeBoardId => Board.Id;
+    public int ExposeBoardId => Board?.Id ?? 0;
     [NotMapped]
-    public string ExposeBoardName => Board.Name;
+    public string ExposeBoardName => Board?.Name ?? "[All boards]";
     [NotMapped]
     public bool IsActive => Start <= DateTime.UtcNow && DateTime.UtcNow <= End;
 }

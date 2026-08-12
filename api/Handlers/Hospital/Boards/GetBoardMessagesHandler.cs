@@ -23,6 +23,6 @@ public class GetBoardMessagesHandler : IRequestHandler<GetBoardMessages, IResult
         var messages = await _repository.GetAll<BoardMessage>(x => true, tracking: false,
             action: x => x.Include(y => y.Board));
 
-        return Results.Ok(messages.OrderByDescending(x => x.End).ThenByDescending(x => x.Start).ThenBy(x => x.Board.Name));
+        return Results.Ok(messages.OrderByDescending(x => x.End).ThenByDescending(x => x.Start).ThenBy(x => x.ExposeBoardName));
     }
 }

@@ -30,31 +30,24 @@ public class AddBoardMessageHandler : IRequestHandler<AddBoardMessage, IResult>
 
     public async Task<IResult> Handle(AddBoardMessage request, CancellationToken cancellationToken)
     {
-        IReadOnlyList<Board> boards;
+        BoardMessage message = new()
+        {
+            Board = null,
+            Message = request.Message,
+            Start = request.Start,
+            End = request.End,
+            Emergency = request.Emergency
+        };
+
         if (request.BoardId.HasValue)
         {
             var board = await _repository.Get<Board>(request.BoardId.Value);
             if (board == null) return Results.BadRequest();
-            boards = [board];
-        }
-        else
-        {
-            boards = await _repository.GetAll<Board>(x => true);
+
+            message.Board = board;
         }
 
-        foreach (var board in boards)
-        {
-            var message = new BoardMessage
-            {
-                Board = board,
-                Message = request.Message,
-                Start = request.Start,
-                End = request.End,
-                Emergency = request.Emergency
-            };
-
-            _repository.Create(message);
-        }
+        _repository.Create(message);
 
         await _repository.SaveChangesAsync();
 

@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { addBoardMessage, getBoardMessages, getBoards } from '../actions';
+import {
+  addBoardMessage,
+  expireBoardMessage,
+  getBoardMessages,
+  getBoards,
+} from '../actions';
 import { Observable } from 'rxjs';
 import { PatientBoard, PatientBoardMessage, Wrapper } from '../state';
 import { selectBoardMessages, selectBoards } from '../selectors';
@@ -84,6 +89,15 @@ export class AdminHospitalBoardMessagesComponent implements OnInit {
     this.message = '';
     this.emergency = false;
     this.resetDateRange();
+  }
+
+  expire(id: number) {
+    this.store.dispatch(
+      expireBoardMessage({
+        id,
+      }),
+    );
+    this.cancel();
   }
 
   ngOnInit() {

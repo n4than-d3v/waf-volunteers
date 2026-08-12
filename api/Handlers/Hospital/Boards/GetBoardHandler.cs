@@ -79,7 +79,6 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
         InMemoryBoardTasks.ClearIfNextDay();
 
         var board = await _repository.Get<Board>(request.Id, tracking: false, x => x
-            .Include(y => y.Messages)
             .Include(y => y.Areas)
                 .ThenInclude(y => y.Area)
                     .ThenInclude(y => y.Pens));
@@ -104,7 +103,13 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
 
         var now = DateTime.UtcNow;
 
-        board.Messages = [.. board.Messages.Where(x => x.Start <= now && now <= x.End)];
+        board.Messages = [..await _repository.GetAll<BoardMessage>(
+            x =>
+                (x.Start <= now && now <= x.End) &&
+                (x.Board == null || x.Board.Id == request.Id),
+            tracking: false,
+            x => x.Include(y => y.Board))
+        ];
 
         var areas = board.Areas
                 .Where(x => x.DisplayType != BoardAreaDisplayType.Hidden)

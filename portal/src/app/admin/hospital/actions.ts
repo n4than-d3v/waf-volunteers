@@ -443,6 +443,17 @@ export const addBoardMessageError = createAction(
   '[HMS-A] Add board message: error',
 );
 
+export const expireBoardMessage = createAction(
+  '[HMS-A] Expire board message',
+  props<{ id: number }>(),
+);
+export const expireBoardMessageSuccess = createAction(
+  '[HMS-A] Expire board message: success',
+);
+export const expireBoardMessageError = createAction(
+  '[HMS-A] Expire board message: error',
+);
+
 export const upsertBoardCustomPen = createAction(
   '[HMS-A] Upsert board custom pen',
   props<{

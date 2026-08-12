@@ -62,3 +62,17 @@ table .buttons {
     max-width: max-content;
   }
 }
+
+td:nth-child(1),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5),
+td:nth-child(6) {
+  min-width: max-content;
+  text-wrap: nowrap;
+}
+
+.button--warning {
+  margin: 0rem;
+  min-width: max-content;
+}

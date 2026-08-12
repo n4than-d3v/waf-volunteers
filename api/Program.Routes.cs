@@ -1071,6 +1071,15 @@ public partial class Program
             .RequireAuthorization(vetPolicy);
 
         apiHospitalBoards
+            .MapDelete(
+                "/message/{id:int}",
+                (IMediator mediator, int id) =>
+                    mediator.Send(new ExpireBoardMessage { BoardId = id })
+            )
+            .AddNote("Vet expires a board message")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalBoards
             .MapGet(
                 "/custom-pens",
                 (IMediator mediator) => mediator.Send(new GetBoardCustomPens())

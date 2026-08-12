@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  AdministrationLocation,
+  administrationLocationEnumToLabel,
   AdministrationMethod,
   getWeightUnit,
   Patient,
@@ -71,6 +73,7 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
   showAdministrations = false;
 
   PatientStatus = PatientStatus;
+  administrationLocationEnumToLabel = administrationLocationEnumToLabel;
 
   constructor(private store: Store) {
     this.administrationMethods$ = this.store.select(
@@ -116,6 +119,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     frequencyX: new FormControl(''),
     frequencyY: new FormControl(''),
     frequency: new FormControl('', [Validators.required]),
+    medsInChickMorning: new FormControl(false),
+    medsInChickEvening: new FormControl(false),
   });
 
   reset() {
@@ -152,6 +157,14 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
       quantityValue: String(prescription.quantityValue),
       frequency: prescription.frequency,
       ...this.getFrequency(prescription),
+      medsInChickMorning:
+        (prescription.administrationLocation &
+          AdministrationLocation.InChickAM) !==
+        0,
+      medsInChickEvening:
+        (prescription.administrationLocation &
+          AdministrationLocation.InChickPM) !==
+        0,
     });
   }
 
@@ -269,6 +282,13 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
         this.prescriptionMedicationForm.value.medicationConcentrationId!,
       ),
       comments: this.prescriptionMedicationForm.value.comments || '',
+      administrationLocation:
+        (this.prescriptionMedicationForm.value.medsInChickMorning
+          ? AdministrationLocation.InChickAM
+          : 0) |
+        (this.prescriptionMedicationForm.value.medsInChickEvening
+          ? AdministrationLocation.InChickPM
+          : 0),
     };
   }
 

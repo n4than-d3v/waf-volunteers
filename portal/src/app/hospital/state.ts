@@ -495,10 +495,27 @@ export interface TreatmentInstruction {
   instructions: string;
 }
 
+export enum AdministrationLocation {
+  Blank = 0,
+  InChickAM = 1,
+  InChickPM = 2,
+}
+
+export const administrationLocationEnumToLabel = (value: number): string => {
+  const am = (value & AdministrationLocation.InChickAM) !== 0;
+  const pm = (value & AdministrationLocation.InChickPM) !== 0;
+
+  if (am && pm) return 'AM + PM';
+  if (am) return 'AM';
+  if (pm) return 'PM';
+  return '';
+};
+
 export interface PrescriptionMedication extends TreatmentMedication {
   start: string;
   end: string;
   frequency: string;
+  administrationLocation: AdministrationLocation;
   administrations: Administration[];
 
   viewPatientId: number;

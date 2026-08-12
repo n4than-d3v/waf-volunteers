@@ -19,6 +19,7 @@ public class UpdateMedicationPrescription : IRequest<IResult>
     public int AdministrationMethodId { get; set; }
     public string Comments { get; set; }
     public string Frequency { get; set; }
+    public AdministrationLocation AdministrationLocation { get; set; }
 
     public UpdateMedicationPrescription WithId(int id)
     {
@@ -63,6 +64,7 @@ public class UpdateMedicationPrescriptionHandler : IRequestHandler<UpdateMedicat
         prescription.QuantityUnit = request.QuantityUnit;
         prescription.Comments = request.Comments;
         prescription.Frequency = request.Frequency;
+        prescription.AdministrationLocation = request.AdministrationLocation;
 
         await _repository.SaveChangesAsync();
 

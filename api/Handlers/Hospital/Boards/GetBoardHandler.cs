@@ -3,6 +3,7 @@ using Api.Database.Entities.Hospital.Boards;
 using Api.Database.Entities.Hospital.Locations;
 using Api.Database.Entities.Hospital.Patients;
 using Api.Database.Entities.Hospital.Patients.Husbandry;
+using Api.Database.Entities.Hospital.Patients.Prescriptions;
 using Api.Database.Entities.Hospital.Tasks;
 using Api.Handlers.Hospital.Patients;
 using Api.Services;
@@ -96,7 +97,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
             x =>
                 (x.Status == PatientStatus.Inpatient || x.Status == PatientStatus.PendingHomeCare || x.Status == PatientStatus.ReadyForRelease) &&
                 x.SpeciesVariant != null && x.Pen != null && showAreas.Contains(x.Pen.Area.Id), tracking: false,
-            x => x.AsSplitQuery().IncludeBasicDetails().IncludeHusbandry());
+            x => x.AsSplitQuery().IncludeBasicDetails().IncludeHusbandry().Include(y => y.PrescriptionMedications));
 
         foreach (var patient in patients)
             patient.DecryptProperties(_encryptionService);
@@ -375,6 +376,18 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                 var penConcerns = concerns.Where(c => c.Pen?.Id == penId);
                 var newest = penPatients.Max(p => p.Admitted);
                 var plannedRelease = penPatients.Min(p => p.PlannedRelease);
+                var tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList();
+                var administrationLocation = penPatients
+                    .SelectMany(p => p.PrescriptionMedications)
+                    .Where(m => m.AdministerToday != 0)
+                    .Select(m => m.AdministrationLocation)
+                    .DefaultIfEmpty(AdministrationLocation.Blank)
+                    .Max();
+                var medsInChickAm = administrationLocation.HasFlag(AdministrationLocation.InChickAM);
+                var medsInChickPm = administrationLocation.HasFlag(AdministrationLocation.InChickPM);
+                if (medsInChickAm && medsInChickPm) tags.Add("Meds in chick AM + PM");
+                else if (medsInChickAm) tags.Add("Meds in chick AM");
+                else if (medsInChickPm) tags.Add("Meds in chick PM");
                 return new PatientBoardAreaPen
                 {
                     Id = g.Key.PenId.Value,
@@ -390,7 +403,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     Tasks = InMemoryBoardTasks.GetCompletedTasks(penId),
                     Feedings = GetPatientBoardAreaPenFeedings(g.Key.PenId.Value, penPatients),
                     FeedingSummaries = GetPatientBoardAreaPenFeedingSummaries(g.Key.PenId.Value, penPatients),
-                    Tags = penPatients.SelectMany(p => p.Tags).Select(d => d.Name).Distinct().ToList(),
+                    Tags = tags,
                     Reference = g.Key.PenReference,
                     PlannedRelease = plannedRelease != null && plannedRelease.Value.Date == DateTime.Today ? plannedRelease : null,
                     Newest = newest.Date == DateTime.Today ? newest : null

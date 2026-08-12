@@ -601,7 +601,17 @@ markCustomTaskDoneTask.error) {
                   </td>
                   <td class="quantity">
                     {{ prescription.quantityValue }} {{
-                    prescription.quantityUnit }}
+                    prescription.quantityUnit }} @if
+                    (prescription.administrationLocation) {
+                    <span class="meds-in-chick-text">
+                      🐣 Meds in chick
+                      <b>
+                        {{
+                        administrationLocationEnumToLabel(prescription.administrationLocation)
+                        }}
+                      </b>
+                    </span>
+                    }
                   </td>
                   } @else {
                   <td colspan="3">{{ prescription.instructions }}</td>

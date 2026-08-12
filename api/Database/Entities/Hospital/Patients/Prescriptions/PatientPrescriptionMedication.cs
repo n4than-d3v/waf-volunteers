@@ -10,4 +10,12 @@ public class PatientPrescriptionMedication : PatientPrescriptionBase<PatientPres
     public MedicationConcentration MedicationConcentration { get; set; }
     public AdministrationMethod AdministrationMethod { get; set; }
     public string Comments { get; set; }
+    public AdministrationLocation AdministrationLocation { get; set; }
+}
+
+public enum AdministrationLocation
+{
+    Blank = 0,
+    InChickAM = 1,
+    InChickPM = 2
 }

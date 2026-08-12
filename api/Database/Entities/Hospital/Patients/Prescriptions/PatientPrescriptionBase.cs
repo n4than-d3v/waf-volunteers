@@ -74,8 +74,7 @@ public abstract class PatientPrescriptionBase<TAdministration> : Entity
 
             if (Frequency == "One time")
             {
-                if (!Administrations.Any()) return 1;
-                return AdministeredToday;
+                return (Administrations?.Any() ?? false) ? AdministeredToday : 1;
             }
 
             var start = new DateTime(Start, new TimeOnly(0, 0, 0));
@@ -108,7 +107,7 @@ public abstract class PatientPrescriptionBase<TAdministration> : Entity
         {
             var todayStart = new DateTime(_today, new TimeOnly(0, 0, 0));
             var todayEnd = new DateTime(_today, new TimeOnly(23, 59, 59));
-            return Administrations.Count(x => x.Success && todayStart <= x.Administered && x.Administered <= todayEnd);
+            return (Administrations ?? []).Count(x => x.Success && todayStart <= x.Administered && x.Administered <= todayEnd);
         }
     }
 }

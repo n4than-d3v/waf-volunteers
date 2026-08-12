@@ -1,5 +1,4 @@
-﻿using Api.Database.Entities.Account;
-using Api.Database.Entities.Hospital.Patients;
+﻿using Api.Database.Entities.Hospital.Patients;
 using Api.Database;
 using MediatR;
 using Api.Database.Entities.Hospital.Patients.Prescriptions;
@@ -19,6 +18,7 @@ public class AddMedicationPrescription : IRequest<IResult>
     public int AdministrationMethodId { get; set; }
     public string Comments { get; set; }
     public string Frequency { get; set; }
+    public AdministrationLocation AdministrationLocation { get; set; }
 
     public AddMedicationPrescription WithId(int id)
     {
@@ -63,7 +63,8 @@ public class AddMedicationPrescriptionHandler : IRequestHandler<AddMedicationPre
             QuantityValue = request.QuantityValue,
             QuantityUnit = request.QuantityUnit,
             Comments = request.Comments,
-            Frequency = request.Frequency
+            Frequency = request.Frequency,
+            AdministrationLocation = request.AdministrationLocation
         };
 
         _repository.Create(prescription);

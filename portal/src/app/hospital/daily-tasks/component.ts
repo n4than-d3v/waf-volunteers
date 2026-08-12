@@ -17,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import {
   Administration,
+  administrationLocationEnumToLabel,
   DailyTaskReportCustomTask,
   DailyTasksReport,
   DailyTasksReportArea,
@@ -97,6 +98,8 @@ export class HospitalDailyTasksComponent implements OnInit, OnDestroy {
   newRecheckDue: any = {};
   newRecheckRoles: any = {};
   newRecheckDescription: any = {};
+
+  administrationLocationEnumToLabel = administrationLocationEnumToLabel;
 
   constructor(
     private store: Store,

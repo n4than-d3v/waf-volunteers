@@ -131,9 +131,12 @@ public static class ViewPatientExtensions
         {
             foreach (var prescription in patient.PrescriptionInstructions)
             {
-                foreach (var administration in prescription.Administrations)
+                if (prescription.Administrations?.Any() ?? false)
                 {
-                    administration.Administrator?.CleanUser(encryptionService);
+                    foreach (var administration in prescription.Administrations)
+                    {
+                        administration.Administrator?.CleanUser(encryptionService);
+                    }
                 }
             }
         }
@@ -142,9 +145,12 @@ public static class ViewPatientExtensions
         {
             foreach (var prescription in patient.PrescriptionMedications)
             {
-                foreach (var administration in prescription.Administrations)
+                if (prescription.Administrations?.Any() ?? false)
                 {
-                    administration.Administrator?.CleanUser(encryptionService);
+                    foreach (var administration in prescription.Administrations)
+                    {
+                        administration.Administrator?.CleanUser(encryptionService);
+                    }
                 }
             }
         }

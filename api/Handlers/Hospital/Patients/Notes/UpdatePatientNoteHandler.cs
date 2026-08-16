@@ -44,7 +44,6 @@ public class UpdatePatientNoteHandler : IRequestHandler<UpdatePatientNote, IResu
         if (author == null) return Results.BadRequest();
 
         note.Noter = author;
-        note.Noted = DateTime.UtcNow;
         note.WeightValue = request.WeightValue;
         note.WeightUnit = request.WeightUnit;
         note.Comments = request.Comments;

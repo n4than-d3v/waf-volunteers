@@ -135,7 +135,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
   }
 
   formatAdmissionReasons(patient: ListPatient) {
-    return patient.admissionReasons.map((x) => x.description).join(', ');
+    return patient.admissionReasons.join(', ');
   }
 
   view(patient: ListPatient) {
@@ -145,7 +145,7 @@ export class HospitalListPatientByStatusComponent implements OnInit, OnDestroy {
           code: 'VIEW_PATIENT',
           id: patient.id,
           title: `[${patient.reference}] ${
-            patient.species?.name || patient.suspectedSpecies.description
+            patient.species || patient.suspectedSpecies
           }`,
         },
       }),

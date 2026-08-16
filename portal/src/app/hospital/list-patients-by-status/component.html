@@ -96,9 +96,9 @@
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
-      <td>{{ patient.suspectedSpecies.description }}</td>
+      <td>{{ patient.suspectedSpecies }}</td>
       <td>{{ patient.admitted | date: 'd MMM yyyy HH:mm' }}</td>
-      <td>{{ patient.initialLocation.description }}</td>
+      <td>{{ patient.initialLocation }}</td>
       <td>{{ formatAdmissionReasons(patient) }}</td>
     </tr>
     }
@@ -122,11 +122,11 @@
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
-      <td>{{ patient.species?.name }}</td>
-      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.species }}</td>
+      <td>{{ patient.speciesVariant }}</td>
       @if (patient.pen) {
       <td>
-        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        {{ patient.pen }} @if (patient.uniqueIdentifier) {
         <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
         }
       </td>
@@ -168,11 +168,11 @@
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
-      <td>{{ patient.species?.name }}</td>
-      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.species }}</td>
+      <td>{{ patient.speciesVariant }}</td>
       @if (patient.pen) {
       <td>
-        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        {{ patient.pen }} @if (patient.uniqueIdentifier) {
         <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
         }
       </td>
@@ -223,11 +223,11 @@
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
-      <td>{{ patient.species?.name }}</td>
-      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.species }}</td>
+      <td>{{ patient.speciesVariant }}</td>
       @if (patient.pen) {
       <td>
-        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        {{ patient.pen }} @if (patient.uniqueIdentifier) {
         <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
         }
       </td>
@@ -237,9 +237,7 @@
       </td>
       }
       <td>{{ patient.admitted | date: 'd MMM yyyy HH:mm' }}</td>
-      <td>
-        {{ patient.homeCareRequests[0]?.requested | date: 'd MMM yyyy HH:mm' }}
-      </td>
+      <td>{{ patient.homeCareRequested | date: 'd MMM yyyy HH:mm' }}</td>
     </tr>
     }
   </tbody>
@@ -260,18 +258,17 @@
   <tbody>
     @for (patient of patients.data.patients; track patient.id) {
     <tr>
-      @let latestRequest = getLatestHomeCareRequest(patient.homeCareRequests);
       <td>
         @if (patient.lastMessageSentByOrphanFeeder) { 🔴 }
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
-      <td>{{ patient.species?.name }}</td>
-      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.species }}</td>
+      <td>{{ patient.speciesVariant }}</td>
       <td>{{ patient.admitted | date: 'd MMM yyyy HH:mm' }}</td>
-      <td>{{ latestRequest?.pickup | date: 'd MMM yyyy HH:mm' }}</td>
+      <td>{{ patient.homeCareSince | date: 'd MMM yyyy HH:mm' }}</td>
       @if (patient.pen) {
       <td>
-        {{ patient.pen.reference }} @if (patient.uniqueIdentifier) {
+        {{ patient.pen }} @if (patient.uniqueIdentifier) {
         <span class="unique-identifier">{{ patient.uniqueIdentifier }}</span>
         }
       </td>
@@ -280,10 +277,7 @@
         <span class="outdated">Homeless</span>
       </td>
       }
-      <td>
-        {{ latestRequest?.responder?.firstName }} {{
-        latestRequest?.responder?.lastName }}
-      </td>
+      <td>{{ patient.currentHomeCarer }}</td>
     </tr>
     }
   </tbody>
@@ -306,8 +300,8 @@
       <td>
         <a (click)="view(patient)">{{ patient.reference }}</a>
       </td>
-      <td>{{ patient.species?.name }}</td>
-      <td>{{ patient.speciesVariant?.name }}</td>
+      <td>{{ patient.species }}</td>
+      <td>{{ patient.speciesVariant }}</td>
       <td>{{ patient.admitted | date: 'd MMM yyyy HH:mm' }}</td>
       <td>{{ patient.dispositioned | date: 'd MMM yyyy HH:mm' }}</td>
       <td>{{ getDisposition(patient) }}</td>

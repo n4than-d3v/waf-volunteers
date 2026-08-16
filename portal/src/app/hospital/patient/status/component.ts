@@ -101,13 +101,25 @@ export class HospitalPatientStatusComponent implements OnInit {
     { validators: this.dateValidator },
   );
 
-  releaseForm = new FormGroup({
-    releaseTypeId: new FormControl('', [Validators.required]),
-  });
+  releaseForm = new FormGroup(
+    {
+      provideDate: new FormControl<boolean>(false),
+      date: new FormControl<string | null>(null),
+      time: new FormControl<string | null>(null),
+      releaseTypeId: new FormControl('', [Validators.required]),
+    },
+    { validators: this.dateValidator },
+  );
 
-  transferForm = new FormGroup({
-    transferLocationId: new FormControl('', [Validators.required]),
-  });
+  transferForm = new FormGroup(
+    {
+      provideDate: new FormControl<boolean>(false),
+      date: new FormControl<string | null>(null),
+      time: new FormControl<string | null>(null),
+      transferLocationId: new FormControl('', [Validators.required]),
+    },
+    { validators: this.dateValidator },
+  );
 
   homeCareForm = new FormGroup({
     notes: new FormControl(''),
@@ -245,9 +257,16 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.attemptedSave = true;
     if (!this.releaseForm.valid) return;
     this.saving = true;
+    const date = this.releaseForm.value.provideDate
+      ? moment(
+          `${this.releaseForm.value.date} ${this.releaseForm.value.time}`,
+          'YYYY-MM-DD HH:mm',
+        )
+      : null;
     this.store.dispatch(
       markPatientReleased({
         patientId: this.patient.id,
+        date: date ? date?.toISOString() : null,
         releaseTypeId: Number(this.releaseForm.value.releaseTypeId!),
       }),
     );
@@ -258,9 +277,16 @@ export class HospitalPatientStatusComponent implements OnInit {
     this.attemptedSave = true;
     if (!this.transferForm.valid) return;
     this.saving = true;
+    const date = this.transferForm.value.provideDate
+      ? moment(
+          `${this.transferForm.value.date} ${this.transferForm.value.time}`,
+          'YYYY-MM-DD HH:mm',
+        )
+      : null;
     this.store.dispatch(
       markPatientTransferred({
         patientId: this.patient.id,
+        date: date ? date?.toISOString() : null,
         transferLocationId: Number(this.transferForm.value.transferLocationId!),
       }),
     );

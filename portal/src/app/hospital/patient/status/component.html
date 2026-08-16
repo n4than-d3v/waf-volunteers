@@ -22,7 +22,15 @@
         <td>Disposition date</td>
         <td>{{ patient.dispositioned | date: 'd MMM yyyy HH:mm' }}</td>
       </tr>
-      @if (patient.dispositionReasons) {
+      @if (patient.dispositioner) {
+      <tr>
+        <td>Dispositioned by</td>
+        <td>
+          {{ patient.dispositioner.firstName }} {{
+          patient.dispositioner.lastName }}
+        </td>
+      </tr>
+      } @if (patient.dispositionReasons && patient.dispositionReasons.length) {
       <tr>
         <td>Disposition reason</td>
         <td>{{ formatDispositionReasons(patient.dispositionReasons) }}</td>
@@ -290,7 +298,28 @@
           </select>
         </div>
       </div>
-      @if (attemptedSave && !releaseForm.valid) {
+      <div class="fields">
+        <div class="field">
+          <label for="provideDate">Override date</label>
+          <input
+            id="provideDate"
+            type="checkbox"
+            formControlName="provideDate"
+          />
+        </div>
+      </div>
+      @if (releaseForm.controls.provideDate.value) {
+      <div class="fields datetime">
+        <div class="field">
+          <label for="date"> Date </label>
+          <input id="date" type="date" formControlName="date" />
+        </div>
+        <div class="field">
+          <label for="time"> Time </label>
+          <input id="time" type="time" formControlName="time" />
+        </div>
+      </div>
+      } @if (attemptedSave && !releaseForm.valid) {
       <div class="error">Please fill in all required fields</div>
       } @if (!saving) {
       <div class="buttons">
@@ -324,7 +353,28 @@
           </select>
         </div>
       </div>
-      @if (attemptedSave && !transferForm.valid) {
+      <div class="fields">
+        <div class="field">
+          <label for="provideDate">Override date</label>
+          <input
+            id="provideDate"
+            type="checkbox"
+            formControlName="provideDate"
+          />
+        </div>
+      </div>
+      @if (transferForm.controls.provideDate.value) {
+      <div class="fields datetime">
+        <div class="field">
+          <label for="date"> Date </label>
+          <input id="date" type="date" formControlName="date" />
+        </div>
+        <div class="field">
+          <label for="time"> Time </label>
+          <input id="time" type="time" formControlName="time" />
+        </div>
+      </div>
+      } @if (attemptedSave && !transferForm.valid) {
       <div class="error">Please fill in all required fields</div>
       } @if (!saving) {
       <div class="buttons">

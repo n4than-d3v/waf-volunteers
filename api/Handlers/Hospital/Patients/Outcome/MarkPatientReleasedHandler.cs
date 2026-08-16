@@ -10,6 +10,7 @@ namespace Api.Handlers.Hospital.Patients.Outcome;
 public class MarkPatientReleased : IRequest<IResult>
 {
     public int PatientId { get; set; }
+    public DateTime? Date { get; set; }
     public int ReleaseTypeId { get; set; }
 
     public MarkPatientReleased WithId(int id)
@@ -50,11 +51,17 @@ public class MarkPatientReleasedHandler : IRequestHandler<MarkPatientReleased, I
         patient.DispositionReasons?.Clear();
         patient.Disposition = Disposition.Released;
         patient.LastUpdatedStatus = DateTime.UtcNow;
-        patient.Dispositioned = DateTime.UtcNow;
         patient.Dispositioner = dispositioner;
         patient.Status = PatientStatus.Dispositioned;
         patient.LastUpdatedDetails = DateTime.UtcNow;
         patient.ReleaseType = releaseType;
+
+        if (request.Date == null)
+            patient.Dispositioned = DateTime.UtcNow;
+        else if (request.Date <= patient.Admitted)
+            patient.Dispositioned = patient.Admitted.AddMinutes(1);
+        else
+            patient.Dispositioned = request.Date;
 
         await _repository.SaveChangesAsync();
 

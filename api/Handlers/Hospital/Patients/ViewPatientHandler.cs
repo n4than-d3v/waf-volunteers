@@ -155,6 +155,8 @@ public static class ViewPatientExtensions
             }
         }
 
+        patient.Dispositioner?.CleanUser(encryptionService);
+
         if (patient.HomeCareRequests?.Any() ?? false)
         {
             foreach (var request in patient.HomeCareRequests)

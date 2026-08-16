@@ -340,7 +340,11 @@ export const updatePatientReleasePlanError = createAction(
 
 export const markPatientReleased = createAction(
   '[HMS-V] Mark patient as released',
-  props<{ patientId: number; releaseTypeId: number }>(),
+  props<{
+    patientId: number;
+    date: string | null;
+    releaseTypeId: number;
+  }>(),
 );
 export const markPatientReleasedSuccess = createAction(
   '[HMS-V] Mark patient as released: success',
@@ -352,7 +356,11 @@ export const markPatientReleasedError = createAction(
 
 export const markPatientTransferred = createAction(
   '[HMS-V] Mark patient as transferred',
-  props<{ patientId: number; transferLocationId: number }>(),
+  props<{
+    patientId: number;
+    date: string | null;
+    transferLocationId: number;
+  }>(),
 );
 export const markPatientTransferredSuccess = createAction(
   '[HMS-V] Mark patient as transferred: success',

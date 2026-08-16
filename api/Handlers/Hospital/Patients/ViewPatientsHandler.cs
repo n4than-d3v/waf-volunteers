@@ -1,5 +1,6 @@
 ﻿using Api.Database;
 using Api.Database.Entities.Hospital.Patients;
+using Api.Database.Entities.Hospital.Patients.Outcome;
 using Api.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,12 +30,10 @@ public enum SortPatientsBy
 public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
 {
     private readonly IDatabaseRepository _repository;
-    private readonly IEncryptionService _encryptionService;
 
-    public ViewPatientsHandler(IDatabaseRepository repository, IEncryptionService encryptionService)
+    public ViewPatientsHandler(IDatabaseRepository repository)
     {
         _repository = repository;
-        _encryptionService = encryptionService;
     }
 
     public async Task<IResult> Handle(ViewPatients request, CancellationToken cancellationToken)
@@ -57,20 +56,22 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
                     .Skip((request.Page - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .AsSplitQuery()
-                    .IncludeAdmission()
-                    .IncludeBasicDetails()
-                    .IncludeHusbandry()
-                    .IncludeHomeCare()
-                    .IncludeOutcome();
+                    .Include(y => y.SuspectedSpecies)
+                    .Include(y => y.InitialLocation)
+                    .Include(y => y.AdmissionReasons)
+                    .Include(y => y.Species)
+                    .Include(y => y.SpeciesVariant)
+                    .Include(y => y.Pen).ThenInclude(y => y.Area)
+                    .Include(y => y.Movements).ThenInclude(m => m.To).ThenInclude(p => p.Area)
+                    .Include(y => y.Movements).ThenInclude(m => m.From).ThenInclude(p => p.Area)
+                    .Include(y => y.HomeCareRequests)
+                    .Include(y => y.HomeCareMessages).ThenInclude(m => m.Author);
             }
         );
 
-        foreach (var patient in patients)
-        {
-            patient.DecryptProperties(_encryptionService);
-        }
+        var mapped = patients.Select(Map).ToList();
 
-        return Results.Ok(new { total, patients });
+        return Results.Ok(new { total, patients = mapped });
     }
 
     private IQueryable<Patient> ApplyFilter(ViewPatients request, DbSet<Patient> x)
@@ -102,6 +103,13 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
                     y.Pen != null
                     && y.Pen.Area != null
                     && (y.Pen.Area.Code + "-" + y.Pen.Code).ToUpper().Contains(request.Search)
+                )
+                || (
+                    y.Movements != null &&
+                    y.Movements.Any(m =>
+                        m.From != null &&
+                        m.From.Area != null &&
+                        (m.From.Area.Code + "-" + m.From.Code).ToUpper().Contains(request.Search))
                 )
             )
         );
@@ -150,5 +158,67 @@ public class ViewPatientsHandler : IRequestHandler<ViewPatients, IResult>
 
             _ => query.OrderByDescending(x => x.Admitted),
         };
+    }
+
+    private ListPatient Map(Patient patient)
+    {
+        var latestHomeCareRequest = (patient.HomeCareRequests ?? [])
+            .OrderByDescending(x => x.Requested).FirstOrDefault();
+
+        return new ListPatient
+        {
+            Id = patient.Id,
+            Admitted = patient.Admitted,
+            Reference = patient.Reference,
+            Status = patient.Status,
+            InitialLocation = patient.InitialLocation.Description,
+            SuspectedSpecies = patient.SuspectedSpecies.Description,
+            AdmissionReasons = [.. (patient.AdmissionReasons ?? []).Select(x => x.Description)],
+            LastUpdatedStatus = patient.LastUpdatedStatus,
+            UniqueIdentifier = patient.UniqueIdentifier,
+            Species = patient.Species?.Name,
+            SpeciesVariant = patient.SpeciesVariant?.Name,
+            SpeciesVariantFriendlyName = patient.SpeciesVariant?.FriendlyName,
+            IsLongTerm = patient.IsLongTerm,
+            IsOutdated = patient.IsOutdated,
+            Pen = patient.Pen?.Reference,
+            Disposition = patient.Disposition,
+            Dispositioned = patient.Dispositioned,
+            HomeCareRequested = latestHomeCareRequest?.Requested,
+            HomeCareSince = latestHomeCareRequest?.Pickup,
+            CurrentHomeCarer = patient.CurrentHomeCarer,
+            LastMessageSentByOrphanFeeder = patient.LastMessageSentByOrphanFeeder,
+            PlannedRelease = patient.PlannedRelease,
+            IsReleasePlanned = patient.IsReleasePlanned,
+            IsReleaseOverdue = patient.IsReleaseOverdue
+        };
+    }
+
+    public class ListPatient
+    {
+        public int Id { get; set; }
+        public DateTime Admitted { get; set; }
+        public string Reference { get; set; }
+        public PatientStatus Status { get; set; }
+        public string InitialLocation { get; set; }
+        public string SuspectedSpecies { get; set; }
+        public string[] AdmissionReasons { get; set; }
+        public DateTime LastUpdatedStatus { get; set; }
+        public string? UniqueIdentifier { get; set; }
+        public string? Species { get; set; }
+        public string? SpeciesVariant { get; set; }
+        public string? SpeciesVariantFriendlyName { get; set; }
+        public bool IsLongTerm { get; set; }
+        public bool IsOutdated { get; set; }
+        public string? Pen { get; set; }
+        public Disposition? Disposition { get; set; }
+        public DateTime? Dispositioned { get; set; }
+        public DateTime? HomeCareRequested { get; set; }
+        public DateTime? HomeCareSince { get; set; }
+        public string? CurrentHomeCarer { get; set; }
+        public bool? LastMessageSentByOrphanFeeder { get; set; }
+        public DateTime? PlannedRelease { get; set; }
+        public bool IsReleasePlanned { get; set; }
+        public bool IsReleaseOverdue { get; set; }
     }
 }

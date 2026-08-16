@@ -18,8 +18,8 @@
         <p class="arrival">{{ patient.admitted | date: 'HH:mm' }}</p>
       </div>
       <p class="species">
-        {{ patient.speciesVariant?.friendlyName ||
-        patient.suspectedSpecies.description || 'Unknown' }}
+        {{ patient.speciesVariantFriendlyName || patient.suspectedSpecies ||
+        'Unknown' }}
       </p>
     </div>
     }
@@ -34,14 +34,14 @@
       <div class="ref-pen">
         <p class="reference">{{ patient.reference }}</p>
         @if (patient.pen) {
-        <p class="pen">{{ patient.pen.reference }}</p>
+        <p class="pen">{{ patient.pen }}</p>
         } @else {
         <p class="homeless">Homeless</p>
         }
       </div>
       <p class="species">
-        {{ patient.speciesVariant?.friendlyName ||
-        patient.suspectedSpecies.description || 'Unknown' }}
+        {{ patient.speciesVariantFriendlyName || patient.suspectedSpecies ||
+        'Unknown' }}
       </p>
     </div>
     }
@@ -57,7 +57,7 @@
         <p class="reference">{{ patient.reference }}</p>
         @if (patient.status === PatientStatus.ReadyForRelease) { @if
         (patient.pen) {
-        <p class="pen">{{ patient.pen.reference }}</p>
+        <p class="pen">{{ patient.pen }}</p>
         } @else {
         <p class="homeless">Homeless</p>
         } } @else { @if (patient.disposition === Disposition.Released) {
@@ -67,8 +67,8 @@
         } }
       </div>
       <p class="species">
-        {{ patient.speciesVariant?.friendlyName ||
-        patient.suspectedSpecies.description || 'Unknown' }}
+        {{ patient.speciesVariantFriendlyName || patient.suspectedSpecies ||
+        'Unknown' }}
       </p>
     </div>
     }
@@ -85,8 +85,8 @@
         <p class="home-carer">{{ patient.currentHomeCarer || '(Pending)' }}</p>
       </div>
       <p class="species">
-        {{ patient.speciesVariant?.friendlyName ||
-        patient.suspectedSpecies.description || 'Unknown' }}
+        {{ patient.speciesVariantFriendlyName || patient.suspectedSpecies ||
+        'Unknown' }}
       </p>
     </div>
     }
@@ -115,8 +115,8 @@
         }
       </div>
       <p class="species">
-        {{ patient.speciesVariant?.friendlyName ||
-        patient.suspectedSpecies.description || 'Unknown' }}
+        {{ patient.speciesVariantFriendlyName || patient.suspectedSpecies ||
+        'Unknown' }}
       </p>
     </div>
     }

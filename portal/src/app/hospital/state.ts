@@ -204,58 +204,30 @@ export interface HomeCarer {
 }
 
 export interface ListPatient {
-  beaconId: number;
+  id: number;
   admitted: string;
-  lastUpdatedStatus: string;
-  admitter: {
-    beaconId: number;
-    fullName: string;
-    address: string;
-    telephone: string;
-    email: string;
-    id: number;
-  } | null;
-  foundAt: string;
-  initialLocation: {
-    description: string;
-    id: number;
-  };
-  suspectedSpecies: {
-    description: string;
-    id: number;
-  };
-  admissionReasons: {
-    description: string;
-    id: number;
-  }[];
   reference: string;
-  name: string | null;
+  status: PatientStatus;
+  initialLocation: string;
+  suspectedSpecies: string;
+  admissionReasons: string[];
+  lastUpdatedStatus: string;
   uniqueIdentifier: string | null;
-  microchip: string | null;
-  species: Species | null;
-  speciesVariant: SpeciesVariant | null;
-  sex: number | null;
-  lastUpdatedDetails: string | null;
+  species: string | null;
+  speciesVariant: string | null;
+  speciesVariantFriendlyName: string | null;
   isLongTerm: boolean;
   isOutdated: boolean;
-  status: PatientStatus;
-  pen: Pen | null;
-  area: Area | null;
-  tags: Tag[];
-  feeding: Feeding[];
+  pen: string | null;
   disposition: Disposition | null;
   dispositioned: string | null;
-  dispositionReasons: DispositionReason[];
-  releaseType: ReleaseType | null;
-  transferLocation: TransferLocation | null;
-  dispositioner: {} | null;
-  homeCareRequests: HomeCareRequest[];
+  homeCareRequested: string | null;
+  homeCareSince: string | null;
   currentHomeCarer: string | null;
   lastMessageSentByOrphanFeeder: boolean | null;
   plannedRelease: string | null;
   isReleasePlanned: boolean;
   isReleaseOverdue: boolean;
-  id: number;
 }
 
 export interface HomeCareRequest {
@@ -330,7 +302,62 @@ export interface HomeCareMessage {
   me: boolean;
 }
 
-export interface Patient extends ListPatient {
+export interface Patient {
+  id: number;
+  beaconId: number;
+  admitted: string;
+  lastUpdatedStatus: string;
+  admitter: {
+    beaconId: number;
+    fullName: string;
+    address: string;
+    telephone: string;
+    email: string;
+    id: number;
+  } | null;
+  foundAt: string;
+  initialLocation: {
+    description: string;
+    id: number;
+  };
+  suspectedSpecies: {
+    description: string;
+    id: number;
+  };
+  admissionReasons: {
+    description: string;
+    id: number;
+  }[];
+  reference: string;
+  name: string | null;
+  uniqueIdentifier: string | null;
+  microchip: string | null;
+  species: Species | null;
+  speciesVariant: SpeciesVariant | null;
+  sex: number | null;
+  lastUpdatedDetails: string | null;
+  isLongTerm: boolean;
+  isOutdated: boolean;
+  status: PatientStatus;
+  pen: Pen | null;
+  area: Area | null;
+  tags: Tag[];
+  feeding: Feeding[];
+  disposition: Disposition | null;
+  dispositioned: string | null;
+  dispositionReasons: DispositionReason[];
+  releaseType: ReleaseType | null;
+  transferLocation: TransferLocation | null;
+  dispositioner: {
+    firstName: string;
+    lastName: string;
+  } | null;
+  homeCareRequests: HomeCareRequest[];
+  currentHomeCarer: string | null;
+  lastMessageSentByOrphanFeeder: boolean | null;
+  plannedRelease: string | null;
+  isReleasePlanned: boolean;
+  isReleaseOverdue: boolean;
   exams: ListExam[];
   rechecks: ListRecheck[];
   prescriptionMedications: PrescriptionMedication[];
@@ -614,7 +641,7 @@ export enum Disposition {
   PtsAfter24Hrs = 7,
 }
 
-export function getDisposition(patient: ListPatient) {
+export function getDisposition(patient: { disposition: Disposition | null }) {
   switch (patient.disposition) {
     case 1:
       return 'Released';

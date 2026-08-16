@@ -2,8 +2,8 @@
 <spinner></spinner>
 } @else if (boards.error) {
 <div class="error">Error occurred</div>
-} @else if (boards.data) { @if (!(viewingBoard || tutorial || todayAdmissions))
-{
+} @else if (boards.data) { @if (!(viewingBoard || tutorial || todayAdmissions ||
+homeCare)) {
 <button class="button button--primary view-tutorial" (click)="tutorial = true">
   View tutorial
 </button>
@@ -24,11 +24,19 @@
     (click)="todayAdmissions = true"
     class="button button--secondary-invert board-button"
   >
-    Admitted today
+    Today's admissions
+  </button>
+  <button
+    (click)="homeCare = true"
+    class="button button--secondary-invert board-button"
+  >
+    Home care
   </button>
 </div>
 } @else if (todayAdmissions) {
 <patient-board-today-admissions></patient-board-today-admissions>
+} @else if (homeCare) {
+<patient-board-home-care></patient-board-home-care>
 } @else if (tutorial) {
 <button class="button button--primary view-tutorial" (click)="tutorial = false">
   Return to boards

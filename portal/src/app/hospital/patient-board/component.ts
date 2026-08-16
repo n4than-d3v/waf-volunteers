@@ -57,6 +57,7 @@ import { svgs } from './svgs';
 import { Router } from '@angular/router';
 import { HospitalPatientBoardTodayAdmissionsComponent } from './today-admissions/component';
 import { HospitalPatientDetailsPokemonImageComponent } from '../patient/details/pokemon/component';
+import { HospitalPatientBoardHomeCareComponent } from './home-care/component';
 
 @Pipe({
   name: 'sortBoardPens',
@@ -109,6 +110,7 @@ export class SortBoardAreasPipe implements PipeTransform {
     SortBoardPensPipe,
     FormsModule,
     HospitalPatientBoardTodayAdmissionsComponent,
+    HospitalPatientBoardHomeCareComponent,
     HospitalPatientDetailsPokemonImageComponent,
   ],
 })
@@ -125,6 +127,7 @@ export class HospitalPatientBoardComponent implements OnInit, OnDestroy {
   viewingBoard: number | null = null;
   tutorial = false;
   todayAdmissions = false;
+  homeCare = false;
 
   expandedPens: { [key: string]: boolean } = {};
   tickingTask = '';

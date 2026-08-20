@@ -38,7 +38,11 @@ export interface InteractionSummary {
 }
 
 export interface QuestionResponses {
-  questions: { id: number; title: string }[];
+  questions: {
+    id: number;
+    title: string;
+    answers: { [id: string]: number };
+  }[];
   users: { name: string; answers: { [id: number]: string[] } }[];
 }
 

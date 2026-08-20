@@ -57,7 +57,15 @@ public class ViewNoticeQuestionResponsesHandler : IRequestHandler<ViewNoticeQues
 
         return Results.Ok(new
         {
-            questions = questions.Select(q => new QuestionResponses { Id = q.Id, Title = q.Title }),
+            questions = questions.Select(q => new QuestionResponses
+            {
+                Id = q.Id,
+                Title = q.Title,
+                Answers = q.Responses
+                    .SelectMany(r => r.Answers)
+                    .GroupBy(r => r)
+                    .ToDictionary(r => r.Key, r => r.Count())
+            }),
             users = users.OrderBy(x => x.Name)
         });
     }
@@ -66,6 +74,7 @@ public class ViewNoticeQuestionResponsesHandler : IRequestHandler<ViewNoticeQues
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public Dictionary<string, int> Answers { get; set; }
     }
 
     public class UserNotice

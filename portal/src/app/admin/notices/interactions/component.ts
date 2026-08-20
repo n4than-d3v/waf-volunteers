@@ -58,6 +58,13 @@ export class AdminNoticeInteractionsComponent {
     });
   }
 
+  getAnswers(answers: { [answer: string]: number }) {
+    return Object.entries(answers).map((a) => ({
+      answer: a[0],
+      count: a[1],
+    }));
+  }
+
   getResponse(
     responses: QuestionResponses,
     question: { id: number },

@@ -11,7 +11,12 @@ responses) { @if (responses.questions && responses.questions.length ) {
 <div class="questions">
   <p>This notice included a poll with the following questions:</p>
   @for (question of responses.questions; track question.id) {
-  <p>{{ question.title }}</p>
+  <p><strong>{{ question.title }}</strong></p>
+  <ul>
+    @for (answer of getAnswers(question.answers); track answer.answer) {
+    <li>{{ answer.answer }}: <strong>{{ answer.count }}</strong></li>
+    }
+  </ul>
   }
 </div>
 }

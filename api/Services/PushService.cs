@@ -100,6 +100,16 @@ public class PushService : IPushService
             _inactiveSubscriptions.Add(userId);
             return false;
         }
+        finally
+        {
+            foreach (var entry in SentMessages)
+            {
+                if (entry.Value <= DateTime.UtcNow - DeduplicationWindow)
+                {
+                    SentMessages.TryRemove(entry.Key, out _);
+                }
+            }
+        }
     }
 
     public async Task RemoveInactiveSubscriptions()

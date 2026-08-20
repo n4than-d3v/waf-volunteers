@@ -35,6 +35,9 @@ public class PushService : IPushService
 
     private ConcurrentBag<int> _inactiveSubscriptions;
 
+    private static readonly ConcurrentDictionary<string, DateTime> SentMessages = new();
+    private static readonly TimeSpan DeduplicationWindow = TimeSpan.FromDays(1);
+
     public PushService(IDatabaseRepository repository, IEncryptionService encryptionService, IOptions<PushSettings> settings)
     {
         _repository = repository;
@@ -78,7 +81,17 @@ public class PushService : IPushService
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
 
+            var key = subscription.Endpoint + ":" + payload;
+
+            if (SentMessages.TryGetValue(key, out var sentAt) &&
+                sentAt > DateTime.UtcNow - DeduplicationWindow)
+            {
+                return true;
+            }
+
             await webPushClient.SendNotificationAsync(subscription, payload, vapidDetails);
+
+            SentMessages[key] = DateTime.UtcNow;
 
             return true;
         }

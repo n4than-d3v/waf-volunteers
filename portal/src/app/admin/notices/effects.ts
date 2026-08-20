@@ -2,7 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { catchError, map, of, switchMap } from 'rxjs';
-import { Interaction, InteractionSummary, Notice } from './state';
+import {
+  Interaction,
+  InteractionSummary,
+  Notice,
+  QuestionResponses,
+} from './state';
 import {
   createNotice,
   createNoticeError,
@@ -22,6 +27,9 @@ import {
   viewNoticeInteractionSummary,
   viewNoticeInteractionSummaryError,
   viewNoticeInteractionSummarySuccess,
+  viewNoticeQuestionResponses,
+  viewNoticeQuestionResponsesError,
+  viewNoticeQuestionResponsesSuccess,
 } from './actions';
 
 @Injectable()
@@ -45,12 +53,28 @@ export class NoticeManagementEffects {
     this.actions$.pipe(
       ofType(viewNoticeInteractions),
       switchMap((action) =>
-        this.http.get<Interaction[]>('notices/' + action.id).pipe(
+        this.http.get<Interaction[]>(`notices/${action.id}/interactions`).pipe(
           map((interactions) =>
             viewNoticeInteractionsSuccess({ interactions }),
           ),
           catchError(() => of(viewNoticeInteractionsError())),
         ),
+      ),
+    ),
+  );
+
+  viewNoticeQuestionResponses$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(viewNoticeQuestionResponses),
+      switchMap((action) =>
+        this.http
+          .get<QuestionResponses>(`notices/${action.id}/question-responses`)
+          .pipe(
+            map((questionResponses) =>
+              viewNoticeQuestionResponsesSuccess({ questionResponses }),
+            ),
+            catchError(() => of(viewNoticeQuestionResponsesError())),
+          ),
       ),
     ),
   );
@@ -83,6 +107,7 @@ export class NoticeManagementEffects {
         for (const file of action.files) {
           formData.append('files', file);
         }
+        formData.append('questions', JSON.stringify(action.questions));
         return this.http.post('notices', formData).pipe(
           map(() => createNoticeSuccess()),
           catchError(() => of(createNoticeError())),

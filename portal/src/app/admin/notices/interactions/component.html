@@ -6,7 +6,16 @@
 <spinner></spinner>
 } @if (error$ | async) {
 <div class="error">Error occurred</div>
-} @if (interactions$ | async; as interactions) {
+} @if (interactions$ | async; as interactions) { @if (responses$ | async; as
+responses) { @if (responses.questions && responses.questions.length ) {
+<div class="questions">
+  <p>This notice included a poll with the following questions:</p>
+  @for (question of responses.questions; track question.id) {
+  <p>{{ question.title }}</p>
+  }
+</div>
+}
+
 <div class="header">
   <h2>Filter</h2>
   <div class="field">
@@ -68,6 +77,9 @@
           <p>Duration</p>
         </div>
       </th>
+      @for (question of responses.questions; track question.id) {
+      <th>{{ question.title }}</th>
+      }
     </tr>
   </thead>
   <tbody>
@@ -85,8 +97,11 @@
         </div>
         }
       </td>
+      @for (question of responses.questions; track question.id) {
+      <td>{{ getResponse(responses, question, interaction) }}</td>
+      }
     </tr>
     } }
   </tbody>
 </table>
-}
+} }

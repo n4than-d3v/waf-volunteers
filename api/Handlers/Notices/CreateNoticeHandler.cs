@@ -14,6 +14,15 @@ public class CreateNotice : IRequest<IResult>
     public DateTime? SendAt { get; set; }
     public AccountRoles Roles { get; set; }
     public IFormFileCollection Files { get; set; }
+    public List<CreateNoticeQuestion> Questions { get; set; }
+
+    public class CreateNoticeQuestion
+    {
+        public string Title { get; set; }
+        public bool AllowMultiple { get; set; }
+        public bool AllowOther { get; set; }
+        public string[] Answers { get; set; }
+    }
 }
 
 public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
@@ -32,6 +41,22 @@ public class CreateNoticeHandler : IRequestHandler<CreateNotice, IResult>
         var notice = new Notice(request.Title, request.Content, request.Roles, request.SendAt ?? DateTime.UtcNow);
         _repository.Create(notice);
         await _repository.SaveChangesAsync();
+
+        if (request.Questions != null && request.Questions.Count > 0)
+        {
+            foreach (var question in request.Questions)
+            {
+                _repository.Create(new NoticeQuestion
+                {
+                    Notice = notice,
+                    Title = question.Title,
+                    AllowMultiple = question.AllowMultiple,
+                    AllowOther = question.AllowOther,
+                    Answers = question.Answers
+                });
+            }
+            await _repository.SaveChangesAsync();
+        }
 
         if (request.Files != null && request.Files.Count > 0)
         {

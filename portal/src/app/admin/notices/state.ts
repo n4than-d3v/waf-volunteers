@@ -2,6 +2,7 @@ export interface NoticeManagementState {
   notices: Notice[];
   interactions: Interaction[];
   interactionSummary: InteractionSummary[];
+  questionResponses: QuestionResponses;
   loading: boolean;
   error: boolean;
   created: boolean;
@@ -36,10 +37,19 @@ export interface InteractionSummary {
   unread: number;
 }
 
+export interface QuestionResponses {
+  questions: { id: number; title: string }[];
+  users: { name: string; answers: { [id: number]: string[] } }[];
+}
+
 export const initialNoticeManagementState: NoticeManagementState = {
   notices: [],
   interactions: [],
   interactionSummary: [],
+  questionResponses: {
+    questions: [],
+    users: [],
+  },
   loading: false,
   error: false,
   created: false,

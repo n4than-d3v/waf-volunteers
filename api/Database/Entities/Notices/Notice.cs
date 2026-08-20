@@ -11,6 +11,8 @@ public class Notice : Entity
     public DateTime SendAt { get; set; }
     public bool Sent { get; set; }
 
+    public List<NoticeQuestion> Questions { get; set; }
+
     public Notice()
     {
     }

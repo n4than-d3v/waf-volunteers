@@ -43,3 +43,8 @@ export const selectNoticeDeleted = createSelector(
   selectNoticeManagementState,
   (state) => state.deleted,
 );
+
+export const selectNoticeQuestionResponses = createSelector(
+  selectNoticeManagementState,
+  (state) => state.questionResponses,
+);

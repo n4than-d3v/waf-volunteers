@@ -4,31 +4,48 @@ import { Notice, NoticeAttachment } from './state';
 export const getNotices = createAction('[Notices] Get notices');
 export const getNoticesSuccess = createAction(
   '[Notices] Get notices: success',
-  props<{ notices: Notice[] }>()
+  props<{ notices: Notice[] }>(),
 );
 export const getNoticesError = createAction('[Notices] Get notices: error');
 
 export const openNotice = createAction(
   '[Notices] Open notice',
-  props<{ id: number }>()
+  props<{ id: number }>(),
 );
 export const openNoticeSuccess = createAction(
   '[Notices] Open notice: success',
-  props<{ notice: Notice }>()
+  props<{ notice: Notice }>(),
 );
 export const openNoticeError = createAction('[Notices] Open notice: error');
 
 export const closeNotice = createAction(
   '[Notices] Close notice',
-  props<{ id: number }>()
+  props<{ id: number }>(),
 );
 export const closeNoticeSuccess = createAction(
   '[Notices] Close notice: success',
-  props<{ notice: Notice }>()
+  props<{ notice: Notice }>(),
 );
 export const closeNoticeError = createAction('[Notices] Close notice: error');
 
 export const downloadNoticeAttachment = createAction(
   '[Notices] Download attachment',
-  props<{ notice: Notice; attachment: NoticeAttachment }>()
+  props<{ notice: Notice; attachment: NoticeAttachment }>(),
+);
+
+export const sendNoticeResponse = createAction(
+  '[Notices] Send notice response',
+  props<{
+    id: number;
+    responses: {
+      questionId: number;
+      answers: string[];
+    }[];
+  }>(),
+);
+export const sendNoticeResponseSuccess = createAction(
+  '[Notices] Send notice response: success',
+);
+export const sendNoticeResponseError = createAction(
+  '[Notices] Send notice response: error',
 );

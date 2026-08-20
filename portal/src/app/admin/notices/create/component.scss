@@ -17,6 +17,7 @@ button {
 .create-notification-wrapper {
   display: flex;
   gap: 1rem;
+  align-items: flex-start;
 }
 
 form {
@@ -51,4 +52,32 @@ form {
   select {
     max-width: max-content;
   }
+}
+
+#add-question {
+  margin-bottom: 1rem;
+}
+
+.question-answer .field {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+
+  button {
+    margin-top: 0rem;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.question {
+  padding-left: 1rem;
+  border-left: solid 5px var(--theme-primary);
+}
+
+.push-top {
+  margin-top: 1rem;
 }

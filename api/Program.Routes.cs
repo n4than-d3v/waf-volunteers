@@ -41,6 +41,7 @@ using Api.Handlers.Rota.RegularShifts;
 using Api.Handlers.Rota.Shifts;
 using Api.Handlers.Stock;
 using MediatR;
+using Newtonsoft.Json;
 
 public partial class Program
 {
@@ -1509,6 +1510,7 @@ public partial class Program
                     var form = await httpReq.ReadFormAsync();
                     _ = int.TryParse(form["roles"], out int roles);
                     var sendAtString = form["sendAt"].ToString();
+                    var questionsString = form["questions"].ToString();
                     DateTime? sendAt = string.IsNullOrWhiteSpace(sendAtString)
                         ? null
                         : DateTime.Parse(
@@ -1525,6 +1527,7 @@ public partial class Program
                         SendAt = sendAt == DateTime.MinValue ? null : sendAt,
                         Roles = (Api.Database.Entities.Account.AccountRoles)roles,
                         Files = form.Files,
+                        Questions = JsonConvert.DeserializeObject<List<CreateNotice.CreateNoticeQuestion>>(questionsString)
                     };
 
                     return await mediator.Send(request);
@@ -1596,11 +1599,20 @@ public partial class Program
 
         apiNotices
             .MapGet(
-                "/{id:int}",
+                "/{id:int}/interactions",
                 (IMediator mediator, int id) =>
                     mediator.Send(new ViewNoticeInteractions { NoticeId = id })
             )
             .AddNote("Admin views notice interactions")
+            .RequireAuthorization(adminPolicy);
+
+        apiNotices
+            .MapGet(
+                "/{id:int}/question-responses",
+                (IMediator mediator, int id) =>
+                    mediator.Send(new ViewNoticeQuestionResponses { NoticeId = id })
+            )
+            .AddNote("Admin views notice question responses")
             .RequireAuthorization(adminPolicy);
 
         apiNotices
@@ -1617,6 +1629,14 @@ public partial class Program
                 (IMediator mediator, int id) => mediator.Send(new OpenNotice { NoticeId = id })
             )
             .AddNote("User opens a notice, returns the content")
+            .RequireAuthorization(signedInPolicy);
+
+        apiNotices
+            .MapPost(
+                "/{id:int}/respond",
+                (IMediator mediator, int id, RespondNoticeQuestions request) => mediator.Send(request)
+            )
+            .AddNote("User submits response for notice questions")
             .RequireAuthorization(signedInPolicy);
 
         apiNotices

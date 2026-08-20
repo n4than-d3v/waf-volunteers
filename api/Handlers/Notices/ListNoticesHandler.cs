@@ -29,7 +29,8 @@ public class ListNoticesHandler : IRequestHandler<ListNotices, IResult>
         var account = await _repository.Get<Account>(_userContext.Id, tracking: false);
         if (account == null) return Results.BadRequest();
 
-        var notices = await _repository.GetAll<Notice>(x => true, tracking: false);
+        var notices = await _repository.GetAll<Notice>(x => true, tracking: false,
+            action: x => x.Include(y => y.Questions));
         var interactions = await _repository.GetAll<NoticeInteraction>(
             x => x.Account.Id == _userContext.Id, tracking: false,
             action: x => x.Include(y => y.Account).Include(y => y.Notice));
@@ -47,6 +48,7 @@ public class ListNoticesHandler : IRequestHandler<ListNotices, IResult>
                 x.Created,
                 x.SendAt,
                 x.Sent,
+                HasQuestions = x.Questions?.Any() ?? false,
                 HasAttachments = attachments.Any(y => y.Notice.Id == x.Id),
                 Read = interactions.Any(y => y.Notice.Id == x.Id)
             }).ToArray());

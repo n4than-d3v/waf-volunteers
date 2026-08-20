@@ -16,12 +16,28 @@ export interface Notice {
   read: boolean;
   hasAttachments: boolean;
   attachments: NoticeAttachment[];
+  questions: NoticeQuestion[];
+  responses: NoticeResponse[];
 }
 
 export interface NoticeAttachment {
   id: number;
   fileName: string;
   contentType: string;
+}
+
+export interface NoticeQuestion {
+  title: string;
+  allowMultiple: boolean;
+  allowOther: boolean;
+  answers: string[];
+  id: number;
+}
+
+export interface NoticeResponse {
+  responded: string;
+  answers: string[];
+  viewQuestionId: number;
 }
 
 export const initialNoticesState: NoticesState = {

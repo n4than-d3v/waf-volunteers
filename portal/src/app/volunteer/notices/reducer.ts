@@ -7,6 +7,9 @@ import {
   openNotice,
   openNoticeError,
   openNoticeSuccess,
+  sendNoticeResponse,
+  sendNoticeResponseError,
+  sendNoticeResponseSuccess,
 } from './actions';
 
 export const noticesReducer = createReducer<NoticesState>(
@@ -45,5 +48,20 @@ export const noticesReducer = createReducer<NoticesState>(
     ...state,
     loading: false,
     error: true,
-  }))
+  })),
+  on(sendNoticeResponse, (state) => ({
+    ...state,
+    loading: true,
+    error: false,
+  })),
+  on(sendNoticeResponseSuccess, (state) => ({
+    ...state,
+    loading: false,
+    error: false,
+  })),
+  on(sendNoticeResponseError, (state) => ({
+    ...state,
+    loading: false,
+    error: true,
+  })),
 );

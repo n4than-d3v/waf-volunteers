@@ -17,4 +17,71 @@
 </div>
 }
 <div class="margin-left-lists" [innerHTML]="getNoticeContent(notice)"></div>
-} }
+@if (notice.questions && notice.questions.length) {
+<div class="questions">
+  @for (question of notice.questions; track question.id; let i = $index) {
+  <div class="question">
+    <h2>{{ question.title }}</h2>
+    @let response = getResponse(notice, question.id); @if (response) {
+    <p>{{ response }}</p>
+    } @else {
+    <span class="response-required"></span>
+    @for (answer of question.answers; track answer; let j = $index) {
+    <div class="field answer">
+      <label for="answer-{{ i }}-{{ j }}">{{ answer }}</label>
+
+      @if (question.allowMultiple) {
+      <input
+        type="checkbox"
+        id="answer-{{ i }}-{{ j }}"
+        [name]="'question-' + question.id"
+        [value]="answer"
+        [checked]="isSelected(question.id, answer)"
+        (change)="toggleAnswer(
+          question.id,
+          answer,
+          $any($event.target).checked
+        )"
+      />
+      } @else {
+      <input
+        type="radio"
+        id="answer-{{ i }}-{{ j }}"
+        [name]="'question-' + question.id"
+        [value]="answer"
+        [checked]="isSelected(question.id, answer)"
+        (change)="selectAnswer(question.id, answer)"
+      />
+      }
+    </div>
+    } @if (question.allowOther) {
+    <div class="field answer">
+      <label for="answer-{{ i }}-other">Other</label>
+
+      <input
+        [type]="question.allowMultiple ? 'checkbox' : 'radio'"
+        id="answer-{{ i }}-other"
+        [name]="'question-' + question.id"
+        [checked]="otherAnswers[question.id] !== undefined"
+        (change)="onOtherChange(question.id, question.allowMultiple, $event)"
+      />
+    </div>
+
+    @if (otherAnswers[question.id] !== undefined) {
+    <div class="field answer other">
+      <input
+        type="text"
+        id="answer-{{ i }}-other-text"
+        [name]="'question-' + question.id + '-other-text'"
+        [(ngModel)]="otherAnswers[question.id]"
+      />
+    </div>
+    } } }
+  </div>
+  } @if ((notice.responses || []).length !== (notice.questions || []).length) {
+  <button class="button button--primary" (click)="submit()">
+    Send response
+  </button>
+  }
+</div>
+} } }

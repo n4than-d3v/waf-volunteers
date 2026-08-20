@@ -14,6 +14,9 @@ import {
   openNotice,
   openNoticeError,
   openNoticeSuccess,
+  sendNoticeResponse,
+  sendNoticeResponseError,
+  sendNoticeResponseSuccess,
 } from './actions';
 
 @Injectable()
@@ -27,10 +30,10 @@ export class NoticesEffects {
       switchMap(() =>
         this.http.get<Notice[]>('notices').pipe(
           map((notices) => getNoticesSuccess({ notices })),
-          catchError(() => of(getNoticesError()))
-        )
-      )
-    )
+          catchError(() => of(getNoticesError())),
+        ),
+      ),
+    ),
   );
 
   openNotice$ = createEffect(() =>
@@ -39,10 +42,22 @@ export class NoticesEffects {
       switchMap((action) =>
         this.http.post<Notice>(`notices/${action.id}/open`, {}).pipe(
           map((notice) => openNoticeSuccess({ notice })),
-          catchError(() => of(openNoticeError()))
-        )
-      )
-    )
+          catchError(() => of(openNoticeError())),
+        ),
+      ),
+    ),
+  );
+
+  sendNoticeResponse$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(sendNoticeResponse),
+      switchMap((action) =>
+        this.http.post(`notices/${action.id}/respond`, action).pipe(
+          map((_) => openNotice({ id: action.id })),
+          catchError(() => of(sendNoticeResponseError())),
+        ),
+      ),
+    ),
   );
 
   closeNotice$ = createEffect(() =>
@@ -51,10 +66,10 @@ export class NoticesEffects {
       switchMap((action) =>
         this.http.post<Notice>(`notices/${action.id}/close`, {}).pipe(
           map((notice) => closeNoticeSuccess({ notice })),
-          catchError(() => of(closeNoticeError()))
-        )
-      )
-    )
+          catchError(() => of(closeNoticeError())),
+        ),
+      ),
+    ),
   );
 
   downloadNoticeAttachment$ = createEffect(
@@ -76,8 +91,8 @@ export class NoticesEffects {
               window.URL.revokeObjectURL(url);
             });
           return of();
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 }

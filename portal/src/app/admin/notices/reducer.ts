@@ -19,6 +19,9 @@ import {
   viewNoticeInteractionSummary,
   viewNoticeInteractionSummaryError,
   viewNoticeInteractionSummarySuccess,
+  viewNoticeQuestionResponses,
+  viewNoticeQuestionResponsesError,
+  viewNoticeQuestionResponsesSuccess,
 } from './actions';
 
 export const noticeManagementReducer = createReducer<NoticeManagementState>(
@@ -55,6 +58,26 @@ export const noticeManagementReducer = createReducer<NoticeManagementState>(
     error: false,
   })),
   on(viewNoticeInteractionsError, (state) => ({
+    ...state,
+    loading: false,
+    error: true,
+  })),
+  on(viewNoticeQuestionResponses, (state) => ({
+    ...state,
+    questionResponses: {
+      questions: [],
+      users: [],
+    },
+    loading: true,
+    error: false,
+  })),
+  on(viewNoticeQuestionResponsesSuccess, (state, { questionResponses }) => ({
+    ...state,
+    questionResponses,
+    loading: false,
+    error: false,
+  })),
+  on(viewNoticeQuestionResponsesError, (state) => ({
     ...state,
     loading: false,
     error: true,

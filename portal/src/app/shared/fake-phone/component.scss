@@ -69,7 +69,8 @@
   margin-bottom: 0.5rem;
 }
 
-:host ::ng-deep p {
+:host ::ng-deep p,
+:host ::ng-deep label {
   font-size: 16px;
   min-height: 1.125rem;
 }

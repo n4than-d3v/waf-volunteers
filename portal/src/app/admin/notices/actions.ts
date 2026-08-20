@@ -1,5 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { Interaction, InteractionSummary, Notice } from './state';
+import {
+  Interaction,
+  InteractionSummary,
+  Notice,
+  QuestionResponses,
+} from './state';
 
 export const getNotices = createAction('[Admin Notices] Get notices');
 export const getNoticesSuccess = createAction(
@@ -17,6 +22,12 @@ export const createNotice = createAction(
     content: string;
     sendAt: string | null;
     files: File[];
+    questions: {
+      title: string;
+      allowMultiple: boolean;
+      allowOther: boolean;
+      answers: string[];
+    }[];
     roles: number;
   }>(),
 );
@@ -55,6 +66,18 @@ export const viewNoticeInteractionsSuccess = createAction(
 );
 export const viewNoticeInteractionsError = createAction(
   '[Admin Notices] View notice interactions: error',
+);
+
+export const viewNoticeQuestionResponses = createAction(
+  '[Admin Notices] View notice question responses',
+  props<{ id: number }>(),
+);
+export const viewNoticeQuestionResponsesSuccess = createAction(
+  '[Admin Notices] View notice question responses: success',
+  props<{ questionResponses: QuestionResponses }>(),
+);
+export const viewNoticeQuestionResponsesError = createAction(
+  '[Admin Notices] View notice question responses: error',
 );
 
 export const viewNoticeInteractionSummary = createAction(

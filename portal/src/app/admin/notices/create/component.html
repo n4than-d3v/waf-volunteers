@@ -51,6 +51,76 @@
       <label for="files">Attachments</label>
       <input id="files" type="file" multiple (change)="onFileChange($event)" />
     </div>
+    <div formArrayName="questions">
+      <div
+        class="question"
+        *ngFor="let fg of form.controls.questions.controls; let i = index"
+        [formGroupName]="i"
+      >
+        <div class="field">
+          <label for="title-{{ i }}">Title</label>
+          <input id="title-{{ i }}" type="text" formControlName="title" />
+        </div>
+
+        <div class="field">
+          <label for="allowMultiple-{{ i }}">Allow multiple</label>
+          <input
+            id="allowMultiple-{{ i }}"
+            type="checkbox"
+            formControlName="allowMultiple"
+          />
+        </div>
+
+        <div class="field">
+          <label for="allowOther-{{ i }}">Allow other</label>
+          <input
+            id="allowOther-{{ i }}"
+            type="checkbox"
+            formControlName="allowOther"
+          />
+        </div>
+
+        <div formArrayName="answers">
+          <div
+            class="question-answer"
+            *ngFor="let fga of fg.controls.answers.controls; let j = index"
+            [formGroupName]="j"
+          >
+            <div class="field">
+              <div>
+                <label for="answer-{{ i }}-{{ j }}">Answer {{ j + 1 }}</label>
+                <input
+                  id="answer-{{ i }}-{{ j }}"
+                  type="text"
+                  formControlName="answer"
+                />
+              </div>
+              <button
+                class="button button--warning"
+                (click)="removeAnswer(i, j)"
+              >
+                Remove answer
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="buttons">
+          <button class="button button--secondary" (click)="addAnswer(i)">
+            Add an answer
+          </button>
+          <button class="button button--warning" (click)="removeQuestion(i)">
+            Remove question
+          </button>
+        </div>
+      </div>
+    </div>
+    <button
+      id="add-question"
+      class="button button--primary"
+      (click)="addQuestion()"
+    >
+      Add a question
+    </button>
     <br />
     <p>
       Audience
@@ -80,6 +150,38 @@
       <div
         [innerHTML]="sanitizer.bypassSecurityTrustHtml(form.controls.content.value || '')"
       ></div>
+      @if (form.controls.questions && form.controls.questions.length) { @for
+      (question of form.controls.questions.controls; track
+      question.controls.title.value) {
+      <div class="push-top">
+        <h3>{{ question.controls.title.value }}</h3>
+        @for (answer of question.controls.answers.controls; track
+        answer.controls.answer.value) {
+        <div class="field">
+          <label>{{ answer.controls.answer.value }}</label>
+          <input
+            type="{{ question.controls.allowMultiple.value ? 'checkbox' : 'radio' }}"
+            name="answers"
+          />
+        </div>
+        } @if (question.controls.allowOther.value) {
+        <div class="field">
+          <label>Other</label>
+          <input
+            type="{{ question.controls.allowMultiple.value ? 'checkbox' : 'radio' }}"
+            name="answers"
+          />
+        </div>
+        <div class="field">
+          <input type="text" />
+        </div>
+        }
+      </div>
+      }
+      <div>
+        <button class="button button--primary">Submit</button>
+      </div>
+      }
     </fake-phone>
   </div>
 </div>

@@ -13,11 +13,12 @@ import {
   selectNoticesError,
   selectNoticesLoading,
 } from '../selectors';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import { RouterLink } from '@angular/router';
 import { createNotice } from '../actions';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   FormsModule,
@@ -36,6 +37,7 @@ import moment from 'moment';
   imports: [
     AsyncPipe,
     SpinnerComponent,
+    CommonModule,
     RouterLink,
     NgxEditorComponent,
     NgxEditorMenuComponent,
@@ -58,6 +60,18 @@ export class AdminNoticeCreateComponent implements OnDestroy {
     sendAtDate: new FormControl(moment().format('YYYY-MM-DD')),
     sendAtTime: new FormControl(moment().add(1, 'hour').format('HH:00')),
     files: new FormControl<File[] | null>(null),
+    questions: new FormArray<
+      FormGroup<{
+        title: FormControl<string | null>;
+        allowMultiple: FormControl<boolean | null>;
+        allowOther: FormControl<boolean | null>;
+        answers: FormArray<
+          FormGroup<{
+            answer: FormControl<string | null>;
+          }>
+        >;
+      }>
+    >([]),
     roles: new FormGroup({
       BEACON_ANIMAL_HUSBANDRY: new FormControl(false),
       BEACON_RECEPTIONIST: new FormControl(false),
@@ -93,6 +107,38 @@ export class AdminNoticeCreateComponent implements OnDestroy {
     this.loading$ = this.store.select(selectNoticesLoading);
     this.error$ = this.store.select(selectNoticesError);
     this.editor = new Editor();
+  }
+
+  addQuestion() {
+    const formGroup = new FormGroup({
+      title: new FormControl(''),
+      allowMultiple: new FormControl(false),
+      allowOther: new FormControl(false),
+      answers: new FormArray<
+        FormGroup<{
+          answer: FormControl<string | null>;
+        }>
+      >([]),
+    });
+    this.form.controls.questions.push(formGroup);
+  }
+
+  removeQuestion(questionIndex: number) {
+    this.form.controls.questions.removeAt(questionIndex);
+  }
+
+  addAnswer(questionIndex: number) {
+    this.form.controls.questions.at(questionIndex).controls.answers.push(
+      new FormGroup({
+        answer: new FormControl(''),
+      }),
+    );
+  }
+
+  removeAnswer(questionIndex: number, answerIndex: number) {
+    this.form.controls.questions
+      .at(questionIndex)
+      .controls.answers.removeAt(answerIndex);
   }
 
   onFileChange(event: any) {
@@ -165,6 +211,12 @@ export class AdminNoticeCreateComponent implements OnDestroy {
         sendAt:
           this.form.value.schedule === 'later' ? sendAt.toISOString() : null,
         files: this.form.controls.files.value ?? [],
+        questions: this.form.controls.questions.value.map((q) => ({
+          title: q.title || '',
+          allowMultiple: q.allowMultiple || false,
+          allowOther: q.allowOther || false,
+          answers: q.answers?.map((a) => a.answer || '') || [],
+        })),
         roles:
           (this.form.controls.roles.controls.BEACON_ANIMAL_HUSBANDRY.value
             ? Roles.BEACON_ANIMAL_HUSBANDRY

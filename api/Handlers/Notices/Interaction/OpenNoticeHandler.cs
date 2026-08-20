@@ -25,7 +25,8 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
 
     public async Task<IResult> Handle(OpenNotice request, CancellationToken cancellationToken)
     {
-        var notice = await _repository.Get<Notice>(request.NoticeId);
+        var notice = await _repository.Get<Notice>(request.NoticeId,
+            action: x => x.Include(y => y.Questions));
         if (notice == null) return Results.BadRequest();
 
         var account = await _repository.Get<Account>(_userContext.Id);
@@ -35,6 +36,10 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
             x => x.Notice.Id == notice.Id, tracking: false,
             action: x => x.Include(y => y.Notice));
 
+        var responses = await _repository.GetAll<NoticeQuestionResponse>(
+            x => x.Question.Notice.Id == notice.Id && x.Responder.Id == account.Id, false,
+            x => x.Include(y => y.Responder).Include(y => y.Question).ThenInclude(y => y.Notice));
+
         _repository.Create(new NoticeInteraction
         {
             Account = account,
@@ -42,6 +47,7 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
             Opened = DateTime.UtcNow,
             Closed = null
         });
+
         await _repository.SaveChangesAsync();
 
         return Results.Ok(new
@@ -53,6 +59,8 @@ public class OpenNoticeHandler : IRequestHandler<OpenNotice, IResult>
             notice.Sent,
             notice.Created,
             notice.Roles,
+            notice.Questions,
+            Responses = responses,
             Attachments = attachments.Select(x => new
             {
                 x.Id,

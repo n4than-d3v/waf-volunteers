@@ -283,18 +283,23 @@ public class RotaService : IRotaService
                     bool nameSet = false;
                     for (int i = 1; i <= 5; i++)
                     {
-                        if (
-                            sameFirstName.Count()
-                            == sameFirstName
-                                .Select(x => $"{x.FirstName} {x.LastName[..i]}")
-                                .Distinct()
-                                .Count()
-                        )
+                        // Prevent ArgumentOutOfRangeException if last name is shorter than 5 characters
+                        try
                         {
-                            volunteer.Name = $"{volunteer.FirstName} {volunteer.LastName[..i]}";
-                            nameSet = true;
-                            break;
+                            if (
+                                sameFirstName.Count()
+                                == sameFirstName
+                                    .Select(x => $"{x.FirstName} {x.LastName[..i]}")
+                                    .Distinct()
+                                    .Count()
+                            )
+                            {
+                                volunteer.Name = $"{volunteer.FirstName} {volunteer.LastName[..i]}";
+                                nameSet = true;
+                                break;
+                            }
                         }
+                        catch { break; }
                     }
                     if (!nameSet)
                     {

@@ -13,6 +13,8 @@ namespace Api.Handlers.Hospital.Patients.Outcome;
 public class MarkPenNeedsCleaning : IRequest<IResult>
 {
     public int Id { get; set; }
+
+    public bool IsMovingIntoQuarantine { get; set; } = false;
 }
 
 public class MarkPenNeedsCleaningHandler : IRequestHandler<MarkPenNeedsCleaning, IResult>
@@ -26,12 +28,14 @@ public class MarkPenNeedsCleaningHandler : IRequestHandler<MarkPenNeedsCleaning,
 
     public async Task<IResult> Handle(MarkPenNeedsCleaning request, CancellationToken cancellationToken)
     {
-        var pen = await _repository.Get<Pen>(request.Id, action: x => x.Include(y => y.Patients));
+        var pen = await _repository.Get<Pen>(request.Id, action: x => x.Include(y => y.Patients).Include(y => y.Area));
         if (pen == null) return Results.BadRequest();
 
         if (pen.Empty)
         {
-            pen.CleanStatus = PenCleanStatus.NeedsCleaning;
+            pen.CleanStatus = (pen.Area.IsQuarantine || request.IsMovingIntoQuarantine)
+                ? PenCleanStatus.NeedsDeepCleaning
+                : PenCleanStatus.NeedsCleaning;
 
             var concerns = await _repository.GetAll<HusbandryConcern>(
                 x => x.Pen.Id == pen.Id && x.Checked == false,

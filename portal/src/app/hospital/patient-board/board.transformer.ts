@@ -41,6 +41,7 @@ function isTickedOff(
 ) {
   if (
     pen.cleanStatus === PenCleanStatus.NeedsCleaning ||
+    pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning ||
     pen.cleanStatus === PenCleanStatus.NeedsSettingUp
   ) {
     return false;
@@ -88,7 +89,10 @@ function shouldShowPen(
   onlyDueAtHour: number,
   onlyDueAtMinute: number,
 ): boolean {
-  if (pen.cleanStatus === PenCleanStatus.NeedsCleaning) {
+  if (
+    pen.cleanStatus === PenCleanStatus.NeedsCleaning ||
+    pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning
+  ) {
     return showPensNeedCleaning;
   } else if (pen.cleanStatus === PenCleanStatus.NeedsSettingUp) {
     return showPensNeedSettingUp;

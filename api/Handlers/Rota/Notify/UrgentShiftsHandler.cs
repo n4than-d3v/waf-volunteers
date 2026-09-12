@@ -115,7 +115,10 @@ public class UrgentShiftsHandler : IRequestHandler<UrgentShifts, IResult>
             .GroupBy(x => x.Split(' ')[0])
             .Select(g =>
             {
-                var times = g.Select(x => x.Split(' ')[1]).ToList();
+                var times = g
+                    .Select(x => x.Split(' ')[1])
+                    .Distinct()
+                    .ToList();
 
                 return $"{g.Key} {NaturalJoin(times)}";
             })

@@ -1952,7 +1952,29 @@ reportConcern) { @if (reportConcern.error) {
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
     <div class="patients">
-      <span class="instruction">Please <u>deep</u> clean</span>
+      <span class="instruction instruction--orange">Needs cleaning</span>
+      <img class="clean-img" src="/images/board/clean-regular.svg" />
+    </div>
+    <div class="tasks">
+      <div class="task task--current-shift task--relevant">
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+      </div>
+    </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning) {
+    <div class="patients">
+      <span class="instruction instruction--red"
+        ><u>Deep</u> clean with Safe 4
+        <span class="mini-text">[1:10]</span>
+      </span>
+      <img class="clean-img" src="/images/board/clean-biohazard.svg" />
     </div>
     <div class="tasks">
       <div class="task task--current-shift task--relevant">
@@ -2256,9 +2278,34 @@ reportConcern) { @if (reportConcern.error) {
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
     <div class="patients">
-      <span class="instruction">Please <u>deep</u> clean</span>
+      <span class="instruction">Needs cleaning</span>
     </div>
-    <div class="force-feeds"></div>
+    <div class="force-feeds">
+      <img class="clean-img" src="/images/board/clean-regular.svg" />
+    </div>
+    <div class="feeding-times tasks">
+      <div class="task task--current-shift task--relevant">
+        <p class="time time--clean">
+          <img src="/images/board/clean.svg" alt="Clean" />
+        </p>
+        <button
+          (click)="setCleanStatus(pen, PenCleanStatus.None)"
+          class="button button--secondary-invert"
+        >
+          &nbsp;
+        </button>
+      </div>
+    </div>
+    } @else if (pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning) {
+    <div class="patients">
+      <span class="instruction">
+        <u>Deep</u> clean with Safe 4
+        <span class="mini-text">[1:10]</span>
+      </span>
+    </div>
+    <div class="force-feeds">
+      <img class="clean-img" src="/images/board/clean-biohazard.svg" />
+    </div>
     <div class="feeding-times tasks">
       <div class="task task--current-shift task--relevant">
         <p class="time time--clean">

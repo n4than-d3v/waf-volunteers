@@ -110,6 +110,11 @@
       }
     }
 
+    .clean-img {
+      max-width: 2rem;
+      max-height: 2rem;
+    }
+
     .patients {
       text-align: left;
       margin-right: auto;
@@ -126,6 +131,10 @@
 
         &.instruction--green {
           color: var(--theme-color-4);
+        }
+
+        .mini-text {
+          font-size: 0.8rem;
         }
       }
 

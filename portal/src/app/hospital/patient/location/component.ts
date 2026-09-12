@@ -164,7 +164,8 @@ export class HospitalPatientLocationComponent implements OnInit {
         display: pen.empty
           ? pen.cleanStatus === PenCleanStatus.None
             ? `⬜ ${pen.reference} (available)`
-            : pen.cleanStatus === PenCleanStatus.NeedsCleaning
+            : pen.cleanStatus === PenCleanStatus.NeedsCleaning ||
+                pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning
               ? `🟥 ${pen.reference} (dirty)`
               : pen.cleanStatus === PenCleanStatus.NeedsSettingUp
                 ? `🟧 ${pen.reference} (not set up)`

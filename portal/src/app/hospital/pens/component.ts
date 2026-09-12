@@ -27,6 +27,7 @@ export class HospitalPenManagementComponent implements OnInit, OnDestroy {
   inUse: boolean = true;
   available: boolean = true;
   needsCleaning: boolean = true;
+  needsDeepCleaning: boolean = true;
   needsSettingUp: boolean = true;
   readyToUse: boolean = true;
   custom: boolean = true;
@@ -65,6 +66,11 @@ export class HospitalPenManagementComponent implements OnInit, OnDestroy {
     if (pen.cleanStatus === PenCleanStatus.None && !this.available)
       return false;
     if (pen.cleanStatus === PenCleanStatus.NeedsCleaning && !this.needsCleaning)
+      return false;
+    if (
+      pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning &&
+      !this.needsDeepCleaning
+    )
       return false;
     if (
       pen.cleanStatus === PenCleanStatus.NeedsSettingUp &&

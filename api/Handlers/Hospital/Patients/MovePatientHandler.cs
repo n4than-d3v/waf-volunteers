@@ -42,7 +42,7 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 
         var patients = await _repository.GetAll<Patient>(x => patientIds.Contains(x.Id), action: x => x.Include(y => y.Pen).Include(y => y.QuarantineReason));
 
-        var pen = await _repository.Get<Pen>(request.PenId, action: x => x.Include(y => y.Patients));
+        var pen = await _repository.Get<Pen>(request.PenId, action: x => x.Include(y => y.Patients).Include(y => y.Area));
         if (pen == null) return Results.BadRequest();
 
         QuarantineReason? quarantineReason = null;
@@ -81,7 +81,6 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
             pen.CleanStatus = PenCleanStatus.None;
         }
 
-
         await _repository.SaveChangesAsync();
 
         if (request.NewAreaId.HasValue)
@@ -95,7 +94,11 @@ public class MovePatientHandler : IRequestHandler<MovePatient, IResult>
 
         foreach (var previousPenId in previousPenIds.Distinct())
         {
-            await _mediator.Send(new MarkPenNeedsCleaning { Id = previousPenId }, cancellationToken);
+            await _mediator.Send(new MarkPenNeedsCleaning
+            {
+                Id = previousPenId,
+                IsMovingIntoQuarantine = pen.Area.IsQuarantine
+            }, cancellationToken);
         }
 
         return Results.NoContent();

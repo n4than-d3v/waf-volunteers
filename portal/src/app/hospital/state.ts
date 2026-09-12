@@ -744,6 +744,7 @@ export enum PenCleanStatus {
   NeedsSettingUp = 2,
   ReadyToUse = 3,
   Custom = 4,
+  NeedsDeepCleaning = 5,
 }
 
 export interface Area {

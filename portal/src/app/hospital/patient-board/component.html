@@ -1951,8 +1951,10 @@ reportConcern) { @if (reportConcern.error) {
     </div>
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
-    <div class="patients">
-      <span class="instruction instruction--orange">Needs cleaning</span>
+    <div class="patients patients--clean">
+      <span class="instruction instruction--orange">
+        Please <u>deep</u> clean
+      </span>
       <img class="clean-img" src="/images/board/clean-regular.svg" />
     </div>
     <div class="tasks">
@@ -1969,9 +1971,9 @@ reportConcern) { @if (reportConcern.error) {
       </div>
     </div>
     } @else if (pen.cleanStatus === PenCleanStatus.NeedsDeepCleaning) {
-    <div class="patients">
-      <span class="instruction instruction--red"
-        ><u>Deep</u> clean with Safe 4
+    <div class="patients patients--clean">
+      <span class="instruction instruction--red">
+        Please <u>deep</u> clean with Safe 4
         <span class="mini-text">[1:10]</span>
       </span>
       <img class="clean-img" src="/images/board/clean-biohazard.svg" />
@@ -2277,8 +2279,8 @@ reportConcern) { @if (reportConcern.error) {
     </div>
     @if (pen.cleanStatus !== PenCleanStatus.None) { @if (pen.cleanStatus ===
     PenCleanStatus.NeedsCleaning) {
-    <div class="patients">
-      <span class="instruction">Needs cleaning</span>
+    <div class="patients patients--clean">
+      <span class="instruction"> Please <u>deep</u> clean </span>
     </div>
     <div class="force-feeds">
       <img class="clean-img" src="/images/board/clean-regular.svg" />

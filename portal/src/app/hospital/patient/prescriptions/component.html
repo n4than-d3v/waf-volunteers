@@ -77,7 +77,7 @@ patient.prescriptionMedications.length === 0) {
         >
           🗑️
         </button>
-        } @else {
+        } @else if (!isVetOnlyPrescription(prescription)) {
         <button
           (click)="prepareEditInstruction(prescription)"
           class="button button--none"

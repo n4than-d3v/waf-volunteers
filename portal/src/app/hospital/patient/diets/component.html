@@ -1,6 +1,8 @@
 <div class="wrapper">
   @let other = otherPatientsHasCustom(); @if (!customising) { @if
-  (patient.feeding.length > 0) {
+  (patient.isVetTeamOnly) {
+  <p class="is-vet-team-only">🚩 This patient is flagged as vet team only</p>
+  } @if (patient.feeding.length > 0) {
   <p class="is-custom">🍳 This patient has a custom diet</p>
   } @else if (other) {
   <p class="other-is-custom">
@@ -53,6 +55,20 @@
       class="button button--secondary-invert"
     >
       🔄 Reset
+    </button>
+    } @if (patient.isVetTeamOnly) {
+    <button
+      (click)="setVetOnlyStatus(false)"
+      class="button button--secondary-invert"
+    >
+      🏳️ Unflag as vet team only
+    </button>
+    } @else {
+    <button
+      (click)="setVetOnlyStatus(true)"
+      class="button button--secondary-invert"
+    >
+      🚩 Flag as vet team only
     </button>
     }
   </div>
@@ -198,6 +214,10 @@
   }
 </div>
 @if (task$ | async; as task) { @if (task.loading) {
+<spinner></spinner>
+} @else if (task.error) {
+<div class="error">Error occurred</div>
+} } @if (vetOnlyTask$ | async; as task) { @if (task.loading) {
 <spinner></spinner>
 } @else if (task.error) {
 <div class="error">Error occurred</div>

@@ -393,6 +393,7 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
                     .Select(p => p.QuarantineReason)
                     .OrderBy(p => p.Order)
                     .FirstOrDefault();
+                if (penPatients.Any(p => p.IsVetTeamOnly)) tags.Add("Vet team only");
                 var medsInChickAm = administrationLocation.HasFlag(AdministrationLocation.InChickAM);
                 var medsInChickPm = administrationLocation.HasFlag(AdministrationLocation.InChickPM);
                 if (medsInChickAm && medsInChickPm) tags.Add("Meds in chick AM + PM");

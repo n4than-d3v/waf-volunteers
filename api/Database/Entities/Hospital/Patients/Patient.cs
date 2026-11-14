@@ -23,6 +23,7 @@ public class Patient : Entity
     public SuspectedSpecies SuspectedSpecies { get; set; }
     public List<AdmissionReason> AdmissionReasons { get; set; }
     public bool IsRescue { get; set; }
+    public bool IsVetTeamOnly { get; set; }
 
     #endregion
 

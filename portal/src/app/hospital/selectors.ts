@@ -268,3 +268,8 @@ export const selectUpdateReleasePlan = createSelector(
   selectHospitalState,
   (state) => state.updateReleasePlan,
 );
+
+export const selectSetVetOnlyStatus = createSelector(
+  selectHospitalState,
+  (state) => state.setVetOnlyStatus,
+);

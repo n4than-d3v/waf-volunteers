@@ -122,6 +122,17 @@
       [isVet]="isVet"
     ></hospital-patient-admission>
   </section>
+  <section>
+    <h3>Notes</h3>
+    <hospital-patient-notes
+      [patient]="patient.data"
+      [isVet]="isVet"
+      [canEditAfterDisposition]="canEditAfterDisposition"
+      [exporting]="exporting"
+    ></hospital-patient-notes>
+  </section>
+</div>
+<div class="sections">
   @if (isVet) {
   <section>
     <h3>Intake exam</h3>

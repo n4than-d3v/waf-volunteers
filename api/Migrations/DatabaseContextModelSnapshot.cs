@@ -1296,6 +1296,9 @@ namespace Api.Migrations
                     b.Property<bool>("IsRescue")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsVetTeamOnly")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("LastUpdatedDetails")
                         .HasColumnType("timestamp with time zone");
 

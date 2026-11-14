@@ -337,4 +337,8 @@ export class HospitalPatientPrescriptionsComponent implements OnInit {
     );
     this.reset();
   }
+
+  isVetOnlyPrescription(p: PrescriptionInstruction): boolean {
+    return p.instructions === 'Top up food & water. Clean cage if needed.';
+  }
 }

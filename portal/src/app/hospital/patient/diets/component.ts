@@ -19,8 +19,17 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectFoods, selectUpdateDiets } from '../../selectors';
-import { getFoods, setTab, updatePatientBasicDetails } from '../../actions';
+import {
+  selectFoods,
+  selectSetVetOnlyStatus,
+  selectUpdateDiets,
+} from '../../selectors';
+import {
+  getFoods,
+  setTab,
+  setVetTeamStatus,
+  updatePatientBasicDetails,
+} from '../../actions';
 import { SpinnerComponent } from '../../../shared/spinner/component';
 import {
   convertTime,
@@ -49,6 +58,7 @@ export class HospitalPatientDietsComponent implements OnInit {
   foods$: Observable<ReadOnlyWrapper<Food[]>>;
 
   task$: Observable<Task>;
+  vetOnlyTask$: Observable<Task>;
 
   PatientStatus = PatientStatus;
 
@@ -78,6 +88,7 @@ export class HospitalPatientDietsComponent implements OnInit {
   constructor(private store: Store) {
     this.foods$ = this.store.select(selectFoods);
     this.task$ = this.store.select(selectUpdateDiets);
+    this.vetOnlyTask$ = this.store.select(selectSetVetOnlyStatus);
   }
 
   ngOnInit() {
@@ -244,6 +255,16 @@ export class HospitalPatientDietsComponent implements OnInit {
   showFeeding(index: number) {
     const group = this.dietForm.controls.feeding.at(index);
     return Number(group.controls.quantityValue.value || '0') != -1;
+  }
+
+  setVetOnlyStatus(status: boolean) {
+    this.saving = true;
+    this.store.dispatch(
+      setVetTeamStatus({
+        patientId: this.patient.id,
+        isVetTeamOnly: status,
+      }),
+    );
   }
 
   reset() {

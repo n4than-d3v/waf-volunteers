@@ -1019,6 +1019,21 @@ export const setPenCleanStatusError = createAction(
   '[HMS-V] Set pen clean status: error',
 );
 
+export const setVetTeamStatus = createAction(
+  '[HMS-V] Set vet team status',
+  props<{
+    patientId: number;
+    isVetTeamOnly: boolean;
+  }>(),
+);
+export const setVetTeamStatusSuccess = createAction(
+  '[HMS-V] Set vet team status: success',
+  props<{ patientId: number }>(),
+);
+export const setVetTeamStatusError = createAction(
+  '[HMS-V] Set vet team status: error',
+);
+
 export const showEmbeddedContent = createAction(
   '[HMS-V] Show embedded content',
   props<{ attachment: EmbeddedContent }>(),

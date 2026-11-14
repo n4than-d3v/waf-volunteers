@@ -245,6 +245,9 @@ import {
   getQuarantineReasons,
   getQuarantineReasonsSuccess,
   getQuarantineReasonsError,
+  setVetTeamStatus,
+  setVetTeamStatusSuccess,
+  setVetTeamStatusError,
 } from './actions';
 
 @Injectable()
@@ -1990,6 +1993,35 @@ export class HospitalEffects {
     this.actions$.pipe(
       ofType(markCustomTaskDoneSuccess),
       switchMap((action) => of(viewDailyTasks({ date: action.date }))),
+    ),
+  );
+
+  // Set vet only status
+
+  setVetOnlyStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(setVetTeamStatus),
+      switchMap((action) =>
+        this.http
+          .post(`hospital/patients/${action.patientId}/vet-only`, action)
+          .pipe(
+            map(() =>
+              setVetTeamStatusSuccess({
+                patientId: action.patientId,
+              }),
+            ),
+            catchError(() => of(setVetTeamStatusError())),
+          ),
+      ),
+    ),
+  );
+
+  setVetOnlyStatusSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(setVetTeamStatusSuccess),
+      switchMap((action) =>
+        of(getPatient({ id: action.patientId, silent: true })),
+      ),
     ),
   );
 }

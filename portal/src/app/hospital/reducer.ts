@@ -201,6 +201,9 @@ import {
   getQuarantineReasons,
   getQuarantineReasonsSuccess,
   getQuarantineReasonsError,
+  setVetTeamStatus,
+  setVetTeamStatusSuccess,
+  setVetTeamStatusError,
 } from './actions';
 
 export const hospitalReducer = createReducer<HospitalState>(
@@ -1560,6 +1563,31 @@ export const hospitalReducer = createReducer<HospitalState>(
     ...state,
     markCustomTaskDone: {
       ...state.markCustomTaskDone,
+      loading: false,
+      error: true,
+    },
+  })),
+  on(setVetTeamStatus, (state) => ({
+    ...state,
+    setVetOnlyStatus: {
+      ...state.setVetOnlyStatus,
+      loading: true,
+      success: false,
+      error: false,
+    },
+  })),
+  on(setVetTeamStatusSuccess, (state) => ({
+    ...state,
+    setVetOnlyStatus: {
+      ...state.setVetOnlyStatus,
+      loading: false,
+      success: true,
+    },
+  })),
+  on(setVetTeamStatusError, (state) => ({
+    ...state,
+    setVetOnlyStatus: {
+      ...state.setVetOnlyStatus,
       loading: false,
       error: true,
     },

@@ -292,6 +292,15 @@ public partial class Program
 
         apiHospitalPatient
             .MapPost(
+                "/{id:int}/vet-only",
+                (IMediator mediator, int id, UpdatePatientVetOnlyStatus request) =>
+                    mediator.Send(request.WithId(id))
+            )
+            .AddNote("Vet updates patient vet only status")
+            .RequireAuthorization(vetPolicy);
+
+        apiHospitalPatient
+            .MapPost(
                 "/{id:int}/request-home-care",
                 (IMediator mediator, int id, RequireHomeCare request) =>
                     mediator.Send(request.WithId(id))

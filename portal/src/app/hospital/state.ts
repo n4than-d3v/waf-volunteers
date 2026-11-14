@@ -41,6 +41,7 @@ export interface HospitalState {
   markBoard: Task;
   setPenCleanStatus: Task;
   updateReleasePlan: Task;
+  setVetOnlyStatus: Task;
 
   // Patient details
   foods: ReadOnlyWrapper<Food[]>;
@@ -374,6 +375,7 @@ export interface Patient {
   plannedReleaseNotes: string | null;
   plannedReleaseLastUpdated: string | null;
   quarantineReason: QuarantineReason | null;
+  isVetTeamOnly: boolean;
 }
 
 export interface QuarantineReason {
@@ -1003,4 +1005,5 @@ export const initialHospitalState: HospitalState = {
   markCustomTaskDone: createTask(),
   dismissConcern: createTask(),
   updateReleasePlan: createTask(),
+  setVetOnlyStatus: createTask(),
 };

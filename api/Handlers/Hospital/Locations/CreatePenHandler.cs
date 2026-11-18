@@ -41,7 +41,7 @@ public class CreatePenHandler : IRequestHandler<CreatePen, IResult>
         if (string.IsNullOrWhiteSpace(input))
             return input;
 
-        input = input.Trim();
+        input = input.Replace(" ", "");
 
         var match = Regex.Match(input, @"^([A-Za-z]+)\s*(\d+)$");
         if (match.Success)

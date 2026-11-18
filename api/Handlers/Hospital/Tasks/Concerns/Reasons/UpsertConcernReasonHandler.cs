@@ -12,6 +12,7 @@ public class UpsertConcernReason : IRequest<IResult>
     public int? Id { get; set; }
     public int CategoryId { get; set; }
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertConcernReasonHandler : IRequestHandler<UpsertConcernReason, IResult>
@@ -37,6 +38,7 @@ public class UpsertConcernReasonHandler : IRequestHandler<UpsertConcernReason, I
 
             reason.Description = request.Description;
             reason.Category = category;
+            reason.Deleted = request.Deleted;
         }
         else
         {

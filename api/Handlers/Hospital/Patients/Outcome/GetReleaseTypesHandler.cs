@@ -19,7 +19,7 @@ public class GetReleaseTypesHandler : IRequestHandler<GetReleaseTypes, IResult>
 
     public async Task<IResult> Handle(GetReleaseTypes request, CancellationToken cancellationToken)
     {
-        var releaseTypes = await _repository.GetAll<ReleaseType>(x => true, tracking: false);
+        var releaseTypes = await _repository.GetAll<ReleaseType>(x => x.Deleted == false, tracking: false);
         return Results.Ok(releaseTypes);
     }
 }

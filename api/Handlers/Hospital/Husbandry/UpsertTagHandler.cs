@@ -9,6 +9,7 @@ public class UpsertTag : IRequest<IResult>
     public int? Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertTagHandler : IRequestHandler<UpsertTag, IResult>
@@ -30,6 +31,7 @@ public class UpsertTagHandler : IRequestHandler<UpsertTag, IResult>
 
             tag.Name = request.Name;
             tag.Description = request.Description;
+            tag.Deleted = request.Deleted;
         }
         else
         {

@@ -19,7 +19,7 @@ public class GetDispositionReasonsHandler : IRequestHandler<GetDispositionReason
 
     public async Task<IResult> Handle(GetDispositionReasons request, CancellationToken cancellationToken)
     {
-        var dispositionReasons = await _repository.GetAll<DispositionReason>(x => true, tracking: false);
+        var dispositionReasons = await _repository.GetAll<DispositionReason>(x => x.Deleted == false, tracking: false);
         return Results.Ok(dispositionReasons.OrderBy(x => x.Description));
     }
 }

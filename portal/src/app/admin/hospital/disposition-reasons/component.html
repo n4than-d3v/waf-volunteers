@@ -110,12 +110,20 @@
       <td>{{ dispositionReason.description }}</td>
       <td [innerHTML]="dispositionReason.communication"></td>
       <td>
-        <button
-          (click)="beginUpdate(dispositionReason)"
-          class="button button--secondary"
-        >
-          Edit
-        </button>
+        <div class="buttons">
+          <button
+            (click)="beginUpdate(dispositionReason)"
+            class="button button--secondary"
+          >
+            Edit
+          </button>
+          <button
+            (click)="delete(dispositionReason)"
+            class="button button--warning"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     } }

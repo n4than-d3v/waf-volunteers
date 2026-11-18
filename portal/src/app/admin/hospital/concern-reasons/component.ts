@@ -120,6 +120,19 @@ export class AdminHospitalConcernReasonsComponent implements OnInit {
     this.cancel();
   }
 
+  deleteCategory(category: ConcernCategoryReadOnly) {
+    this.store.dispatch(
+      updateConcernCategory({
+        concernCategory: {
+          id: category.id,
+          description: category.description,
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   createReason() {
     this.store.dispatch(
       createConcernReason({
@@ -139,6 +152,20 @@ export class AdminHospitalConcernReasonsComponent implements OnInit {
           id: this.updatingReason!.id,
           description: this.form.controls.description.value || '',
           categoryId: Number(this.form.controls.categoryId.value || 0),
+        },
+      }),
+    );
+    this.cancel();
+  }
+
+  deleteReason(category: ConcernCategoryReadOnly, reason: ConcernReason) {
+    this.store.dispatch(
+      updateConcernReason({
+        concernReason: {
+          id: reason.id,
+          description: reason.description,
+          categoryId: category.id,
+          deleted: true,
         },
       }),
     );

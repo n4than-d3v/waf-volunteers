@@ -23,20 +23,27 @@
   <h2>{{ adding ? 'Add' : 'Edit' }} custom pen</h2>
   <form [formGroup]="form">
     @if (adding) {
-    <div class="field">
-      <label for="boardId">Board</label>
+    <p>Boards</p>
+    <div class="hint">
+      If this is location-specific, you might want to also make it show in the
+      <b>"Everything"</b> board to avoid people missing it.
+    </div>
+    <div class="checkboxes">
       @if (boards$ | async; as boards) { @if (boards.loading) {
       <spinner></spinner>
       } @else if (boards.error) {
       <div class="error">Error occurred</div>
-      } @else if (boards.data) {
-      <select name="boardId" id="boardId" formControlName="boardId">
-        <option value="">Select a board</option>
-        @for (board of boards.data; track board.id) {
-        <option [value]="board.id">{{ board.name }}</option>
-        }
-      </select>
-      } }
+      } @else if (boards.data) { @for (board of boards.data; track board.id) {
+      <div class="field">
+        <label for="boardIds-{{ board.id }}">{{ board.name }}</label>
+        <input
+          type="checkbox"
+          [id]="'boardIds-' + board.id"
+          [checked]="form.controls.boardIds.value.includes(board.id)"
+          (change)="toggleBoard(board.id, $any($event.target).checked)"
+        />
+      </div>
+      } } }
     </div>
     }
     <div class="field">
@@ -169,7 +176,7 @@
 <table>
   <thead>
     <tr>
-      <th>Board</th>
+      <th>Boards</th>
       <th>Location</th>
       <th>Target</th>
       <th>Tags</th>
@@ -182,7 +189,7 @@
   <tbody>
     @for (pen of boardCustomPens.data || []; track pen.id) {
     <tr>
-      <td>{{ pen.exposeBoardName }}</td>
+      <td>{{ pen.exposeBoardNames.join(', ') }}</td>
       <td>{{ pen.title }}</td>
       <td>
         @for (item of pen.body; let last = $last; track item) { {{ item }}{{

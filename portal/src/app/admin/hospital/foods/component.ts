@@ -111,6 +111,24 @@ export class AdminHospitalFoodsComponent implements OnInit {
     this.cancel();
   }
 
+  delete(food: Food) {
+    this.store.dispatch(
+      updateFood({
+        food: {
+          id: food.id,
+          name: food.name,
+          notes: food.notes,
+          substitute: food.substitute,
+          forceFeed: food.forceFeed,
+          sumUp: food.sumUp,
+          sumUpMultiplier: food.sumUpMultiplier,
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getFoods());
   }

@@ -37,6 +37,7 @@ export interface CreateFoodCommand {
 
 export interface Food extends CreateFoodCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateTagCommand {
@@ -46,6 +47,7 @@ export interface CreateTagCommand {
 
 export interface Tag extends CreateTagCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateQuarantineReasonCommand {
@@ -55,6 +57,7 @@ export interface CreateQuarantineReasonCommand {
 
 export interface QuarantineReason extends CreateQuarantineReasonCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateCustomDailyTaskCommand {
@@ -64,6 +67,7 @@ export interface CreateCustomDailyTaskCommand {
 
 export interface CustomDailyTask extends CreateCustomDailyTaskCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateDispositionReasonCommand {
@@ -73,6 +77,7 @@ export interface CreateDispositionReasonCommand {
 
 export interface DispositionReason extends CreateDispositionReasonCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateReleaseTypeCommand {
@@ -81,6 +86,7 @@ export interface CreateReleaseTypeCommand {
 
 export interface ReleaseType extends CreateReleaseTypeCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateConcernCategoryCommand {
@@ -89,6 +95,7 @@ export interface CreateConcernCategoryCommand {
 
 export interface ConcernCategory extends CreateConcernCategoryCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface ConcernCategoryReadOnly extends ConcernCategory {
@@ -102,6 +109,7 @@ export interface CreateConcernReasonCommand {
 
 export interface ConcernReason extends CreateConcernReasonCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface CreateTransferLocationCommand {
@@ -110,6 +118,7 @@ export interface CreateTransferLocationCommand {
 
 export interface TransferLocation extends CreateTransferLocationCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface Medication {
@@ -118,6 +127,7 @@ export interface Medication {
   brands: string[];
   notes: string;
   concentrations: MedicationConcentration[];
+  deleted: boolean;
 }
 
 export interface MedicationConcentration {
@@ -127,6 +137,7 @@ export interface MedicationConcentration {
   concentrationUnit: string;
   defaultUnit: string;
   speciesDoses: MedicationConcentrationSpeciesDose[];
+  deleted: boolean;
 }
 
 export interface MedicationConcentrationSpeciesDose {
@@ -140,6 +151,7 @@ export interface MedicationConcentrationSpeciesDose {
   administrationMethod: AdministrationMethod;
   frequency: string;
   notes: string;
+  deleted: boolean;
 }
 
 export interface AdministrationMethod {
@@ -205,10 +217,12 @@ export interface CreateSpeciesVariantCommand {
 
 export interface UpdateSpeciesCommand extends CreateSpeciesCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface UpdateSpeciesVariantCommand extends CreateSpeciesVariantCommand {
   id: number;
+  deleted?: boolean;
 }
 
 export interface SpeciesVariant {
@@ -279,8 +293,8 @@ export interface PatientBoardMessage {
 
 export interface PatientBoardCustomPen {
   id: number;
-  exposeBoardId: number;
-  exposeBoardName: string;
+  exposeBoardIds: number[];
+  exposeBoardNames: string[];
   isActive: boolean;
   title: string;
   body: string[];

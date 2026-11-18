@@ -69,12 +69,17 @@
     <tr>
       <td>{{ releaseType.description }}</td>
       <td>
-        <button
-          (click)="beginUpdate(releaseType)"
-          class="button button--secondary"
-        >
-          Edit
-        </button>
+        <div class="buttons">
+          <button
+            (click)="beginUpdate(releaseType)"
+            class="button button--secondary"
+          >
+            Edit
+          </button>
+          <button (click)="delete(releaseType)" class="button button--warning">
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     } }

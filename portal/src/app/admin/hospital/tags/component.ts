@@ -133,6 +133,20 @@ export class AdminHospitalTagsComponent implements OnInit {
     this.cancel();
   }
 
+  delete(tag: Tag) {
+    this.store.dispatch(
+      updateTag({
+        tag: {
+          id: tag.id,
+          name: tag.name,
+          description: '',
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getTags());
   }

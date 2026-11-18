@@ -119,13 +119,16 @@ updatingCategory || updatingReason)) {
       (click)="beginUpdateCategory(category)"
       class="button button--secondary"
     >
-      Edit category
+      Edit
     </button>
     <button
       (click)="beginCreateReason(category)"
       class="button button--primary"
     >
-      Create new reason
+      Create reason
+    </button>
+    <button (click)="deleteCategory(category)" class="button button--warning">
+      Delete
     </button>
   </div>
 </div>
@@ -140,12 +143,20 @@ updatingCategory || updatingReason)) {
     <tr>
       <td>{{ reason.description }}</td>
       <td>
-        <button
-          (click)="beginUpdateReason(category, reason)"
-          class="button button--secondary"
-        >
-          Edit reason
-        </button>
+        <div class="buttons">
+          <button
+            (click)="beginUpdateReason(category, reason)"
+            class="button button--secondary"
+          >
+            Edit
+          </button>
+          <button
+            (click)="deleteReason(category, reason)"
+            class="button button--warning"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     }

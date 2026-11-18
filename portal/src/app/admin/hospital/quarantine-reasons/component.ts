@@ -105,6 +105,20 @@ export class AdminHospitalQuarantineReasonsComponent implements OnInit {
     this.cancel();
   }
 
+  delete(quarantineReason: QuarantineReason) {
+    this.store.dispatch(
+      updateQuarantineReason({
+        quarantineReason: {
+          id: quarantineReason.id,
+          name: quarantineReason.name,
+          order: quarantineReason.order,
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getQuarantineReasons());
   }

@@ -21,7 +21,7 @@ public class GetCustomDailyTasksHandler : IRequestHandler<GetCustomDailyTasks, I
 
     public async Task<IResult> Handle(GetCustomDailyTasks request, CancellationToken cancellationToken)
     {
-        var tasks = await _repository.GetAll<CustomDailyTask>(x => true, tracking: false);
+        var tasks = await _repository.GetAll<CustomDailyTask>(x => x.Deleted == false, tracking: false);
 
         return Results.Ok(tasks);
     }

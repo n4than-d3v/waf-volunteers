@@ -9,6 +9,7 @@ public class UpsertDispositionReason : IRequest<IResult>
     public int? Id { get; set; }
     public string Description { get; set; }
     public string Communication { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertDispositionReasonHandler : IRequestHandler<UpsertDispositionReason, IResult>
@@ -30,6 +31,7 @@ public class UpsertDispositionReasonHandler : IRequestHandler<UpsertDispositionR
 
             dispositionReason.Description = request.Description;
             dispositionReason.Communication = request.Communication;
+            dispositionReason.Deleted = request.Deleted;
         }
         else
         {

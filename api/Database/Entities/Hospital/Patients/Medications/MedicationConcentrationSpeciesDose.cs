@@ -18,4 +18,5 @@ public class MedicationConcentrationSpeciesDose : Entity
     public AdministrationMethod? AdministrationMethod { get; set; }
     public string? Frequency { get; set; }
     public string Notes { get; set; }
+    public bool Deleted { get; set; }
 }

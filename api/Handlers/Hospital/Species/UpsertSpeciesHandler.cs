@@ -11,6 +11,7 @@ public class UpsertSpecies : IRequest<IResult>
     public string Name { get; set; }
     public SpeciesType SpeciesType { get; set; }
     public HomeCarerPermissions? HomeCarerPermissions { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IResult>
@@ -33,6 +34,7 @@ public class UpsertDispositionReasonHandler : IRequestHandler<UpsertSpecies, IRe
             species.Name = request.Name;
             species.SpeciesType = request.SpeciesType;
             species.HomeCarerPermissions = request.HomeCarerPermissions;
+            species.Deleted = request.Deleted;
         }
         else
         {

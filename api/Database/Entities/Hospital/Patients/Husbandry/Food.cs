@@ -5,6 +5,7 @@ public class Food : Entity
 {
     public string Name { get; set; }
     public string? Notes { get; set; }
+    public bool Deleted { get; set; }
 
     public string? Substitute { get; set; }
 

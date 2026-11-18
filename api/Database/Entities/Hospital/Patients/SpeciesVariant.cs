@@ -13,6 +13,7 @@ public class SpeciesVariant : Entity
     public int Order { get; set; }
 
     public int LongTermDays { get; set; }
+    public bool Deleted { get; set; }
 
     public List<SpeciesVariantFeeding> FeedingGuidance { get; set; }
 }

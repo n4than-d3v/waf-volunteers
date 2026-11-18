@@ -131,6 +131,20 @@ export class AdminHospitalDispositionReasonsComponent implements OnInit {
     this.cancel();
   }
 
+  delete(dispositionReason: DispositionReason) {
+    this.store.dispatch(
+      updateDispositionReason({
+        dispositionReason: {
+          id: dispositionReason.id,
+          description: dispositionReason.description,
+          communication: '',
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getDispositionReasons());
   }

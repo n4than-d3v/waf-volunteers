@@ -9,6 +9,7 @@ public class UpsertQuarantineReason : IRequest<IResult>
     public int? Id { get; set; }
     public string Name { get; set; }
     public int Order { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertQuarantineReasonHandler : IRequestHandler<UpsertQuarantineReason, IResult>
@@ -30,6 +31,7 @@ public class UpsertQuarantineReasonHandler : IRequestHandler<UpsertQuarantineRea
 
             quarantineReason.Name = request.Name;
             quarantineReason.Order = request.Order;
+            quarantineReason.Deleted = request.Deleted;
         }
         else
         {

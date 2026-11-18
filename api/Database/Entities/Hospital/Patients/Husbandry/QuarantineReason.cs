@@ -6,6 +6,7 @@ public class QuarantineReason : Entity
 {
     public string Name { get; set; }
     public int Order { get; set; }
+    public bool Deleted { get; set; }
 
     [JsonIgnore]
     public List<Patient> Patients { get; set; }

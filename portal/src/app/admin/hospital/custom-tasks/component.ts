@@ -93,6 +93,20 @@ export class AdminHospitalCustomTasksComponent implements OnInit {
     this.cancel();
   }
 
+  delete(customTask: CustomDailyTask) {
+    this.store.dispatch(
+      updateCustomDailyTask({
+        customDailyTask: {
+          id: customTask.id,
+          location: customTask.location,
+          message: customTask.message,
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getCustomDailyTasks());
   }

@@ -21,7 +21,7 @@ public class GetMedicationsHandler : IRequestHandler<GetMedications, IResult>
     public async Task<IResult> Handle(GetMedications request, CancellationToken cancellationToken)
     {
         var medications = await _repository.GetAll<Medication>(
-            x => true,
+            x => x.Deleted == false,
             tracking: false,
             x => x
                 .Include(y => y.Concentrations)
@@ -30,6 +30,16 @@ public class GetMedicationsHandler : IRequestHandler<GetMedications, IResult>
                 .Include(y => y.Concentrations)
                     .ThenInclude(y => y.SpeciesDoses)
                         .ThenInclude(y => y.AdministrationMethod));
+
+        foreach (var medication in medications)
+        {
+            medication.Concentrations = [.. medication.Concentrations.Where(x => x.Deleted == false)];
+            foreach (var concentration in medication.Concentrations)
+            {
+                concentration.SpeciesDoses = [.. concentration.SpeciesDoses.Where(x => x.Deleted == false)];
+            }
+        }
+
         return Results.Ok(medications.OrderBy(x => x.ActiveSubstance));
     }
 }

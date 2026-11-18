@@ -11,5 +11,6 @@ public class MedicationConcentration : Entity
     public double ConcentrationValue { get; set; }
     public string ConcentrationUnit { get; set; }
     public string DefaultUnit { get; set; }
+    public bool Deleted { get; set; }
     public List<MedicationConcentrationSpeciesDose> SpeciesDoses { get; set; }
 }

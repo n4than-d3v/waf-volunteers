@@ -19,7 +19,7 @@ public class GetQuarantineReasonsHandler : IRequestHandler<GetQuarantineReasons,
 
     public async Task<IResult> Handle(GetQuarantineReasons request, CancellationToken cancellationToken)
     {
-        var quarantineReasons = await _repository.GetAll<QuarantineReason>(x => true, tracking: false);
+        var quarantineReasons = await _repository.GetAll<QuarantineReason>(x => x.Deleted == false, tracking: false);
         return Results.Ok(quarantineReasons.OrderBy(x => x.Order));
     }
 }

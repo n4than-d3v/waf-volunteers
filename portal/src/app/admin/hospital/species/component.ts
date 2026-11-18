@@ -335,6 +335,58 @@ export class AdminHospitalSpeciesComponent implements OnInit {
     this.cancel();
   }
 
+  deleteSpecies(species: Species) {
+    this.store.dispatch(
+      updateSpecies({
+        species: {
+          id: species.id,
+          name: species.name,
+          speciesType: species.speciesType,
+          homeCarerPermissions: species.homeCarerPermissions,
+          deleted: true,
+        },
+      }),
+    );
+    const pscroll = this.previousScroll;
+    setTimeout(() => {
+      window.scroll(0, pscroll);
+      this.previousScroll = pscroll;
+    }, 2000);
+    this.cancel();
+  }
+
+  deleteSpeciesVariant(species: Species, speciesVariant: SpeciesVariant) {
+    this.store.dispatch(
+      updateSpeciesVariant({
+        variant: {
+          id: speciesVariant.id,
+          speciesId: species.id,
+          name: speciesVariant.name,
+          friendlyName: speciesVariant.friendlyName,
+          order: speciesVariant.order,
+          longTermDays: speciesVariant.longTermDays,
+          feedingGuidance:
+            speciesVariant.feedingGuidance?.map((fg: any) => ({
+              foodId: Number(fg.foodId),
+              time: convertTime(fg.time),
+              quantityValue: Number(fg.quantityValue),
+              quantityUnit: fg.quantityUnit,
+              notes: fg.notes,
+              dish: fg.dish,
+              topUp: fg.topUp || false,
+            })) || [],
+          deleted: true,
+        },
+      }),
+    );
+    const pscroll = this.previousScroll;
+    setTimeout(() => {
+      window.scroll(0, pscroll);
+      this.previousScroll = pscroll;
+    }, 2000);
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getFoods());
     this.store.dispatch(getSpecies());

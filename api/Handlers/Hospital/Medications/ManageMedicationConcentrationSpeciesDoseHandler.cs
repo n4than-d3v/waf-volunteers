@@ -8,7 +8,6 @@ namespace Api.Handlers.Hospital.Medications;
 public class ManageMedicationConcentrationSpeciesDose : IRequest<IResult>
 {
     public int? Id { get; set; }
-    public bool? Delete { get; set; }
 
     public int MedicationConcentrationId { get; set; }
     public int? SpeciesId { get; set; }
@@ -22,6 +21,7 @@ public class ManageMedicationConcentrationSpeciesDose : IRequest<IResult>
     public int? AdministrationMethodId { get; set; }
     public string? Frequency { get; set; }
     public string Notes { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class ManageMedicationConcentrationSpeciesDoseHandler : IRequestHandler<ManageMedicationConcentrationSpeciesDose, IResult>
@@ -75,22 +75,16 @@ public class ManageMedicationConcentrationSpeciesDoseHandler : IRequestHandler<M
             var medicationConcentrationSpeciesDose = await _repository.Get<MedicationConcentrationSpeciesDose>(request.Id.Value);
             if (medicationConcentrationSpeciesDose == null) return Results.BadRequest();
 
-            if (request.Delete ?? false)
-            {
-                _repository.Delete(medicationConcentrationSpeciesDose);
-            }
-            else
-            {
-                medicationConcentrationSpeciesDose.AdministrationMethod = administrationMethod;
-                medicationConcentrationSpeciesDose.ConcentrationDoseRangeStart = request.ConcentrationDoseRangeStart;
-                medicationConcentrationSpeciesDose.ConcentrationDoseRangeEnd = request.ConcentrationDoseRangeEnd;
-                medicationConcentrationSpeciesDose.DefaultDoseRangeStart = request.DefaultDoseRangeStart;
-                medicationConcentrationSpeciesDose.DefaultDoseRangeEnd = request.DefaultDoseRangeEnd;
-                medicationConcentrationSpeciesDose.Frequency = request.Frequency;
-                medicationConcentrationSpeciesDose.Notes = request.Notes;
-                medicationConcentrationSpeciesDose.Species = species;
-                medicationConcentrationSpeciesDose.SpeciesType = request.SpeciesType;
-            }
+            medicationConcentrationSpeciesDose.AdministrationMethod = administrationMethod;
+            medicationConcentrationSpeciesDose.ConcentrationDoseRangeStart = request.ConcentrationDoseRangeStart;
+            medicationConcentrationSpeciesDose.ConcentrationDoseRangeEnd = request.ConcentrationDoseRangeEnd;
+            medicationConcentrationSpeciesDose.DefaultDoseRangeStart = request.DefaultDoseRangeStart;
+            medicationConcentrationSpeciesDose.DefaultDoseRangeEnd = request.DefaultDoseRangeEnd;
+            medicationConcentrationSpeciesDose.Frequency = request.Frequency;
+            medicationConcentrationSpeciesDose.Notes = request.Notes;
+            medicationConcentrationSpeciesDose.Species = species;
+            medicationConcentrationSpeciesDose.SpeciesType = request.SpeciesType;
+            medicationConcentrationSpeciesDose.Deleted = request.Deleted;
         }
 
         await _repository.SaveChangesAsync();

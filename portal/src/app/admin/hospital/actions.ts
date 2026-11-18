@@ -272,6 +272,7 @@ export const upsertMedication = createAction(
     activeSubstance: string;
     brands: string[];
     notes: string;
+    deleted?: boolean;
   }>(),
 );
 export const upsertMedicationSuccess = createAction(
@@ -290,6 +291,7 @@ export const upsertMedicationConcentration = createAction(
     concentrationValue: number;
     concentrationUnit: string;
     defaultUnit: string;
+    deleted?: boolean;
   }>(),
 );
 export const upsertMedicationConcentrationSuccess = createAction(
@@ -495,7 +497,7 @@ export const upsertBoardCustomPen = createAction(
   '[HMS-A] Upsert board custom pen',
   props<{
     id: number | null;
-    boardId: number;
+    boardIds: number[];
     title: string;
     body: string[];
     tags: string[];

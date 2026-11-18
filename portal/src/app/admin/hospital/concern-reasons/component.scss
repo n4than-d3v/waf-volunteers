@@ -7,6 +7,12 @@ strong {
   display: block;
 }
 
+table .buttons {
+  justify-content: flex-end;
+  display: flex;
+  gap: 0.25rem;
+}
+
 p + .button--primary {
   margin: 0.5rem 0rem;
 }

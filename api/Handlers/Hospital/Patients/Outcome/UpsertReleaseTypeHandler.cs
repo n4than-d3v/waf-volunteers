@@ -8,6 +8,7 @@ public class UpsertReleaseType : IRequest<IResult>
 {
     public int? Id { get; set; }
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertReleaseTypeHandler : IRequestHandler<UpsertReleaseType, IResult>
@@ -28,6 +29,7 @@ public class UpsertReleaseTypeHandler : IRequestHandler<UpsertReleaseType, IResu
             if (releaseType == null) return Results.BadRequest();
 
             releaseType.Description = request.Description;
+            releaseType.Deleted = request.Deleted;
         }
         else
         {

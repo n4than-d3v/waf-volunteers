@@ -3,4 +3,5 @@
 public class TransferLocation : Entity
 {
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 }

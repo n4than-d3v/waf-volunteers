@@ -137,8 +137,8 @@ public class GetBoardHandler : IRequestHandler<GetBoard, IResult>
     {
         var now = DateOnly.FromDateTime(DateTime.UtcNow);
         var pens = await _repository.GetAll<BoardCustomPen>(
-            x => x.Board.Id == boardId && (x.ExpiresOn == null || now <= x.ExpiresOn), tracking: false,
-            x => x.Include(p => p.Board).Include(p => p.Tasks));
+            x => x.Boards.Any(b => b.Id == boardId) && (x.ExpiresOn == null || now <= x.ExpiresOn), tracking: false,
+            x => x.Include(p => p.Boards).Include(p => p.Tasks));
 
         if (!pens.Any()) return null;
 

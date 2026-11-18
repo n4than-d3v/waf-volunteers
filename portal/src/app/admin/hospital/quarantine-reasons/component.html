@@ -81,12 +81,20 @@
       <td>{{ quarantineReason.name }}</td>
       <td>{{ quarantineReason.order }}</td>
       <td>
-        <button
-          (click)="beginUpdate(quarantineReason)"
-          class="button button--secondary"
-        >
-          Edit
-        </button>
+        <div class="buttons">
+          <button
+            (click)="beginUpdate(quarantineReason)"
+            class="button button--secondary"
+          >
+            Edit
+          </button>
+          <button
+            (click)="delete(quarantineReason)"
+            class="button button--warning"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     } }

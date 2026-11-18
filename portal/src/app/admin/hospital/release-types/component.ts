@@ -97,6 +97,19 @@ export class AdminHospitalReleaseTypesComponent implements OnInit {
     this.cancel();
   }
 
+  delete(releaseType: ReleaseType) {
+    this.store.dispatch(
+      updateReleaseType({
+        releaseType: {
+          id: releaseType.id,
+          description: releaseType.description,
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getReleaseTypes());
   }

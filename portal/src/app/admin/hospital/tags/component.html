@@ -6,7 +6,21 @@
   Tags are labels that can be associated with patients.<br />
   They can be used to provide additional information for husbandry
   volunteers.<br />
-  Example: "do not feed", "vet team only", etc.
+  Example: "do not feed", "clean later", etc.
+</p>
+
+<br />
+
+<p>Please do not create the following tags as they are automated elsewhere:</p>
+
+<p>
+  <b>Vet team only</b>: In the patient diet section, there is a "Flag as vet
+  team only" option.
+</p>
+
+<p>
+  <b>Meds in chick</b>: In the patient prescription, there is an option to
+  specify whether medication is in a chick.
 </p>
 
 @if (tags$ | async; as tags) { @if (tags.loading) {
@@ -99,9 +113,14 @@
       <td>{{ tag.name }}</td>
       <td [innerHTML]="convertHtml(tag.description)"></td>
       <td>
-        <button (click)="beginUpdate(tag)" class="button button--secondary">
-          Edit
-        </button>
+        <div class="buttons">
+          <button (click)="beginUpdate(tag)" class="button button--secondary">
+            Edit
+          </button>
+          <button (click)="delete(tag)" class="button button--warning">
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     } }

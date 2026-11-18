@@ -6,6 +6,7 @@ public class Tag : Entity
 {
     public string Name { get; set; }
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 
     [JsonIgnore]
     public List<Patient> Patients { get; set; }

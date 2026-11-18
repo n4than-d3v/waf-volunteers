@@ -8,18 +8,12 @@ namespace Api.Handlers.Hospital.Boards;
 public class UpsertBoardCustomPen : IRequest<IResult>
 {
     public int? Id { get; set; }
-    public int BoardId { get; set; }
+    public int[] BoardIds { get; set; }
     public string Title { get; set; }
     public string[] Body { get; set; }
     public string[] Tags { get; set; }
     public DateOnly? ExpiresOn { get; set; }
     public List<UpsertBoardCustomPenTask> Tasks { get; set; }
-
-    public UpsertBoardCustomPen WithId(int id)
-    {
-        BoardId = id;
-        return this;
-    }
 
     public class UpsertBoardCustomPenTask
     {
@@ -44,8 +38,8 @@ public class UpsertBoardCustomPenHandler : IRequestHandler<UpsertBoardCustomPen,
 
     public async Task<IResult> Handle(UpsertBoardCustomPen request, CancellationToken cancellationToken)
     {
-        var board = await _repository.Get<Board>(request.BoardId);
-        if (board == null) return Results.BadRequest();
+        var boards = await _repository.GetAll<Board>(x => request.BoardIds.Contains(x.Id));
+        if (!boards.Any()) return Results.BadRequest();
 
         BoardCustomPen? boardCustomPen;
         if (request.Id != null)
@@ -64,7 +58,7 @@ public class UpsertBoardCustomPenHandler : IRequestHandler<UpsertBoardCustomPen,
         {
             boardCustomPen = new BoardCustomPen
             {
-                Board = board,
+                Boards = [.. boards],
                 Title = request.Title,
                 Body = request.Body,
                 Tags = request.Tags,

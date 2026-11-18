@@ -14,6 +14,7 @@ public class UpsertSpeciesVariant : IRequest<IResult>
     public string FriendlyName { get; set; }
     public int Order { get; set; }
     public int LongTermDays { get; set; }
+    public bool Deleted { get; set; }
     public List<UpsertSpeciesVariantFood> FeedingGuidance { get; set; }
 
     public class UpsertSpeciesVariantFood
@@ -56,6 +57,7 @@ public class UpsertSpeciesVariantHandler : IRequestHandler<UpsertSpeciesVariant,
             speciesVariant.Order = request.Order;
             speciesVariant.LongTermDays = request.LongTermDays;
             speciesVariant.Species = species;
+            speciesVariant.Deleted = request.Deleted;
             speciesVariant.FeedingGuidance ??= [];
         }
         else

@@ -242,9 +242,6 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BoardId")
-                        .HasColumnType("integer");
-
                     b.PrimitiveCollection<string[]>("Body")
                         .IsRequired()
                         .HasColumnType("text[]");
@@ -261,8 +258,6 @@ namespace Api.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BoardId");
 
                     b.ToTable("BoardCustomPens");
                 });
@@ -830,6 +825,9 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("ForceFeed")
                         .HasColumnType("boolean");
 
@@ -905,6 +903,9 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -967,6 +968,9 @@ namespace Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -1110,6 +1114,9 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text[]");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1137,6 +1144,9 @@ namespace Api.Migrations
                     b.Property<string>("DefaultUnit")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Form")
                         .IsRequired()
@@ -1174,6 +1184,9 @@ namespace Api.Migrations
 
                     b.Property<double>("DefaultDoseRangeStart")
                         .HasColumnType("double precision");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Frequency")
                         .HasColumnType("text");
@@ -1214,6 +1227,9 @@ namespace Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1231,6 +1247,9 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1247,6 +1266,9 @@ namespace Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -1675,6 +1697,9 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<int?>("HomeCarerPermissions")
                         .HasColumnType("integer");
 
@@ -1697,6 +1722,9 @@ namespace Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("FriendlyName")
                         .IsRequired()
@@ -1729,6 +1757,9 @@ namespace Api.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastDone")
                         .HasColumnType("timestamp with time zone");
@@ -1783,6 +1814,9 @@ namespace Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1802,6 +1836,9 @@ namespace Api.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -2543,6 +2580,21 @@ namespace Api.Migrations
                     b.ToTable("StockItemBatchUsages");
                 });
 
+            modelBuilder.Entity("BoardBoardCustomPen", b =>
+                {
+                    b.Property<int>("BoardsId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CustomPensId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("BoardsId", "CustomPensId");
+
+                    b.HasIndex("CustomPensId");
+
+                    b.ToTable("BoardBoardCustomPen");
+                });
+
             modelBuilder.Entity("DispositionReasonPatient", b =>
                 {
                     b.Property<int>("DispositionReasonsId")
@@ -2614,17 +2666,6 @@ namespace Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Area");
-
-                    b.Navigation("Board");
-                });
-
-            modelBuilder.Entity("Api.Database.Entities.Hospital.Boards.BoardCustomPen", b =>
-                {
-                    b.HasOne("Api.Database.Entities.Hospital.Boards.Board", "Board")
-                        .WithMany("CustomPens")
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Board");
                 });
@@ -3508,6 +3549,21 @@ namespace Api.Migrations
                     b.Navigation("Batch");
                 });
 
+            modelBuilder.Entity("BoardBoardCustomPen", b =>
+                {
+                    b.HasOne("Api.Database.Entities.Hospital.Boards.Board", null)
+                        .WithMany()
+                        .HasForeignKey("BoardsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Api.Database.Entities.Hospital.Boards.BoardCustomPen", null)
+                        .WithMany()
+                        .HasForeignKey("CustomPensId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DispositionReasonPatient", b =>
                 {
                     b.HasOne("Api.Database.Entities.Hospital.Patients.Outcome.DispositionReason", null)
@@ -3541,8 +3597,6 @@ namespace Api.Migrations
             modelBuilder.Entity("Api.Database.Entities.Hospital.Boards.Board", b =>
                 {
                     b.Navigation("Areas");
-
-                    b.Navigation("CustomPens");
 
                     b.Navigation("Messages");
                 });

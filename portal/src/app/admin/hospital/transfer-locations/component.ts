@@ -97,6 +97,19 @@ export class AdminHospitalTransferLocationsComponent implements OnInit {
     this.cancel();
   }
 
+  delete(transferLocation: TransferLocation) {
+    this.store.dispatch(
+      updateTransferLocation({
+        transferLocation: {
+          id: transferLocation.id,
+          description: transferLocation.description,
+          deleted: true,
+        },
+      }),
+    );
+    this.cancel();
+  }
+
   ngOnInit() {
     this.store.dispatch(getTransferLocations());
   }

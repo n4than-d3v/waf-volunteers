@@ -8,6 +8,7 @@ public class UpsertTransferLocation : IRequest<IResult>
 {
     public int? Id { get; set; }
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertTransferLocationHandler : IRequestHandler<UpsertTransferLocation, IResult>
@@ -28,6 +29,7 @@ public class UpsertTransferLocationHandler : IRequestHandler<UpsertTransferLocat
             if (transferLocation == null) return Results.BadRequest();
 
             transferLocation.Description = request.Description;
+            transferLocation.Deleted = request.Deleted;
         }
         else
         {

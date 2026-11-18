@@ -7,6 +7,7 @@ public class DispositionReason : Entity
     public string Description { get; set; }
 
     public string Communication { get; set; }
+    public bool Deleted { get; set; }
 
     [JsonIgnore]
     public List<Patient> Patients { get; set; }

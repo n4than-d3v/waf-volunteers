@@ -21,8 +21,8 @@ public class GetBoardCustomPensHandler : IRequestHandler<GetBoardCustomPens, IRe
     public async Task<IResult> Handle(GetBoardCustomPens request, CancellationToken cancellationToken)
     {
         var customPens = await _repository.GetAll<BoardCustomPen>(x => true, tracking: false,
-            action: x => x.Include(y => y.Board).Include(y => y.Tasks));
+            action: x => x.Include(y => y.Boards).Include(y => y.Tasks));
 
-        return Results.Ok(customPens.OrderByDescending(x => x.ExpiresOn).ThenBy(x => x.Board.Name));
+        return Results.Ok(customPens.OrderByDescending(x => x.ExpiresOn));
     }
 }

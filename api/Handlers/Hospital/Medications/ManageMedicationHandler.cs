@@ -7,11 +7,11 @@ namespace Api.Handlers.Hospital.Medications;
 public class ManageMedication : IRequest<IResult>
 {
     public int? Id { get; set; }
-    public bool? Delete { get; set; }
 
     public string ActiveSubstance { get; set; }
     public string[] Brands { get; set; }
     public string Notes { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class ManageMedicationHandler : IRequestHandler<ManageMedication, IResult>
@@ -43,16 +43,10 @@ public class ManageMedicationHandler : IRequestHandler<ManageMedication, IResult
             var medication = await _repository.Get<Medication>(request.Id.Value);
             if (medication == null) return Results.BadRequest();
 
-            if (request.Delete ?? false)
-            {
-                _repository.Delete(medication);
-            }
-            else
-            {
-                medication.ActiveSubstance = request.ActiveSubstance;
-                medication.Brands = brands;
-                medication.Notes = request.Notes;
-            }
+            medication.ActiveSubstance = request.ActiveSubstance;
+            medication.Brands = brands;
+            medication.Notes = request.Notes;
+            medication.Deleted = request.Deleted;
         }
 
         await _repository.SaveChangesAsync();

@@ -13,6 +13,7 @@ public class UpsertFood : IRequest<IResult>
     public bool ForceFeed { get; set; }
     public bool SumUp { get; set; }
     public decimal SumUpMultiplier { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
@@ -38,6 +39,7 @@ public class UpsertFoodHandler : IRequestHandler<UpsertFood, IResult>
             food.ForceFeed = request.ForceFeed;
             food.SumUp = request.SumUp;
             food.SumUpMultiplier = request.SumUpMultiplier;
+            food.Deleted = request.Deleted;
         }
         else
         {

@@ -241,6 +241,19 @@ export class AdminHospitalMedicationsComponent implements OnInit {
     this.cancel();
   }
 
+  deleteMedication(medication: Medication) {
+    this.store.dispatch(
+      upsertMedication({
+        id: medication.id,
+        activeSubstance: medication.activeSubstance,
+        brands: medication.brands,
+        notes: medication.notes,
+        deleted: true,
+      }),
+    );
+    this.cancel();
+  }
+
   saveMedicationConcentration() {
     this.store.dispatch(
       upsertMedicationConcentration({
@@ -253,6 +266,24 @@ export class AdminHospitalMedicationsComponent implements OnInit {
         concentrationUnit:
           'mg/' + this.medicationConcentrationForm.value.defaultUnit!,
         defaultUnit: this.medicationConcentrationForm.value.defaultUnit!,
+      }),
+    );
+    this.cancel();
+  }
+
+  deleteMedicationConcentration(
+    medication: Medication,
+    medicationConcentration: MedicationConcentration,
+  ) {
+    this.store.dispatch(
+      upsertMedicationConcentration({
+        id: medicationConcentration.id,
+        medicationId: medication.id,
+        form: medicationConcentration.form,
+        concentrationValue: medicationConcentration.concentrationValue,
+        concentrationUnit: 'mg/' + medicationConcentration.defaultUnit,
+        defaultUnit: medicationConcentration.defaultUnit,
+        deleted: true,
       }),
     );
     this.cancel();

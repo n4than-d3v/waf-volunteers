@@ -12,6 +12,7 @@ public class UpsertCustomDailyTask : IRequest<IResult>
 
     public string Location { get; set; }
     public string Message { get; set; }
+    public bool Deleted { get; set; }
 
     public UpsertCustomDailyTask WithId(int id)
     {
@@ -38,6 +39,7 @@ public class UpsertCustomDailyTaskHandler : IRequestHandler<UpsertCustomDailyTas
 
             task.Location = request.Location;
             task.Message = request.Message;
+            task.Deleted = request.Deleted;
         }
         else
         {

@@ -48,10 +48,10 @@ export class AdminHospitalBoardCustomPensComponent implements OnInit {
 
   adding = false;
   editing: number | null = null;
-  boardId: number = 0;
+  boardIds: number[] = [];
 
   form = new FormGroup({
-    boardId: new FormControl(0),
+    boardIds: new FormControl([]) as FormControl<number[]>,
     title: new FormControl(''),
     body: new FormControl(''),
     tags: new FormControl(''),
@@ -89,6 +89,15 @@ export class AdminHospitalBoardCustomPensComponent implements OnInit {
     );
   }
 
+  toggleBoard(boardId: number, checked: boolean) {
+    const control = this.form.controls.boardIds;
+    const current = control.value;
+
+    control.setValue(
+      checked ? [...current, boardId] : current.filter((id) => id !== boardId),
+    );
+  }
+
   addFeedingGuidance() {
     const formGroup = new FormGroup({
       foodOrTask: new FormControl('', [Validators.required]),
@@ -112,9 +121,9 @@ export class AdminHospitalBoardCustomPensComponent implements OnInit {
     this.cancel();
 
     this.editing = pen.id;
-    this.boardId = pen.exposeBoardId;
+    this.boardIds = pen.exposeBoardIds;
 
-    this.form.controls.boardId.setValue(pen.exposeBoardId);
+    this.form.controls.boardIds.setValue(pen.exposeBoardIds);
     this.form.controls.title.setValue(pen.title);
     this.form.controls.body.setValue(pen.body.join(', '));
     this.form.controls.tags.setValue(pen.tags.join(', '));
@@ -147,7 +156,7 @@ export class AdminHospitalBoardCustomPensComponent implements OnInit {
     this.store.dispatch(
       upsertBoardCustomPen({
         id: this.adding ? null : this.editing,
-        boardId: Number(this.form.controls.boardId.value),
+        boardIds: this.form.controls.boardIds.value,
         title: this.form.controls.title.value || '',
         body: this.form.controls.body.value
           ? this.form.controls.body.value.split(',').map((s) => s.trim())

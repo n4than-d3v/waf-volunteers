@@ -242,6 +242,12 @@ medication.id) { @if (shouldShowMedication(medication)) {
     >
       Add form
     </button>
+    <button
+      (click)="deleteMedication(medication)"
+      class="button button--warning"
+    >
+      Delete
+    </button>
   </h3>
   <p class="brands">{{ formatBrands(medication) }}</p>
   <p class="notes">{{ medication.notes }}</p>
@@ -264,6 +270,12 @@ medication.id) { @if (shouldShowMedication(medication)) {
         class="button button--primary"
       >
         Add dose
+      </button>
+      <button
+        (click)="deleteMedicationConcentration(medication, concentration)"
+        class="button button--warning"
+      >
+        Delete
       </button>
     </h4>
     <table>

@@ -19,7 +19,7 @@ public class GetTransferLocationsHandler : IRequestHandler<GetTransferLocations,
 
     public async Task<IResult> Handle(GetTransferLocations request, CancellationToken cancellationToken)
     {
-        var transferLocations = await _repository.GetAll<TransferLocation>(x => true, tracking: false);
+        var transferLocations = await _repository.GetAll<TransferLocation>(x => x.Deleted == false, tracking: false);
         return Results.Ok(transferLocations);
     }
 }

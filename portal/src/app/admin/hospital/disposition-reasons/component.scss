@@ -20,6 +20,11 @@ ul + .button--primary {
   margin: 0.5rem 0rem;
 }
 
+table .buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
 .filter {
   margin-bottom: 0.75rem;
 }

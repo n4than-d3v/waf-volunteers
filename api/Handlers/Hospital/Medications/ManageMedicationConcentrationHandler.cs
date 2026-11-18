@@ -7,13 +7,13 @@ namespace Api.Handlers.Hospital.Medications;
 public class ManageMedicationConcentration : IRequest<IResult>
 {
     public int? Id { get; set; }
-    public bool? Delete { get; set; }
 
     public int MedicationId { get; set; }
     public string Form { get; set; }
     public double ConcentrationValue { get; set; }
     public string ConcentrationUnit { get; set; }
     public string DefaultUnit { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public class ManageMedicationConcentrationHandler : IRequestHandler<ManageMedicationConcentration, IResult>
@@ -48,17 +48,11 @@ public class ManageMedicationConcentrationHandler : IRequestHandler<ManageMedica
             var medicationConcentration = await _repository.Get<MedicationConcentration>(request.Id.Value);
             if (medicationConcentration == null) return Results.BadRequest();
 
-            if (request.Delete ?? false)
-            {
-                _repository.Delete(medicationConcentration);
-            }
-            else
-            {
-                medicationConcentration.Form = request.Form;
-                medicationConcentration.ConcentrationValue = request.ConcentrationValue;
-                medicationConcentration.ConcentrationUnit = request.ConcentrationUnit;
-                medicationConcentration.DefaultUnit = request.DefaultUnit;
-            }
+            medicationConcentration.Form = request.Form;
+            medicationConcentration.ConcentrationValue = request.ConcentrationValue;
+            medicationConcentration.ConcentrationUnit = request.ConcentrationUnit;
+            medicationConcentration.DefaultUnit = request.DefaultUnit;
+            medicationConcentration.Deleted = request.Deleted;
         }
 
         await _repository.SaveChangesAsync();

@@ -1066,14 +1066,12 @@ export class AdminHospitalManagementEffects {
     this.actions$.pipe(
       ofType(upsertBoardCustomPen),
       switchMap((action) =>
-        this.http
-          .put(`hospital/boards/${action.boardId}/custom-pen`, action)
-          .pipe(
-            switchMap((_) =>
-              of(upsertBoardCustomPenSuccess(), getBoardCustomPens()),
-            ),
-            catchError(() => of(upsertBoardCustomPenError())),
+        this.http.put(`hospital/boards/custom-pen`, action).pipe(
+          switchMap((_) =>
+            of(upsertBoardCustomPenSuccess(), getBoardCustomPens()),
           ),
+          catchError(() => of(upsertBoardCustomPenError())),
+        ),
       ),
     ),
   );

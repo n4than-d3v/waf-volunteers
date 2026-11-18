@@ -1109,8 +1109,8 @@ public partial class Program
 
         apiHospitalBoards
             .MapPut(
-                "/{id:int}/custom-pen",
-                (IMediator mediator, int id, UpsertBoardCustomPen request) => mediator.Send(request.WithId(id))
+                "/custom-pen",
+                (IMediator mediator, UpsertBoardCustomPen request) => mediator.Send(request)
             )
             .AddNote("Vet adds a custom pen to appear on a board")
             .RequireAuthorization(vetPolicy);

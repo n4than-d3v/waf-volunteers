@@ -5,9 +5,6 @@ namespace Api.Database.Entities.Hospital.Boards;
 
 public class BoardCustomPen : Entity
 {
-    [JsonIgnore]
-    public Board Board { get; set; }
-
     public string Title { get; set; }
     public string[] Body { get; set; }
     public string[] Tags { get; set; }
@@ -15,10 +12,13 @@ public class BoardCustomPen : Entity
 
     public List<BoardCustomPenTask> Tasks { get; set; }
 
+    [JsonIgnore]
+    public List<Board> Boards { get; set; }
+
     [NotMapped]
-    public int ExposeBoardId => Board.Id;
+    public IEnumerable<int> ExposeBoardIds => Boards.Select(b => b.Id);
     [NotMapped]
-    public string ExposeBoardName => Board.Name;
+    public IEnumerable<string> ExposeBoardNames => Boards.Select(b => b.Name);
     [NotMapped]
     public bool IsActive => ExpiresOn == null || DateOnly.FromDateTime(DateTime.UtcNow) <= ExpiresOn.Value;
 }

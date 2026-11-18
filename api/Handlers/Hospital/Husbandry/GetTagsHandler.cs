@@ -19,7 +19,7 @@ public class GetTagsHandler : IRequestHandler<GetTags, IResult>
 
     public async Task<IResult> Handle(GetTags request, CancellationToken cancellationToken)
     {
-        var tags = await _repository.GetAll<Tag>(x => true, tracking: false);
+        var tags = await _repository.GetAll<Tag>(x => x.Deleted == false, tracking: false);
         return Results.Ok(tags.OrderBy(x => x.Name));
     }
 }

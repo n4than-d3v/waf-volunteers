@@ -8,6 +8,7 @@ public class Species : Entity
     public SpeciesType SpeciesType { get; set; }
     public HomeCarerPermissions? HomeCarerPermissions { get; set; }
     public List<SpeciesVariant> Variants { get; set; }
+    public bool Deleted { get; set; }
 }
 
 public enum SpeciesType

@@ -9,4 +9,5 @@ public class HusbandryConcernReason : Entity
     public HusbandryConcernCategory Category { get; set; }
 
     public string Description { get; set; }
+    public bool Deleted { get; set; }
 }

@@ -67,12 +67,17 @@
       <td>{{ customTask.location }}</td>
       <td>{{ customTask.message }}</td>
       <td>
-        <button
-          (click)="beginUpdate(customTask)"
-          class="button button--secondary"
-        >
-          Edit
-        </button>
+        <div class="buttons">
+          <button
+            (click)="beginUpdate(customTask)"
+            class="button button--secondary"
+          >
+            Edit
+          </button>
+          <button (click)="delete(customTask)" class="button button--warning">
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     }

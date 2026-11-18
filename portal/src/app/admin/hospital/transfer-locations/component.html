@@ -70,12 +70,20 @@
     <tr>
       <td>{{ transferLocation.description }}</td>
       <td>
-        <button
-          (click)="beginUpdate(transferLocation)"
-          class="button button--secondary"
-        >
-          Edit
-        </button>
+        <div class="buttons">
+          <button
+            (click)="beginUpdate(transferLocation)"
+            class="button button--secondary"
+          >
+            Edit
+          </button>
+          <button
+            (click)="delete(transferLocation)"
+            class="button button--warning"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     } }

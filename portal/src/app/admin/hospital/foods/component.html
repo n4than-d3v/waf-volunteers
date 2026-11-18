@@ -135,9 +135,14 @@
       <td>{{ food.sumUp ? 'Yes' : '' }}</td>
       <td>{{ food.sumUp ? food.sumUpMultiplier * 100 + '%' : '' }}</td>
       <td>
-        <button (click)="beginUpdate(food)" class="button button--secondary">
-          Edit
-        </button>
+        <div class="buttons">
+          <button (click)="beginUpdate(food)" class="button button--secondary">
+            Edit
+          </button>
+          <button (click)="delete(food)" class="button button--warning">
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
     } }
